@@ -1,0 +1,13 @@
+body {
+  min-height: 100vh;
+}
+
+.home {
+  min-height: inherit;
+}
+
+.hero {
+  /* display: grid;
+  place-items: center; */
+  min-height: 65vh;
+}

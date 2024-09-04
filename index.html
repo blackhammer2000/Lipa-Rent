@@ -15,12 +15,14 @@
     />
   </head>
   <body>
-    <div class="home container-fluid border border-danger h-auto">
+    <div class="home container-fluid border border-danger font-italic">
       <div
-        class="header d-flex container-fluid justify-content-around align-items-center"
+        class="header d-flex container-fluid justify-content-around align-items-center mt-2"
       >
-        <div class="logo d-flex border border-primary">
-          <h1>LiPA RENT</h1>
+        <div class="logo d-flex">
+          <h1 class="font-weight-bolder">
+            <span>LiPA<span class="text-success">RENT&reg;</span></span>
+          </h1>
           <img
             src="./CLIENT/indexResources/images/black-cat-simple-logo-design-vector.jpg"
             alt="lipa rent logo"
@@ -30,11 +32,72 @@
 
         <div class="action">
           <ul class="d-flex list-unstyled">
-            <li><button class="btn btn-primary">SIGN UP</button></li>
-            <li><button class="btn btn-secondary ml-2">LOG IN</button></li>
+            <li>
+              <button class="btn btn-outline-success ml-2">LOG IN</button>
+            </li>
           </ul>
         </div>
       </div>
+
+      <div class="hero border border-dark mt-5 d-flex container-fluid">
+        <div
+          class="heroText w-50 d-flex justify-content-center align-items-center"
+        >
+          <h2>
+            RENTAL PROPERTY MANAGEMENT <br />
+            MADE EASY WITH <br />
+            <span>LiPA<span class="text-success">RENT&reg;</span></span>
+          </h2>
+        </div>
+        <div
+          class="ctaform w-50 d-flex justify-content-center align-items-center border border-danger"
+        >
+          <fieldset class="border border-success p-5 border-radius-50">
+            <legend class="font-weight-bold">GET STARTED</legend>
+            <form action="" class="form">
+              <div class="form-group">
+                <input placeholder="Name" type="text" class="form-control" />
+              </div>
+              <div class="form-group">
+                <input
+                  placeholder="ID Number"
+                  type="number"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <input placeholder="Email" type="email" class="form-control" />
+              </div>
+              <div class="form-group">
+                <input placeholder="Phone" type="number" class="form-control" />
+              </div>
+              <div class="form-group">
+                <input
+                  placeholder="Password"
+                  type="password"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  placeholder="Confirm Password"
+                  type="password"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group text-center">
+                <button class="btn btn-success w-100">SIGN UP</button>
+              </div>
+            </form>
+          </fieldset>
+        </div>
+      </div>
+      <footer
+        class="footer border border-danger mt-5 font-weight-bold text-center"
+      >
+        <span>LiPA<span class="text-success">RENT&reg;</span></span>
+        2024
+      </footer>
     </div>
   </body>
 </html>
