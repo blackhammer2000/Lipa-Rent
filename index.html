@@ -15,7 +15,7 @@
     />
   </head>
   <body>
-    <div class="home container-fluid border border-danger font-italic">
+    <div class="home container-fluid font-italic">
       <div
         class="header d-flex container-fluid justify-content-around align-items-center mt-2"
       >
@@ -33,13 +33,15 @@
         <div class="action">
           <ul class="d-flex list-unstyled">
             <li>
-              <button class="btn btn-outline-success ml-2">LOG IN</button>
+              <a href="./CLIENT/login/login.html">
+                <button class="btn btn-outline-success ml-2">LOG IN</button></a
+              >
             </li>
           </ul>
         </div>
       </div>
 
-      <div class="hero border border-dark mt-5 d-flex container-fluid">
+      <div class="hero mt-5 d-flex container-fluid">
         <div
           class="heroText w-50 d-flex justify-content-center align-items-center"
         >
@@ -50,7 +52,7 @@
           </h2>
         </div>
         <div
-          class="ctaform w-50 d-flex justify-content-center align-items-center border border-danger"
+          class="ctaform w-50 d-flex justify-content-center align-items-center border-left border-success"
         >
           <fieldset class="border border-success p-5 border-radius-50">
             <legend class="font-weight-bold">GET STARTED</legend>
@@ -92,11 +94,24 @@
           </fieldset>
         </div>
       </div>
-      <footer
-        class="footer border border-danger mt-5 font-weight-bold text-center"
-      >
-        <span>LiPA<span class="text-success">RENT&reg;</span></span>
-        2024
+      <footer class="footer mt-5 font-weight-bold d-flex container-fluid">
+        <div class="copyrights w-50 text-center">
+          <span>LiPA<span class="text-success">RENT&reg;</span></span>
+          2024
+        </div>
+
+        <div
+          class="conditions w-50 d-flex justify-content-center align-items-center"
+        >
+          <ul class="d-flex list-unstyled">
+            <li class="mr-3">
+              <a class="text-dark" href="">Terms & Conditions</a>
+            </li>
+            <li class="ml-3">
+              <a class="text-dark" href="">Privacy Policies</a>
+            </li>
+          </ul>
+        </div>
       </footer>
     </div>
   </body>
