@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const PORT = process.env.PORT || 8080;
+const { connect } = require("mongoose");
 
 app.use(express.json());
 app.use(
@@ -16,4 +17,8 @@ app.use(
 
 app.listen(PORT, () => {
   console.log(`server running. on PORT ${PORT}.`);
+});
+
+connect(process.env.DB_CONNECTION, () => {
+  console.log("connected to database.");
 });
