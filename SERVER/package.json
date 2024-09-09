@@ -1,7 +1,33 @@
 {
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
-  }
+    "express": "^4.18.2",
+    "intasend-node": "^1.1.1",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.8.1",
+    "mongoose": "^8.6.1"
+  },
+  "scripts": {
+    "server": "nodemon server.js"
+  },
+  "name": "liparent",
+  "version": "1.0.0",
+  "description": "the server for the liparent platform",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blackhammer2000/Lipa-Rent.git"
+  },
+  "keywords": [
+    "liparent"
+  ],
+  "author": "samuel waweru",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blackhammer2000/Lipa-Rent/issues"
+  },
+  "homepage": "https://github.com/blackhammer2000/Lipa-Rent#readme"
 }
