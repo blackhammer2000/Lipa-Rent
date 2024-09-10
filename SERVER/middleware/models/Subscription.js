@@ -1,11 +1,11 @@
 const { Schema, model } = require("mongoose");
 
 const SubscriptionSchema = new Schema({
-  userID: {
+  landlordID: {
     type: String,
     required: true,
   },
-  subscription: {
+  currentSubscription: {
     type: Object,
     start: {
       type: Number,

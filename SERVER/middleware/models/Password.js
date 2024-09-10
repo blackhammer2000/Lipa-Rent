@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const PasswordSchema = new Schema({
-  userID: {
+  landlordID: {
     type: String,
     required: true,
   },
