@@ -11,12 +11,14 @@ const {
 const { Landlord } = require("../../../middleware/models/landlord");
 const { Password } = require("../../../middleware/models/Password");
 const { Subscription } = require("../../../middleware/models/Subscription");
+const { Property } = require("../../../middleware/models/Property");
+const { Tenant } = require("../../../middleware/models/Tenant");
 
 // const {
 //   checkSubscriptionExpiry,
 // } = require("../../../middlewares/helpers/subscription");
 
-// const { encrypt } = require("../../helpers/cipher");
+const { encrypt } = require("../../helpers/cipher");
 
 // const { searchForSelectedBooks } = require("../helpers/findBooks");
 
@@ -31,7 +33,7 @@ const post_controllers = {
       if (encrypt(password) !== encrypt(confirm_password))
         throw new Error("passwords do not match.");
 
-      const Landlord = {
+      const landlord = {
         name,
         nationalID,
         email,
@@ -46,10 +48,10 @@ const post_controllers = {
           "an account with the given credentials already exists."
         );
 
-      Landlord.disabled = false;
-      Landlord.paid = true;
+      landlord.disabled = false;
+      landlord.paid = true;
 
-      const newLandlord = await Landlord?.create(Landlord);
+      const newLandlord = await Landlord?.create(landlord);
 
       if (!newLandlord)
         throw new Error("Failed to create a new instance of the institution.");
@@ -59,10 +61,17 @@ const post_controllers = {
         password: encrypt(password),
       });
 
-      if (!newInstitution)
-        throw new Error("Failed to create a new instance of the institution.");
+      if (!newPasswordDB)
+        throw new Error(
+          "Failed to create a new instance of the password DB document."
+        );
 
       const thirtyDaysMilliseconds = 30 * 24 * 60 * 60 * 1000;
+
+      const currentSubscription = {
+        start: Date.now(),
+        expires: Date.now() + thirtyDaysMilliseconds,
+      };
 
       const first_subscription_report = {
         subscription_id: crypto.randomUUID(),
@@ -70,14 +79,12 @@ const post_controllers = {
         subscription_payment_date: `${
           new Date().toLocaleDateString() | new Date().toLocaleTimeString()
         }`,
-        subscription: {
-          start: Date.now(),
-          expires: Date.now() + thirtyDaysMilliseconds,
-        },
+        currentSubscription,
       };
 
       let newInstitutionSubscriptionBody = {
-        institutionID: newInstitution?._id?.toString(),
+        landlordID: newLandlord?._id?.toString(),
+        currentSubscription,
         subscription_reports: [],
       };
 
@@ -96,28 +103,16 @@ const post_controllers = {
           "Failed to create a new instance of the institution subscription document."
         );
 
-      const newInstitutionBookCollectionBody = {
-        institutionID: newInstitution?._id?.toString(),
-        books: [{}],
+      const newLandlordPropertyBody = {
+        landlordID: newLandlord?._id?.toString(),
+        propertiesOwned: [],
       };
 
-      const newInstitutionBookCollection = await Book?.create(
-        newInstitutionBookCollectionBody
+      const newLandlordPropertyCollection = await Property?.create(
+        newLandlordPropertyBody
       );
 
-      if (!newInstitutionBookCollection)
-        throw new Error("Failed to create a new instance of the institution.");
-
-      const newInstitutionStudentCollectionBody = {
-        institutionID: newInstitution?._id?.toString(),
-        students: [],
-      };
-
-      const newInstitutionStudentCollection = await Student?.create(
-        newInstitutionStudentCollectionBody
-      );
-
-      if (!newInstitutionStudentCollection)
+      if (!newLandlordPropertyCollection)
         throw new Error("Failed to create a new instance of the institution.");
 
       res.status(201).json({

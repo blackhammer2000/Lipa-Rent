@@ -5,7 +5,7 @@ const LandlordSchema = new Schema({
     type: String,
     required: true,
   },
-  national_id: {
+  nationalID: {
     type: String,
     required: true,
   },
@@ -19,6 +19,14 @@ const LandlordSchema = new Schema({
   },
   date_registered: {
     type: String,
+    required: true,
+  },
+  paid: {
+    type: Boolean,
+    required: true,
+  },
+  disabled: {
+    type: Boolean,
     required: true,
   },
 });
