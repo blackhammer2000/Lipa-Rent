@@ -8,7 +8,7 @@ const {
   ObjectId: { isValid },
 } = require("mongodb");
 
-const { Landlord } = require("../../../middleware/models/landlord");
+const { Landlord } = require("../../../middleware/models/Owner");
 const { Password } = require("../../../middleware/models/Password");
 const { Subscription } = require("../../../middleware/models/Subscription");
 const { Property } = require("../../../middleware/models/Property");
@@ -27,10 +27,10 @@ const { encrypt } = require("../../helpers/cipher");
 const post_controllers = {
   signUp: async (req, res) => {
     try {
-      const { name, nationalID, email, phone, password, confirm_password } =
+      const { name, nationalID, email, phone, password, confirmPassword } =
         req.body;
 
-      if (encrypt(password) !== encrypt(confirm_password))
+      if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
 
       const landlord = {

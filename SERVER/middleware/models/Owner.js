@@ -31,6 +31,6 @@ const LandlordSchema = new Schema({
   },
 });
 
-const Landlord = model("Landlord", LandlordSchema);
+const Landlord = model("landlord", LandlordSchema);
 
 module.export = { Landlord };
