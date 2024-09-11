@@ -2,7 +2,7 @@ const { compare } = require("bcrypt");
 
 const crypto = require("node:crypto");
 
-const accessToken = require("../../../middlewares/tokens/signToken");
+const { signAcessToken } = require("../../../middlewares/tokens/accessToken");
 
 const {
   ObjectId: { isValid },
@@ -25,29 +25,39 @@ const { Subscription } = require("../../../middleware/models/Subscription");
 const post_controllers = {
   signUp: async (req, res) => {
     try {
-      const { name, email, phone, password, confirm_password } = req.body;
+      const { name, nationalID, email, phone, password, confirm_password } =
+        req.body;
 
       if (encrypt(password) !== encrypt(confirm_password))
         throw new Error("passwords do not match.");
 
-      const institute = {
+      const Landlord = {
         name,
+        nationalID,
         email,
         phone,
         date_registered: new Date().toLocaleDateString(),
-        password,
       };
 
-      const accountExists = await Institute?.findOne({ email: email });
+      const accountExists = await Landlord?.findOne({ email, nationalID });
 
       if (accountExists)
-        throw new Error("an account with the given email already exists.");
+        throw new Error(
+          "an account with the given credentials already exists."
+        );
 
-      institute.password = encrypt(password);
-      institute.disabled = false;
-      institute.paid = true;
+      Landlord.disabled = false;
+      Landlord.paid = true;
 
-      const newInstitution = await Institute?.create(institute);
+      const newLandlord = await Landlord?.create(Landlord);
+
+      if (!newLandlord)
+        throw new Error("Failed to create a new instance of the institution.");
+
+      const newPasswordDB = await Password?.create({
+        landlordID: newLandlord?._id?.toString(),
+        password: encrypt(password),
+      });
 
       if (!newInstitution)
         throw new Error("Failed to create a new instance of the institution.");
@@ -188,3 +198,4 @@ const post_controllers = {
           .json({ error: err?.message, response_status: "danger" });
     }
   },
+};
