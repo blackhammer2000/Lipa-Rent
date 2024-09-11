@@ -9,7 +9,7 @@ const {
   loginValidator,
   propertyValidator,
   tenantValidator,
-} = require("../../../middlewares/validators/validators");
+} = require("../../../middleware/validators/validators");
 
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");

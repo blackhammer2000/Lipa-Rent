@@ -2,7 +2,7 @@ const { compare } = require("bcrypt");
 
 const crypto = require("node:crypto");
 
-const { signAcessToken } = require("../../../middlewares/tokens/accessToken");
+// const { signAcessToken } = require("../../../middlewares/tokens/accessToken");
 
 const {
   ObjectId: { isValid },
@@ -38,7 +38,7 @@ const post_controllers = {
         nationalID,
         email,
         phone,
-        date_registered: new Date().toLocaleDateString(),
+        dateRegistered: new Date().toLocaleDateString(),
       };
 
       const accountExists = await Landlord?.findOne({ email, nationalID });
@@ -195,4 +195,4 @@ const post_controllers = {
   },
 };
 
-module.exports = { post_controllers };
+module.exports = post_controllers;

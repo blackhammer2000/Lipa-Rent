@@ -17,7 +17,7 @@ const LandlordSchema = new Schema({
     type: String,
     required: true,
   },
-  date_registered: {
+  dateRegistered: {
     type: String,
     required: true,
   },

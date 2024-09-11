@@ -1,8 +1,8 @@
 const Joi = require("joi");
 
-const institutionValidator = async (req, res, next) => {
+const landlordValidator = async (req, res, next) => {
   try {
-    const institutionSchema = Joi.object({
+    const landlordSchema = Joi.object({
       name: Joi.string().required().uppercase(),
       nationalID: Joi.string().required(),
       email: Joi.string().email().required().lowercase(),
@@ -11,7 +11,7 @@ const institutionValidator = async (req, res, next) => {
       confirm_password: Joi.string().required().min(6),
     });
 
-    const isValidSignUpData = await institutionSchema.validateAsync(req.body);
+    const isValidSignUpData = await landlordSchema.validateAsync(req.body);
 
     if (!isValidSignUpData) throw new Error(isValidSignUpData);
     next();
@@ -20,4 +20,4 @@ const institutionValidator = async (req, res, next) => {
   }
 };
 
-module.exports = { institutionValidator };
+module.exports = { landlordValidator };
