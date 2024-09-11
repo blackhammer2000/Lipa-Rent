@@ -5,13 +5,14 @@ const {
 } = require("../../../middleware/tokens/verifyAccessToken");
 
 const {
+  landlordValidator,
   loginValidator,
-  institutionValidator,
-  bookValidator,
-  studentValidator,
-} = require("../../../middlewares/validator/joi_validators");
+  propertyValidator,
+  tenantValidator,
+} = require("../../../middlewares/validators/validators");
 
 const { isUser } = require("../helpers/isUser");
+// const { hasPaid } = require("../helpers/hasPaid");
 
 const {
   signUp,
@@ -23,6 +24,6 @@ const {
   readSelectedSubjectBooks,
 } = require("../controllers/postControllers");
 
-router.post("/api/user/landlord/signup", isUser, signUp);
+router.post("/api/user/landlord/signup", isUser, landlordValidator, signUp);
 
 module.exports = router;
