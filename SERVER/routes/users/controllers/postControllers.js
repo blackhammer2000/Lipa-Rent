@@ -194,3 +194,5 @@ const post_controllers = {
     }
   },
 };
+
+module.exports = { post_controllers };
