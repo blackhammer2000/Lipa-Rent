@@ -220,8 +220,8 @@ const post_controllers = {
     }
   },
 
-  readAllProperties: async (req, res) => {},
-  readSingleProperty: async (req, res) => {},
+  readAllPropertiesOwned: async (req, res) => {},
+  readSinglePropertyOwned: async (req, res) => {},
   readAllTenantsOnSingleProperty: async (req, res) => {},
   readSingleTenantOnProperty: async (req, res) => {},
 };
