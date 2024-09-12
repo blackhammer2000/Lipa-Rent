@@ -174,7 +174,7 @@ const post_controllers = {
 
       const userData = {
         _id,
-        subscription: subscription_reports?.at(-1)?.subscription,
+        subscription: subscription_reports?.at(-1)?.currentSubscription,
         disabled,
         user: true,
       };
