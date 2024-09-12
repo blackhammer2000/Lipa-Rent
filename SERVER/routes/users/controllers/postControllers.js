@@ -2,7 +2,7 @@ const { compare } = require("bcrypt");
 
 const crypto = require("node:crypto");
 
-// const { signAcessToken } = require("../../../middlewares/tokens/accessToken");
+const { signAccessToken } = require("../../../middleware/tokens/accessToken");
 
 const {
   ObjectId: { isValid },
@@ -206,7 +206,7 @@ const post_controllers = {
         user: true,
       };
 
-      const token = await accessToken(userData);
+      const token = await signAccessToken(userData);
 
       if (!token) throw new Error(token);
 
