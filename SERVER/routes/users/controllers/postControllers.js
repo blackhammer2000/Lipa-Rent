@@ -154,7 +154,7 @@ const post_controllers = {
 
       const encryptedPassword = encrypt(password);
 
-      const user = await Institute?.findOne({
+      const user = await Landlord?.findOne({
         email: email,
       });
 
@@ -178,11 +178,11 @@ const post_controllers = {
       if (!subscription_reports) throw new Error("Subscribe to proceed.");
 
       const isSubscriptionExpired = checkSubscriptionExpiry(
-        subscription_reports.at(-1).subscription
+        subscription_reports.at(-1).currentSubscription
       );
 
       if (isSubscriptionExpired && typeof isSubscriptionExpired === "object") {
-        const updatePaidStatus = await Institute.findOneAndUpdate(
+        const updatePaidStatus = await Landlord.findOneAndUpdate(
           { _id: _id },
           { $set: { paid: false } }
         );
@@ -197,12 +197,14 @@ const post_controllers = {
         user: true,
       };
 
-      const generatedToken = await accessToken(userData);
+      const token = await accessToken(userData);
+
+      if (!token) throw new Error(token);
 
       res.status(200).json({
         message: "login successful",
         response_status: "success",
-        token: generatedToken,
+        token,
       });
     } catch (err) {
       if (err?.message)
