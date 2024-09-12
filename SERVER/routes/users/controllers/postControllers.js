@@ -147,15 +147,15 @@ const post_controllers = {
 
   login: async (req, res) => {
     try {
-      if (!req?.body?.email || !req?.body?.password)
+      if (!req?.body?.nationalID || !req?.body?.password)
         throw new Error("Provide all the necessary credentials");
 
-      const { email, password } = req?.body;
+      const { nationalID, password } = req?.body;
 
       const encryptedPassword = encrypt(password);
 
       const user = await Landlord?.findOne({
-        email: email,
+        nationalID,
       });
 
       if (!user) throw new Error("Incorrect Email or Password.");
@@ -167,32 +167,41 @@ const post_controllers = {
 
       if (disabled === true) throw new Error("Account has been disabled.");
 
-      const passwordMatch = await compare(encryptedPassword, user?.password);
+      const dbPassword = await Password?.findOne({
+        landlordID: _id,
+      });
+
+      if (!dbPassword) throw new Error("Incorrect Email or Password.");
+
+      const passwordMatch = await compare(
+        encryptedPassword,
+        dbPassword?.password
+      );
 
       if (!passwordMatch) throw new Error("Incorrect Email or Password.");
 
-      const { subscription_reports } = await Subscription?.findOne({
-        institutionID: _id,
+      const { currentSubscription } = await Subscription?.findOne({
+        landlordID: _id,
       });
 
-      if (!subscription_reports) throw new Error("Subscribe to proceed.");
+      if (!currentSubscription) throw new Error("Subscribe to proceed.");
 
-      const isSubscriptionExpired = checkSubscriptionExpiry(
-        subscription_reports.at(-1).currentSubscription
-      );
+      //   const isSubscriptionExpired = checkSubscriptionExpiry(
+      //     subscription_reports.at(-1).currentSubscription
+      //   );
 
-      if (isSubscriptionExpired && typeof isSubscriptionExpired === "object") {
-        const updatePaidStatus = await Landlord.findOneAndUpdate(
-          { _id: _id },
-          { $set: { paid: false } }
-        );
+      //   if (isSubscriptionExpired && typeof isSubscriptionExpired === "object") {
+      //     const updatePaidStatus = await Landlord.findOneAndUpdate(
+      //       { _id: _id },
+      //       { $set: { paid: false } }
+      //     );
 
-        if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
-      }
+      //     if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
+      //   }
 
       const userData = {
         _id,
-        subscription: subscription_reports?.at(-1)?.currentSubscription,
+        currentSubscription,
         disabled,
         user: true,
       };
