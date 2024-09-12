@@ -1,9 +1,9 @@
 function isUser(req, res, next) {
   try {
-    if (!req.body.id) throw new Error("session expired");
+    if (!req.headers.user) throw new Error("Unauthorized action, Not a user.");
 
     const {
-      body: { admin, user },
+      headers: { admin, user },
     } = req;
 
     if (admin) throw new Error("Unauthorized action, Not a user.");

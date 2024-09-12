@@ -100,7 +100,7 @@ const post_controllers = {
 
       if (!newInstitutionSubscription)
         throw new Error(
-          "Failed to create a new instance of the institution subscription document."
+          "Failed to create a new instance of the subscription document."
         );
 
       const newLandlordPropertyBody = {
@@ -113,7 +113,23 @@ const post_controllers = {
       );
 
       if (!newLandlordPropertyCollection)
-        throw new Error("Failed to create a new instance of the institution.");
+        throw new Error(
+          "Failed to create a new instance of the property document in the database."
+        );
+
+      const newLandlordTenantBody = {
+        landlordID: newLandlord?._id?.toString(),
+        tenants: [],
+      };
+
+      const newLandlordTenantCollection = await Tenant?.create(
+        newLandlordTenantBody
+      );
+
+      if (!newLandlordTenantCollection)
+        throw new Error(
+          "Failed to create a new instance of the tenant document in the database."
+        );
 
       res.status(201).json({
         message: `An account for ${name} has been succesfully created, proceed to log in to your account.`,
