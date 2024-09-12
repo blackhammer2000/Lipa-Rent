@@ -14,10 +14,7 @@ const { Subscription } = require("../../../middleware/models/Subscription");
 const { Property } = require("../../../middleware/models/Property");
 const { Tenant } = require("../../../middleware/models/Tenant");
 
-// const {
-//   checkSubscriptionExpiry,
-// } = require("../../../middlewares/helpers/subscription");
-
+const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 const { encrypt } = require("../../helpers/cipher");
 
 // const { searchForSelectedBooks } = require("../helpers/findBooks");
@@ -147,15 +144,16 @@ const post_controllers = {
 
   login: async (req, res) => {
     try {
-      if (!req?.body?.nationalID || !req?.body?.password)
+      if (!req?.body?.email || !req?.body?.nationalID || !req?.body?.password)
         throw new Error("Provide all the necessary credentials");
 
-      const { nationalID, password } = req?.body;
+      const { email, nationalID, password } = req?.body;
 
       const encryptedPassword = encrypt(password);
 
       const user = await Landlord?.findOne({
         nationalID,
+        email,
       });
 
       if (!user) throw new Error("Incorrect Email or Password.");
@@ -186,18 +184,17 @@ const post_controllers = {
 
       if (!currentSubscription) throw new Error("Subscribe to proceed.");
 
-      //   const isSubscriptionExpired = checkSubscriptionExpiry(
-      //     subscription_reports.at(-1).currentSubscription
-      //   );
+      const isSubscriptionExpired =
+        checkSubscriptionExpiry(currentSubscription);
 
-      //   if (isSubscriptionExpired && typeof isSubscriptionExpired === "object") {
-      //     const updatePaidStatus = await Landlord.findOneAndUpdate(
-      //       { _id: _id },
-      //       { $set: { paid: false } }
-      //     );
+      if (isSubscriptionExpired && isSubscriptionExpired.error) {
+        const updatePaidStatus = await Landlord.findOneAndUpdate(
+          { _id: _id },
+          { $set: { paid: false } }
+        );
 
-      //     if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
-      //   }
+        if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
+      }
 
       const userData = {
         _id,
