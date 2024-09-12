@@ -33,4 +33,4 @@ const LandlordSchema = new Schema({
 
 const Landlord = model("landlord", LandlordSchema);
 
-module.export = { Landlord };
+module.exports = { Landlord };

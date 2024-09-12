@@ -27,4 +27,4 @@ PasswordSchema.pre("save", async function (next) {
 
 const Password = model("password", PasswordSchema);
 
-module.export = { Password };
+module.exports = { Password };
