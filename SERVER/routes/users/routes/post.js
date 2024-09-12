@@ -14,16 +14,9 @@ const {
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
-const {
-  signUp,
-  login,
-  readStudent,
-  registerStudent,
-  assignBookToStudent,
-  registerBookToTheInventory,
-  readSelectedSubjectBooks,
-} = require("../controllers/postControllers");
+const { signUp, login } = require("../controllers/postControllers");
 
 router.post("/api/user/landlord/signup", isUser, landlordValidator, signUp);
+router.post("/api/user/landlord/login", isUser, loginValidator, login);
 
 module.exports = router;
