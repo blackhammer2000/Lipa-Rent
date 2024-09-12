@@ -219,6 +219,11 @@ const post_controllers = {
           .json({ error: err?.message, response_status: "danger" });
     }
   },
+
+  readAllProperties: async (req, res) => {},
+  readSingleProperty: async (req, res) => {},
+  readAllTenantsOnSingleProperty: async (req, res) => {},
+  readSingleTenantOnProperty: async (req, res) => {},
 };
 
 module.exports = post_controllers;
