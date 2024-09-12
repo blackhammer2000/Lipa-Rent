@@ -54,7 +54,9 @@ const post_controllers = {
       const newLandlord = await Landlord?.create(landlord);
 
       if (!newLandlord)
-        throw new Error("Failed to create a new instance of the institution.");
+        throw new Error(
+          "Failed to create a new instance of the landlord document."
+        );
 
       const newPasswordDB = await Password?.create({
         landlordID: newLandlord?._id?.toString(),
