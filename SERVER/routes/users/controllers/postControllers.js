@@ -75,9 +75,7 @@ const post_controllers = {
       const first_subscription_report = {
         subscription_id: crypto.randomUUID(),
         subscription_payment: 1,
-        subscription_payment_date: `${
-          new Date().toLocaleDateString() | new Date().toLocaleTimeString()
-        }`,
+        subscription_payment_date: `${new Date().toLocaleDateString()} | ${new Date().toLocaleTimeString()}`,
         currentSubscription,
       };
 
