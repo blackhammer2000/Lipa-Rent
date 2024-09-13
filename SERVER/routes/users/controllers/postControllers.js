@@ -218,8 +218,37 @@ const post_controllers = {
     }
   },
 
-  readAllPropertiesOwned: async (req, res) => {},
-  readSinglePropertyOwned: async (req, res) => {},
+  readSinglePropertyOwned: async (req, res) => {
+    try {
+      const { id, propertyNumber } = req.body;
+
+      if (!id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
+      if (!propertyNumber) throw new Error("provide a valid property number.");
+
+      const allProperties = await Property.findOne({ landlordID: id });
+
+      if (!allProperties) throw new Error(allProperties);
+
+      const { propertiesOwned } = allProperties;
+
+      const selectedProperty = propertiesOwned.find(
+        (property) => property.property_number === propertyNumber
+      );
+
+      if (!selectedProperty)
+        throw new Error(
+          "Selected property is not found/not registered in the database."
+        );
+
+      if (selectedProperty) res.status(200).json({ selectedProperty });
+    } catch (err) {
+      if (err?.message)
+        res
+          .status(500)
+          .json({ error: err?.message, response_status: "danger" });
+    }
+  },
   readAllTenantsOnSingleProperty: async (req, res) => {},
   readSingleTenantOnProperty: async (req, res) => {},
 };
