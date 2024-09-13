@@ -311,11 +311,11 @@ function propertyRooms() {
             },
 
             roomRentReports: {
-              37725864: [
+              ["37725864"]: [
                 {
                   paymentID: "HDUFGIS983HF38",
                   monthDue: "FEB",
-                  amountDueThis: "6000",
+                  amountDueThisMonth: "6000",
                   unpaidBalanceDue: "1200",
                   totalAmountDue: "7200",
                   amountPaid: "7000",
@@ -323,7 +323,7 @@ function propertyRooms() {
                   recieptNumber: "SH45BXDE",
                 },
               ],
-              35501094: [],
+              ["35501094"]: [],
             },
           },
         ],
