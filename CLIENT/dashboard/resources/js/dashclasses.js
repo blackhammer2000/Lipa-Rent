@@ -2,16 +2,19 @@ class Store {
   static async readAllPropertiesOwned(accessToken) {
     if (!accessToken) location?.assign("../../../login/login.html");
 
+    const requestOptions = {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: accessToken,
+        user: true,
+      },
+    };
+
     const getAllPropertiesData = await fetch(
       "http://localhost:4000/api/user/landlord/read/allProperties",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: accessToken,
-        },
-      }
+      requestOptions
     );
 
     const { allProperties, error } = await getAllPropertiesData?.json();
