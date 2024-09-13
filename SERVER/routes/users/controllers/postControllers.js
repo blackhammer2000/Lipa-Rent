@@ -295,38 +295,46 @@ function propertyRooms() {
     {
       propertyNumber: "NGONG/NGONG/12058",
       propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+      modeOfRentPayment: "BANK",
       rooms: {
-        ["room1"]: [
-          {
-            roomID: "PK1",
-            roomRatePerMonth: "6000",
-            occupationStatus: true,
-            previousOccupant: {
-              tenantID: "37725864",
-              tenantName: "SIMON SHASAVA",
-            },
-            currentOccupant: {
+        ["room1"]: {
+          roomID: "PK1",
+          roomRatePerMonth: "6000",
+          roomType: "SingleRoom",
+          occupationStatus: true,
+          tenants: [
+            {
               tenantID: "35501094",
               tenantName: "LIXO PESSAR",
+              moveInDate: "13/9/24",
+              moveOutDate: null,
             },
-
-            roomRentReports: {
-              ["37725864"]: [
-                {
-                  paymentID: "HDUFGIS983HF38",
-                  monthDue: "FEB",
-                  amountDueThisMonth: "6000",
-                  unpaidBalanceDue: "1200",
-                  totalAmountDue: "7200",
-                  amountPaid: "7000",
-                  modeOfPayment: "MPESA",
-                  recieptNumber: "SH45BXDE",
-                },
-              ],
-              ["35501094"]: [],
-            },
+          ],
+          previousOccupant: {
+            tenantID: "37725864",
+            tenantName: "SIMON SHASAVA",
           },
-        ],
+          currentOccupant: {
+            tenantID: "35501094",
+            tenantName: "LIXO PESSAR",
+          },
+
+          roomRentReports: {
+            ["37725864"]: [
+              {
+                paymentID: "HDUFGIS983HF38",
+                monthDue: "FEB",
+                amountDueThisMonth: "6000",
+                unpaidBalanceDue: "1200",
+                totalAmountDue: "7200",
+                amountPaid: "7000",
+                modeOfPayment: "MPESA",
+                recieptNumber: "SH45BXDE",
+              },
+            ],
+            ["35501094"]: [],
+          },
+        },
       },
     },
 
