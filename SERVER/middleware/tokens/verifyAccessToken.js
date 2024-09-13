@@ -1,6 +1,8 @@
 const { verify } = require("jsonwebtoken");
 
-// const { checkSubscriptionExpiry } = require("../helpers/subscription");
+const {
+  checkSubscriptionExpiry,
+} = require("../../routes/users/helpers/checkSubscription");
 
 require("dotenv").config();
 
@@ -12,25 +14,24 @@ const verifyAccessToken = (req, res, next) => {
       headers: { token },
     } = req;
 
-    const { _id, subscription, user, admin, disabled } = verify(
+    const { _id, currentSbuscription, user, admin, disabled } = verify(
       token,
       process.env.MY_SECRET_KEY
     );
 
     if (!admin && !user) throw new Error("Unauthorized action, unknown role.");
-    
+
     if (user && !admin && disabled === true) throw new Error("session expired");
 
-    if (!_id || (!subscription && user))
+    if (!_id || (!currentSbuscription && user))
       throw new Error("Please Log in again...");
 
+    const isSubscriptionExpired = user
+      ? checkSubscriptionExpiry(currentSbuscription)
+      : null;
 
-    // const isSubscriptionExpired = user
-    //   ? checkSubscriptionExpiry(subscription)
-    //   : null;
-
-    // if (user && isSubscriptionExpired)
-    //   throw new Error(isSubscriptionExpired?.error);
+    if (user && isSubscriptionExpired)
+      throw new Error(isSubscriptionExpired?.error);
 
     req.body.id = _id;
 
