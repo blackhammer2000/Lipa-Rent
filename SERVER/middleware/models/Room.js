@@ -1,17 +1,17 @@
 const { Schema, model } = require("mongoose");
 
-const TenantSchema = new Schema({
+const RoomsSchema = new Schema({
   landlordID: {
     type: String,
     required: true,
   },
 
-  tenants: {
+  rooms: {
     type: Array,
     required: true,
   },
 });
 
-const Tenant = model("tenant", TenantSchema);
+const Room = model("room", RoomsSchema);
 
-module.exports = { Tenant };
+module.exports = { Room };
