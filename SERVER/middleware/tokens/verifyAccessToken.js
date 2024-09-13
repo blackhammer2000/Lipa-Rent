@@ -14,7 +14,7 @@ const verifyAccessToken = (req, res, next) => {
       headers: { token },
     } = req;
 
-    const { _id, currentSbuscription, user, admin, disabled } = verify(
+    const { _id, currentSubscription, user, admin, disabled } = verify(
       token,
       process.env.MY_SECRET_KEY
     );
@@ -23,11 +23,11 @@ const verifyAccessToken = (req, res, next) => {
 
     if (user && !admin && disabled === true) throw new Error("session expired");
 
-    if (!_id || (!currentSbuscription && user))
+    if (!_id || (!currentSubscription && user))
       throw new Error("Please Log in again...");
 
     const isSubscriptionExpired = user
-      ? checkSubscriptionExpiry(currentSbuscription)
+      ? checkSubscriptionExpiry(currentSubscription)
       : null;
 
     if (user && isSubscriptionExpired)

@@ -3,7 +3,7 @@ const { Property } = require("../../../middleware/models/Property");
 // const { verifyAccessToken } = require("../../../middleware/tokens/accessToken");
 
 const getControllers = {
-  readAllProperties: async (req, res) => {
+  readAllPropertiesOwned: async (req, res) => {
     try {
       const { id } = req.body;
 
