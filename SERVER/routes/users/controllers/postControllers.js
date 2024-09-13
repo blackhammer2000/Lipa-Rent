@@ -18,6 +18,7 @@ const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 const { encrypt } = require("../../helpers/cipher");
 
 // const { searchForSelectedBooks } = require("../helpers/findBooks");
+const tenantsDB = tenants();
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -249,8 +250,61 @@ const post_controllers = {
           .json({ error: err?.message, response_status: "danger" });
     }
   },
-  readAllTenantsOnSingleProperty: async (req, res) => {},
+
+  readAllTenantsOnSingleProperty: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.propertyID) throw new Error("provide a vlid property ID.");
+
+      const { id, propertyID } = req.body;
+    } catch (error) {}
+  },
+
   readSingleTenantOnProperty: async (req, res) => {},
 };
 
 module.exports = post_controllers;
+
+function tenants() {
+  const tenantsDB = [
+    {
+      propertyNumber: "NGONG/NGONG/12058",
+      propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+      rooms: {
+        ["room1"]: [
+          {
+            roomID: "PK1",
+            roomRatePerMonth: "6000",
+            occupationStatus: true,
+            previousOccupant: {
+              tenantID: "37725864",
+              tenantName: "SIMON SHASAVA",
+            },
+            currentOccupant: {
+              tenantID: "35501094",
+              tenantName: "LIXO PESSAR",
+            },
+
+            roomRentReports: {
+              37725864: [
+                {
+                  paymentID: "HDUFGIS983HF38",
+                  monthDue: "FEB",
+                  amountDueThis: "6000",
+                  unpaidBalanceDue: "1200",
+                  totalAmountDue: "7200",
+                  amountPaid: "7000",
+                },
+              ],
+              35501094: [],
+            },
+          },
+        ],
+      },
+    },
+
+    {},
+  ];
+
+  return tenantsDB;
+}
