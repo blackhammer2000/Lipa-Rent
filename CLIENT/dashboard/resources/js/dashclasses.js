@@ -33,3 +33,9 @@ class Store {
 class UserInterface {
   static renderProperties() {}
 }
+
+(async function () {
+  const properties = await Store.readAllPropertiesOwned();
+
+  console.log(properties);
+})();
