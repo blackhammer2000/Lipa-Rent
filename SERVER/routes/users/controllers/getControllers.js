@@ -10,11 +10,13 @@ const getControllers = {
       if (!id)
         throw new Error("Unauthorized action, not a user or not logged in.");
 
-      const allProperties = await Property.findOne({ landlordID: id });
+      const ownerPropertiesDocument = await Property.findOne({
+        ownerID: id,
+      });
 
-      if (!allProperties) throw new Error(allProperties);
+      if (!ownerPropertiesDocument) throw new Error(ownerPropertiesDocument);
 
-      const { propertiesOwned } = allProperties;
+      const { propertiesOwned } = ownerPropertiesDocument;
 
       res.status(200).json({ propertiesOwned });
     } catch (err) {

@@ -1,11 +1,10 @@
 const { Schema, model } = require("mongoose");
 
 const RoomsSchema = new Schema({
-  landlordID: {
+  ownerID: {
     type: String,
     required: true,
   },
-
   rooms: {
     type: Object,
     required: true,

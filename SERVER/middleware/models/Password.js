@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 const { hash } = require("bcrypt");
 
 const PasswordSchema = new Schema({
-  landlordID: {
+  ownerID: {
     type: String,
     required: true,
   },

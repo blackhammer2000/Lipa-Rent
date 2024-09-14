@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const LandlordSchema = new Schema({
+const OwnerSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -31,6 +31,6 @@ const LandlordSchema = new Schema({
   },
 });
 
-const Landlord = model("landlord", LandlordSchema);
+const Owner = model("owner", OwnerSchema);
 
-module.exports = { Landlord };
+module.exports = { Owner };

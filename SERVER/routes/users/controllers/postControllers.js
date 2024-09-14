@@ -8,13 +8,16 @@ const {
   ObjectId: { isValid },
 } = require("mongodb");
 
-const { Landlord } = require("../../../middleware/models/Owner");
+const { Owner } = require("../../../middleware/models/Owner");
 const { Password } = require("../../../middleware/models/Password");
 const { Subscription } = require("../../../middleware/models/Subscription");
 const { Property } = require("../../../middleware/models/Property");
 const { Room } = require("../../../middleware/models/Room");
+const { Tenant } = require("../../../middleware/models/Tenant");
+const { Rent } = require("../../../middleware/models/Rent");
 
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
+const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
 
 // const { searchForSelectedBooks } = require("../helpers/findBooks");
@@ -31,7 +34,7 @@ const post_controllers = {
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
 
-      const landlord = {
+      const owner = {
         name,
         nationalID,
         email,
@@ -39,29 +42,32 @@ const post_controllers = {
         dateRegistered: new Date().toLocaleDateString(),
       };
 
-      const accountExists = await Landlord?.findOne({ email, nationalID });
+      const accountExists = await Owner?.findOne({
+        email: email,
+        nationalID: nationalID,
+      });
 
       if (accountExists)
         throw new Error(
           "an account with the given credentials already exists."
         );
 
-      landlord.disabled = false;
-      landlord.paid = true;
+      owner.disabled = false;
+      owner.paid = true;
 
-      const newLandlord = await Landlord?.create(landlord);
+      const newOwner = await Owner?.create(owner);
 
-      if (!newLandlord)
+      if (!newOwner)
         throw new Error(
-          "Failed to create a new instance of the landlord document."
+          "Failed to create a new instance of the owner document."
         );
 
-      const newPasswordDB = await Password?.create({
-        landlordID: newLandlord?._id?.toString(),
+      const newOwnerPasswordDB = await Password?.create({
+        ownerID: newOwner?._id?.toString(),
         password: encrypt(password),
       });
 
-      if (!newPasswordDB)
+      if (!newOwnerPasswordDB)
         throw new Error(
           "Failed to create a new instance of the password DB document."
         );
@@ -81,7 +87,7 @@ const post_controllers = {
       };
 
       let newInstitutionSubscriptionBody = {
-        landlordID: newLandlord?._id?.toString(),
+        ownerID: newOwner?._id?.toString(),
         currentSubscription,
         subscription_reports: [],
       };
@@ -101,30 +107,31 @@ const post_controllers = {
           "Failed to create a new instance of the subscription document."
         );
 
-      const newLandlordPropertyBody = {
-        landlordID: newLandlord?._id?.toString(),
-        propertiesOwned: [],
-      };
+      //   const newOwnerPropertyBody = {
+      //     ownerID: newOwner?._id?.toString(),
+      //     propertiesOwned: [],
+      //   };
 
-      const newLandlordPropertyCollection = await Property?.create(
-        newLandlordPropertyBody
+      const newOwnerPropertyCollection = await createModel(
+        Property,
+        "propertiesOwned",
+        {},
+        newOwner?._id?.toString()
       );
 
-      if (!newLandlordPropertyCollection)
+      if (!newOwnerPropertyCollection)
         throw new Error(
           "Failed to create a new instance of the property document in the database."
         );
 
-      const newLandlordTenantBody = {
-        landlordID: newLandlord?._id?.toString(),
-        tenants: [],
+      const newOwnerTenantBody = {
+        ownerID: newOwner?._id?.toString(),
+        tenants: {},
       };
 
-      const newLandlordTenantCollection = await Tenant?.create(
-        newLandlordTenantBody
-      );
+      const newOwnerTenantCollection = await Tenant?.create(newOwnerTenantBody);
 
-      if (!newLandlordTenantCollection)
+      if (!newOwnerTenantCollection)
         throw new Error(
           "Failed to create a new instance of the tenant document in the database."
         );
@@ -150,7 +157,7 @@ const post_controllers = {
 
       const encryptedPassword = encrypt(password);
 
-      const user = await Landlord?.findOne({
+      const user = await Owner?.findOne({
         nationalID,
         email,
       });
@@ -165,7 +172,7 @@ const post_controllers = {
       if (disabled === true) throw new Error("Account has been disabled.");
 
       const dbPassword = await Password?.findOne({
-        landlordID: _id,
+        ownerID: _id,
       });
 
       if (!dbPassword) throw new Error("Incorrect Email or Password.");
@@ -178,7 +185,7 @@ const post_controllers = {
       if (!passwordMatch) throw new Error("Incorrect Email or Password.");
 
       const { currentSubscription } = await Subscription?.findOne({
-        landlordID: _id,
+        ownerID: _id,
       });
 
       if (!currentSubscription) throw new Error("Subscribe to proceed.");
@@ -187,7 +194,7 @@ const post_controllers = {
         checkSubscriptionExpiry(currentSubscription);
 
       if (isSubscriptionExpired && isSubscriptionExpired.error) {
-        const updatePaidStatus = await Landlord.findOneAndUpdate(
+        const updatePaidStatus = await Owner.findOneAndUpdate(
           { _id: _id },
           { $set: { paid: false } }
         );
@@ -227,7 +234,7 @@ const post_controllers = {
         throw new Error("Unauthorized action, not a user or not logged in.");
       if (!propertyNumber) throw new Error("provide a valid property number.");
 
-      const allProperties = await Property.findOne({ landlordID: id });
+      const allProperties = await Property.findOne({ ownerID: id });
 
       if (!allProperties) throw new Error(allProperties);
 
