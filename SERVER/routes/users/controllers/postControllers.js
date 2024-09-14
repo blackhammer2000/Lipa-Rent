@@ -107,16 +107,13 @@ const post_controllers = {
           "Failed to create a new instance of the subscription document."
         );
 
-      //   const newOwnerPropertyBody = {
-      //     ownerID: newOwner?._id?.toString(),
-      //     propertiesOwned: [],
-      //   };
+      const newOwnerPropertyBody = {
+        ownerID: newOwner?._id?.toString(),
+        propertiesOwned: {},
+      };
 
-      const newOwnerPropertyCollection = await createModel(
-        Property,
-        "propertiesOwned",
-        {},
-        newOwner?._id?.toString()
+      const newOwnerPropertyCollection = await Property?.create(
+        newOwnerPropertyBody
       );
 
       if (!newOwnerPropertyCollection)
@@ -134,6 +131,30 @@ const post_controllers = {
       if (!newOwnerTenantCollection)
         throw new Error(
           "Failed to create a new instance of the tenant document in the database."
+        );
+
+      const newOwnerRoomsBody = {
+        ownerID: newOwner?._id?.toString(),
+        rooms: {},
+      };
+
+      const newOwnerRoomsCollection = await Room?.create(newOwnerRoomsBody);
+
+      if (!newOwnerRoomsCollection)
+        throw new Error(
+          "Failed to create a new instance of the room document in the database."
+        );
+
+      const newOwnerRentBody = {
+        ownerID: newOwner?._id?.toString(),
+        rents: {},
+      };
+
+      const newOwnerRentCollection = await Rent?.create(newOwnerRentBody);
+
+      if (!newOwnerRentCollection)
+        throw new Error(
+          "Failed to create a new instance of the property document in the database."
         );
 
       res.status(201).json({
