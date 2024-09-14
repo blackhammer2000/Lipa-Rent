@@ -247,6 +247,32 @@ const post_controllers = {
     }
   },
 
+  readAllPropertyOwned: async (req, res) => {
+    try {
+      const { id, propertyNumber } = req.body;
+
+      if (!id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
+      if (!propertyNumber) throw new Error("provide a valid property number.");
+
+      const allProperties = await Property.findOne({ ownerID: id });
+
+      if (Object.keys(allProperties[0])) throw new Error(allProperties);
+
+      const propertiesOwned = allProperties[0];
+
+      if (!propertiesOwned)
+        throw new Error("No properties found/registered in the database.");
+
+      if (propertiesOwned) res.status(200).json({ propertiesOwned });
+    } catch (err) {
+      if (err?.message)
+        res
+          .status(500)
+          .json({ error: err?.message, response_status: "danger" });
+    }
+  },
+
   readSinglePropertyOwned: async (req, res) => {
     try {
       const { id, propertyNumber } = req.body;
@@ -279,7 +305,7 @@ const post_controllers = {
     }
   },
 
-  readCurrentStatusOfAllRoomsOnProperty: async (req, res) => {
+  readAllRoomsOnProperty: async (req, res) => {
     try {
       //   if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
@@ -326,15 +352,16 @@ const post_controllers = {
 
       if (!allPropertiesAndRoomsDB) throw new Error("no data found");
 
-      const selectedProperty = allPropertiesAndRoomsDB.find(
-        (property) =>
-          property.propertyNumber === propertyNo &&
-          property.propertyID === propertyId
-      );
+      const selectedProperty = allPropertiesAndRoomsDB[0][propertyId];
 
       if (!selectedProperty)
         throw new Error(
-          "Selected property is not found/not registered in the database."
+          "Property with the given property id has not been registered."
+        );
+
+      if (selectedProperty.propertyNumber !== propertyNo)
+        throw new Error(
+          "Property with the given property number has not been registered."
         );
 
       const { rooms } = selectedProperty;
@@ -355,6 +382,87 @@ const post_controllers = {
     }
   },
 
+  createNewProperty: async (req, res) => {
+    try {
+      const { id, newProperty } = req.body;
+
+      //   if (!id)
+      //     throw new Error("Unauthorized action, not a user or not logged in.");
+
+      if (!newProperty) throw new Error("provide a valid property.");
+
+      //   const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
+      const allPropertiesAndRoomsDB = [...propertiesDB];
+
+      //   if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
+
+      //   const { propertiesOwned } = ownerPropertiesDocument;
+
+      const checkIfPropertyIsRegistered =
+        allPropertiesAndRoomsDB[0][newProperty.propertyNumber];
+
+      if (checkIfPropertyIsRegistered)
+        throw new Error(
+          "Property with the given property number has already been registered."
+        );
+
+      const newPropertiesObject = {
+        ...allPropertiesAndRoomsDB[0],
+        [newProperty.propertyNumber]: newProperty,
+      };
+
+      const newProperties = [newPropertiesObject];
+
+      //   const updateProperties = await Property.updateOne(
+      //     { institutionID: id },
+      //     { $set: { propertiesOwned: newProperties } }
+      //   );
+
+      //   if (!updateProperties) throw new Error("No entry found to update...");
+
+      if (selectedProperty) res.status(200).json({ newProperties });
+    } catch (err) {
+      if (err?.message)
+        res
+          .status(500)
+          .json({ error: err?.message, response_status: "danger" });
+    }
+  },
+
+  createSingleRoomOnProperty: async (req, res) => {
+    try {
+      //   if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+
+      const { id, propertyId, propertyNo } = req.body;
+
+      const allPropertiesAndRoomsDB = [...propertiesDB];
+
+      if (!allPropertiesAndRoomsDB) throw new Error("no data found");
+
+      const selectedProperty = allPropertiesAndRoomsDB.find(
+        (property) =>
+          property.propertyNumber === propertyNo &&
+          property.propertyID === propertyId
+      );
+
+      if (!selectedProperty)
+        throw new Error(
+          "Selected property is not found/not registered in the database."
+        );
+
+      const propertyRooms = selectedProperty?.rooms;
+
+      if (!Object.keys(propertyRooms))
+        throw new Error("No rooms have been added to this property.");
+
+      res.status(200).json({ propertyRooms });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
+
   readAllTenantsInRoomOnProperty: async (req, res) => {},
   readSingleTenantInRoomOnProperty: async (req, res) => {},
 };
@@ -364,65 +472,71 @@ module.exports = post_controllers;
 function properties() {
   const propertiesDB = [
     {
-      propertyNumber: "NGONG/NGONG/12058",
-      propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-      modeOfRentPayment: "BANK",
-      rooms: {
-        ["PK1"]: {
-          roomNumber: "1",
-          roomRatePerMonth: "6000",
-          roomType: "SingleRoom",
-          occupationStatus: true,
-          tenants: [
-            {
-              tenantID: "35501094",
-              tenantName: "LIXO PESSAR",
-              moveInDate: "13/9/24",
-              moveOutDate: null,
-            },
-          ],
-          previousOccupant: {
-            tenantID: "37725864",
-            tenantName: "SIMON SHASAVA",
-          },
-          currentOccupant: {
-            tenantID: "35501094",
-            tenantName: "LIXO PESSAR",
-          },
-
-          roomRentReports: {
-            ["37725864"]: [
+      ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
+        propertyNumber: "NGONG/NGONG/12058",
+        propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+        modeOfRentPayment: "BANK",
+        rooms: {
+          ["PK1"]: {
+            roomID: "PK1",
+            roomNumber: "1",
+            roomRatePerMonth: "6000",
+            roomType: "SingleRoom",
+            occupationStatus: true,
+            tenants: [
               {
-                paymentID: "HDUFGIS983HF38",
-                date: "13/9/24",
-                monthDue: "FEB",
-                amountDue: "6000",
-                unpaidBalance: "1200",
-                totalAmountDue: "7200",
-                amountPaid: "7000",
-                modeOfPayment: "MPESA",
-                recieptNumber: "SH45BXDE",
-              },
-              {
-                paymentID: "UTIHUTTBGIRU8R",
-                date: "13/9/24",
-                monthDue: "MAR",
-                amountDue: "6000",
-                unpaidBalance: "200",
-                totalAmountDue: "6200",
-                amountPaid: "5000",
-                modeOfPayment: "MPESA",
-                recieptNumber: "SWQ34TRR",
+                tenantID: "35501094",
+                tenantName: "LIXO PESSAR",
+                moveInDate: "13/9/24",
+                moveOutDate: null,
               },
             ],
-            ["35501094"]: [],
+            previousOccupant: {
+              tenantID: "37725864",
+              tenantName: "SIMON SHASAVA",
+            },
+            currentOccupant: {
+              tenantID: "35501094",
+              tenantName: "LIXO PESSAR",
+            },
+
+            roomRentReports: {
+              ["37725864"]: [
+                {
+                  paymentID: "HDUFGIS983HF38",
+                  date: "13/9/24",
+                  monthDue: "FEB",
+                  amountDue: "6000",
+                  unpaidBalance: "1200",
+                  totalAmountDue: "7200",
+                  amountPaid: "7000",
+                  modeOfPayment: "MPESA",
+                  recieptNumber: "SH45BXDE",
+                },
+                {
+                  paymentID: "UTIHUTTBGIRU8R",
+                  date: "13/9/24",
+                  monthDue: "MAR",
+                  amountDue: "6000",
+                  unpaidBalance: "200",
+                  totalAmountDue: "6200",
+                  amountPaid: "5000",
+                  modeOfPayment: "MPESA",
+                  recieptNumber: "SWQ34TRR",
+                },
+              ],
+              ["35501094"]: [],
+            },
           },
         },
       },
     },
-
-    {},
   ];
+
+  const RoomsDB = [{}];
+  const TenantsDB = [{}];
+  const Rents = [{}];
+  const RoomsDB = [{}];
 
   return propertiesDB;
 }

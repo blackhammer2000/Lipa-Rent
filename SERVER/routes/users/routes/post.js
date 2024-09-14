@@ -17,20 +17,28 @@ const { isUser } = require("../helpers/isUser");
 const {
   signUp,
   login,
-  readCurrentStatusOfAllRoomsOnProperty,
+  readAllRoomsOnProperty,
   readSingleRoomOnProperty,
+  createNewProperty,
 } = require("../controllers/postControllers");
 
 router.post("/api/user/landlord/signup", isUser, landlordValidator, signUp);
 router.post("/api/user/landlord/login", isUser, loginValidator, login);
 
 router.post(
-  "/api/user/landlord/read/property/rooms",
+  "/api/user/landlord/property/create/property",
   isUser,
-  readCurrentStatusOfAllRoomsOnProperty
+  createNewProperty
 );
+
 router.post(
-  "/api/user/landlord/read/property/room",
+  "/api/user/landlord/property/read/rooms",
+  isUser,
+  readAllRoomsOnProperty
+);
+
+router.post(
+  "/api/user/landlord/property/read/room",
   isUser,
   readSingleRoomOnProperty
 );
