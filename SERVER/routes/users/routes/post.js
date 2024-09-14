@@ -32,13 +32,13 @@ router.post("/api/user/owner/read/property", isUser, readSinglePropertyOwned);
 router.post("/api/user/owner/read/properties", isUser, readAllPropertiesOwned);
 
 router.post(
-  "/api/user/landlord/property/read/rooms",
+  "/api/user/owner/read/property/rooms",
   isUser,
   readAllRoomsOnProperty
 );
 
 router.post(
-  "/api/user/landlord/property/read/room",
+  "/api/user/owner/read/property/room",
   isUser,
   readSingleRoomOnProperty
 );

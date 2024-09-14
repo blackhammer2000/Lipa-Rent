@@ -320,22 +320,25 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo } = req.body;
 
-      const allPropertiesAndRoomsDB = [...propertiesDB];
+      const allPropertiesAndRoomsDB = [...RoomsDB];
 
-      if (!allPropertiesAndRoomsDB) throw new Error("no data found");
+      if (!Object.keys(allPropertiesAndRoomsDB[0]))
+        throw new Error("no data found");
 
-      const selectedProperty = allPropertiesAndRoomsDB.find(
-        (property) =>
-          property.propertyNumber === propertyNo &&
-          property.propertyID === propertyId
-      );
+      const allRooms = allPropertiesAndRoomsDB[0];
 
-      if (!selectedProperty)
+      const selectUsingPropertyID = allRooms[propertyId];
+
+      if (!selectUsingPropertyID)
         throw new Error(
-          "Selected property is not found/not registered in the database."
+          "Selected propertyID Rooms are not found/not registered in the database."
+        );
+      if (selectUsingPropertyID.propertyNumber !== propertyNo)
+        throw new Error(
+          "Selected propertyNumber Rooms are not found/not registered in the database."
         );
 
-      const propertyRooms = selectedProperty?.rooms;
+      const propertyRooms = selectUsingPropertyID?.rooms;
 
       if (!Object.keys(propertyRooms))
         throw new Error("No rooms have been added to this property.");
@@ -351,39 +354,47 @@ const post_controllers = {
       //   if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
-      if (!req.body.roomId) throw new Error("provide a valid property NO.");
 
-      const { id, propertyId, propertyNo, roomId } = req.body;
+      const { id, propertyId, propertyNo, RoomId, RoomNo } = req.body;
 
-      const allPropertiesAndRoomsDB = [...propertiesDB];
+      const allPropertiesAndRoomsDB = [...RoomsDB];
 
-      if (!allPropertiesAndRoomsDB) throw new Error("no data found");
+      if (!Object.keys(allPropertiesAndRoomsDB[0]))
+        throw new Error("no data found");
 
-      const selectedProperty = allPropertiesAndRoomsDB[0][propertyId];
+      const allRooms = allPropertiesAndRoomsDB[0];
 
-      if (!selectedProperty)
+      const selectPropertyUsingPropertyID = allRooms[RoomId];
+
+      if (!selectPropertyUsingPropertyID)
         throw new Error(
-          "Property with the given property id has not been registered."
+          "Selected propertyID Rooms are not found/not registered in the database."
+        );
+      if (
+        selectPropertyUsingPropertyID.RoomNumber !==
+        this.readAllRoomsOnPropertyNo
+      )
+        throw new Error(
+          "Selected propertyNumber Rooms are not found/not registered in the database."
         );
 
-      if (selectedProperty.propertyNumber !== propertyNo)
+      const propertyRooms = selectPropertyUsingPropertyID?.rooms;
+
+      const selectRoomInPropertyUsingRoomID = propertyRooms[RoomId];
+
+      if (!selectRoomInPropertyUsingRoomID)
         throw new Error(
-          "Property with the given property number has not been registered."
+          "Selected propertyID Rooms are not found/not registered in the database."
+        );
+      if (selectRoomInPropertyUsingRoomID.RoomNumber !== RoomNo)
+        throw new Error(
+          "Selected propertyNumber Rooms are not found/not registered in the database."
         );
 
-      const { rooms } = selectedProperty;
-
-      if (!Object.keys(rooms))
+      if (!Object.keys(selectRoomInPropertyUsingRoomID))
         throw new Error("No rooms have been added to this property.");
 
-      const selectedRoomOnProperty = rooms[roomId];
-
-      if (!selectedRoomOnProperty)
-        throw new Error(
-          "No room with the selected roomID was found on this property."
-        );
-
-      res.status(200).json({ selectedRoomOnProperty });
+      res.status(200).json({ selectedRoom: selectRoomInPropertyUsingRoomID });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
@@ -497,19 +508,17 @@ function database() {
   ];
   const RoomsDB = [
     {
-      ["PK1"]: {
-        roomID: "PK1",
-        roomNumber: "1",
-        roomRatePerMonth: "6000",
-        roomType: "SingleRoom",
-        occupationStatus: true,
-        previousOccupant: {
-          tenantID: "37725864",
-          tenantName: "SIMON SHASAVA",
-        },
-        currentOccupant: {
-          tenantID: "35501094",
-          tenantName: "LIXO PESSAR",
+      ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
+        propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+        propertyNumber: "NGONG/NGONG/12058",
+        rooms: {
+          ["PK1"]: {
+            roomID: "PK1",
+            roomNumber: "1",
+            roomRatePerMonth: "6000",
+            roomType: "SingleRoom",
+            isOccupied: true,
+          },
         },
       },
     },
