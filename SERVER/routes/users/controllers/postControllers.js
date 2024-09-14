@@ -21,7 +21,7 @@ const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
 
 // const { searchForSelectedBooks } = require("../helpers/findBooks");
-const propertiesDB = properties();
+const { propertiesDB, RoomsDB, RentsDB, TenantsDB } = database();
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -247,17 +247,19 @@ const post_controllers = {
     }
   },
 
-  readAllPropertyOwned: async (req, res) => {
+  readAllPropertiesOwned: async (req, res) => {
     try {
       const { id, propertyNumber } = req.body;
 
-      if (!id)
-        throw new Error("Unauthorized action, not a user or not logged in.");
-      if (!propertyNumber) throw new Error("provide a valid property number.");
+      //   if (!id)
+      //     throw new Error("Unauthorized action, not a user or not logged in.");
 
-      const allProperties = await Property.findOne({ ownerID: id });
+      //   if (!propertyNumber) throw new Error("provide a valid property number.");
 
-      if (Object.keys(allProperties[0])) throw new Error(allProperties);
+      //   const allProperties = await Property.findOne({ ownerID: id });
+      const allProperties = [...propertiesDB];
+
+      //   if (Object.keys(allProperties[0])) throw new Error(allProperties);
 
       const propertiesOwned = allProperties[0];
 
@@ -275,25 +277,30 @@ const post_controllers = {
 
   readSinglePropertyOwned: async (req, res) => {
     try {
-      const { id, propertyNumber } = req.body;
+      const { id, propertyNo, propertyId } = req.body;
 
-      if (!id)
-        throw new Error("Unauthorized action, not a user or not logged in.");
-      if (!propertyNumber) throw new Error("provide a valid property number.");
+      //   if (!id)
+      //     throw new Error("Unauthorized action, not a user or not logged in.");
 
-      const allProperties = await Property.findOne({ ownerID: id });
+      if (!propertyNo) throw new Error("provide a valid property number.");
 
-      if (!allProperties) throw new Error(allProperties);
+      //   const allProperties = await Property.findOne({ ownerID: id });
+      const allProperties = [...propertiesDB];
 
-      const { propertiesOwned } = allProperties;
+      if (!allProperties[0]) throw new Error(allProperties);
 
-      const selectedProperty = propertiesOwned.find(
-        (property) => property.property_number === propertyNumber
-      );
+      const propertiesOwned = allProperties[0];
+
+      const selectedProperty = propertiesOwned[propertyId];
 
       if (!selectedProperty)
         throw new Error(
-          "Selected property is not found/not registered in the database."
+          "Selected propertyId is not found/not registered in the database."
+        );
+
+      if (selectedProperty.propertyNumber !== propertyNo)
+        throw new Error(
+          "Selected propertyNumber is not found/not registered in the database."
         );
 
       if (selectedProperty) res.status(200).json({ selectedProperty });
@@ -469,74 +476,85 @@ const post_controllers = {
 
 module.exports = post_controllers;
 
-function properties() {
+function database() {
   const propertiesDB = [
     {
       ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
         propertyNumber: "NGONG/NGONG/12058",
         propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+        propertyOwner: {
+          name: "PETER KARANJA",
+          nationalID: "37725864",
+          DOB: "01/01/1945",
+        },
+        propertyLocation: "KAJIADO",
+        propertyValue: "33.3M",
+        propertyPurpose: "commercial",
         modeOfRentPayment: "BANK",
-        rooms: {
-          ["PK1"]: {
-            roomID: "PK1",
-            roomNumber: "1",
-            roomRatePerMonth: "6000",
-            roomType: "SingleRoom",
-            occupationStatus: true,
-            tenants: [
-              {
-                tenantID: "35501094",
-                tenantName: "LIXO PESSAR",
-                moveInDate: "13/9/24",
-                moveOutDate: null,
-              },
-            ],
-            previousOccupant: {
-              tenantID: "37725864",
-              tenantName: "SIMON SHASAVA",
-            },
-            currentOccupant: {
-              tenantID: "35501094",
-              tenantName: "LIXO PESSAR",
-            },
-
-            roomRentReports: {
-              ["37725864"]: [
-                {
-                  paymentID: "HDUFGIS983HF38",
-                  date: "13/9/24",
-                  monthDue: "FEB",
-                  amountDue: "6000",
-                  unpaidBalance: "1200",
-                  totalAmountDue: "7200",
-                  amountPaid: "7000",
-                  modeOfPayment: "MPESA",
-                  recieptNumber: "SH45BXDE",
-                },
-                {
-                  paymentID: "UTIHUTTBGIRU8R",
-                  date: "13/9/24",
-                  monthDue: "MAR",
-                  amountDue: "6000",
-                  unpaidBalance: "200",
-                  totalAmountDue: "6200",
-                  amountPaid: "5000",
-                  modeOfPayment: "MPESA",
-                  recieptNumber: "SWQ34TRR",
-                },
-              ],
-              ["35501094"]: [],
-            },
-          },
+        isIdle: false,
+      },
+    },
+  ];
+  const RoomsDB = [
+    {
+      ["PK1"]: {
+        roomID: "PK1",
+        roomNumber: "1",
+        roomRatePerMonth: "6000",
+        roomType: "SingleRoom",
+        occupationStatus: true,
+        previousOccupant: {
+          tenantID: "37725864",
+          tenantName: "SIMON SHASAVA",
+        },
+        currentOccupant: {
+          tenantID: "35501094",
+          tenantName: "LIXO PESSAR",
         },
       },
     },
   ];
 
-  const RoomsDB = [{}];
-  const TenantsDB = [{}];
-  const Rents = [{}];
-  const RoomsDB = [{}];
+  const TenantsDB = [
+    {
+      ["35501094"]: {
+        tenantID: "35501094",
+        tenantName: "LIXO PESSAR",
+        moveInDate: "13/9/24",
+        moveOutDate: null,
+      },
+    },
+  ];
 
-  return propertiesDB;
+  const RentsDB = [
+    {
+      ["37725864"]: [
+        {
+          paymentID: "HDUFGIS983HF38",
+          date: "13/9/24",
+          monthDue: "FEB",
+          amountDue: "6000",
+          unpaidBalance: "1200",
+          totalAmountDue: "7200",
+          amountPaid: "7000",
+          modeOfPayment: "MPESA",
+          recieptNumber: "SH45BXDE",
+        },
+        {
+          paymentID: "UTIHUTTBGIRU8R",
+          date: "13/9/24",
+          monthDue: "MAR",
+          amountDue: "6000",
+          unpaidBalance: "200",
+          totalAmountDue: "6200",
+          amountPaid: "5000",
+          modeOfPayment: "MPESA",
+          recieptNumber: "SWQ34TRR",
+        },
+      ],
+      ["35501094"]: [],
+    },
+  ];
+
+  return { propertiesDB, RoomsDB, RentsDB, TenantsDB };
 }
