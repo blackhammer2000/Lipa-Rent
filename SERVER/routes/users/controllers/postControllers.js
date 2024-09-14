@@ -355,7 +355,7 @@ const post_controllers = {
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
 
-      const { id, propertyId, propertyNo, RoomId, RoomNo } = req.body;
+      const { id, propertyId, propertyNo, roomId, roomNo } = req.body;
 
       const allPropertiesAndRoomsDB = [...RoomsDB];
 
@@ -364,31 +364,28 @@ const post_controllers = {
 
       const allRooms = allPropertiesAndRoomsDB[0];
 
-      const selectPropertyUsingPropertyID = allRooms[RoomId];
+      const selectPropertyUsingPropertyID = allRooms[propertyId];
 
       if (!selectPropertyUsingPropertyID)
         throw new Error(
           "Selected propertyID Rooms are not found/not registered in the database."
         );
-      if (
-        selectPropertyUsingPropertyID.RoomNumber !==
-        this.readAllRoomsOnPropertyNo
-      )
+      if (selectPropertyUsingPropertyID.propertyNumber !== propertyNo)
         throw new Error(
           "Selected propertyNumber Rooms are not found/not registered in the database."
         );
 
       const propertyRooms = selectPropertyUsingPropertyID?.rooms;
 
-      const selectRoomInPropertyUsingRoomID = propertyRooms[RoomId];
+      const selectRoomInPropertyUsingRoomID = propertyRooms[roomId];
 
       if (!selectRoomInPropertyUsingRoomID)
         throw new Error(
-          "Selected propertyID Rooms are not found/not registered in the database."
+          "Selected propertyID Room is not found/not registered in the database."
         );
-      if (selectRoomInPropertyUsingRoomID.RoomNumber !== RoomNo)
+      if (selectRoomInPropertyUsingRoomID.roomNumber !== roomNo)
         throw new Error(
-          "Selected propertyNumber Rooms are not found/not registered in the database."
+          "Selected propertyNumber Room is not found/not registered in the database."
         );
 
       if (!Object.keys(selectRoomInPropertyUsingRoomID))
