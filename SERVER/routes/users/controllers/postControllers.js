@@ -18,7 +18,7 @@ const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 const { encrypt } = require("../../helpers/cipher");
 
 // const { searchForSelectedBooks } = require("../helpers/findBooks");
-const propertyRoomsDB = propertyRooms();
+const propertiesDB = properties();
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -251,7 +251,7 @@ const post_controllers = {
     }
   },
 
-  readCurrentStatusOfAllRoomsOnSingleProperty: async (req, res) => {
+  readCurrentStatusOfAllRoomsOnProperty: async (req, res) => {
     try {
       //   if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
@@ -259,7 +259,7 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo } = req.body;
 
-      const allPropertiesAndRoomsDB = [...propertyRoomsDB];
+      const allPropertiesAndRoomsDB = [...propertiesDB];
 
       if (!allPropertiesAndRoomsDB) throw new Error("no data found");
 
@@ -285,20 +285,63 @@ const post_controllers = {
     }
   },
 
-  readSingleTenantOnProperty: async (req, res) => {},
+  readSingleRoomOnProperty: async (req, res) => {
+    try {
+      //   if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+      if (!req.body.roomId) throw new Error("provide a valid property NO.");
+
+      const { id, propertyId, propertyNo, roomId } = req.body;
+
+      const allPropertiesAndRoomsDB = [...propertiesDB];
+
+      if (!allPropertiesAndRoomsDB) throw new Error("no data found");
+
+      const selectedProperty = allPropertiesAndRoomsDB.find(
+        (property) =>
+          property.propertyNumber === propertyNo &&
+          property.propertyID === propertyId
+      );
+
+      if (!selectedProperty)
+        throw new Error(
+          "Selected property is not found/not registered in the database."
+        );
+
+      const { rooms } = selectedProperty;
+
+      if (!Object.keys(rooms))
+        throw new Error("No rooms have been added to this property.");
+
+      const selectedRoomOnProperty = rooms[roomId];
+
+      if (!selectedRoomOnProperty)
+        throw new Error(
+          "No room with the selected roomID was found on this property."
+        );
+
+      res.status(200).json({ selectedRoomOnProperty });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  readAllTenantsInRoomOnProperty: async (req, res) => {},
+  readSingleTenantInRoomOnProperty: async (req, res) => {},
 };
 
 module.exports = post_controllers;
 
-function propertyRooms() {
-  const propertyRoomsDB = [
+function properties() {
+  const propertiesDB = [
     {
       propertyNumber: "NGONG/NGONG/12058",
       propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
       modeOfRentPayment: "BANK",
       rooms: {
-        ["room1"]: {
-          roomID: "PK1",
+        ["PK1"]: {
+          roomNumber: "1",
           roomRatePerMonth: "6000",
           roomType: "SingleRoom",
           occupationStatus: true,
@@ -353,5 +396,5 @@ function propertyRooms() {
     {},
   ];
 
-  return propertyRoomsDB;
+  return propertiesDB;
 }

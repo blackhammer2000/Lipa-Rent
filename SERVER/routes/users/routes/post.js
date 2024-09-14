@@ -17,7 +17,8 @@ const { isUser } = require("../helpers/isUser");
 const {
   signUp,
   login,
-  readCurrentStatusOfAllRoomsOnSingleProperty,
+  readCurrentStatusOfAllRoomsOnProperty,
+  readSingleRoomOnProperty,
 } = require("../controllers/postControllers");
 
 router.post("/api/user/landlord/signup", isUser, landlordValidator, signUp);
@@ -26,7 +27,12 @@ router.post("/api/user/landlord/login", isUser, loginValidator, login);
 router.post(
   "/api/user/landlord/read/property/rooms",
   isUser,
-  readCurrentStatusOfAllRoomsOnSingleProperty
+  readCurrentStatusOfAllRoomsOnProperty
+);
+router.post(
+  "/api/user/landlord/read/property/room",
+  isUser,
+  readSingleRoomOnProperty
 );
 
 module.exports = router;
