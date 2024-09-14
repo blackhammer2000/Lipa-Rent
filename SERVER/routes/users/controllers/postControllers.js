@@ -109,7 +109,7 @@ const post_controllers = {
 
       const newOwnerPropertyBody = {
         ownerID: newOwner?._id?.toString(),
-        propertiesOwned: {},
+        propertiesOwned: [{}],
       };
 
       const newOwnerPropertyCollection = await Property?.create(
@@ -123,7 +123,7 @@ const post_controllers = {
 
       const newOwnerTenantBody = {
         ownerID: newOwner?._id?.toString(),
-        tenants: {},
+        tenants: [{}],
       };
 
       const newOwnerTenantCollection = await Tenant?.create(newOwnerTenantBody);
@@ -135,7 +135,7 @@ const post_controllers = {
 
       const newOwnerRoomsBody = {
         ownerID: newOwner?._id?.toString(),
-        rooms: {},
+        rooms: [{}],
       };
 
       const newOwnerRoomsCollection = await Room?.create(newOwnerRoomsBody);
@@ -147,7 +147,7 @@ const post_controllers = {
 
       const newOwnerRentBody = {
         ownerID: newOwner?._id?.toString(),
-        rents: {},
+        rents: [{}],
       };
 
       const newOwnerRentCollection = await Rent?.create(newOwnerRentBody);

@@ -6,7 +6,7 @@ const TenantSchema = new Schema({
     required: true,
   },
   tenants: {
-    type: Object,
+    type: Array,
     required: true,
   },
 });

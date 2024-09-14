@@ -7,7 +7,7 @@ const PropertySchema = new Schema({
   },
 
   propertiesOwned: {
-    type: Object,
+    type: Array,
     required: true,
   },
 });

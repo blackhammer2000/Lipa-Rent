@@ -6,7 +6,7 @@ const RentSchema = new Schema({
     required: true,
   },
   rents: {
-    type: Object,
+    type: Array,
     required: true,
   },
 });

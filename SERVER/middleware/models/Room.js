@@ -6,7 +6,7 @@ const RoomsSchema = new Schema({
     required: true,
   },
   rooms: {
-    type: Object,
+    type: Array,
     required: true,
   },
 });
