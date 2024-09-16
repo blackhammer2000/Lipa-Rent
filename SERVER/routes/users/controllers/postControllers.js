@@ -581,6 +581,23 @@ const post_controllers = {
     }
   },
 
+  createTenantForRoomOnProperty: async (req, res) => {
+    try {
+      //   if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+      if (!req.body.roomId) throw new Error("provide a valid room NO.");
+      if (!req.body.tenant) throw new Error("provide a valid tenant.");
+
+      const { id, propertyId, propertyNo, roomId, tenant } = req.body;
+
+      const allPropertiesAndRoomsDB = [...TenantsDB.propertiesTenants];
+
+      if (!allPropertiesAndRoomsDB) throw new Error("no data found");
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
   readAllTenantsInRoomOnProperty: async (req, res) => {},
   readSingleTenantInRoomOnProperty: async (req, res) => {},
 };
