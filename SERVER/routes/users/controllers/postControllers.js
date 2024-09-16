@@ -385,7 +385,7 @@ const post_controllers = {
         );
       if (selectRoomInPropertyUsingRoomID.roomNumber !== roomNo)
         throw new Error(
-          "Selected propertyNumber Room is not found/not registered in the database."
+          "Selected propertyId and propertyNumber Room do not match."
         );
 
       if (!Object.keys(selectRoomInPropertyUsingRoomID))
@@ -413,17 +413,33 @@ const post_controllers = {
 
       //   const { propertiesOwned } = ownerPropertiesDocument;
 
-      const checkIfPropertyIsRegistered =
-        allPropertiesAndRoomsDB[0][newProperty.propertyNumber];
+      const checkIfPropertyIdIsRegistered =
+        allPropertiesAndRoomsDB[0][newProperty.propertyID];
 
-      if (checkIfPropertyIsRegistered)
-        throw new Error(
-          "Property with the given property number has already been registered."
-        );
+      if (
+        checkIfPropertyIdIsRegistered ||
+        (checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered.propertyNumber ===
+            newProperty.propertyNumber)
+      ) {
+        if (
+          checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered.propertyNumber ===
+            newProperty.propertyNumber
+        )
+          throw new Error(
+            "Property with the given property Id and  property number has already been registered."
+          );
+
+        if (checkIfPropertyIdIsRegistered)
+          throw new Error(
+            "Property with the given property Id has already been registered."
+          );
+      }
 
       const newPropertiesObject = {
         ...allPropertiesAndRoomsDB[0],
-        [newProperty.propertyNumber]: newProperty,
+        [newProperty.propertyID]: newProperty,
       };
 
       const newProperties = [newPropertiesObject];
@@ -435,7 +451,7 @@ const post_controllers = {
 
       //   if (!updateProperties) throw new Error("No entry found to update...");
 
-      if (selectedProperty) res.status(200).json({ newProperties });
+      if (newProperties) res.status(200).json({ newProperties });
     } catch (err) {
       if (err?.message)
         res
