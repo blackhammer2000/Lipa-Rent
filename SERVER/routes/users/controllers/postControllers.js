@@ -6,6 +6,7 @@ const { signAccessToken } = require("../../../middleware/tokens/accessToken");
 
 const {
   ObjectId: { isValid },
+  MongoClient,
 } = require("mongodb");
 
 const { Owner } = require("../../../middleware/models/Owner");
@@ -526,7 +527,7 @@ const post_controllers = {
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
-      if (!Object.keys(propertyRooms))
+      if (!propertyRooms)
         throw new Error("No rooms have been added to this property.");
 
       const checkIfRoomIdIsRegistered = propertyRooms[newRoom.roomId];
@@ -534,29 +535,45 @@ const post_controllers = {
       if (
         checkIfRoomIdIsRegistered ||
         (checkIfRoomIdIsRegistered &&
-          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNumber)
+          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNo)
       ) {
         if (
-          checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.roomNumber == newRoom.roomNumber
+          checkIfRoomIdIsRegistered &&
+          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNo
         )
           throw new Error(
-            "Room with the given  ID and number has already been registered."
+            "Room with the given ID and number has already been registered."
           );
 
-        if (checkIfPropertyIdIsRegistered)
-          throw new Error("Room with the given ID has not been registered.");
+        if (checkIfRoomIdIsRegistered)
+          throw new Error(
+            "Room with the given ID has already been registered."
+          );
       }
 
       const newPropertyRooms = {
-        ...RoomsDB[0].rooms,
+        ...propertyRooms,
         [newRoom.roomID]: newRoom,
       };
 
-      const newPropertyKey = {
-        ...checkIfPropertyIdIsRegistered,
-        rooms: newPropertyRooms,
-      };
+      //   const updateProperties = await Room.updateOne(
+      //     { ownerID: id },
+      //     {
+      //       $set: {
+      //         propertiesRooms: [
+      //           {
+      //             ...allPropertiesAndRoomsDB[0],
+      //             [propertyId]: {
+      //               ...checkIfPropertyIdIsRegistered,
+      //               rooms: newPropertyRooms,
+      //             },
+      //           },
+      //         ],
+      //       },
+      //     }
+      //   );
+
+      //   if (!updateProperties) throw new Error("No entry found to update...");
 
       res.status(200).json({ newPropertyRooms });
     } catch (err) {

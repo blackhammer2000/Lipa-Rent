@@ -20,6 +20,7 @@ const {
   createNewProperty,
   readSinglePropertyOwned,
   readAllPropertiesOwned,
+  createSingleRoomOnProperty,
   readAllRoomsOnProperty,
   readSingleRoomOnProperty,
 } = require("../controllers/postControllers");
@@ -31,6 +32,11 @@ router.post("/api/user/owner/create/property", isUser, createNewProperty);
 router.post("/api/user/owner/read/property", isUser, readSinglePropertyOwned);
 router.post("/api/user/owner/read/properties", isUser, readAllPropertiesOwned);
 
+router.post(
+  "/api/user/owner/create/property/room",
+  isUser,
+  createSingleRoomOnProperty
+);
 router.post(
   "/api/user/owner/read/property/rooms",
   isUser,
