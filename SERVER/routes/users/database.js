@@ -63,7 +63,7 @@ const RoomsDB = {
 
 const TenantsDB = {
   ownerID: "fsfsdf",
-  tenants: [
+  propertiesTenants: [
     {
       ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
         propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
@@ -85,7 +85,7 @@ const TenantsDB = {
 
 const RentsDB = {
   ownerID: "dsfsdfs",
-  rents: [
+  propertiesRents: [
     {
       ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
         propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
