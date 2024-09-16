@@ -406,91 +406,6 @@ const post_controllers = {
     }
   },
 
-  readAllRoomsOnProperty: async (req, res) => {
-    try {
-      //   if (!req.body.id) throw new Error("Unknown user...");
-      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
-
-      const { id, propertyId, propertyNo } = req.body;
-
-      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
-
-      if (!Object.keys(allPropertiesAndRoomsDB[0]))
-        throw new Error("no data found");
-
-      const allRooms = allPropertiesAndRoomsDB[0];
-
-      const selectUsingPropertyID = allRooms[propertyId];
-
-      if (!selectUsingPropertyID)
-        throw new Error(
-          "Selected propertyID Rooms are not found/not registered in the database."
-        );
-      if (selectUsingPropertyID.propertyNumber !== propertyNo)
-        throw new Error(
-          "Selected propertyNumber Rooms are not found/not registered in the database."
-        );
-
-      const propertyRooms = selectUsingPropertyID?.rooms;
-
-      if (!Object.keys(propertyRooms))
-        throw new Error("No rooms have been added to this property.");
-
-      res.status(200).json({ propertyRooms });
-    } catch (err) {
-      if (err.message) res.status(400).json({ error: err.message });
-    }
-  },
-
-  readSingleRoomOnProperty: async (req, res) => {
-    try {
-      //   if (!req.body.id) throw new Error("Unknown user...");
-      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
-
-      const { id, propertyId, propertyNo, roomId, roomNo } = req.body;
-
-      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
-
-      if (!Object.keys(allPropertiesAndRoomsDB[0]))
-        throw new Error("no data found");
-
-      const allRooms = allPropertiesAndRoomsDB[0];
-
-      const selectPropertyUsingPropertyID = allRooms[propertyId];
-
-      if (!selectPropertyUsingPropertyID)
-        throw new Error(
-          "Selected propertyID Rooms are not found/not registered in the database."
-        );
-      if (selectPropertyUsingPropertyID.propertyNumber !== propertyNo)
-        throw new Error(
-          "Selected propertyNumber Rooms are not found/not registered in the database."
-        );
-
-      const propertyRooms = selectPropertyUsingPropertyID?.rooms;
-
-      const selectRoomInPropertyUsingRoomID = propertyRooms[roomId];
-
-      if (!selectRoomInPropertyUsingRoomID)
-        throw new Error(
-          "Selected propertyID Room is not found/not registered in the database."
-        );
-      if (selectRoomInPropertyUsingRoomID.roomNumber !== roomNo)
-        throw new Error(
-          "Selected propertyId and propertyNumber Room do not match."
-        );
-
-      if (!Object.keys(selectRoomInPropertyUsingRoomID))
-        throw new Error("No rooms have been added to this property.");
-
-      res.status(200).json({ selectedRoom: selectRoomInPropertyUsingRoomID });
-    } catch (err) {
-      if (err.message) res.status(400).json({ error: err.message });
-    }
-  },
-
   createSingleRoomOnProperty: async (req, res) => {
     try {
       //   if (!req.body.id) throw new Error("Unknown user...");
@@ -576,6 +491,91 @@ const post_controllers = {
       //   if (!updateProperties) throw new Error("No entry found to update...");
 
       res.status(200).json({ newPropertyRooms });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  readAllRoomsOnProperty: async (req, res) => {
+    try {
+      //   if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+
+      const { id, propertyId, propertyNo } = req.body;
+
+      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
+
+      if (!Object.keys(allPropertiesAndRoomsDB[0]))
+        throw new Error("no data found");
+
+      const allRooms = allPropertiesAndRoomsDB[0];
+
+      const selectUsingPropertyID = allRooms[propertyId];
+
+      if (!selectUsingPropertyID)
+        throw new Error(
+          "Selected propertyID Rooms are not found/not registered in the database."
+        );
+      if (selectUsingPropertyID.propertyNumber !== propertyNo)
+        throw new Error(
+          "Selected propertyNumber Rooms are not found/not registered in the database."
+        );
+
+      const propertyRooms = selectUsingPropertyID?.rooms;
+
+      if (!Object.keys(propertyRooms))
+        throw new Error("No rooms have been added to this property.");
+
+      res.status(200).json({ propertyRooms });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  readSingleRoomOnProperty: async (req, res) => {
+    try {
+      //   if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+
+      const { id, propertyId, propertyNo, roomId, roomNo } = req.body;
+
+      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
+
+      if (!Object.keys(allPropertiesAndRoomsDB[0]))
+        throw new Error("no data found");
+
+      const allRooms = allPropertiesAndRoomsDB[0];
+
+      const selectPropertyUsingPropertyID = allRooms[propertyId];
+
+      if (!selectPropertyUsingPropertyID)
+        throw new Error(
+          "Selected propertyID Rooms are not found/not registered in the database."
+        );
+      if (selectPropertyUsingPropertyID.propertyNumber !== propertyNo)
+        throw new Error(
+          "Selected propertyNumber Rooms are not found/not registered in the database."
+        );
+
+      const propertyRooms = selectPropertyUsingPropertyID?.rooms;
+
+      const selectRoomInPropertyUsingRoomID = propertyRooms[roomId];
+
+      if (!selectRoomInPropertyUsingRoomID)
+        throw new Error(
+          "Selected propertyID Room is not found/not registered in the database."
+        );
+      if (selectRoomInPropertyUsingRoomID.roomNumber !== roomNo)
+        throw new Error(
+          "Selected propertyId and propertyNumber Room do not match."
+        );
+
+      if (!Object.keys(selectRoomInPropertyUsingRoomID))
+        throw new Error("No rooms have been added to this property.");
+
+      res.status(200).json({ selectedRoom: selectRoomInPropertyUsingRoomID });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
