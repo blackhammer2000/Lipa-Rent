@@ -536,15 +536,35 @@ function database() {
       ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
         propertyNumber: "NGONG/NGONG/12058",
         propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-        propertyOwner: {
+        propertyTitleDetails: {
           name: "PETER KARANJA",
           nationalID: "37725864",
-          DOB: "01/01/1945",
+          asWho: "SELF",
         },
-        propertyLocation: "KAJIADO",
-        propertyValue: "33.3M",
-        propertyPurpose: "commercial",
-        modeOfRentPayment: "BANK",
+        propertyLocation: "NGONG",
+        propertyValue: "12.3M",
+        propertyPurpose: {
+          purposedUse: "residential",
+          purposeType: "resident",
+        },
+        modeOfPayment: "none",
+        isIdle: false,
+      },
+      ["HDFBSUEHDUIFHW783YRWUHF84YF31"]: {
+        propertyNumber: "KIS/KIS/12058",
+        propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF31",
+        propertyTitleDetails: {
+          name: "SAMUEL MUTONGA",
+          nationalID: "37725864",
+          asWho: "NEXT OF KIN",
+        },
+        propertyLocation: "KISERIAN",
+        propertyValue: "29.7M",
+        propertyPurpose: {
+          purposedUse: "commercial",
+          purposeType: "rental real estate",
+        },
+        modeOfPayment: "BANK",
         isIdle: false,
       },
     },
