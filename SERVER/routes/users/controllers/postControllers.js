@@ -496,7 +496,7 @@ const post_controllers = {
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
 
-      const { id, propertyId, propertyNo } = req.body;
+      const { id, propertyId, propertyNo, newRoom } = req.body;
 
       const allPropertiesAndRoomsDB = [...propertiesDB];
 
@@ -544,8 +544,8 @@ function database() {
         propertyLocation: "NGONG",
         propertyValue: "12.3M",
         propertyPurpose: {
-          purposedUse: "residential",
-          purposeType: "resident",
+          purposedUse: "commercial",
+          purposeType: "lease",
         },
         modeOfPayment: "none",
         isIdle: false,
