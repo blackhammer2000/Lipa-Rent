@@ -247,6 +247,99 @@ const post_controllers = {
     }
   },
 
+  createNewProperty: async (req, res) => {
+    try {
+      const { id, newProperty } = req.body;
+
+      //   if (!id)
+      //     throw new Error("Unauthorized action, not a user or not logged in.");
+
+      if (!newProperty) throw new Error("provide a valid property.");
+
+      //   const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
+      const allPropertiesDB = [...propertiesDB];
+
+      //   if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
+
+      //   const { propertiesOwned } = ownerPropertiesDocument;
+
+      const checkIfPropertyIdIsRegistered =
+        allPropertiesDB[0][newProperty.propertyID];
+
+      if (
+        checkIfPropertyIdIsRegistered ||
+        (checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered.propertyNumber ===
+            newProperty.propertyNumber)
+      ) {
+        if (
+          checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered.propertyNumber ===
+            newProperty.propertyNumber
+        )
+          throw new Error(
+            "Property with the given property Id and  property number has already been registered."
+          );
+
+        if (checkIfPropertyIdIsRegistered)
+          throw new Error(
+            "Property with the given property Id has already been registered."
+          );
+      }
+
+      //   const isNewPropertyIdAndNumberRegistered = false;
+      //   const isNewPropertyIdRegistered = false;
+      //   const isNewPropertyNumberRegistered = false;
+
+      //   for (const key in allPropertiesDB) {
+      //     console.log(key);
+
+      //     if (
+      //       key === newProperty.propertyID &&
+      //       allPropertiesDB[key].propertyNumber === newProperty.propertyNumber
+      //     )
+      //       isNewPropertyIdAndNumberRegistered =
+      //         !isNewPropertyIdAndNumberRegistered;
+
+      //     if (key === newProperty.propertyID)
+      //       isNewPropertyIdRegistered = !isNewPropertyIdRegistered;
+
+      //     if (allPropertiesDB[key].propertyNumber === newProperty.propertyNumber)
+      //       isNewPropertyNumberRegistered = !isNewPropertyNumberRegistered;
+      //   }
+
+      //   if (isNewPropertyIdAndNumberRegistered)
+      //     throw new Error(
+      //       "Property with the given property Id and Number has already been registered."
+      //     );
+      //   if (isNewPropertyNumberRegistered)
+      //     throw new Error(
+      //       "Property with the given property Number has already been registered."
+      //     );
+
+      const newPropertiesObject = {
+        ...allPropertiesDB[0],
+        [newProperty.propertyID]: newProperty,
+      };
+
+      const newProperties = [newPropertiesObject];
+
+      //   const updateProperties = await Property.updateOne(
+      //     { ownerID: id },
+      //     { $set: { propertiesOwned: newProperties } }
+      //   );
+
+      //   if (!updateProperties) throw new Error("No entry found to update...");
+
+      if (newProperties) res.status(200).json({ newProperties });
+    } catch (err) {
+      if (err?.message)
+        res
+          .status(500)
+          .json({ error: err?.message, response_status: "danger" });
+    }
+  },
+
   readAllPropertiesOwned: async (req, res) => {
     try {
       const { id, propertyNumber } = req.body;
@@ -394,99 +487,6 @@ const post_controllers = {
       res.status(200).json({ selectedRoom: selectRoomInPropertyUsingRoomID });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
-    }
-  },
-
-  createNewProperty: async (req, res) => {
-    try {
-      const { id, newProperty } = req.body;
-
-      //   if (!id)
-      //     throw new Error("Unauthorized action, not a user or not logged in.");
-
-      if (!newProperty) throw new Error("provide a valid property.");
-
-      //   const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
-      const allPropertiesDB = [...propertiesDB];
-
-      //   if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
-
-      //   const { propertiesOwned } = ownerPropertiesDocument;
-
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesDB[0][newProperty.propertyID];
-
-      if (
-        checkIfPropertyIdIsRegistered ||
-        (checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber ===
-            newProperty.propertyNumber)
-      ) {
-        if (
-          checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber ===
-            newProperty.propertyNumber
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has already been registered."
-          );
-
-        if (checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has already been registered."
-          );
-      }
-
-      //   const isNewPropertyIdAndNumberRegistered = false;
-      //   const isNewPropertyIdRegistered = false;
-      //   const isNewPropertyNumberRegistered = false;
-
-      //   for (const key in allPropertiesDB) {
-      //     console.log(key);
-
-      //     if (
-      //       key === newProperty.propertyID &&
-      //       allPropertiesDB[key].propertyNumber === newProperty.propertyNumber
-      //     )
-      //       isNewPropertyIdAndNumberRegistered =
-      //         !isNewPropertyIdAndNumberRegistered;
-
-      //     if (key === newProperty.propertyID)
-      //       isNewPropertyIdRegistered = !isNewPropertyIdRegistered;
-
-      //     if (allPropertiesDB[key].propertyNumber === newProperty.propertyNumber)
-      //       isNewPropertyNumberRegistered = !isNewPropertyNumberRegistered;
-      //   }
-
-      //   if (isNewPropertyIdAndNumberRegistered)
-      //     throw new Error(
-      //       "Property with the given property Id and Number has already been registered."
-      //     );
-      //   if (isNewPropertyNumberRegistered)
-      //     throw new Error(
-      //       "Property with the given property Number has already been registered."
-      //     );
-
-      const newPropertiesObject = {
-        ...allPropertiesDB[0],
-        [newProperty.propertyID]: newProperty,
-      };
-
-      const newProperties = [newPropertiesObject];
-
-      //   const updateProperties = await Property.updateOne(
-      //     { ownerID: id },
-      //     { $set: { propertiesOwned: newProperties } }
-      //   );
-
-      //   if (!updateProperties) throw new Error("No entry found to update...");
-
-      if (newProperties) res.status(200).json({ newProperties });
-    } catch (err) {
-      if (err?.message)
-        res
-          .status(500)
-          .json({ error: err?.message, response_status: "danger" });
     }
   },
 
