@@ -529,6 +529,35 @@ const post_controllers = {
       if (!Object.keys(propertyRooms))
         throw new Error("No rooms have been added to this property.");
 
+      const checkIfRoomIdIsRegistered = propertyRooms[newRoom.roomId];
+
+      if (
+        checkIfRoomIdIsRegistered ||
+        (checkIfRoomIdIsRegistered &&
+          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNumber)
+      ) {
+        if (
+          checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered.roomNumber == newRoom.roomNumber
+        )
+          throw new Error(
+            "Room with the given  ID and number has already been registered."
+          );
+
+        if (checkIfPropertyIdIsRegistered)
+          throw new Error("Room with the given ID has not been registered.");
+      }
+
+      const newPropertyRooms = {
+        ...RoomsDB[0].rooms,
+        [newRoom.roomID]: newRoom,
+      };
+
+      const newPropertyKey = {
+        ...checkIfPropertyIdIsRegistered,
+        rooms: newPropertyRooms,
+      };
+
       res.status(200).json({ newPropertyRooms });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
