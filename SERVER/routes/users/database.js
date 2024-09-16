@@ -1,6 +1,6 @@
 const propertiesDB = {
   ownerID: "sfsdfsfs",
-  propertiesOwned: [
+  properties: [
     {
       ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
         propertyNumber: "NGONG/NGONG/12058",
@@ -42,7 +42,7 @@ const propertiesDB = {
 
 const RoomsDB = {
   ownerID: "dfsfddsf",
-  rooms: [
+  propertiesRooms: [
     {
       ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
         propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",

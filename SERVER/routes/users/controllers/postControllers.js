@@ -257,7 +257,7 @@ const post_controllers = {
       if (!newProperty) throw new Error("provide a valid property.");
 
       //   const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
-      const allPropertiesDB = [...propertiesDB];
+      const allPropertiesDB = [...propertiesDB.properties];
 
       //   if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
 
@@ -350,7 +350,7 @@ const post_controllers = {
       //   if (!propertyNumber) throw new Error("provide a valid property number.");
 
       //   const allProperties = await Property.findOne({ ownerID: id });
-      const allProperties = [...propertiesDB];
+      const allProperties = [...propertiesDB.properties];
 
       //   if (Object.keys(allProperties[0])) throw new Error(allProperties);
 
@@ -378,7 +378,7 @@ const post_controllers = {
       if (!propertyNo) throw new Error("provide a valid property number.");
 
       //   const allProperties = await Property.findOne({ ownerID: id });
-      const allProperties = [...propertiesDB];
+      const allProperties = [...propertiesDB.properties];
 
       if (!allProperties[0]) throw new Error(allProperties);
 
@@ -413,7 +413,7 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo } = req.body;
 
-      const allPropertiesAndRoomsDB = [...RoomsDB];
+      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
 
       if (!Object.keys(allPropertiesAndRoomsDB[0]))
         throw new Error("no data found");
@@ -450,7 +450,7 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo, roomId, roomNo } = req.body;
 
-      const allPropertiesAndRoomsDB = [...RoomsDB];
+      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
 
       if (!Object.keys(allPropertiesAndRoomsDB[0]))
         throw new Error("no data found");
@@ -498,7 +498,7 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo, newRoom } = req.body;
 
-      const allPropertiesAndRoomsDB = [...RoomsDB];
+      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
 
       if (!allPropertiesAndRoomsDB) throw new Error("no data found");
 
