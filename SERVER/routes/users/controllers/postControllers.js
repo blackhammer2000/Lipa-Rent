@@ -407,14 +407,14 @@ const post_controllers = {
       if (!newProperty) throw new Error("provide a valid property.");
 
       //   const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
-      const allPropertiesAndRoomsDB = [...propertiesDB];
+      const allPropertiesDB = [...propertiesDB];
 
       //   if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
 
       //   const { propertiesOwned } = ownerPropertiesDocument;
 
       const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsDB[0][newProperty.propertyID];
+        allPropertiesDB[0][newProperty.propertyID];
 
       if (
         checkIfPropertyIdIsRegistered ||
@@ -437,8 +437,38 @@ const post_controllers = {
           );
       }
 
+      //   const isNewPropertyIdAndNumberRegistered = false;
+      //   const isNewPropertyIdRegistered = false;
+      //   const isNewPropertyNumberRegistered = false;
+
+      //   for (const key in allPropertiesDB) {
+      //     console.log(key);
+
+      //     if (
+      //       key === newProperty.propertyID &&
+      //       allPropertiesDB[key].propertyNumber === newProperty.propertyNumber
+      //     )
+      //       isNewPropertyIdAndNumberRegistered =
+      //         !isNewPropertyIdAndNumberRegistered;
+
+      //     if (key === newProperty.propertyID)
+      //       isNewPropertyIdRegistered = !isNewPropertyIdRegistered;
+
+      //     if (allPropertiesDB[key].propertyNumber === newProperty.propertyNumber)
+      //       isNewPropertyNumberRegistered = !isNewPropertyNumberRegistered;
+      //   }
+
+      //   if (isNewPropertyIdAndNumberRegistered)
+      //     throw new Error(
+      //       "Property with the given property Id and Number has already been registered."
+      //     );
+      //   if (isNewPropertyNumberRegistered)
+      //     throw new Error(
+      //       "Property with the given property Number has already been registered."
+      //     );
+
       const newPropertiesObject = {
-        ...allPropertiesAndRoomsDB[0],
+        ...allPropertiesDB[0],
         [newProperty.propertyID]: newProperty,
       };
 
