@@ -445,7 +445,7 @@ const post_controllers = {
       const newProperties = [newPropertiesObject];
 
       //   const updateProperties = await Property.updateOne(
-      //     { institutionID: id },
+      //     { ownerID: id },
       //     { $set: { propertiesOwned: newProperties } }
       //   );
 
