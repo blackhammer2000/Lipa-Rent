@@ -583,13 +583,13 @@ const post_controllers = {
 
   createTenantForRoomOnProperty: async (req, res) => {
     try {
-      //   if (!req.body.id) throw new Error("Unknown user...");
+      // if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
       if (!req.body.tenant) throw new Error("provide a valid tenant.");
 
-      const { id, propertyId, propertyNo, roomId, tenant } = req.body;
+      const { id, propertyId, propertyNo, roomId, newTenant } = req.body;
 
       const allPropertiesAndRoomsAndTenantsDB = [
         ...TenantsDB.propertiesTenants,
@@ -610,12 +610,12 @@ const post_controllers = {
           checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo
         )
           throw new Error(
-            "Property with the given property Id and  property number has not been registered."
+            "Property with the given property Id and  property number has not been registered in the tenants database."
           );
 
-        if (checkIfPropertyIdIsRegistered)
+        if (!checkIfPropertyIdIsRegistered)
           throw new Error(
-            "Property with the given property Id has not been registered."
+            "Property with the given property Id has not been registered in the tenants database."
           );
       }
 
@@ -626,24 +626,25 @@ const post_controllers = {
 
       const checkIfRoomIdIsRegistered = propertyTenants[roomId];
 
-      if (
-        !checkIfRoomIdIsRegistered ||
-        (!checkIfRoomIdIsRegistered &&
-          checkIfRoomIdIsRegistered.roomNumber !== newRoom.roomNo)
-      ) {
-        if (
-          !checkIfRoomIdIsRegistered &&
-          checkIfRoomIdIsRegistered.roomNumber !== newRoom.roomNo
-        )
-          throw new Error(
-            "Room with the given ID and number has not been registered."
-          );
+      if (!checkIfRoomIdIsRegistered)
+        throw new Error(
+          "Room with the given ID has not been registered in the tenants database."
+        );
 
-        if (checkIfRoomIdIsRegistered)
-          throw new Error(
-            "Room with the given ID has not been registered in the tenants database."
-          );
-      }
+      const checkIfTenantIsRegistered =
+        checkIfRoomIdIsRegistered[newTenant.tenantID];
+
+      if (checkIfTenantIsRegistered)
+        throw new Error(
+          "Tenant with the given ID has already been registered in the tenants database."
+        );
+
+      const newRoomTenants = {
+        ...checkIfRoomIdIsRegistered,
+        [newTenant.tenantID]: newTenant,
+      };
+
+      res.status(200).json({ newRoomTenants });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
