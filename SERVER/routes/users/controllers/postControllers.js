@@ -21,7 +21,7 @@ const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
 
 // const { searchForSelectedBooks } = require("../helpers/findBooks");
-const { propertiesDB, RoomsDB, RentsDB, TenantsDB } = database();
+const { propertiesDB, RoomsDB, RentsDB, TenantsDB } = require("../database");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -498,27 +498,38 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo, newRoom } = req.body;
 
-      const allPropertiesAndRoomsDB = [...propertiesDB];
+      const allPropertiesAndRoomsDB = [...RoomsDB];
 
       if (!allPropertiesAndRoomsDB) throw new Error("no data found");
 
-      const selectedProperty = allPropertiesAndRoomsDB.find(
-        (property) =>
-          property.propertyNumber === propertyNo &&
-          property.propertyID === propertyId
-      );
+      const checkIfPropertyIdIsRegistered =
+        allPropertiesAndRoomsDB[0][propertyId];
 
-      if (!selectedProperty)
-        throw new Error(
-          "Selected property is not found/not registered in the database."
-        );
+      if (
+        !checkIfPropertyIdIsRegistered ||
+        (!checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo)
+      ) {
+        if (
+          !checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo
+        )
+          throw new Error(
+            "Property with the given property Id and  property number has not been registered."
+          );
 
-      const propertyRooms = selectedProperty?.rooms;
+        if (checkIfPropertyIdIsRegistered)
+          throw new Error(
+            "Property with the given property Id has not been registered."
+          );
+      }
+
+      const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
       if (!Object.keys(propertyRooms))
         throw new Error("No rooms have been added to this property.");
 
-      res.status(200).json({ propertyRooms });
+      res.status(200).json({ newPropertyRooms });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
@@ -529,104 +540,3 @@ const post_controllers = {
 };
 
 module.exports = post_controllers;
-
-function database() {
-  const propertiesDB = [
-    {
-      ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
-        propertyNumber: "NGONG/NGONG/12058",
-        propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-        propertyTitleDetails: {
-          name: "PETER KARANJA",
-          nationalID: "37725864",
-          asWho: "SELF",
-        },
-        propertyLocation: "NGONG",
-        propertyValue: "12.3M",
-        propertyPurpose: {
-          purposedUse: "commercial",
-          purposeType: "lease",
-        },
-        modeOfPayment: "none",
-        isIdle: false,
-      },
-      ["HDFBSUEHDUIFHW783YRWUHF84YF31"]: {
-        propertyNumber: "KIS/KIS/12058",
-        propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF31",
-        propertyTitleDetails: {
-          name: "SAMUEL MUTONGA",
-          nationalID: "37725864",
-          asWho: "NEXT OF KIN",
-        },
-        propertyLocation: "KISERIAN",
-        propertyValue: "29.7M",
-        propertyPurpose: {
-          purposedUse: "commercial",
-          purposeType: "rental real estate",
-        },
-        modeOfPayment: "BANK",
-        isIdle: false,
-      },
-    },
-  ];
-  const RoomsDB = [
-    {
-      ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
-        propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-        propertyNumber: "NGONG/NGONG/12058",
-        rooms: {
-          ["PK1"]: {
-            roomID: "PK1",
-            roomNumber: "1",
-            roomRatePerMonth: "6000",
-            roomType: "SingleRoom",
-            isOccupied: true,
-          },
-        },
-      },
-    },
-  ];
-
-  const TenantsDB = [
-    {
-      ["35501094"]: {
-        tenantID: "35501094",
-        tenantName: "LIXO PESSAR",
-        moveInDate: "13/9/24",
-        moveOutDate: null,
-      },
-    },
-  ];
-
-  const RentsDB = [
-    {
-      ["37725864"]: [
-        {
-          paymentID: "HDUFGIS983HF38",
-          date: "13/9/24",
-          monthDue: "FEB",
-          amountDue: "6000",
-          unpaidBalance: "1200",
-          totalAmountDue: "7200",
-          amountPaid: "7000",
-          modeOfPayment: "MPESA",
-          recieptNumber: "SH45BXDE",
-        },
-        {
-          paymentID: "UTIHUTTBGIRU8R",
-          date: "13/9/24",
-          monthDue: "MAR",
-          amountDue: "6000",
-          unpaidBalance: "200",
-          totalAmountDue: "6200",
-          amountPaid: "5000",
-          modeOfPayment: "MPESA",
-          recieptNumber: "SWQ34TRR",
-        },
-      ],
-      ["35501094"]: [],
-    },
-  ];
-
-  return { propertiesDB, RoomsDB, RentsDB, TenantsDB };
-}
