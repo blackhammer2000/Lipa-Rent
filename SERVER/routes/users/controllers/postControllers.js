@@ -445,16 +445,16 @@ const post_controllers = {
       if (!propertyRooms)
         throw new Error("No rooms have been added to this property.");
 
-      const checkIfRoomIdIsRegistered = propertyRooms[newRoom.roomId];
+      const checkIfRoomIdIsRegistered = propertyRooms[newRoom.roomID];
 
       if (
         checkIfRoomIdIsRegistered ||
         (checkIfRoomIdIsRegistered &&
-          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNo)
+          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNumber)
       ) {
         if (
           checkIfRoomIdIsRegistered &&
-          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNo
+          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNumber
         )
           throw new Error(
             "Room with the given ID and number has already been registered."
@@ -587,7 +587,7 @@ const post_controllers = {
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
-      if (!req.body.tenant) throw new Error("provide a valid tenant.");
+      if (!req.body.newTenant) throw new Error("provide a valid tenant.");
 
       const { id, propertyId, propertyNo, roomId, newTenant } = req.body;
 
