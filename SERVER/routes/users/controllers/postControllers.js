@@ -641,12 +641,12 @@ const post_controllers = {
 
       const newRoomTenants = {
         ...checkIfRoomIdIsRegistered,
-        [newTenant.tenantID]: newTenant,
+        [newTenant?.tenantID]: newTenant,
       };
 
       res.status(200).json({ newRoomTenants });
     } catch (err) {
-      if (err.message) res.status(400).json({ error: err.message });
+      if (err?.message) res.status(400).json({ error: err.message });
     }
   },
 
