@@ -607,7 +607,7 @@ const post_controllers = {
       ) {
         if (
           !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
         )
           throw new Error(
             "Property with the given property Id and  property number has not been registered in the tenants database."
@@ -632,7 +632,7 @@ const post_controllers = {
         );
 
       const checkIfTenantIsRegistered =
-        checkIfRoomIdIsRegistered[newTenant.tenantID];
+        checkIfRoomIdIsRegistered[newTenant?.tenantID];
 
       if (checkIfTenantIsRegistered)
         throw new Error(
