@@ -589,7 +589,7 @@ const post_controllers = {
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
       if (!req.body.newTenant) throw new Error("provide a valid tenant.");
 
-      const { id, propertyId, propertyNo, roomId, newTenant } = req.body;
+      const { id, propertyId, propertyNo, roomId, newTenant } = req?.body;
 
       const allPropertiesAndRoomsAndTenantsDB = [
         ...TenantsDB.propertiesTenants,
@@ -603,7 +603,7 @@ const post_controllers = {
       if (
         !checkIfPropertyIdIsRegistered ||
         (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo)
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
       ) {
         if (
           !checkIfPropertyIdIsRegistered &&
