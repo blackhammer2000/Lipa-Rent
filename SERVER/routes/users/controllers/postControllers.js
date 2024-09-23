@@ -698,6 +698,7 @@ const post_controllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
   readAllTenantsInRoomOnProperty: async (req, res) => {},
   readSingleTenantInRoomOnProperty: async (req, res) => {},
 };
