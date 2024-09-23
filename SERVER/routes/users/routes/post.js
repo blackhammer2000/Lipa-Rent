@@ -24,6 +24,7 @@ const {
   readAllRoomsOnProperty,
   readSingleRoomOnProperty,
   createTenantForRoomOnProperty,
+  readAllTenantsForAllRoomsOnProperty,
 } = require("../controllers/postControllers");
 
 router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
@@ -53,6 +54,11 @@ router.post(
   "/api/user/owner/create/property/room/tenant",
   isUser,
   createTenantForRoomOnProperty
+);
+router.post(
+  "/api/user/owner/read/property/rooms/tenants",
+  isUser,
+  readAllTenantsForAllRoomsOnProperty
 );
 
 module.exports = router;
