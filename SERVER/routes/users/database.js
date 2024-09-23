@@ -77,6 +77,28 @@ const TenantsDB = {
               moveOutDate: null,
             },
           },
+          ["PK2"]: {
+            ["6113425"]: {
+              tenantID: "35501094",
+              tenantName: "LIXO PESSAR",
+              moveInDate: "13/9/24",
+              moveOutDate: null,
+            },
+            ["35463356"]: {
+              tenantID: "35501094",
+              tenantName: "LIXO PESSAR",
+              moveInDate: "13/9/24",
+              moveOutDate: null,
+            },
+          },
+          ["PK3"]: {
+            ["43261521"]: {
+              tenantID: "35501094",
+              tenantName: "LIXO PESSAR",
+              moveInDate: "13/9/24",
+              moveOutDate: null,
+            },
+          },
         },
       },
     },
