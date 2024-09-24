@@ -822,10 +822,7 @@ const post_controllers = {
 
   // RENT DOCUMENT ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTY AND ROOMS
 
-  createRentPaymentForRoomInPropertyByTenant: async (req, res) => {
-    try {
-    } catch (err) {}
-  },
+  createRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
   readAllRentPaymentForRoomInProperty: async (req, res) => {},
   readAllRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
