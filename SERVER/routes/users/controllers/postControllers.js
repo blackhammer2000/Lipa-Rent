@@ -27,6 +27,8 @@ const { propertiesDB, RoomsDB, RentsDB, TenantsDB } = require("../database");
 ///////*************************POST CONTROLLERS************************////////////////
 
 const post_controllers = {
+  // SIGN UP NEW USER.
+
   signUp: async (req, res) => {
     try {
       const { name, nationalID, email, phone, password, confirmPassword } =
@@ -170,6 +172,8 @@ const post_controllers = {
     }
   },
 
+  // LOGIN USER.
+
   login: async (req, res) => {
     try {
       if (!req?.body?.email || !req?.body?.nationalID || !req?.body?.password)
@@ -247,6 +251,8 @@ const post_controllers = {
           .json({ error: err?.message, response_status: "danger" });
     }
   },
+
+  // PROPERTY ENDPOINTS THE DEAL WITH THE CREATION AND READING OF PROPERTIES OWNED DATA FROM THE DATABASE.
 
   createNewProperty: async (req, res) => {
     try {
@@ -405,6 +411,8 @@ const post_controllers = {
           .json({ error: err?.message, response_status: "danger" });
     }
   },
+
+  // ROOM ENDPOINTS THAT DEAL WITH THE ADDING AND READING OF THE ROOMS DATA IN THE DATABASE.
 
   createSingleRoomOnProperty: async (req, res) => {
     try {
@@ -580,6 +588,8 @@ const post_controllers = {
       if (err.message) res.status(400).json({ error: err.message });
     }
   },
+
+  // TENANT ENDPOINTS FOR DEALING WITH THE TENANT DOCUMENT IN ADDING AND READING TENANT DATA FORM THE THE DATABASE.
 
   createTenantForRoomOnProperty: async (req, res) => {
     try {
@@ -810,7 +820,12 @@ const post_controllers = {
     }
   },
 
-  createRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
+  // RENT DOCUMENT ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTY AND ROOMS
+
+  createRentPaymentForRoomInPropertyByTenant: async (req, res) => {
+    try {
+    } catch (err) {}
+  },
   readAllRentPaymentForRoomInProperty: async (req, res) => {},
   readAllRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
