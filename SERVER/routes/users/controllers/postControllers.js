@@ -895,7 +895,7 @@ const post_controllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
-      const roomRate = 5000;
+      const roomRate = 6000;
 
       const thisMonthRentBalance =
         payment.amountTenantIsPaying === roomRate
@@ -907,13 +907,17 @@ const post_controllers = {
         : 0;
 
       const newUnpaidRentBalance =
-        Number(unpaidRentBalanceFromLastMonth) + thisMonthRentBalance;
+        unpaidRentBalanceFromLastMonth !== (null || undefined) &&
+        thisMonthRentBalance !== (null || undefined)
+          ? unpaidRentBalanceFromLastMonth + thisMonthRentBalance
+          : 0;
 
       const newRentPaymentEntry = {
         paymentID: crypto.randomUUID(),
         date: new Date().toLocaleDateString(),
         monthDue: payment.month,
         monthlyPayment: roomRate,
+        balanceFromLastMonth: unpaidRentBalanceFromLastMonth,
         totalAmountDue: unpaidRentBalanceFromLastMonth + roomRate,
         amountPaid: payment.amountTenantIsPaying,
         unpaidBalanceThisMonth: thisMonthRentBalance,
