@@ -877,15 +877,25 @@ const post_controllers = {
 
       const checkIfTenantIsRegistered = checkIfRoomIdIsRegistered[tenantId];
 
-      if (checkIfTenantIsRegistered)
+      if (!checkIfTenantIsRegistered)
         throw new Error(
-          "Tenant with the given ID has already been registered in the tenants database."
+          "Tenant with the given ID has not been registered in the tenants database."
         );
 
-      const newRoomTenants = {
-        ...checkIfRoomIdIsRegistered,
-        [newTenant?.tenantID]: newTenant,
+      const newRentPaymentEntry = {
+        paymentID: crypto.randomUUID(),
+        date: new Date().toLocaleDateString(),
+        monthDue: "2",
+        monthlyPayment: "6000",
+        unpaidBalance: "1200",
+        totalAmountDue: "7200",
+        amountPaid: "7000",
+        newBalance: "200",
+        modeOfPayment: "MPESA",
+        recieptNumber: "SH45BXDE",
       };
+
+      const newRoomTenants = [...checkIfTenantIsRegistered];
 
       res.status(200).json({ newRoomTenants });
     } catch (err) {

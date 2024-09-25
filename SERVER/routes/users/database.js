@@ -112,6 +112,13 @@ const RentsDB = {
       ["HDFBSUEHDUIFHW783YRWUHF84YF3"]: {
         propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
         propertyNumber: "NGONG/NGONG/12058",
+        propertyRates: {
+          SR: "3500",
+          BS: "5000",
+          BR1: "9000",
+          BR2: "15000",
+          BR3: "20000",
+        },
         rentPayments: {
           ["PK1"]: {
             ["37725864"]: [
