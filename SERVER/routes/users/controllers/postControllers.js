@@ -822,6 +822,19 @@ const post_controllers = {
 
   // RENT DOCUMENT ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTY AND ROOMS
 
+  //  below is the expected requestBody from the user
+  // {
+  //   "propertyNo": "NGONG/NGONG/12058",
+  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   "roomId": "PK3",
+  //   "tenantId": "43261521",
+  //   "payment": {
+  //     "amountTenantIsPaying": "12345678",
+  //     "month": "1",
+  //     "mode": "6000",
+  //   }
+  // }
+
   createRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
@@ -829,9 +842,9 @@ const post_controllers = {
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
       if (!req.body.tenantId) throw new Error("provide a valid tenant ID.");
-      if (!req.body.amountToPay) throw new Error("provide a valid amount.");
+      if (!req.body.payment) throw new Error("provide a valid amount.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId, amountToPay } =
+      const { id, propertyId, propertyNo, roomId, tenantId, payment } =
         req?.body;
 
       const allPropertiesAndRoomsAndTenantsAndRentsDB = [
@@ -882,16 +895,28 @@ const post_controllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
+      const thisMonthRentBalance =
+        payment.amountTenantIsPaying === roomRate
+          ? 0
+          : Number(roomRate) - Number(payment.amountTenantIsPaying);
+
+      const unpaidRentBalanceFromLastMonth = checkIfTenantIsRegistered.at(-1)
+        ? checkIfTenantIsRegistered.at(-1).unpaidBalance
+        : 0;
+
+      const newUnpaidRentBalance =
+        Number(unpaidRentBalanceFromLastMonth) + thisMonthRentBalance;
+
       const newRentPaymentEntry = {
         paymentID: crypto.randomUUID(),
         date: new Date().toLocaleDateString(),
-        monthDue: "2",
-        monthlyPayment: "6000",
-        unpaidBalance: "1200",
-        totalAmountDue: "7200",
-        amountPaid: "7000",
-        newBalance: "200",
-        modeOfPayment: "MPESA",
+        monthDue: payment.month,
+        monthlyPayment: roomRate,
+        amountPaid: amountTenantIsPaying,
+        unpaidBalanceThisMonth: thisMonthRentBalance,
+        totalRentBalance: newUnpaidRentBalance,
+        totalAmountDue: newUnpaidRentBalance + roomRate,
+        modeOfPayment: payment.mode,
         recieptNumber: "SH45BXDE",
       };
 
