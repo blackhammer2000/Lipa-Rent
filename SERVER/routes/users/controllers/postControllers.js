@@ -820,17 +820,17 @@ const post_controllers = {
     }
   },
 
-  // RENT DOCUMENT ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTY AND ROOMS
+  // RENT DB ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTIES AND ROOMS
 
-  //  below is the expected requestBody from the user
+  //  below is the expected requestBody from the user when submitting a create rent payment request
   // {
   //   "propertyNo": "NGONG/NGONG/12058",
   //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //   "roomId": "PK3",
   //   "tenantId": "43261521",
   //   "payment": {
-  //     "amountTenantIsPaying": "12345678",
-  //     "month": "1",
+  //     "amountTenantIsPaying": "2000",
+  //     "month": "SEP, 2024",
   //     "mode": "6000",
   //   }
   // }
@@ -881,16 +881,18 @@ const post_controllers = {
       if (!propertyRents)
         throw new Error("No tenants have been added to this property.");
 
-      const checkIfRoomIdIsRegistered = propertyRents[roomId];
+      const checkIfRoomIdIsRegisteredUnderSelectedProperty =
+        propertyRents[roomId];
 
-      if (!checkIfRoomIdIsRegistered)
+      if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
         throw new Error(
           "Room with the given ID has not been registered in the tenants database."
         );
 
-      const checkIfTenantIsRegistered = checkIfRoomIdIsRegistered[tenantId];
+      const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
+        checkIfRoomIdIsRegisteredUnderSelectedProperty[tenantId];
 
-      if (!checkIfTenantIsRegistered)
+      if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
         throw new Error(
           "Tenant with the given ID has not been registered in the tenants database."
         );
@@ -902,9 +904,14 @@ const post_controllers = {
           ? 0
           : Number(roomRate) - Number(payment.amountTenantIsPaying);
 
-      const unpaidRentBalanceFromLastMonth = checkIfTenantIsRegistered.at(-1)
-        ? Number(checkIfTenantIsRegistered.at(-1).totalRentBalance)
-        : 0;
+      const unpaidRentBalanceFromLastMonth =
+        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.at(-1)
+          ? Number(
+              checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.at(
+                -1
+              ).totalRentBalance
+            )
+          : 0;
 
       const newUnpaidRentBalance =
         unpaidRentBalanceFromLastMonth !== (null || undefined) &&
@@ -926,9 +933,37 @@ const post_controllers = {
         recieptNumber: "SH45BXDE",
       };
 
-      const newRoomTenants = [...checkIfTenantIsRegistered];
+      const newRoomTenantRentPayments = [
+        ...checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
+        newRentPaymentEntry,
+      ];
 
-      res.status(200).json({ newRentPaymentEntry });
+      // const updateProperties = await Rent.updateOne(
+      //   { ownerID: id },
+      //   {
+      //     $set: {
+      //       propertiesRents: [
+      //         {
+      //           ...allPropertiesAndRoomsAndTenantsAndRentsDB[0],
+      //           [propertyId]: {
+      //             ...checkIfPropertyIdIsRegistered,
+      //             rentPayments: {
+      //               ...propertyRents,
+      //               [roomId]: {
+      //                 ...checkIfRoomIdIsRegisteredUnderSelectedProperty,
+      //                 [tenantId]: newRoomTenantRentPayments,
+      //               },
+      //             },
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   }
+      // );
+
+      // if (!updateProperties) throw new Error("No entry found to update...");
+
+      res.status(200).json({ newRoomTenantRentPayments });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
