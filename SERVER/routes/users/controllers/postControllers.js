@@ -829,18 +829,20 @@ const post_controllers = {
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
       if (!req.body.tenantId) throw new Error("provide a valid tenant ID.");
-      if (!req.body.amountPaid) throw new Error("provide a valid amount.");
+      if (!req.body.amountToPay) throw new Error("provide a valid amount.");
 
-      const { id, propertyId, propertyNo, roomId, newTenant } = req?.body;
+      const { id, propertyId, propertyNo, roomId, tenantId, amountToPay } =
+        req?.body;
 
-      const allPropertiesAndRoomsAndTenantsDB = [
-        ...TenantsDB.propertiesTenants,
+      const allPropertiesAndRoomsAndTenantsAndRentsDB = [
+        ...RentsDB.propertiesRents,
       ];
 
-      if (!allPropertiesAndRoomsAndTenantsDB) throw new Error("no data found");
+      if (!allPropertiesAndRoomsAndTenantsAndRentsDB)
+        throw new Error("no data found");
 
       const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsAndTenantsDB[0][propertyId];
+        allPropertiesAndRoomsAndTenantsAndRentsDB[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
@@ -861,20 +863,19 @@ const post_controllers = {
           );
       }
 
-      const propertyTenants = checkIfPropertyIdIsRegistered?.tenants;
+      const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
 
-      if (!propertyTenants)
+      if (!propertyRents)
         throw new Error("No tenants have been added to this property.");
 
-      const checkIfRoomIdIsRegistered = propertyTenants[roomId];
+      const checkIfRoomIdIsRegistered = propertyRents[roomId];
 
       if (!checkIfRoomIdIsRegistered)
         throw new Error(
           "Room with the given ID has not been registered in the tenants database."
         );
 
-      const checkIfTenantIsRegistered =
-        checkIfRoomIdIsRegistered[newTenant?.tenantID];
+      const checkIfTenantIsRegistered = checkIfRoomIdIsRegistered[tenantId];
 
       if (checkIfTenantIsRegistered)
         throw new Error(
