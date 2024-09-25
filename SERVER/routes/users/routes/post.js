@@ -27,15 +27,20 @@ const {
   readAllTenantsForAllRoomsOnProperty,
   readAllTenantsInRoomOnProperty,
   readSingleTenantInRoomOnProperty,
+  createRentPaymentForRoomInPropertyByTenant,
 } = require("../controllers/postControllers");
+
+// USER SIGN UP AND LOGIN
 
 router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
 router.post("/api/user/owner/login", isUser, loginValidator, login);
 
+// PROPERTIES DB ROUTES
 router.post("/api/user/owner/create/property", isUser, createNewProperty);
 router.post("/api/user/owner/read/property", isUser, readSinglePropertyOwned);
 router.post("/api/user/owner/read/properties", isUser, readAllPropertiesOwned);
 
+// ROOM DB ROUTES
 router.post(
   "/api/user/owner/create/property/room",
   isUser,
@@ -52,6 +57,7 @@ router.post(
   readSingleRoomOnProperty
 );
 
+// TENANTS DB ROUTES
 router.post(
   "/api/user/owner/create/property/room/tenant",
   isUser,
@@ -71,6 +77,13 @@ router.post(
   "/api/user/owner/read/property/room/tenant",
   isUser,
   readSingleTenantInRoomOnProperty
+);
+
+// RENTS DB ROUTES
+router.post(
+  "/api/user/owner/create/property/room/tenant/rent/payment",
+  isUser,
+  createRentPaymentForRoomInPropertyByTenant
 );
 
 module.exports = router;

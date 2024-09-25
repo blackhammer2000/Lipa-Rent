@@ -895,13 +895,15 @@ const post_controllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
+      const roomRate = 5000;
+
       const thisMonthRentBalance =
         payment.amountTenantIsPaying === roomRate
           ? 0
           : Number(roomRate) - Number(payment.amountTenantIsPaying);
 
       const unpaidRentBalanceFromLastMonth = checkIfTenantIsRegistered.at(-1)
-        ? checkIfTenantIsRegistered.at(-1).unpaidBalance
+        ? Number(checkIfTenantIsRegistered.at(-1).totalRentBalance)
         : 0;
 
       const newUnpaidRentBalance =
@@ -912,17 +914,17 @@ const post_controllers = {
         date: new Date().toLocaleDateString(),
         monthDue: payment.month,
         monthlyPayment: roomRate,
-        amountPaid: amountTenantIsPaying,
+        totalAmountDue: unpaidRentBalanceFromLastMonth + roomRate,
+        amountPaid: payment.amountTenantIsPaying,
         unpaidBalanceThisMonth: thisMonthRentBalance,
         totalRentBalance: newUnpaidRentBalance,
-        totalAmountDue: newUnpaidRentBalance + roomRate,
         modeOfPayment: payment.mode,
         recieptNumber: "SH45BXDE",
       };
 
       const newRoomTenants = [...checkIfTenantIsRegistered];
 
-      res.status(200).json({ newRoomTenants });
+      res.status(200).json({ newRentPaymentEntry });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
