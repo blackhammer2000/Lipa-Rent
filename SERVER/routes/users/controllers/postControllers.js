@@ -822,7 +822,75 @@ const post_controllers = {
 
   // RENT DOCUMENT ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTY AND ROOMS
 
-  createRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
+  createRentPaymentForRoomInPropertyByTenant: async (req, res) => {
+    try {
+      // if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+      if (!req.body.roomId) throw new Error("provide a valid room ID.");
+      if (!req.body.tenantId) throw new Error("provide a valid tenant ID.");
+      if (!req.body.amountPaid) throw new Error("provide a valid amount.");
+
+      const { id, propertyId, propertyNo, roomId, newTenant } = req?.body;
+
+      const allPropertiesAndRoomsAndTenantsDB = [
+        ...TenantsDB.propertiesTenants,
+      ];
+
+      if (!allPropertiesAndRoomsAndTenantsDB) throw new Error("no data found");
+
+      const checkIfPropertyIdIsRegistered =
+        allPropertiesAndRoomsAndTenantsDB[0][propertyId];
+
+      if (
+        !checkIfPropertyIdIsRegistered ||
+        (!checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
+      ) {
+        if (
+          !checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
+        )
+          throw new Error(
+            "Property with the given property Id and  property number has not been registered in the tenants database."
+          );
+
+        if (!checkIfPropertyIdIsRegistered)
+          throw new Error(
+            "Property with the given property Id has not been registered in the tenants database."
+          );
+      }
+
+      const propertyTenants = checkIfPropertyIdIsRegistered?.tenants;
+
+      if (!propertyTenants)
+        throw new Error("No tenants have been added to this property.");
+
+      const checkIfRoomIdIsRegistered = propertyTenants[roomId];
+
+      if (!checkIfRoomIdIsRegistered)
+        throw new Error(
+          "Room with the given ID has not been registered in the tenants database."
+        );
+
+      const checkIfTenantIsRegistered =
+        checkIfRoomIdIsRegistered[newTenant?.tenantID];
+
+      if (checkIfTenantIsRegistered)
+        throw new Error(
+          "Tenant with the given ID has already been registered in the tenants database."
+        );
+
+      const newRoomTenants = {
+        ...checkIfRoomIdIsRegistered,
+        [newTenant?.tenantID]: newTenant,
+      };
+
+      res.status(200).json({ newRoomTenants });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
   readAllRentPaymentForRoomInProperty: async (req, res) => {},
   readAllRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
