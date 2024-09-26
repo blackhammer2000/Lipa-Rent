@@ -838,8 +838,10 @@ const post_controllers = {
   createRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
-      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+      if (!req?.body.propertyId)
+        throw new Error("provide a valid property ID.");
+      if (!req?.body.propertyNo)
+        throw new Error("provide a valid property NO.");
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
       if (!req.body.tenantId) throw new Error("provide a valid tenant ID.");
       if (!req.body.payment) throw new Error("provide a valid amount.");
