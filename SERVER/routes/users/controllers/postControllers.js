@@ -921,7 +921,7 @@ const post_controllers = {
       const newRentPaymentEntry = {
         paymentID: crypto.randomUUID(),
         date: new Date().toLocaleDateString(),
-        monthDue: payment.month,
+        monthDue: payment?.month,
         monthlyPayment: roomRate,
         balanceFromLastMonth: unpaidRentBalanceFromLastMonth,
         totalAmountDue: unpaidRentBalanceFromLastMonth + roomRate,
