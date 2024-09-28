@@ -904,7 +904,7 @@ const post_controllers = {
       const thisMonthRentBalance =
         payment.amountTenantIsPaying === roomRate
           ? 0
-          : roomRate - Number(payment.amountTenantIsPaying);
+          : roomRate - Number(payment?.amountTenantIsPaying);
 
       const unpaidRentBalanceFromLastMonth =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
