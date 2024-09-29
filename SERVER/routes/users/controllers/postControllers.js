@@ -338,19 +338,16 @@ const post_controllers = {
     try {
       const { id, propertyNumber } = req.body;
 
-      //   if (!id)
-      //     throw new Error("Unauthorized action, not a user or not logged in.");
+      if (!id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
 
-      //   if (!propertyNumber) throw new Error("provide a valid property number.");
+      const allProperties = await Property.findOne({ ownerID: id });
 
-      //   const allProperties = await Property.findOne({ ownerID: id });
-      const allProperties = [...propertiesDB.properties];
+      if (!allProperties) throw new Error(allProperties);
 
-      //   if (Object.keys(allProperties[0])) throw new Error(allProperties);
+      const { propertiesOwned } = allProperties;
 
-      const propertiesOwned = allProperties[0];
-
-      if (!propertiesOwned)
+      if (propertiesOwned === (null || undefined))
         throw new Error("No properties found/registered in the database.");
 
       if (propertiesOwned) res.status(200).json({ propertiesOwned });
