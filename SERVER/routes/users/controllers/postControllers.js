@@ -275,22 +275,21 @@ const post_controllers = {
     try {
       const { id, newProperty } = req.body;
 
-      //   if (!id)
-      //     throw new Error("Unauthorized action, not a user or not logged in.");
+      if (!id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
 
       if (!newProperty) throw new Error("provide a valid property.");
 
-      //   const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
-      const allPropertiesDB = [...propertiesDB.properties];
+      const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
 
-      //   if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
+      if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
 
-      //   const { propertiesOwned } = ownerPropertiesDocument;
+      const { propertiesOwned } = ownerPropertiesDocument;
 
       newProperty.propertyID = crypto.randomUUID();
 
       const checkIfPropertyIdIsRegistered =
-        allPropertiesDB[0][newProperty?.propertyID];
+        propertiesOwned[0][newProperty?.propertyID];
 
       if (
         checkIfPropertyIdIsRegistered ||
@@ -344,18 +343,18 @@ const post_controllers = {
       //     );
 
       const newPropertiesObject = {
-        ...allPropertiesDB[0],
+        ...propertiesOwned[0],
         [newProperty.propertyID]: newProperty,
       };
 
       const newProperties = [newPropertiesObject];
 
-      //   const updateProperties = await Property.updateOne(
-      //     { ownerID: id },
-      //     { $set: { propertiesOwned: newProperties } }
-      //   );
+      const updateProperties = await Property.updateOne(
+        { ownerID: id },
+        { $set: { propertiesOwned: newProperties } }
+      );
 
-      //   if (!updateProperties) throw new Error("No entry found to update...");
+      if (!updateProperties) throw new Error("No entry found to update...");
 
       if (newProperties) res.status(200).json({ newProperties });
     } catch (err) {
