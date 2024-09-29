@@ -278,20 +278,28 @@ const post_controllers = {
       if (!id)
         throw new Error("Unauthorized action, not a user or not logged in.");
 
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
+
       if (!newProperty) throw new Error("provide a valid property.");
 
       const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
 
-      if (!ownerPropertiesDocument[0]) throw new Error(ownerPropertiesDocument);
+      if (!ownerPropertiesDocument) throw new Error(ownerPropertiesDocument);
 
       const { propertiesOwned } = ownerPropertiesDocument;
 
       newProperty.propertyID = crypto.randomUUID();
 
-      const checkIfPropertyIdIsRegistered =
-        propertiesOwned[0][newProperty?.propertyNumber];
+      let checkIfPropertyNumberIsRegistered = false;
 
-      if (checkIfPropertyIdIsRegistered)
+      for (const key in propertiesOwned) {
+        if (propertiesOwned[key].propertyNumber === newProperty.propertyNumber)
+          checkIfPropertyNumberIsRegistered =
+            !checkIfPropertyNumberIsRegistered;
+      }
+
+      if (checkIfPropertyNumberIsRegistered)
         throw new Error(
           "Property with the given property number has already been registered."
         );
