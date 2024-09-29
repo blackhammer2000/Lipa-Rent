@@ -369,19 +369,18 @@ const post_controllers = {
     try {
       const { id, propertyNo, propertyId } = req.body;
 
-      //   if (!id)
-      //     throw new Error("Unauthorized action, not a user or not logged in.");
+      if (!id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
 
       if (!propertyNo) throw new Error("provide a valid property number.");
 
-      //   const allProperties = await Property.findOne({ ownerID: id });
-      const allProperties = [...propertiesDB.properties];
+      const allPropertiesDOC = await Property.findOne({ ownerID: id });
 
-      if (!allProperties[0]) throw new Error(allProperties);
+      if (!allPropertiesDOC) throw new Error(allPropertiesDOC);
 
-      const propertiesOwned = allProperties[0];
+      const { propertiesOwned } = allPropertiesDOC;
 
-      const selectedProperty = propertiesOwned[propertyId];
+      const selectedProperty = propertiesOwned[0][propertyId];
 
       if (!selectedProperty)
         throw new Error(
@@ -390,7 +389,7 @@ const post_controllers = {
 
       if (selectedProperty.propertyNumber !== propertyNo)
         throw new Error(
-          "Selected propertyNumber is not found/not registered in the database."
+          "Selected propertyNumber does not match the property ID selected."
         );
 
       if (selectedProperty) res.status(200).json({ selectedProperty });
