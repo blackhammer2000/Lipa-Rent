@@ -591,6 +591,10 @@ const post_controllers = {
 
   // TENANT ENDPOINTS FOR DEALING WITH THE TENANT DOCUMENT IN ADDING AND READING TENANT DATA FORM THE THE DATABASE.
 
+  //  below is the expected requestBody from the user when submitting a create tenant for a room in property
+  //  { tenantID: "35501094",
+  //   tenantName: "LIXO PESSAR",}
+
   createTenantForRoomOnProperty: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
@@ -660,12 +664,16 @@ const post_controllers = {
     }
   },
 
+  //  below is the expected requestBody from the user when reading all tenants for all rooms in property
+  //  { propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   propertyNo: "NGONG/NGONG/12058",}
+
   readAllTenantsForAllRoomsOnProperty: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
-      if (!req.body.roomId) throw new Error("provide a valid room ID.");
+      // if (!req.body.roomId) throw new Error("provide a valid room ID.");
 
       const { id, propertyId, propertyNo } = req?.body;
 
@@ -708,6 +716,12 @@ const post_controllers = {
     }
   },
 
+  //  below is the expected requestBody from the user when reading all tenants for a room in property
+  //  {
+  //   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   propertyNo: "NGONG/NGONG/12058",
+  //   roomId: "PK1",
+  //  }
   readAllTenantsInRoomOnProperty: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
@@ -757,6 +771,14 @@ const post_controllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //  below is the expected requestBody from the user when reading all tenants for a room in property
+  //  {
+  //   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   propertyNo: "NGONG/NGONG/12058",
+  //   roomId: "PK1",
+  //   tenantId: "35501094",
+  //  }
 
   readSingleTenantInRoomOnProperty: async (req, res) => {
     try {

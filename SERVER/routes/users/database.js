@@ -79,13 +79,13 @@ const TenantsDB = {
           },
           ["PK2"]: {
             ["6113425"]: {
-              tenantID: "35501094",
+              tenantID: "6113425",
               tenantName: "LIXO PESSAR",
               moveInDate: "13/9/24",
               moveOutDate: null,
             },
             ["35463356"]: {
-              tenantID: "35501094",
+              tenantID: "35463356",
               tenantName: "LIXO PESSAR",
               moveInDate: "13/9/24",
               moveOutDate: null,
