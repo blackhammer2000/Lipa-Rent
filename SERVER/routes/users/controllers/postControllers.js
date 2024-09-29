@@ -254,6 +254,24 @@ const post_controllers = {
 
   // PROPERTY ENDPOINTS THE DEAL WITH THE CREATION AND READING OF PROPERTIES OWNED DATA FROM THE DATABASE.
 
+  //  below is the expected requestBody from the user when creating a property.
+  // {
+  //   propertyNumber: "NGONG/NGONG/12058",
+  //   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   propertyTitleDetails: {
+  //     name: "PETER KARANJA",
+  //     nationalID: "37725864",
+  //     asWho: "SELF",
+  //   },
+  //   propertyLocation: "NGONG",
+  //   propertyValue: "12.3M",
+  //   propertyPurpose: {
+  //     purposedUse: "commercial",
+  //     purposeType: "lease",
+  //   },
+  //   isIdle: false,
+  // },
+
   createNewProperty: async (req, res) => {
     try {
       const { id, newProperty } = req.body;
@@ -347,6 +365,11 @@ const post_controllers = {
     }
   },
 
+  //  below is the expected requestBody from the user when reading all properties.
+  // {
+  //   ownerId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  // }
+
   readAllPropertiesOwned: async (req, res) => {
     try {
       const { id, propertyNumber } = req.body;
@@ -374,6 +397,12 @@ const post_controllers = {
           .json({ error: err?.message, response_status: "danger" });
     }
   },
+
+  //  below is the expected requestBody from the user when reading a property.
+  // {
+  //   propertyNumber: "NGONG/NGONG/12058",
+  //   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  // }
 
   readSinglePropertyOwned: async (req, res) => {
     try {
@@ -591,7 +620,7 @@ const post_controllers = {
 
   // TENANT ENDPOINTS FOR DEALING WITH THE TENANT DOCUMENT IN ADDING AND READING TENANT DATA FORM THE THE DATABASE.
 
-  //  below is the expected requestBody from the user when submitting a create tenant for a room in property
+  //  below is the expected requestBody from the user when creating a tenant for a room in property
   //  { tenantID: "35501094",
   //   tenantName: "LIXO PESSAR",}
 
