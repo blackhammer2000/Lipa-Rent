@@ -443,6 +443,12 @@ const post_controllers = {
 
   // ROOM ENDPOINTS THAT DEAL WITH THE ADDING AND READING OF THE ROOMS DATA IN THE DATABASE.
 
+  //  below is the expected requestBody from the user when creating a room  in property
+  // {  roomID: "PK1",
+  //   roomNumber: "1",
+  //   roomRatePerMonth: "6000",
+  //   roomType: "SingleRoom",}
+
   createSingleRoomOnProperty: async (req, res) => {
     try {
       //   if (!req.body.id) throw new Error("Unknown user...");
@@ -533,6 +539,12 @@ const post_controllers = {
     }
   },
 
+  //  below is the expected requestBody from the user when reading all rooms on property.
+  // {
+  //   propertyNumber: "NGONG/NGONG/12058",
+  //   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  // }
+
   readAllRoomsOnProperty: async (req, res) => {
     try {
       //   if (!req.body.id) throw new Error("Unknown user...");
@@ -569,6 +581,13 @@ const post_controllers = {
       if (err.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //  below is the expected requestBody from the user when reading all rooms on property.
+  // {
+  //   propertyNo: "NGONG/NGONG/12058",
+  //   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   roomId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  // }
 
   readSingleRoomOnProperty: async (req, res) => {
     try {
