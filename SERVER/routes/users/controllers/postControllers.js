@@ -289,74 +289,30 @@ const post_controllers = {
       newProperty.propertyID = crypto.randomUUID();
 
       const checkIfPropertyIdIsRegistered =
-        propertiesOwned[0][newProperty?.propertyID];
+        propertiesOwned[0][newProperty?.propertyNumber];
 
-      if (
-        checkIfPropertyIdIsRegistered ||
-        (checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber ===
-            newProperty.propertyNumber)
-      ) {
-        if (
-          checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber ===
-            newProperty.propertyNumber
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has already been registered."
-          );
-
-        if (checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has already been registered."
-          );
-      }
-
-      //   const isNewPropertyIdAndNumberRegistered = false;
-      //   const isNewPropertyIdRegistered = false;
-      //   const isNewPropertyNumberRegistered = false;
-
-      //   for (const key in allPropertiesDB) {
-      //     console.log(key);
-
-      //     if (
-      //       key === newProperty.propertyID &&
-      //       allPropertiesDB[key].propertyNumber === newProperty.propertyNumber
-      //     )
-      //       isNewPropertyIdAndNumberRegistered =
-      //         !isNewPropertyIdAndNumberRegistered;
-
-      //     if (key === newProperty.propertyID)
-      //       isNewPropertyIdRegistered = !isNewPropertyIdRegistered;
-
-      //     if (allPropertiesDB[key].propertyNumber === newProperty.propertyNumber)
-      //       isNewPropertyNumberRegistered = !isNewPropertyNumberRegistered;
-      //   }
-
-      //   if (isNewPropertyIdAndNumberRegistered)
-      //     throw new Error(
-      //       "Property with the given property Id and Number has already been registered."
-      //     );
-      //   if (isNewPropertyNumberRegistered)
-      //     throw new Error(
-      //       "Property with the given property Number has already been registered."
-      //     );
+      if (checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property number has already been registered."
+        );
 
       const newPropertiesObject = {
         ...propertiesOwned[0],
         [newProperty.propertyID]: newProperty,
       };
 
-      const newProperties = [newPropertiesObject];
-
       const updateProperties = await Property.updateOne(
         { ownerID: id },
-        { $set: { propertiesOwned: newProperties } }
+        { $set: { propertiesOwned: [{ ...newPropertiesObject }] } }
       );
 
       if (!updateProperties) throw new Error("No entry found to update...");
 
-      if (newProperties) res.status(200).json({ newProperties });
+      if (updateProperties)
+        res.status(200).json({
+          message: `Property with ID: ${newProperty.propertyID} and Number: ${newProperty.propertyNumber} has been created successfully.`,
+          newProperty,
+        });
     } catch (err) {
       if (err?.message)
         res
