@@ -968,6 +968,13 @@ const post_controllers = {
     }
   },
 
+  //  below is the expected requestBody from the user when reading all rent payments for a room
+  // {
+  //   "propertyNo": "NGONG/NGONG/12058",
+  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   "roomId": "PK3",
+  // }
+
   readAllRentPaymentsForRoomInProperty: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
@@ -1029,6 +1036,14 @@ const post_controllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //  below is the expected requestBody from the user when reading all rent payments for a room by a tenant.
+  // {
+  //   "propertyNo": "NGONG/NGONG/12058",
+  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   "roomId": "PK3",
+  //   "tenantId": "43261521",
+  // }
 
   readAllRentPaymentsForRoomInPropertyByTenant: async (req, res) => {
     try {
@@ -1104,6 +1119,15 @@ const post_controllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //  below is the expected requestBody from the user when reading all rent payments for a room by a tenant.
+  // {
+  //   "propertyNo": "NGONG/NGONG/12058",
+  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //   "roomId": "PK3",
+  //   "tenantId": "43261521",
+  //   "paymentId": "ae1eb7d1-a490-4607-bd73-74e168a4a95y",
+  // }
 
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
