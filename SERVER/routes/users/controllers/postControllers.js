@@ -257,7 +257,6 @@ const post_controllers = {
   //  below is the expected requestBody from the user when creating a property.
   // {
   //   propertyNumber: "NGONG/NGONG/12058",
-  //   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //   propertyTitleDetails: {
   //     name: "PETER KARANJA",
   //     nationalID: "37725864",
@@ -288,8 +287,10 @@ const post_controllers = {
 
       //   const { propertiesOwned } = ownerPropertiesDocument;
 
+      newProperty.propertyID = crypto.randomUUID();
+
       const checkIfPropertyIdIsRegistered =
-        allPropertiesDB[0][newProperty.propertyID];
+        allPropertiesDB[0][newProperty?.propertyID];
 
       if (
         checkIfPropertyIdIsRegistered ||
