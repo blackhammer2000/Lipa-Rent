@@ -17,17 +17,24 @@ const { isUser } = require("../helpers/isUser");
 const {
   signUp,
   login,
+
   createNewProperty,
   readSinglePropertyOwned,
   readAllPropertiesOwned,
+
   createSingleRoomOnProperty,
   readAllRoomsOnProperty,
   readSingleRoomOnProperty,
+
   createTenantForRoomOnProperty,
   readAllTenantsForAllRoomsOnProperty,
   readAllTenantsInRoomOnProperty,
   readSingleTenantInRoomOnProperty,
+
   createRentPaymentForRoomInPropertyByTenant,
+  readAllRentPaymentsForRoomInProperty,
+  readAllRentPaymentsForRoomInPropertyByTenant,
+  readRentPaymentForRoomInPropertyByTenant,
 } = require("../controllers/postControllers");
 
 // USER SIGN UP AND LOGIN
@@ -84,6 +91,21 @@ router.post(
   "/api/user/owner/create/property/room/tenant/rent/payment",
   isUser,
   createRentPaymentForRoomInPropertyByTenant
+);
+router.post(
+  "/api/user/owner/read/property/room/tenants/rents/payments",
+  isUser,
+  readAllRentPaymentsForRoomInProperty
+);
+router.post(
+  "/api/user/owner/read/property/room/tenant/rents/payments",
+  isUser,
+  readAllRentPaymentsForRoomInPropertyByTenant
+);
+router.post(
+  "/api/user/owner/read/property/room/tenant/rents/payments",
+  isUser,
+  readRentPaymentForRoomInPropertyByTenant
 );
 
 module.exports = router;
