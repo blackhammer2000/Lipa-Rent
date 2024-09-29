@@ -1039,10 +1039,8 @@ const post_controllers = {
         throw new Error("provide a valid property NO.");
       if (!req?.body.roomId) throw new Error("provide a valid room ID.");
       if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
-      if (!req.body.paymentId) throw new Error("provide a valid amount.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId, paymentId } =
-        req?.body;
+      const { id, propertyId, propertyNo, roomId, tenantId } = req?.body;
 
       const allPropertiesAndRoomsAndTenantsAndRentsDB = [
         ...RentsDB.propertiesRents,
@@ -1094,12 +1092,14 @@ const post_controllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
-      if (!requestedPaymentReport.length)
+      if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.length)
         throw new Error(
           "The requested payment reports for the tenant ID were not found."
         );
 
-      res.status(200).json({ requestedPaymentReport });
+      res
+        .status(200)
+        .json({ checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
