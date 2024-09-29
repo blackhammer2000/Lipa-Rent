@@ -976,11 +976,8 @@ const post_controllers = {
       if (!req?.body.propertyNo)
         throw new Error("provide a valid property NO.");
       if (!req?.body.roomId) throw new Error("provide a valid room ID.");
-      if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
-      if (!req.body.paymentId) throw new Error("provide a valid amount.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId, paymentId } =
-        req?.body;
+      const { id, propertyId, propertyNo, roomId } = req?.body;
 
       const allPropertiesAndRoomsAndTenantsAndRentsDB = [
         ...RentsDB.propertiesRents,
