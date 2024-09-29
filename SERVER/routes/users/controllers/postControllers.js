@@ -968,7 +968,7 @@ const post_controllers = {
     }
   },
 
-  readAllRentPaymentForRoomInProperty: async (req, res) => {
+  readAllRentPaymentsForRoomInProperty: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
@@ -1033,7 +1033,81 @@ const post_controllers = {
     }
   },
 
-  readAllRentPaymentForRoomInPropertyByTenant: async (req, res) => {},
+  readAllRentPaymentsForRoomInPropertyByTenant: async (req, res) => {
+    try {
+      // if (!req.body.id) throw new Error("Unknown user...");
+      if (!req?.body.propertyId)
+        throw new Error("provide a valid property ID.");
+      if (!req?.body.propertyNo)
+        throw new Error("provide a valid property NO.");
+      if (!req?.body.roomId) throw new Error("provide a valid room ID.");
+      if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
+      if (!req.body.paymentId) throw new Error("provide a valid amount.");
+
+      const { id, propertyId, propertyNo, roomId, tenantId, paymentId } =
+        req?.body;
+
+      const allPropertiesAndRoomsAndTenantsAndRentsDB = [
+        ...RentsDB.propertiesRents,
+      ];
+
+      if (!allPropertiesAndRoomsAndTenantsAndRentsDB)
+        throw new Error("no data found");
+
+      const checkIfPropertyIdIsRegistered =
+        allPropertiesAndRoomsAndTenantsAndRentsDB[0][propertyId];
+
+      if (
+        !checkIfPropertyIdIsRegistered ||
+        (!checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
+      ) {
+        if (
+          !checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
+        )
+          throw new Error(
+            "Property with the given property Id and  property number has not been registered in the tenants database."
+          );
+
+        if (!checkIfPropertyIdIsRegistered)
+          throw new Error(
+            "Property with the given property Id has not been registered in the tenants database."
+          );
+      }
+
+      const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
+
+      if (!propertyRents)
+        throw new Error("No tenants have been added to this property.");
+
+      const checkIfRoomIdIsRegisteredUnderSelectedProperty =
+        propertyRents[roomId];
+
+      if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
+        throw new Error(
+          "Room with the given ID has not been registered in the tenants database."
+        );
+
+      const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
+        checkIfRoomIdIsRegisteredUnderSelectedProperty[tenantId];
+
+      if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
+        throw new Error(
+          "Tenant with the given ID has not been registered in the tenants database."
+        );
+
+      if (!requestedPaymentReport.length)
+        throw new Error(
+          "The requested payment reports for the tenant ID were not found."
+        );
+
+      res.status(200).json({ requestedPaymentReport });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
+
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
