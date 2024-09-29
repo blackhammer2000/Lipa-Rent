@@ -1109,12 +1109,12 @@ const post_controllers = {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
-        throw new Error("provide a valid property ID.");
+        throw new Error("provide a valid property Id.");
       if (!req?.body.propertyNo)
         throw new Error("provide a valid property NO.");
-      if (!req?.body.roomId) throw new Error("provide a valid room ID.");
-      if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
-      if (!req.body.paymentId) throw new Error("provide a valid amount.");
+      if (!req?.body.roomId) throw new Error("provide a valid room Id.");
+      if (!req?.body.tenantId) throw new Error("provide a valid tenant Id.");
+      if (!req.body.paymentId) throw new Error("provide a valid payment Id.");
 
       const { id, propertyId, propertyNo, roomId, tenantId, paymentId } =
         req?.body;

@@ -103,7 +103,7 @@ router.post(
   readAllRentPaymentsForRoomInPropertyByTenant
 );
 router.post(
-  "/api/user/owner/read/property/room/tenant/rents/payments",
+  "/api/user/owner/read/property/room/tenant/rent/payment",
   isUser,
   readRentPaymentForRoomInPropertyByTenant
 );
