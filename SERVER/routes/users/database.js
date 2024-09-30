@@ -48,9 +48,9 @@ const RoomsDB = {
         propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
         propertyNumber: "NGONG/NGONG/12058",
         rooms: {
-          ["PK1"]: {
-            roomID: "PK1",
-            roomNumber: "1",
+          ["JSFHSKHDFHUSHDFHSBUEHFS"]: {
+            roomID: "JSFHSKHDFHUSHDFHSBUEHFS",
+            roomNumber: "PK1",
             roomRatePerMonth: "6000",
             roomType: "SingleRoom",
             isOccupied: true,

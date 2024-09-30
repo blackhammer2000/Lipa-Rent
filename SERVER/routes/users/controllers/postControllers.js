@@ -294,9 +294,14 @@ const post_controllers = {
       let checkIfPropertyNumberIsRegistered = false;
 
       for (const key in propertiesOwned) {
-        if (propertiesOwned[key].propertyNumber === newProperty.propertyNumber)
+        if (
+          propertiesOwned[key].propertyNumber === newProperty.propertyNumber
+        ) {
           checkIfPropertyNumberIsRegistered =
             !checkIfPropertyNumberIsRegistered;
+
+          break;
+        }
       }
 
       if (checkIfPropertyNumberIsRegistered)
@@ -411,18 +416,29 @@ const post_controllers = {
 
   createSingleRoomOnProperty: async (req, res) => {
     try {
-      //   if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
 
       const { id, propertyId, propertyNo, newRoom } = req.body;
 
-      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
+      if (!id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
 
-      if (!allPropertiesAndRoomsDB) throw new Error("no data found");
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsDB[0][propertyId];
+      if (!newRoom) throw new Error("provide a valid property.");
+
+      const roomsDocument = await Room.findOne({ ownerID: id });
+
+      if (!roomsDocument) throw new Error(roomsDocument);
+
+      const { propertiesRooms } = roomsDocument;
+
+      if (!propertiesRooms) throw new Error("no data found");
+
+      const checkIfPropertyIdIsRegistered = propertiesRooms[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
@@ -443,55 +459,53 @@ const post_controllers = {
           );
       }
 
+      newRoom.roomID = `${newRoom.roomId}-${crypto.randomUUID().slice(-8)}`;
+      delete newRoom.roomId;
+
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
       if (!propertyRooms)
         throw new Error("No rooms have been added to this property.");
 
-      const checkIfRoomIdIsRegistered = propertyRooms[newRoom.roomID];
+      let checkIfRoomNumberIsRegisteredUnderTheSelctedProperty = false;
 
-      if (
-        checkIfRoomIdIsRegistered ||
-        (checkIfRoomIdIsRegistered &&
-          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNumber)
-      ) {
-        if (
-          checkIfRoomIdIsRegistered &&
-          checkIfRoomIdIsRegistered.roomNumber == newRoom.roomNumber
-        )
-          throw new Error(
-            "Room with the given ID and number has already been registered."
-          );
+      for (const key in propertyRooms) {
+        if (propertyRooms[key].roomNumber === newRoom.roomNumber) {
+          checkIfRoomNumberIsRegisteredUnderTheSelctedProperty =
+            !checkIfRoomNumberIsRegisteredUnderTheSelctedProperty;
 
-        if (checkIfRoomIdIsRegistered)
-          throw new Error(
-            "Room with the given ID has already been registered."
-          );
+          break;
+        }
       }
+
+      if (checkIfRoomNumberIsRegisteredUnderTheSelctedProperty)
+        throw new Error(
+          "Room with the given room number has already been registered."
+        );
 
       const newPropertyRooms = {
         ...propertyRooms,
         [newRoom.roomID]: newRoom,
       };
 
-      //   const updateProperties = await Room.updateOne(
-      //     { ownerID: id },
-      //     {
-      //       $set: {
-      //         propertiesRooms: [
-      //           {
-      //             ...allPropertiesAndRoomsDB[0],
-      //             [propertyId]: {
-      //               ...checkIfPropertyIdIsRegistered,
-      //               rooms: newPropertyRooms,
-      //             },
-      //           },
-      //         ],
-      //       },
-      //     }
-      //   );
+      const updateProperties = await Room.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            propertiesRooms: [
+              {
+                ...allPropertiesAndRoomsDB[0],
+                [propertyId]: {
+                  ...checkIfPropertyIdIsRegistered,
+                  rooms: newPropertyRooms,
+                },
+              },
+            ],
+          },
+        }
+      );
 
-      //   if (!updateProperties) throw new Error("No entry found to update...");
+      if (!updateProperties) throw new Error("No entry found to update...");
 
       res.status(200).json({ newPropertyRooms });
     } catch (err) {
