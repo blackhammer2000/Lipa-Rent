@@ -293,9 +293,9 @@ const post_controllers = {
 
       let checkIfPropertyNumberIsRegistered = false;
 
-      for (const key in propertiesOwned) {
+      for (const key in propertiesOwned[0]) {
         if (
-          propertiesOwned[key].propertyNumber === newProperty.propertyNumber
+          propertiesOwned[0][key].propertyNumber === newProperty.propertyNumber
         ) {
           checkIfPropertyNumberIsRegistered =
             !checkIfPropertyNumberIsRegistered;
@@ -314,14 +314,15 @@ const post_controllers = {
         [newProperty.propertyID]: newProperty,
       };
 
-      const updateProperties = await Property.updateOne(
+      const addNewProperty = await Property.updateOne(
         { ownerID: id },
-        { $set: { propertiesOwned: [{ ...newPropertiesObject }] } }
+        { $set: { propertiesOwned: [{ ...newPropertiesObject }] } },
+        { new: true, upsert: true }
       );
 
-      if (!updateProperties) throw new Error("No entry found to update...");
+      if (!addNewProperty) throw new Error("No entry found to update...");
 
-      if (updateProperties)
+      if (addNewProperty)
         res.status(200).json({
           message: `Property with ID: ${newProperty.propertyID} and Number: ${newProperty.propertyNumber} has been created successfully.`,
           newProperty,
