@@ -322,7 +322,38 @@ const post_controllers = {
 
       if (!addNewProperty) throw new Error("No entry found to update...");
 
-      if (addNewProperty)
+      const roomsDocument = await Room.findOne({ ownerID: id });
+
+      if (!roomsDocument) throw new Error(roomsDocument);
+
+      const { rooms } = roomsDocument;
+
+      if (rooms === (null || undefined)) throw new Error("no data found");
+
+      const updatePropertiesRooms = await Room.findOneAndUpdate(
+        { ownerID: id },
+        {
+          $set: {
+            rooms: [
+              {
+                ...rooms[0],
+                [newProperty.propertyID]: {
+                  propertyID: newProperty.propertyID,
+                  propertyNumber: newProperty.propertyNumber,
+                  rooms: {},
+                },
+              },
+            ],
+          },
+        },
+
+        { upsert: true, new: true }
+      );
+
+      if (!updatePropertiesRooms)
+        throw new Error("Property rooms document failed to be created.");
+
+      if (addNewProperty && updatePropertiesRooms)
         res.status(200).json({
           message: `Property with ID: ${newProperty.propertyID} and Number: ${newProperty.propertyNumber} has been created successfully.`,
           newProperty,
