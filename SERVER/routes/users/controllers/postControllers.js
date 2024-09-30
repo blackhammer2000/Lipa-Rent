@@ -417,8 +417,9 @@ const post_controllers = {
   createSingleRoomOnProperty: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
-      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+      if (!req.body.propertyId) throw new Error("provide a valid property Id.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
+      if (!req.body.newRoom) throw new Error("provide a valid room.");
 
       const { id, propertyId, propertyNo, newRoom } = req.body;
 
@@ -459,8 +460,8 @@ const post_controllers = {
           );
       }
 
-      newRoom.roomID = `${newRoom.roomId}-${crypto.randomUUID().slice(-8)}`;
-      delete newRoom.roomId;
+      newRoom.isOccupied = false;
+      newRoom.roomID = crypto.randomUUID().slice(-8);
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
@@ -494,7 +495,7 @@ const post_controllers = {
           $set: {
             propertiesRooms: [
               {
-                ...allPropertiesAndRoomsDB[0],
+                ...propertiesRooms[0],
                 [propertyId]: {
                   ...checkIfPropertyIdIsRegistered,
                   rooms: newPropertyRooms,
@@ -507,7 +508,10 @@ const post_controllers = {
 
       if (!updateProperties) throw new Error("No entry found to update...");
 
-      res.status(200).json({ newPropertyRooms });
+      res.status(200).json({
+        message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property.`,
+        newPropertyRooms,
+      });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
