@@ -328,7 +328,8 @@ const post_controllers = {
 
       const { rooms } = roomsDocument;
 
-      if (rooms === (null || undefined)) throw new Error("no data found");
+      if (rooms === (null || undefined))
+        throw new Error("no data found for rooms");
 
       const updatePropertiesRooms = await Room.findOneAndUpdate(
         { ownerID: id },
@@ -357,18 +358,18 @@ const post_controllers = {
 
       if (!tenantsDocument) throw new Error(tenantsDocument);
 
-      const { propertiesTenants } = tenantDocument;
+      const { tenants } = tenantsDocument;
 
-      if (propertiesTenants === (null || undefined))
-        throw new Error("no data found");
+      if (tenants === (null || undefined))
+        throw new Error("no data found for tenants");
 
       const updatePropertiesRoomsTenants = await Tenant.findOneAndUpdate(
         { ownerID: id },
         {
           $set: {
-            propertiesTenants: [
+            tenants: [
               {
-                ...propertiesTenants[0],
+                ...tenants[0],
                 [newProperty.propertyID]: {
                   propertyID: newProperty.propertyID,
                   propertyNumber: newProperty.propertyNumber,
@@ -383,12 +384,46 @@ const post_controllers = {
       );
 
       if (!updatePropertiesRoomsTenants)
-        throw new Error("Property rooms document failed to be created.");
+        throw new Error("Property tenants document failed to be created.");
+
+      // adding rents object in the database
+      const rentsDocument = await Rent.findOne({ ownerID: id });
+
+      if (!rentsDocument) throw new Error(rentsDocument);
+
+      const { rents } = rentsDocument;
+
+      if (rents === (null || undefined))
+        throw new Error("no data found for rents");
+
+      const updatePropertiesRoomsTenantsRents = await Rent.findOneAndUpdate(
+        { ownerID: id },
+        {
+          $set: {
+            rents: [
+              {
+                ...rents[0],
+                [newProperty.propertyID]: {
+                  propertyID: newProperty.propertyID,
+                  propertyNumber: newProperty.propertyNumber,
+                  rentPayments: {},
+                },
+              },
+            ],
+          },
+        },
+
+        { upsert: true, new: true }
+      );
+
+      if (!updatePropertiesRoomsTenantsRents)
+        throw new Error("Property rents document failed to be created.");
 
       if (
         addNewProperty &&
         updatePropertiesRooms &&
-        updatePropertiesRoomsTenants
+        updatePropertiesRoomsTenants &&
+        updatePropertiesRoomsTenantsRents
       )
         res.status(200).json({
           message: `Property with ID: ${newProperty.propertyID} and Number: ${newProperty.propertyNumber} has been created successfully.`,
