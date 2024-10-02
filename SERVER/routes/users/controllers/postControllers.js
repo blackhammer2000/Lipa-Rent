@@ -574,7 +574,7 @@ const post_controllers = {
       let checkIfRoomNumberIsRegisteredUnderTheSelctedProperty = false;
 
       for (const key in propertyRooms) {
-        if (propertyRooms[key].roomNumber === newRoom.roomNumber) {
+        if (propertyRooms[key]?.roomNumber === newRoom?.roomNumber) {
           checkIfRoomNumberIsRegisteredUnderTheSelctedProperty =
             !checkIfRoomNumberIsRegisteredUnderTheSelctedProperty;
 
