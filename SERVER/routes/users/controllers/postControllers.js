@@ -564,7 +564,7 @@ const post_controllers = {
       }
 
       newRoom.isOccupied = false;
-      newRoom.roomID = crypto.randomUUID().slice(-8);
+      newRoom.roomID = crypto.randomUUID()?.slice(-8);
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
