@@ -739,7 +739,7 @@ const post_controllers = {
 
   createTenantForRoomOnProperty: async (req, res) => {
     try {
-      // if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
@@ -747,14 +747,16 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo, roomId, newTenant } = req?.body;
 
-      const allPropertiesAndRoomsAndTenantsDB = [
-        ...TenantsDB.propertiesTenants,
-      ];
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      if (!allPropertiesAndRoomsAndTenantsDB) throw new Error("no data found");
+      const tenantsDocument = await Tenant.findOne({ ownerID: id });
 
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsAndTenantsDB[0][propertyId];
+      if (!tenantsDocument) throw new Error(tenantsDocument);
+
+      const { tenants } = tenantsDocument;
+
+      const checkIfPropertyIdIsRegistered = tenants[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
@@ -795,12 +797,44 @@ const post_controllers = {
           "Tenant with the given ID has already been registered in the tenants database."
         );
 
+      newTenant.moveOutDate = null;
+      newTenant.dateRegistered = Date.now();
+
       const newRoomTenants = {
         ...checkIfRoomIdIsRegistered,
         [newTenant?.tenantID]: newTenant,
       };
 
-      res.status(200).json({ newRoomTenants });
+      const newPropertyTenants = {
+        ...propertyTenants,
+        [roomId]: newRoomTenants,
+      };
+
+      const updateTenants = await Room.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            tenants: [
+              {
+                ...tenants[0],
+                [propertyId]: {
+                  ...checkIfPropertyIdIsRegistered,
+                  tenants: newPropertyTenants,
+                },
+              },
+            ],
+          },
+        }
+      );
+
+      if (updateTenants.acknowledged && updateTenants.modifiedCount) {
+        res.status(200).json({
+          message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
+          updateTenants,
+        });
+      } else {
+        throw new Error("Could not update the database.");
+      }
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
