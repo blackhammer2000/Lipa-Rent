@@ -153,9 +153,7 @@ const post_controllers = {
         rents: [{}],
       };
 
-      const newOwnerRentCollection = await Rent?.create(newOwnerRentBody, {
-        upsert: true,
-      });
+      const newOwnerRentCollection = await Rent?.create(newOwnerRentBody);
 
       if (!newOwnerRentCollection)
         throw new Error(
@@ -514,8 +512,8 @@ const post_controllers = {
   // ROOM ENDPOINTS THAT DEAL WITH THE ADDING AND READING OF THE ROOMS DATA IN THE DATABASE.
 
   //  below is the expected requestBody from the user when creating a room  in property
-  // {  roomID: "PK1",
-  //   roomNumber: "1",
+  // {
+  //   roomNumber: "PK1",
   //   roomRatePerMonth: "6000",
   //   roomType: "SingleRoom",}
 
@@ -542,7 +540,8 @@ const post_controllers = {
 
       const { propertiesRooms } = roomsDocument;
 
-      if (!propertiesRooms) throw new Error("no data found");
+      if (propertiesRooms === (null || undefined))
+        throw new Error("no data found");
 
       const checkIfPropertyIdIsRegistered = propertiesRooms[0][propertyId];
 
@@ -570,7 +569,7 @@ const post_controllers = {
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
-      if (!propertyRooms)
+      if (propertyRooms === (null || undefined))
         throw new Error("No rooms have been added to this property.");
 
       let checkIfRoomNumberIsRegisteredUnderTheSelctedProperty = false;
@@ -614,7 +613,7 @@ const post_controllers = {
       if (!updateProperties) throw new Error("No entry found to update...");
 
       res.status(200).json({
-        message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property.`,
+        message: `New room with the Number: "${newRoom.roomNumber}" and ID: "${newRoom.roomID}" has been successfuly added to the property.`,
         newPropertyRooms,
       });
     } catch (err) {
