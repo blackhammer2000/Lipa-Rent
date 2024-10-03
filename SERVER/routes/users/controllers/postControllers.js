@@ -538,12 +538,12 @@ const post_controllers = {
 
       if (!roomsDocument) throw new Error(roomsDocument);
 
-      const { propertiesRooms } = roomsDocument;
+      const { rooms } = roomsDocument;
 
-      if (propertiesRooms === (null || undefined))
-        throw new Error("no data found");
+      if (rooms === (null || undefined))
+        throw new Error("rooms property not found in the  db document.");
 
-      const checkIfPropertyIdIsRegistered = propertiesRooms[0][propertyId];
+      const checkIfPropertyIdIsRegistered = rooms[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
@@ -597,9 +597,9 @@ const post_controllers = {
         { ownerID: id },
         {
           $set: {
-            propertiesRooms: [
+            rooms: [
               {
-                ...propertiesRooms[0],
+                ...rooms[0],
                 [propertyId]: {
                   ...checkIfPropertyIdIsRegistered,
                   rooms: newPropertyRooms,
@@ -610,12 +610,14 @@ const post_controllers = {
         }
       );
 
-      if (!updateProperties) throw new Error("No entry found to update...");
-
-      res.status(200).json({
-        message: `New room with the Number: "${newRoom.roomNumber}" and ID: "${newRoom.roomID}" has been successfuly added to the property.`,
-        newPropertyRooms,
-      });
+      if (updateProperties.acknowledged && updateProperties.modifiedCount) {
+        res.status(200).json({
+          message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property.`,
+          updateProperties,
+        });
+      } else {
+        throw new Error("Could not update the database.");
+      }
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
