@@ -153,7 +153,9 @@ const post_controllers = {
         rents: [{}],
       };
 
-      const newOwnerRentCollection = await Rent?.create(newOwnerRentBody);
+      const newOwnerRentCollection = await Rent?.create(newOwnerRentBody, {
+        upsert: true,
+      });
 
       if (!newOwnerRentCollection)
         throw new Error(
