@@ -631,20 +631,25 @@ const post_controllers = {
 
   readAllRoomsOnProperty: async (req, res) => {
     try {
-      //   if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
       if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
 
-      const { id, propertyId, propertyNo } = req.body;
+      const { id, propertyNo, propertyId } = req.body;
 
-      const allPropertiesAndRoomsDB = [...RoomsDB.propertiesRooms];
+      if (!id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
 
-      if (!Object.keys(allPropertiesAndRoomsDB[0]))
-        throw new Error("no data found");
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      const allRooms = allPropertiesAndRoomsDB[0];
+      const roomsDocument = await Room.findOne({ ownerID: id });
 
-      const selectUsingPropertyID = allRooms[propertyId];
+      if (!roomsDocument) throw new Error(roomsDocument);
+
+      const { rooms } = roomsDocument;
+
+      const selectUsingPropertyID = rooms[0][propertyId];
 
       if (!selectUsingPropertyID)
         throw new Error(
