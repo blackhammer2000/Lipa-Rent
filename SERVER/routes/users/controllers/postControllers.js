@@ -6,7 +6,6 @@ const { signAccessToken } = require("../../../middleware/tokens/accessToken");
 
 const {
   ObjectId: { isValid },
-  MongoClient,
 } = require("mongodb");
 
 const { Owner } = require("../../../middleware/models/Owner");
