@@ -864,6 +864,7 @@ const post_controllers = {
             },
           }
         );
+
         if (updateRents.acknowledged && updateRents.modifiedCount)
           res.status(200).json({
             message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
@@ -1055,12 +1056,12 @@ const post_controllers = {
     }
   },
 
-  // RENT DB ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTIES AND ROOMS
+  //! RENT DB ENDPOINTS DEALNG WITH THE MANAGEMENT OF RENT PAYMENTS WITH RESPECT TO THE CORRESPONDING PROPERTIES AND ROOMS
 
-  //  below is the expected requestBody from the user when submitting a create rent payment request
-  // {
-  //   "propertyNo": "NGONG/NGONG/12058",
-  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //?  below is the expected requestBody from the user when submitting a create rent payment request
+  //* {
+  //*   "propertyNo": "NGONG/NGONG/12058",
+  //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //   "roomId": "PK3",
   //   "tenantId": "43261521",
   //   "payment": {
