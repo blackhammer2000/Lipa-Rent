@@ -611,10 +611,47 @@ const post_controllers = {
       );
 
       if (updateProperties.acknowledged && updateProperties.modifiedCount) {
-        res.status(200).json({
-          message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property.`,
-          updateProperties,
-        });
+        const findTenants = await Tenant.findOne({ ownerID: id });
+
+        const tenants = findTenants ? findTenants.tenants : null;
+
+        if (!tenants) throw new Error("tenants doc prop not found.");
+
+        tenants[0][propertyId].tenants[newRoom.roomID] = {};
+
+        const updateTenants = await Tenant.updateOne(
+          { ownerID: id },
+          {
+            $set: {
+              tenants,
+            },
+          }
+        );
+
+        if (updateTenants.acknowledged && updateTenants.modifiedCount) {
+          const findRents = await Rent.findOne({ ownerID: id });
+
+          const rents = findRents ? findRents.rents : null;
+
+          if (!rents) throw new Error("rents doc prop not found.");
+
+          rents[0][propertyId].rentPayments[newRoom.roomID] = {};
+
+          const updateRents = await Rent.updateOne(
+            { ownerID: id },
+            {
+              $set: {
+                rents,
+              },
+            }
+          );
+
+          if (updateRents.acknowledged && updateRents.modifiedCount)
+            res.status(200).json({
+              message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property.`,
+              updateProperties,
+            });
+        }
       } else {
         throw new Error("Could not update the database.");
       }
@@ -800,38 +837,39 @@ const post_controllers = {
       newTenant.moveOutDate = null;
       newTenant.dateRegistered = Date.now();
 
-      const newRoomTenants = {
-        ...checkIfRoomIdIsRegistered,
-        [newTenant?.tenantID]: newTenant,
-      };
+      tenants[0][propertyId].tenants[roomId][newTenant.tenantID] = newTenant;
 
-      const newPropertyTenants = {
-        ...propertyTenants,
-        [roomId]: newRoomTenants,
-      };
-
-      const updateTenants = await Room.updateOne(
+      const updateTenants = await Tenant.updateOne(
         { ownerID: id },
         {
           $set: {
-            tenants: [
-              {
-                ...tenants[0],
-                [propertyId]: {
-                  ...checkIfPropertyIdIsRegistered,
-                  tenants: newPropertyTenants,
-                },
-              },
-            ],
+            tenants,
           },
         }
       );
 
       if (updateTenants.acknowledged && updateTenants.modifiedCount) {
-        res.status(200).json({
-          message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
-          updateTenants,
-        });
+        const findRents = await Rent.findOne({ ownerID: id });
+
+        const rents = findRents ? findRents.rents : null;
+
+        if (!rents) throw new Error("rents doc prop not found.");
+
+        rents[0][propertyId].rentPayments[roomId][newTenant.tenantID] = [];
+
+        const updateRents = await Rent.updateOne(
+          { ownerID: id },
+          {
+            $set: {
+              rents,
+            },
+          }
+        );
+        if (updateRents.acknowledged && updateRents.modifiedCount)
+          res.status(200).json({
+            message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
+            updateTenants,
+          });
       } else {
         throw new Error("Could not update the database.");
       }
