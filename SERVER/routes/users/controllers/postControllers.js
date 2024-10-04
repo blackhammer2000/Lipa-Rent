@@ -20,13 +20,12 @@ const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
 
-// const { searchForSelectedBooks } = require("../helpers/findBooks");
 const { propertiesDB, RoomsDB, RentsDB, TenantsDB } = require("../database");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
 const post_controllers = {
-  // SIGN UP NEW USER.
+  //! SIGN UP NEW USER.
 
   signUp: async (req, res) => {
     try {
@@ -171,7 +170,7 @@ const post_controllers = {
     }
   },
 
-  // LOGIN USER.
+  //! LOGIN USER.
 
   login: async (req, res) => {
     try {
@@ -251,24 +250,24 @@ const post_controllers = {
     }
   },
 
-  // PROPERTY ENDPOINTS THE DEAL WITH THE CREATION AND READING OF PROPERTIES OWNED DATA FROM THE DATABASE.
+  //! PROPERTY ENDPOINTS THE DEAL WITH THE CREATION AND READING OF PROPERTIES OWNED DATA FROM THE DATABASE.
 
-  //  below is the expected requestBody from the user when creating a property.
-  // {
-  //   propertyNumber: "NGONG/NGONG/12058",
-  //   propertyTitleDetails: {
-  //     name: "PETER KARANJA",
-  //     nationalID: "37725864",
-  //     asWho: "SELF",
-  //   },
-  //   propertyLocation: "NGONG",
-  //   propertyValue: "12.3M",
-  //   propertyPurpose: {
-  //     purposedUse: "commercial",
-  //     purposeType: "lease",
-  //   },
-  //   isIdle: false,
-  // },
+  //?  below is the expected requestBody from the user when creating a property.
+  //* {
+  //*   propertyNumber: "NGONG/NGONG/12058",
+  //*   propertyTitleDetails: {
+  //*     name: "PETER KARANJA",
+  //*     nationalID: "37725864",
+  //*     asWho: "SELF",
+  //*   },
+  //*   propertyLocation: "NGONG",
+  //*   propertyValue: "12.3M",
+  //*   propertyPurpose: {
+  //*     purposedUse: "commercial",
+  //*     purposeType: "lease",
+  //*   },
+  //*   isIdle: false,
+  //* },
 
   createNewProperty: async (req, res) => {
     try {
@@ -436,7 +435,7 @@ const post_controllers = {
     }
   },
 
-  //*  below is the expected requestBody from the user when reading all properties.
+  //?  below is the expected requestBody from the user when reading all properties.
   //* {
   //*  ownerId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //* }
@@ -466,11 +465,11 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading a property.
-  // {
-  //   propertyNumber: "NGONG/NGONG/12058",
-  //   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  // }
+  //?  below is the expected requestBody from the user when reading a property.
+  //* {
+  //*   propertyNumber: "NGONG/NGONG/12058",
+  //*   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //* }
 
   readSinglePropertyOwned: async (req, res) => {
     try {
@@ -508,13 +507,13 @@ const post_controllers = {
     }
   },
 
-  // ROOM ENDPOINTS THAT DEAL WITH THE ADDING AND READING OF THE ROOMS DATA IN THE DATABASE.
+  //! ROOM ENDPOINTS THAT DEAL WITH THE ADDING AND READING OF THE ROOMS DATA IN THE DATABASE.
 
-  //  below is the expected requestBody from the user when creating a room  in property
-  // {
-  //   roomNumber: "PK1",
-  //   roomRatePerMonth: "6000",
-  //   roomType: "SingleRoom",}
+  //?  below is the expected requestBody from the user when creating a room  in property
+  //* {
+  //*   roomNumber: "PK1",
+  //*   roomRatePerMonth: "6000",
+  //*   roomType: "SingleRoom",}
 
   createSingleRoomOnProperty: async (req, res) => {
     try {
@@ -659,11 +658,11 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all rooms on property.
-  // {
-  //   propertyNumber: "NGONG/NGONG/12058",
-  //   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  // }
+  //?  below is the expected requestBody from the user when reading all rooms on property.
+  //* {
+  //*   propertyNumber: "NGONG/NGONG/12058",
+  //*   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //* }
 
   readAllRoomsOnProperty: async (req, res) => {
     try {
@@ -707,12 +706,12 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all rooms on property.
-  // {
-  //   propertyNo: "NGONG/NGONG/12058",
-  //   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   roomId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  // }
+  //?  below is the expected requestBody from the user when reading all rooms on property.
+  //* {
+  //*   propertyNo: "NGONG/NGONG/12058",
+  //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   roomId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //* }
 
   readSingleRoomOnProperty: async (req, res) => {
     try {
@@ -767,11 +766,11 @@ const post_controllers = {
     }
   },
 
-  // TENANT ENDPOINTS FOR DEALING WITH THE TENANT DOCUMENT IN ADDING AND READING TENANT DATA FORM THE THE DATABASE.
+  //! TENANT ENDPOINTS FOR DEALING WITH THE TENANT DOCUMENT IN ADDING AND READING TENANT DATA FORM THE THE DATABASE.
 
-  //  below is the expected requestBody from the user when creating a tenant for a room in property
-  //  { tenantID: "35501094",
-  //   tenantName: "LIXO PESSAR",}
+  //?  below is the expected requestBody from the user when creating a tenant for a room in property
+  //*  { tenantID: "35501094",
+  //*   tenantName: "LIXO PESSAR",}
 
   createTenantForRoomOnProperty: async (req, res) => {
     try {
@@ -878,9 +877,9 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all tenants for all rooms in property
-  //  { propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   propertyNo: "NGONG/NGONG/12058",}
+  //?  below is the expected requestBody from the user when reading all tenants for all rooms in property
+  //*  { propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   propertyNo: "NGONG/NGONG/12058",}
 
   readAllTenantsForAllRoomsOnProperty: async (req, res) => {
     try {
@@ -930,12 +929,12 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all tenants for a room in property
-  //  {
-  //   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   propertyNo: "NGONG/NGONG/12058",
-  //   roomId: "PK1",
-  //  }
+  //?  below is the expected requestBody from the user when reading all tenants for a room in property
+  //*  {
+  //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   propertyNo: "NGONG/NGONG/12058",
+  //*   roomId: "PK1",
+  //*  }
   readAllTenantsInRoomOnProperty: async (req, res) => {
     try {
       // if (!req.body.id) throw new Error("Unknown user...");
@@ -986,13 +985,13 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all tenants for a room in property
-  //  {
-  //   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   propertyNo: "NGONG/NGONG/12058",
-  //   roomId: "PK1",
-  //   tenantId: "35501094",
-  //  }
+  //?  below is the expected requestBody from the user when reading all tenants for a room in property
+  //*  {
+  //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   propertyNo: "NGONG/NGONG/12058",
+  //*   roomId: "PK1",
+  //*   tenantId: "35501094",
+  //*  }
 
   readSingleTenantInRoomOnProperty: async (req, res) => {
     try {
@@ -1062,14 +1061,14 @@ const post_controllers = {
   //* {
   //*   "propertyNo": "NGONG/NGONG/12058",
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   "roomId": "PK3",
-  //   "tenantId": "43261521",
-  //   "payment": {
-  //     "amountTenantIsPaying": "2000",
-  //     "month": "SEP, 2024",
-  //     "mode": "6000",
-  //   }
-  // }
+  //*  "roomId": "PK3",
+  //*   "tenantId": "43261521",
+  //*   "payment": {
+  //*     "amountTenantIsPaying": "2000",
+  //*     "month": "SEP, 2024",
+  //*     "mode": "6000",
+  //*   }
+  //* }
 
   createRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
@@ -1204,12 +1203,12 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all rent payments for a room
-  // {
-  //   "propertyNo": "NGONG/NGONG/12058",
-  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   "roomId": "PK3",
-  // }
+  //?  below is the expected requestBody from the user when reading all rent payments for a room
+  //* {
+  //*   "propertyNo": "NGONG/NGONG/12058",
+  //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   "roomId": "PK3",
+  //* }
 
   readAllRentPaymentsForRoomInProperty: async (req, res) => {
     try {
@@ -1273,13 +1272,13 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all rent payments for a room by a tenant.
-  // {
-  //   "propertyNo": "NGONG/NGONG/12058",
-  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   "roomId": "PK3",
-  //   "tenantId": "43261521",
-  // }
+  //?  below is the expected requestBody from the user when reading all rent payments for a room by a tenant.
+  //* {
+  //*   "propertyNo": "NGONG/NGONG/12058",
+  //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   "roomId": "PK3",
+  //*   "tenantId": "43261521",
+  //* }
 
   readAllRentPaymentsForRoomInPropertyByTenant: async (req, res) => {
     try {
@@ -1356,14 +1355,14 @@ const post_controllers = {
     }
   },
 
-  //  below is the expected requestBody from the user when reading all rent payments for a room by a tenant.
-  // {
-  //   "propertyNo": "NGONG/NGONG/12058",
-  //   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //   "roomId": "PK3",
-  //   "tenantId": "43261521",
-  //   "paymentId": "ae1eb7d1-a490-4607-bd73-74e168a4a95y",
-  // }
+  //?  below is the expected requestBody from the user when reading all rent payments for a room by a tenant.
+  //* {
+  //*   "propertyNo": "NGONG/NGONG/12058",
+  //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   "roomId": "PK3",
+  //*   "tenantId": "43261521",
+  //*   "paymentId": "ae1eb7d1-a490-4607-bd73-74e168a4a95y",
+  //* }
 
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
