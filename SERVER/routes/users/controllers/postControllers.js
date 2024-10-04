@@ -584,11 +584,6 @@ const post_controllers = {
           "Room with the given room number has already been registered."
         );
 
-      const newPropertyRooms = {
-        ...propertyRooms,
-        [newRoom.roomID]: newRoom,
-      };
-
       rooms[0][propertyId].rooms[newRoom.roomID] = newRoom;
 
       const updateProperties = await Room.updateOne(
