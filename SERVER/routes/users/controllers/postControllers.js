@@ -1003,22 +1003,24 @@ const post_controllers = {
 
   readSingleTenantInRoomOnProperty: async (req, res) => {
     try {
-      // if (!req.body.id) throw new Error("Unknown user...");
-      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
-      if (!req.body.roomId) throw new Error("provide a valid room ID.");
-      if (!req.body.tenantId) throw new Error("provide a valid room ID.");
+      if (!req.body.id) throw new Error("Unknown user...please log in");
+      if (!req.body.propertyId) throw new Error("provide a valid property Id.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property No.");
+      if (!req.body.roomId) throw new Error("provide a valid room Id.");
+      if (!req.body.tenantId) throw new Error("provide a valid tenant Id.");
 
       const { id, propertyId, propertyNo, roomId, tenantId } = req?.body;
 
-      const allPropertiesAndRoomsAndTenantsDB = [
-        ...TenantsDB.propertiesTenants,
-      ];
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      if (!allPropertiesAndRoomsAndTenantsDB) throw new Error("no data found");
+      const tenantsDocument = await Tenant.findOne({ ownerID: id });
 
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsAndTenantsDB[0][propertyId];
+      if (!tenantsDocument) throw new Error(tenantsDocument);
+
+      const { tenants } = tenantsDocument;
+
+      const checkIfPropertyIdIsRegistered = tenants[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
