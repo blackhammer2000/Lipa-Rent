@@ -589,19 +589,13 @@ const post_controllers = {
         [newRoom.roomID]: newRoom,
       };
 
+      rooms[0][propertyId].rooms[newRoom.roomID] = newRoom;
+
       const updateProperties = await Room.updateOne(
         { ownerID: id },
         {
           $set: {
-            rooms: [
-              {
-                ...rooms[0],
-                [propertyId]: {
-                  ...checkIfPropertyIdIsRegistered,
-                  rooms: newPropertyRooms,
-                },
-              },
-            ],
+            rooms,
           },
         }
       );
