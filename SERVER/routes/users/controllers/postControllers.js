@@ -1082,7 +1082,7 @@ const post_controllers = {
 
   createRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
-      // if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
         throw new Error("provide a valid property ID.");
       if (!req?.body.propertyNo)
@@ -1094,15 +1094,16 @@ const post_controllers = {
       const { id, propertyId, propertyNo, roomId, tenantId, payment } =
         req?.body;
 
-      const allPropertiesAndRoomsAndTenantsAndRentsDB = [
-        ...RentsDB.propertiesRents,
-      ];
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      if (!allPropertiesAndRoomsAndTenantsAndRentsDB)
-        throw new Error("no data found");
+      const rentsDocument = await Rent.findOne({ ownerID: id });
 
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsAndTenantsAndRentsDB[0][propertyId];
+      if (!rentsDocument) throw new Error(rentsDocument);
+
+      const { rents } = rentsDocument;
+
+      const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
@@ -1177,37 +1178,25 @@ const post_controllers = {
         recieptNumber: "SH45BXDE",
       };
 
-      const newRoomTenantRentPayments = [
-        ...checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
-        newRentPaymentEntry,
-      ];
+      rents[0][propertyId].rentPayments[roomId][tenantId].push(
+        newRentPaymentEntry
+      );
 
-      // const updateProperties = await Rent.updateOne(
-      //   { ownerID: id },
-      //   {
-      //     $set: {
-      //       propertiesRents: [
-      //         {
-      //           ...allPropertiesAndRoomsAndTenantsAndRentsDB[0],
-      //           [propertyId]: {
-      //             ...checkIfPropertyIdIsRegistered,
-      //             rentPayments: {
-      //               ...propertyRents,
-      //               [roomId]: {
-      //                 ...checkIfRoomIdIsRegisteredUnderSelectedProperty,
-      //                 [tenantId]: newRoomTenantRentPayments,
-      //               },
-      //             },
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   }
-      // );
+      const updateRents = await Rent.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            rents,
+          },
+        }
+      );
 
-      // if (!updateProperties) throw new Error("No entry found to update...");
-
-      res.status(200).json({ newRoomTenantRentPayments });
+      if (updateRents.acknowledged && updateRents.modifiedCount)
+        res.status(200).json({
+          selctedTenantRoomRentPayments:
+            checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
+        });
+      else throw new Error(updateRents);
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
