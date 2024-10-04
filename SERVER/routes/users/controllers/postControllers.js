@@ -17,10 +17,8 @@ const { Tenant } = require("../../../middleware/models/Tenant");
 const { Rent } = require("../../../middleware/models/Rent");
 
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
-const { createModel } = require("../helpers/createModels");
+// const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
-
-const { propertiesDB, RoomsDB, RentsDB, TenantsDB } = require("../database");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -1211,7 +1209,7 @@ const post_controllers = {
 
   readAllRentPaymentsForRoomInProperty: async (req, res) => {
     try {
-      // if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
         throw new Error("provide a valid property ID.");
       if (!req?.body.propertyNo)
@@ -1220,15 +1218,16 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo, roomId } = req?.body;
 
-      const allPropertiesAndRoomsAndTenantsAndRentsDB = [
-        ...RentsDB.propertiesRents,
-      ];
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      if (!allPropertiesAndRoomsAndTenantsAndRentsDB)
-        throw new Error("no data found");
+      const rentsDocument = await Rent.findOne({ ownerID: id });
 
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsAndTenantsAndRentsDB[0][propertyId];
+      if (!rentsDocument) throw new Error(rentsDocument);
+
+      const { rents } = rentsDocument;
+
+      const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
@@ -1281,7 +1280,7 @@ const post_controllers = {
 
   readAllRentPaymentsForRoomInPropertyByTenant: async (req, res) => {
     try {
-      // if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
         throw new Error("provide a valid property ID.");
       if (!req?.body.propertyNo)
@@ -1291,15 +1290,16 @@ const post_controllers = {
 
       const { id, propertyId, propertyNo, roomId, tenantId } = req?.body;
 
-      const allPropertiesAndRoomsAndTenantsAndRentsDB = [
-        ...RentsDB.propertiesRents,
-      ];
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      if (!allPropertiesAndRoomsAndTenantsAndRentsDB)
-        throw new Error("no data found");
+      const rentsDocument = await Rent.findOne({ ownerID: id });
 
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsAndTenantsAndRentsDB[0][propertyId];
+      if (!rentsDocument) throw new Error(rentsDocument);
+
+      const { rents } = rentsDocument;
+
+      const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
@@ -1365,7 +1365,7 @@ const post_controllers = {
 
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {
     try {
-      // if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
         throw new Error("provide a valid property Id.");
       if (!req?.body.propertyNo)
@@ -1377,15 +1377,16 @@ const post_controllers = {
       const { id, propertyId, propertyNo, roomId, tenantId, paymentId } =
         req?.body;
 
-      const allPropertiesAndRoomsAndTenantsAndRentsDB = [
-        ...RentsDB.propertiesRents,
-      ];
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
 
-      if (!allPropertiesAndRoomsAndTenantsAndRentsDB)
-        throw new Error("no data found");
+      const rentsDocument = await Rent.findOne({ ownerID: id });
 
-      const checkIfPropertyIdIsRegistered =
-        allPropertiesAndRoomsAndTenantsAndRentsDB[0][propertyId];
+      if (!rentsDocument) throw new Error(rentsDocument);
+
+      const { rents } = rentsDocument;
+
+      const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
