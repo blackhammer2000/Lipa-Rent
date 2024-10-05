@@ -11,7 +11,11 @@ const { Rent } = require("../../../middleware/models/Rent");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
+  editOwnerDetails: async (req, res) => {},
   editPropertyDetails: async (req, res) => {},
+  editRoomDetails: async (req, res) => {},
+  editTenantDetails: async (req, res) => {},
+  editRentDetails: async (req, res) => {},
 };
 
 module.exports = patchControllers;
