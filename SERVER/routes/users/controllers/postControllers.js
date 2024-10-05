@@ -744,7 +744,7 @@ const post_controllers = {
   //! TENANT ENDPOINTS FOR DEALING WITH THE TENANT DOCUMENT IN ADDING AND READING TENANT DATA FORM THE THE DATABASE.
 
   //?  below is the expected requestBody from the user when creating a tenant for a room in property
-  //*  { tenantID: "35501094",
+  //*  { tenantNationalID: "35501094",
   //*   tenantName: "LIXO PESSAR",}
 
   createTenantForRoomOnProperty: async (req, res) => {
@@ -809,6 +809,7 @@ const post_controllers = {
 
       newTenant.moveOutDate = null;
       newTenant.dateRegistered = Date.now();
+      newTenant.tenantID = crypto.randomUUID().slice(-12);
 
       tenants[0][propertyId].tenants[roomId][newTenant.tenantID] = newTenant;
 
