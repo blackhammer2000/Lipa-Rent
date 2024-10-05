@@ -305,15 +305,16 @@ const post_controllers = {
           "Property with the given property number has already been registered."
         );
 
-      const newPropertiesObject = {
-        ...propertiesOwned[0],
-        [newProperty.propertyID]: newProperty,
-      };
+      propertiesOwned[0][newProperty.propertyID] = newProperty;
+
+      // const newPropertiesObject = {
+      //   ...propertiesOwned[0],
+      //   [newProperty.propertyID]: newProperty,
+      // };
 
       const addNewProperty = await Property.updateOne(
         { ownerID: id },
-        { $set: { propertiesOwned: [{ ...newPropertiesObject }] } },
-        { new: true, upsert: true }
+        { $set: { propertiesOwned } }
       );
 
       if (!addNewProperty) throw new Error("No entry found to update...");
@@ -327,24 +328,19 @@ const post_controllers = {
       if (rooms === (null || undefined))
         throw new Error("no data found for rooms");
 
+      rooms[0][newProperty.propertyID] = {
+        propertyID: newProperty.propertyID,
+        propertyNumber: newProperty.propertyNumber,
+        rooms: {},
+      };
+
       const updatePropertiesRooms = await Room.findOneAndUpdate(
         { ownerID: id },
         {
           $set: {
-            rooms: [
-              {
-                ...rooms[0],
-                [newProperty.propertyID]: {
-                  propertyID: newProperty.propertyID,
-                  propertyNumber: newProperty.propertyNumber,
-                  rooms: {},
-                },
-              },
-            ],
+            rooms,
           },
-        },
-
-        { upsert: true, new: true }
+        }
       );
 
       if (!updatePropertiesRooms)
@@ -359,20 +355,17 @@ const post_controllers = {
       if (tenants === (null || undefined))
         throw new Error("no data found for tenants");
 
+      tenants[0][newProperty.propertyID] = {
+        propertyID: newProperty.propertyID,
+        propertyNumber: newProperty.propertyNumber,
+        tenants: {},
+      };
+
       const updatePropertiesRoomsTenants = await Tenant.findOneAndUpdate(
         { ownerID: id },
         {
           $set: {
-            tenants: [
-              {
-                ...tenants[0],
-                [newProperty.propertyID]: {
-                  propertyID: newProperty.propertyID,
-                  propertyNumber: newProperty.propertyNumber,
-                  tenants: {},
-                },
-              },
-            ],
+            tenants,
           },
         },
 
@@ -392,24 +385,19 @@ const post_controllers = {
       if (rents === (null || undefined))
         throw new Error("no data found for rents");
 
+      rents[0][newProperty.propertyID] = {
+        propertyID: newProperty.propertyID,
+        propertyNumber: newProperty.propertyNumber,
+        rentPayments: {},
+      };
+
       const updatePropertiesRoomsTenantsRents = await Rent.findOneAndUpdate(
         { ownerID: id },
         {
           $set: {
-            rents: [
-              {
-                ...rents[0],
-                [newProperty.propertyID]: {
-                  propertyID: newProperty.propertyID,
-                  propertyNumber: newProperty.propertyNumber,
-                  rentPayments: {},
-                },
-              },
-            ],
+            rents,
           },
-        },
-
-        { upsert: true, new: true }
+        }
       );
 
       if (!updatePropertiesRoomsTenantsRents)
