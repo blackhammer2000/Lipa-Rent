@@ -11,7 +11,7 @@ const { Rent } = require("../../../middleware/models/Rent");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
-  editOwnerDetails: async (req, res) => {
+  editPropertyDetails: async (req, res) => {
     try {
       if (!req.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
@@ -22,6 +22,7 @@ const patchControllers = {
         throw new Error("provide a valid property.");
 
       const { id, propertyNo, propertyId, editedProperty } = req.body;
+      delete editedProperty.propertyID;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -32,7 +33,7 @@ const patchControllers = {
 
       const { propertiesOwned } = ownerPropertiesDocument;
 
-      const checkIfPropertyIdIsRegistered = propertiesOwned[propertyId];
+      const checkIfPropertyIdIsRegistered = propertiesOwned[0][propertyId];
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error("Property with the given property ID was not found.");
@@ -42,9 +43,9 @@ const patchControllers = {
           "The property number given does not match the number of the property saved in the database with the given ID."
         );
 
-      propertiesOwned[0][checkIfPropertyIdIsRegistered.propertyId] = {
+      propertiesOwned[0][checkIfPropertyIdIsRegistered.propertyID] = {
         ...editedProperty,
-        propertyID: checkIfPropertyIdIsRegistered.propertyId,
+        propertyID: checkIfPropertyIdIsRegistered.propertyID,
       };
 
       const updateEditedProperty = await Property.updateOne(
@@ -57,8 +58,8 @@ const patchControllers = {
 
       res.status(200).json({
         editedProperty: {
+          propertyID: checkIfPropertyIdIsRegistered.propertyID,
           ...editedProperty,
-          propertyID: checkIfPropertyIdIsRegistered.propertyId,
         },
       });
     } catch (err) {
@@ -69,7 +70,7 @@ const patchControllers = {
     }
   },
 
-  editPropertyDetails: async (req, res) => {},
+  editOwnerDetails: async (req, res) => {},
   editRoomDetails: async (req, res) => {},
   editTenantDetails: async (req, res) => {},
   editRentDetails: async (req, res) => {},
