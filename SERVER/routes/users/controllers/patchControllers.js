@@ -11,6 +11,48 @@ const { Rent } = require("../../../middleware/models/Rent");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
+  editOwnerDetails: async (req, res) => {
+    try {
+      if (!req.body.id)
+        throw new Error("Unauthorized action, not a user or not logged in.");
+      if (!req.body.editedOwner)
+        throw new Error("Provide valid edited owner details.");
+
+      const { id, editedOwner } = req.body;
+
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
+
+      const { name, nationalID } = editedOwner;
+
+      const ownerPropertiesDocument = await Owner.findOne({
+        _id: id.toString(),
+      });
+
+      if (!ownerPropertiesDocument) throw new Error(ownerPropertiesDocument);
+
+      const ownerUpdate = await Owner.updateOne(
+        { _id: id },
+        {
+          $set: { name, nationalID },
+        },
+        { new: true }
+      );
+
+      if (!ownerUpdate.acknowledged)
+        throw new Error(
+          "Error when updating the owner details in the database."
+        );
+
+      res.status(203).json({ editedOwner });
+    } catch (err) {
+      if (err?.message)
+        res
+          .status(500)
+          .json({ error: err?.message, response_status: "danger" });
+    }
+  },
+
   editPropertyDetails: async (req, res) => {
     try {
       if (!req.body.id)
@@ -70,7 +112,6 @@ const patchControllers = {
     }
   },
 
-  editOwnerDetails: async (req, res) => {},
   editRoomDetails: async (req, res) => {},
   editTenantDetails: async (req, res) => {},
   editRentDetails: async (req, res) => {},

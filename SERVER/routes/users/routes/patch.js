@@ -14,8 +14,17 @@ const {
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
-const { editPropertyDetails } = require("../controllers/patchControllers");
+const {
+  editOwnerDetails,
+  editPropertyDetails,
+} = require("../controllers/patchControllers");
 
+router.patch(
+  "/api/user/owner/edit/owner",
+  isUser,
+  verifyAccessToken,
+  editOwnerDetails
+);
 router.patch(
   "/api/user/owner/edit/property",
   isUser,
