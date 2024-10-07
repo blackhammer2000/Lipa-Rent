@@ -192,6 +192,7 @@ const patchControllers = {
       if (err.message) res.status(400).json({ error: err.message });
     }
   },
+
   editTenantDetails: async (req, res) => {},
   editRentDetails: async (req, res) => {},
 };
