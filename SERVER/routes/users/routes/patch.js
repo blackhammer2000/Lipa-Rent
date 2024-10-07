@@ -17,6 +17,7 @@ const { isUser } = require("../helpers/isUser");
 const {
   editOwnerDetails,
   editPropertyDetails,
+  editRoomDetails,
 } = require("../controllers/patchControllers");
 
 router.patch(
@@ -30,6 +31,12 @@ router.patch(
   isUser,
   verifyAccessToken,
   editPropertyDetails
+);
+router.patch(
+  "/api/user/owner/edit/property/room",
+  isUser,
+  verifyAccessToken,
+  editRoomDetails
 );
 
 module.exports = router;
