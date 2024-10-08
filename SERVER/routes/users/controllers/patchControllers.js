@@ -193,7 +193,96 @@ const patchControllers = {
     }
   },
 
-  editTenantDetails: async (req, res) => {},
+  editTenantDetails: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unknown user...please log in");
+      if (!req.body.propertyId) throw new Error("provide a valid property Id.");
+      if (!req.body.propertyNo) throw new Error("provide a valid property No.");
+      if (!req.body.roomId) throw new Error("provide a valid room Id.");
+      if (!req.body.tenantId) throw new Error("provide a valid tenant Id.");
+
+      const { id, propertyId, propertyNo, roomId, tenantId } = req?.body;
+
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
+
+      const tenantsDocument = await Tenant.findOne({ ownerID: id });
+
+      if (!tenantsDocument) throw new Error(tenantsDocument);
+
+      const { tenants } = tenantsDocument;
+
+      const checkIfPropertyIdIsRegistered = tenants[0][propertyId];
+
+      if (
+        !checkIfPropertyIdIsRegistered ||
+        (!checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
+      ) {
+        if (
+          !checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
+        )
+          throw new Error(
+            "Property with the given property Id and  property number has not been registered in the tenants database."
+          );
+
+        if (!checkIfPropertyIdIsRegistered)
+          throw new Error(
+            "Property with the given property Id has not been registered in the tenants database."
+          );
+      }
+
+      const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
+
+      if (!selectedPropertyTenants)
+        throw new Error("No tenants have been added to this property.");
+
+      const selectedRoomOnPropertyTenants = selectedPropertyTenants[roomId];
+
+      if (!selectedRoomOnPropertyTenants)
+        throw new Error("No tenants have been added to this room.");
+
+      const selectedTenantOnRoomOnProperty =
+        selectedRoomOnPropertyTenants[tenantId];
+
+      if (!selectedTenantOnRoomOnProperty)
+        throw new Error(
+          "No tenant with the given tenantId has been added to this room."
+        );
+
+      for (const key in editedTenant) {
+        if (key === "tenantID") {
+          selectedTenantOnRoomOnProperty[key] =
+            selectedTenantOnRoomOnProperty[key];
+        } else {
+          selectedTenantOnRoomOnProperty[key]
+            ? (selectedTenantOnRoomOnProperty[key] = editedTenant[key])
+            : null;
+        }
+      }
+
+      tenants[0][propertyId].tenants[roomId][tenantId] =
+        selectedTenantOnRoomOnProperty;
+
+      const updateTenants = await Tenant.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            tenants,
+          },
+        }
+      );
+
+      if (updateTenants.acknowledged && updateTenants.modifiedCount)
+        res.status(200).json({
+          message: `Tenant with the Name: ${selectedTenantOnRoomOnProperty.name} and ID: ${tenantId} has been successfuly edited.`,
+          selectedTenantOnRoomOnProperty,
+        });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
   editRentDetails: async (req, res) => {},
 };
 
