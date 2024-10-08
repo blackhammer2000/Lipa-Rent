@@ -18,6 +18,7 @@ const {
   editOwnerDetails,
   editPropertyDetails,
   editRoomDetails,
+  editTenantDetails,
 } = require("../controllers/patchControllers");
 
 router.patch(
@@ -37,6 +38,12 @@ router.patch(
   isUser,
   verifyAccessToken,
   editRoomDetails
+);
+router.patch(
+  "/api/user/owner/edit/property/room/tenant",
+  isUser,
+  verifyAccessToken,
+  editTenantDetails
 );
 
 module.exports = router;
