@@ -1103,7 +1103,7 @@ const post_controllers = {
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
 
       if (!propertyRents)
-        throw new Error("No tenants have been added to this property.");
+        throw new Error("No rents have been added to this property.");
 
       const checkIfRoomIdIsRegisteredUnderSelectedProperty =
         propertyRents[roomId];
