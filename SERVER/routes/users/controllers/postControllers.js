@@ -285,7 +285,7 @@ const post_controllers = {
 
       const { propertiesOwned } = ownerPropertiesDocument;
 
-      newProperty.propertyID = crypto.randomUUID();
+      newProperty.propertyID = crypto.randomUUID().slice(-12);
 
       let checkIfPropertyNumberIsRegistered = false;
 
@@ -549,7 +549,7 @@ const post_controllers = {
       }
 
       newRoom.isOccupied = false;
-      newRoom.roomID = crypto.randomUUID()?.slice(-8);
+      newRoom.roomID = crypto.randomUUID()?.slice(-12);
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
@@ -1141,7 +1141,7 @@ const post_controllers = {
           : 0;
 
       const newRentPaymentEntry = {
-        paymentID: crypto.randomUUID(),
+        paymentID: crypto.randomUUID().slice(-12),
         date: new Date().toLocaleDateString(),
         monthDue: payment?.month,
         monthlyPayment: roomRate,
