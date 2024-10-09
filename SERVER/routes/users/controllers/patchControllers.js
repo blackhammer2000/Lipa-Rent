@@ -316,7 +316,7 @@ const patchControllers = {
 
       const { rents } = rentsDocument;
 
-      const checkIfPropertyIdIsRegistered = rents?[0]?[propertyId];
+      const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
       if (
         !checkIfPropertyIdIsRegistered ||
