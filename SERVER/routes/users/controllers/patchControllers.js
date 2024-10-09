@@ -283,7 +283,125 @@ const patchControllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
-  editRentDetails: async (req, res) => {},
+
+  editRentDetails: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unknown user...");
+      if (!req?.body.propertyId)
+        throw new Error("provide a valid property Id.");
+      if (!req?.body.propertyNo)
+        throw new Error("provide a valid property NO.");
+      if (!req?.body.roomId) throw new Error("provide a valid room Id.");
+      if (!req?.body.tenantId) throw new Error("provide a valid tenant Id.");
+      if (!req.body.paymentId) throw new Error("provide a valid payment Id.");
+      if (!req.body.editedRent)
+        throw new Error("provide a valid edited Rent doc.");
+
+      const {
+        id,
+        propertyId,
+        propertyNo,
+        roomId,
+        tenantId,
+        paymentId,
+        editedRent,
+      } = req?.body;
+
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
+
+      const rentsDocument = await Rent.findOne({ ownerID: id });
+
+      if (!rentsDocument) throw new Error(rentsDocument);
+
+      const { rents } = rentsDocument;
+
+      const checkIfPropertyIdIsRegistered = rents?[0]?[propertyId];
+
+      if (
+        !checkIfPropertyIdIsRegistered ||
+        (!checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
+      ) {
+        if (
+          !checkIfPropertyIdIsRegistered &&
+          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
+        )
+          throw new Error(
+            "Property with the given property Id and  property number has not been registered in the tenants database."
+          );
+
+        if (!checkIfPropertyIdIsRegistered)
+          throw new Error(
+            "Property with the given property Id has not been registered in the tenants database."
+          );
+      }
+
+      const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
+
+      if (!propertyRents)
+        throw new Error("No tenants have been added to this property.");
+
+      const checkIfRoomIdIsRegisteredUnderSelectedProperty =
+        propertyRents[roomId];
+
+      if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
+        throw new Error(
+          "Room with the given ID has not been registered in the tenants database."
+        );
+
+      const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
+        checkIfRoomIdIsRegisteredUnderSelectedProperty[tenantId];
+
+      if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
+        throw new Error(
+          "Tenant with the given ID has not been registered in the tenants database."
+        );
+
+      const requestedPaymentReport =
+        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.findIndex(
+          (payment) => payment.paymentID === paymentId
+        );
+
+      if (!requestedPaymentReport)
+        throw new Error(
+          "The requested payment report with the given payment ID was not found."
+        );
+
+      for (const key in editedRent) {
+        if (key === "paymentID") {
+          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[key] =
+            checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[key];
+        } else {
+          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[key]
+            ? (checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[
+                key
+              ] = editedRent[key])
+            : null;
+        }
+      }
+
+      rents[0][propertyId].rentPayments[roomId][tenantId] =
+        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty;
+
+      const updateRents = await Rent.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            rents,
+          },
+        }
+      );
+
+      if (updateRents.acknowledged && updateRents.modifiedCount)
+        res.status(200).json({
+          message: `Rent payment for the room with ID: ${roomId} made by tenant with ID: ${tenantId} has been successfuly edited.`,
+          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
+        });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
 };
 
 module.exports = patchControllers;

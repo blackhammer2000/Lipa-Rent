@@ -1411,7 +1411,7 @@ const post_controllers = {
           (payment) => payment.paymentID === paymentId
         );
 
-      if (!Object.keys(requestedPaymentReport))
+      if (!requestedPaymentReport)
         throw new Error(
           "The requested payment report with the given payment ID was not found."
         );
