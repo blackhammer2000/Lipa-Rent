@@ -46,11 +46,11 @@ router.patch(
   verifyAccessToken,
   editTenantDetails
 );
-router.patch(
-  "/api/user/owner/edit/property/room/tenant/rent/payment",
-  isUser,
-  verifyAccessToken,
-  editRentDetails
-);
+// router.patch(
+//   "/api/user/owner/edit/property/room/tenant/rent/payment",
+//   isUser,
+//   verifyAccessToken,
+//   editRentDetails
+// );
 
 module.exports = router;

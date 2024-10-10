@@ -22,12 +22,12 @@ const {
   deleteRentPaymentDetails,
 } = require("../controllers/deleteControllers");
 
-router.patch(
-  "/api/user/owner/edit/owner",
-  isUser,
-  verifyAccessToken,
-  deleteOwnerDetails
-);
+// router.patch(
+//   "/api/user/owner/edit/owner",
+//   isUser,
+//   verifyAccessToken,
+//   deleteOwnerDetails
+// );
 router.patch(
   "/api/user/owner/delete/property",
   isUser,
