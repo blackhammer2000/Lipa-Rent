@@ -83,15 +83,12 @@ const patchControllers = {
 
       delete propertiesOwned[0][checkIfPropertyIdIsRegistered.propertyID];
 
-      const updateEditedProperty = await Property.updateOne(
+      const deleteProperty = await Property.updateOne(
         { ownerID: id },
         { $set: { propertiesOwned } }
       );
 
-      if (
-        !updateEditedProperty.acknowledged &&
-        !updateEditedProperty.modifiedCount
-      )
+      if (!deleteProperty.acknowledged && !deleteProperty.modifiedCount)
         throw new Error("Error when updating the property in the database.");
 
       res.status(200).json({
@@ -149,7 +146,7 @@ const patchControllers = {
 
       delete rooms[0][propertyId].rooms[roomId];
 
-      const updateRooms = await Room.updateOne(
+      const deleteRoom = await Room.updateOne(
         { ownerID: id },
         {
           $set: {
@@ -158,9 +155,9 @@ const patchControllers = {
         }
       );
 
-      if (updateRooms.acknowledged && updateRooms.modifiedCount)
+      if (deleteRoom.acknowledged && deleteRoom.modifiedCount)
         res.status(200).json({
-          message: `Room with the Number: ${roomNo} and ID: ${roomId} has been successfuly deleted.`,
+          message: `Room with the Number: ${roomNo} and ID: ${roomId} has been deleted.`,
         });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
@@ -227,7 +224,7 @@ const patchControllers = {
 
       delete tenants[0][propertyId].tenants[roomId][tenantId];
 
-      const updateTenants = await Tenant.updateOne(
+      const deleteTenant = await Tenant.updateOne(
         { ownerID: id },
         {
           $set: {
@@ -236,10 +233,9 @@ const patchControllers = {
         }
       );
 
-      if (updateTenants.acknowledged && updateTenants.modifiedCount)
+      if (deleteTenant.acknowledged && deleteTenant.modifiedCount)
         res.status(200).json({
           message: `Tenant with the Name: ${selectedTenantOnRoomOnProperty.name} and ID: ${tenantId} has been successfuly deleted.`,
-          selectedTenantOnRoomOnProperty,
         });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
@@ -326,7 +322,7 @@ const patchControllers = {
       rents[0][propertyId].rentPayments[roomId][tenantId] =
         newTenantPaymentReports;
 
-      const updateRents = await Rent.updateOne(
+      const deleteRent = await Rent.updateOne(
         { ownerID: id },
         {
           $set: {
@@ -335,7 +331,7 @@ const patchControllers = {
         }
       );
 
-      if (updateRents.acknowledged && updateRents.modifiedCount)
+      if (deleteRent.acknowledged && deleteRent.modifiedCount)
         res.status(200).json({
           message: `Rent payment for the room with ID: ${roomId} made by tenant with ID: ${tenantId} has been successfuly deleted.`,
         });
