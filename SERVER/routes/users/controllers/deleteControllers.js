@@ -10,7 +10,7 @@ const { Rent } = require("../../../middleware/models/Rent");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
-  editOwnerDetails: async (req, res) => {
+  deleteOwnerDetails: async (req, res) => {
     try {
       if (!req.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
