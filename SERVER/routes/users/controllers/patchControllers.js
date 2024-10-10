@@ -63,7 +63,6 @@ const patchControllers = {
         throw new Error("provide a valid property.");
 
       const { id, propertyNo, propertyId, editedProperty } = req.body;
-      delete editedProperty.propertyID;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -84,10 +83,21 @@ const patchControllers = {
           "The property number given does not match the number of the property saved in the database with the given ID."
         );
 
-      propertiesOwned[0][checkIfPropertyIdIsRegistered.propertyID] = {
-        ...editedProperty,
-        propertyID: checkIfPropertyIdIsRegistered.propertyID,
-      };
+      editedProperty.propertyID ? delete editedProperty.propertyID : null;
+
+      for (const key in editedRoom) {
+        if (key === "propertyID") {
+          checkIfPropertyIdIsRegistered[key] =
+            checkIfPropertyIdIsRegistered[key];
+        } else {
+          checkIfPropertyIdIsRegistered[key]
+            ? (checkIfPropertyIdIsRegistered[key] = editedProperty[key])
+            : null;
+        }
+      }
+
+      propertiesOwned[0][checkIfPropertyIdIsRegistered.propertyID] =
+        checkIfPropertyIdIsRegistered;
 
       const updateEditedProperty = await Property.updateOne(
         { ownerID: id },
@@ -159,7 +169,7 @@ const patchControllers = {
       if (!Object.keys(selectRoomInPropertyUsingRoomID))
         throw new Error("No rooms have been added to this property.");
 
-      // const newRoomDetails = {};
+      editedRoom.roomID ? delete editedRoom.roomID : null;
 
       for (const key in editedRoom) {
         if (key === "roomID") {
@@ -185,7 +195,7 @@ const patchControllers = {
 
       if (updateRooms.acknowledged && updateRooms.modifiedCount)
         res.status(200).json({
-          message: `Room with the Number: ${roomNo} and ID: ${roomId} has been successfuly edited.`,
+          message: `Room with the ID: ${roomId} has been successfuly edited.`,
           selectRoomInPropertyUsingRoomID,
         });
     } catch (err) {
@@ -200,6 +210,8 @@ const patchControllers = {
       if (!req.body.propertyNo) throw new Error("provide a valid property No.");
       if (!req.body.roomId) throw new Error("provide a valid room Id.");
       if (!req.body.tenantId) throw new Error("provide a valid tenant Id.");
+      if (!req.body.editedTenant)
+        throw new Error("provide a valid editedTenant.");
 
       const { id, propertyId, propertyNo, roomId, tenantId, editedTenant } =
         req?.body;
@@ -252,6 +264,8 @@ const patchControllers = {
           "No tenant with the given tenantId has been added to this room."
         );
 
+      editedTenant.tenantID ? delete editedTenant.tenantID : null;
+
       for (const key in editedTenant) {
         if (key === "tenantID") {
           selectedTenantOnRoomOnProperty[key] =
@@ -277,7 +291,7 @@ const patchControllers = {
 
       if (updateTenants.acknowledged && updateTenants.modifiedCount)
         res.status(200).json({
-          message: `Tenant with the Name: ${selectedTenantOnRoomOnProperty.name} and ID: ${tenantId} has been successfuly edited.`,
+          message: `Tenant with the ID: ${tenantId} has been successfuly edited.`,
           selectedTenantOnRoomOnProperty,
         });
     } catch (err) {
