@@ -52,7 +52,7 @@ const patchControllers = {
     }
   },
 
-  editPropertyDetails: async (req, res) => {
+  deletePropertyDetails: async (req, res) => {
     try {
       if (!req.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
@@ -61,7 +61,6 @@ const patchControllers = {
       if (!req.body.propertyId) throw new Error("provide a valid property Id.");
 
       const { id, propertyNo, propertyId } = req.body;
-      delete editedProperty.propertyID;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -89,14 +88,14 @@ const patchControllers = {
         { $set: { propertiesOwned } }
       );
 
-      if (!updateEditedProperty.acknowledged)
+      if (
+        !updateEditedProperty.acknowledged &&
+        !updateEditedProperty.modifiedCount
+      )
         throw new Error("Error when updating the property in the database.");
 
       res.status(200).json({
-        editedProperty: {
-          propertyID: checkIfPropertyIdIsRegistered.propertyID,
-          ...editedProperty,
-        },
+        message: `Property with ID: ${propertyId} and Number: ${propertyNo} has been deleted`,
       });
     } catch (err) {
       if (err?.message)
@@ -106,7 +105,7 @@ const patchControllers = {
     }
   },
 
-  editRoomDetails: async (req, res) => {
+  deleteRoomDetails: async (req, res) => {
     try {
       if (!req.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
@@ -114,11 +113,8 @@ const patchControllers = {
       if (!req.body.propertyNo) throw new Error("provide a valid property Nd.");
       if (!req.body.roomId) throw new Error("provide a valid room Id.");
       if (!req.body.roomNo) throw new Error("provide a valid room No.");
-      if (!req.body.editedRoom)
-        throw new Error("provide a valid edited property details.");
 
-      const { id, propertyId, propertyNo, roomId, roomNo, editedRoom } =
-        req.body;
+      const { id, propertyId, propertyNo, roomId, roomNo } = req.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -150,22 +146,6 @@ const patchControllers = {
         );
       if (selectRoomInPropertyUsingRoomID.roomNumber !== roomNo)
         throw new Error("Selected room ID and room number Room do not match.");
-
-      if (!Object.keys(selectRoomInPropertyUsingRoomID))
-        throw new Error("No rooms have been added to this property.");
-
-      // const newRoomDetails = {};
-
-      for (const key in editedRoom) {
-        if (key === "roomID") {
-          selectRoomInPropertyUsingRoomID[key] =
-            selectRoomInPropertyUsingRoomID[key];
-        } else {
-          selectRoomInPropertyUsingRoomID[key]
-            ? (selectRoomInPropertyUsingRoomID[key] = editedRoom[key])
-            : null;
-        }
-      }
 
       delete rooms[0][propertyId].rooms[roomId];
 
@@ -276,18 +256,9 @@ const patchControllers = {
       if (!req?.body.roomId) throw new Error("provide a valid room Id.");
       if (!req?.body.tenantId) throw new Error("provide a valid tenant Id.");
       if (!req.body.paymentId) throw new Error("provide a valid payment Id.");
-      if (!req.body.editedRent)
-        throw new Error("provide a valid edited Rent doc.");
 
-      const {
-        id,
-        propertyId,
-        propertyNo,
-        roomId,
-        tenantId,
-        paymentId,
-        editedRent,
-      } = req?.body;
+      const { id, propertyId, propertyNo, roomId, tenantId, paymentId } =
+        req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
