@@ -358,31 +358,35 @@ const patchControllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
-      const requestedPaymentReport =
-        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.findIndex(
-          (payment) => payment.paymentID === paymentId
+      let requestedPaymentReportIndex = null;
+
+      const newTenantPaymentReports =
+        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.map(
+          (payment, index) => {
+            if (payment.paymentID === paymentId) {
+              requestedPaymentReportIndex = index;
+
+              for (const key in editedRent) {
+                if (key === "paymentID") {
+                  payment[key] = payment[key];
+                } else {
+                  payment[key] ? (payment[key] = editedRent[key]) : null;
+                }
+                return payment;
+              }
+            } else {
+              return payment;
+            }
+          }
         );
 
-      if (!requestedPaymentReport)
+      if (!requestedPaymentReportIndex)
         throw new Error(
           "The requested payment report with the given payment ID was not found."
         );
 
-      for (const key in editedRent) {
-        if (key === "paymentID") {
-          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[key] =
-            checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[key];
-        } else {
-          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[key]
-            ? (checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty[
-                key
-              ] = editedRent[key])
-            : null;
-        }
-      }
-
       rents[0][propertyId].rentPayments[roomId][tenantId] =
-        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty;
+        newTenantPaymentReports;
 
       const updateRents = await Rent.updateOne(
         { ownerID: id },
@@ -396,7 +400,8 @@ const patchControllers = {
       if (updateRents.acknowledged && updateRents.modifiedCount)
         res.status(200).json({
           message: `Rent payment for the room with ID: ${roomId} made by tenant with ID: ${tenantId} has been successfuly edited.`,
-          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
+          selectedRentPaymentEdit:
+            newTenantPaymentReports[requestedPaymentReportIndex],
         });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
