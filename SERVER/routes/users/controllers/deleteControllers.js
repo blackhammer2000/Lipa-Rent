@@ -52,6 +52,12 @@ const patchControllers = {
     }
   },
 
+  //?  below is the expected requestBody from the user when deleting a property.
+  //* {
+  //*   propertyNumber: "NGONG/NGONG/12058",
+  //*   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //* }
+
   deletePropertyDetails: async (req, res) => {
     try {
       if (!req.body.id)
@@ -101,6 +107,14 @@ const patchControllers = {
           .json({ error: err?.message, response_status: "danger" });
     }
   },
+
+  //?  below is the expected requestBody from the user when deleting a room on property.
+  //* {
+  //*   propertyNo: "NGONG/NGONG/12058",
+  //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   roomId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   roomNo: "2A",
+  //* }
 
   deleteRoomDetails: async (req, res) => {
     try {
@@ -163,6 +177,14 @@ const patchControllers = {
       if (err.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //?  below is the expected requestBody from the user when deleting a tenant for a room in property
+  //*  {
+  //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   propertyNo: "NGONG/NGONG/12058",
+  //*   roomId: "PK1",
+  //*   tenantId: "35501094",
+  //*  }
 
   deleteTenantDetails: async (req, res) => {
     try {
@@ -241,6 +263,15 @@ const patchControllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //?  below is the expected requestBody from the user when deleting a rent payment for a room by a tenant.
+  //* {
+  //*   "propertyNo": "NGONG/NGONG/12058",
+  //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   "roomId": "PK3",
+  //*   "tenantId": "43261521",
+  //*   "paymentId": "ae1eb7d1-a490-4607-bd73-74e168a4a95y",
+  //* }
 
   deleteRentPaymentDetails: async (req, res) => {
     try {
