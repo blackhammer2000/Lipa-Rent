@@ -47,6 +47,7 @@ router.post(
   "/api/user/owner/create/property",
   isUser,
   verifyAccessToken,
+  propertyValidator,
   createNewProperty
 );
 router.post(
