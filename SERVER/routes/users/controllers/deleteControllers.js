@@ -60,9 +60,9 @@ const patchControllers = {
 
   deletePropertyDetails: async (req, res) => {
     try {
-      if (!req.body.id)
+      if (!req?.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
-      if (!req.body.propertyNo)
+      if (!req?.body.propertyNo)
         throw new Error("Provide a valid property number.");
       if (!req.body.propertyId) throw new Error("provide a valid property Id.");
 
