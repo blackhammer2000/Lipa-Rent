@@ -15,7 +15,7 @@ const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
 const {
-  deleteOwnerDetails,
+  //   deleteOwnerDetails,
   deletePropertyDetails,
   deleteRoomDetails,
   deleteTenantDetails,
