@@ -744,8 +744,15 @@ const post_controllers = {
   //! TENANT ENDPOINTS FOR DEALING WITH THE TENANT DOCUMENT IN ADDING AND READING TENANT DATA FORM THE THE DATABASE.
 
   //?  below is the expected requestBody from the user when creating a tenant for a room in property
-  //*  { tenantNationalID: "35501094",
-  //*   tenantName: "LIXO PESSAR",}
+  //*  {
+  //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   propertyNo: "NGONG/NGONG/12058",
+  //*   roomId: "PK1",
+  //*   newTenant: {
+  //*    tenantNationalID: "35501094",
+  //*    tenantName: "LIXO PESSAR",
+  //*     }
+  //*  }
 
   createTenantForRoomOnProperty: async (req, res) => {
     try {
