@@ -4,12 +4,12 @@ const {
   verifyAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
 
-const {
-  landlordValidator,
-  loginValidator,
-  propertyValidator,
-  tenantValidator,
-} = require("../../../middleware/validators/validators");
+// const {
+//   landlordValidator,
+//   loginValidator,
+//   propertyValidator,
+//   tenantValidator,
+// } = require("../../../middleware/validators/validators");
 
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
