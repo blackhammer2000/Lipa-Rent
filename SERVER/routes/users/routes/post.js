@@ -36,6 +36,7 @@ const {
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
 } = require("../controllers/postControllers");
+const { roomValidator } = require("../../../middleware/validators/room");
 
 // USER SIGN UP AND LOGIN
 
@@ -68,6 +69,7 @@ router.post(
   "/api/user/owner/create/property/room",
   isUser,
   verifyAccessToken,
+  roomValidator,
   createSingleRoomOnProperty
 );
 router.post(
