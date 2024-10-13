@@ -9,6 +9,7 @@ const {
   loginValidator,
   propertyValidator,
   tenantValidator,
+  roomValidator,
 } = require("../../../middleware/validators/validators");
 
 const { isUser } = require("../helpers/isUser");
@@ -36,7 +37,6 @@ const {
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
 } = require("../controllers/postControllers");
-const { roomValidator } = require("../../../middleware/validators/room");
 
 // USER SIGN UP AND LOGIN
 
