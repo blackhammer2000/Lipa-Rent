@@ -88,6 +88,7 @@ router.post(
   "/api/user/owner/create/property/room/tenant",
   isUser,
   verifyAccessToken,
+  tenantValidator,
   createTenantForRoomOnProperty
 );
 router.post(
