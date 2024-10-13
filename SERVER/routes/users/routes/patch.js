@@ -19,7 +19,7 @@ const {
   editPropertyDetails,
   editRoomDetails,
   editTenantDetails,
-  editRentDetails,
+  // editRentDetails,
 } = require("../controllers/patchControllers");
 
 router.patch(
