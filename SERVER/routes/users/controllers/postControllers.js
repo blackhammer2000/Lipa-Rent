@@ -34,7 +34,7 @@ const post_controllers = {
         throw new Error("passwords do not match.");
 
       const owner = {
-        name,
+        name: name.toUpperCase(),
         nationalID,
         email,
         phone,
