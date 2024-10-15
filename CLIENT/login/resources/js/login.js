@@ -3,9 +3,9 @@ const loginForm = document.querySelector("form");
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = loginForm.querySelector("[data-email]");
-  const nationalID = loginForm.querySelector("[data-national-id]");
-  const password = loginForm.querySelector("[data-password]");
+  const email = loginForm.querySelector("[data-email]").value;
+  const nationalID = loginForm.querySelector("[data-national-id]").value;
+  const password = loginForm.querySelector("[data-password]").value;
 
   const loginRequestOptions = {
     mode: "cors",
@@ -31,6 +31,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   if (message && token) {
     alert(message);
-    alert(token);
+    localStorage.setItem("liparentAccessToken", JSON.stringify(token));
+    return;
   }
 });

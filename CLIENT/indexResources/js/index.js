@@ -3,12 +3,14 @@ const signUpForm = document.querySelector("form");
 signUpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = signUpForm.querySelector("[data-name]").trim();
-  const nationalID = signUpForm.querySelector("[data-national-id]");
-  const email = signUpForm.querySelector("[data-email]");
-  const phone = signUpForm.querySelector("[data-phone]");
-  const password = signUpForm.querySelector("[data-password]");
-  const confirmPassword = signUpForm.querySelector("[data-confirm-password]");
+  const name = signUpForm.querySelector("[data-name]").value;
+  const nationalID = signUpForm.querySelector("[data-national-id]").value;
+  const email = signUpForm.querySelector("[data-email]").value;
+  const phone = signUpForm.querySelector("[data-phone]").value;
+  const password = signUpForm.querySelector("[data-password]").value;
+  const confirmPassword = signUpForm.querySelector(
+    "[data-confirm-password]"
+  ).value;
 
   const signUpRequestOptions = {
     mode: "cors",
