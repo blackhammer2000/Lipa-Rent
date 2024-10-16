@@ -1,9 +1,10 @@
 class Store {
   static async readAllPropertiesOwned(accessToken) {
-    if (!accessToken) location?.assign("../../../login/login.html");
+    if (accessToken === (null || undefined))
+      location.assign("/CLIENT/login/login.html");
 
     const requestOptions = {
-      method: "GET",
+      method: "POST",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
@@ -13,32 +14,27 @@ class Store {
     };
 
     const getAllPropertiesData = await fetch(
-      "http://localhost:4000/api/user/landlord/read/allProperties",
+      "http://localhost:4000/api/user/owner/read/properties",
       requestOptions
     );
 
-    const { allProperties, error } = await getAllPropertiesData?.json();
+    const { propertiesOwned, error } = await getAllPropertiesData?.json();
 
     if (error && error?.toLowerCase() !== "session expired") {
-      // UserInterface?.showALertMessage(error, "danger");
       alert(error);
-
       return;
     }
 
-    if (error && error?.toLowerCase() === "session expired")
-      location?.assign("../TEXTBOOK LOG IN/textbooklogin.html");
+    if (
+      error &&
+      error?.toLowerCase() === ("session expired" || "jwt malformed")
+    )
+      location?.assign("/CLIENT/login/login.html");
 
-    if (allProperties) return allProperties;
+    if (propertiesOwned) return propertiesOwned;
   }
 }
 
 class UserInterface {
   static renderProperties() {}
 }
-
-(async function () {
-  const properties = await Store.readAllPropertiesOwned();
-
-  console.log(properties);
-})();

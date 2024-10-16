@@ -428,10 +428,11 @@ const post_controllers = {
 
   readAllPropertiesOwned: async (req, res) => {
     try {
-      const { id, propertyNumber } = req.body;
-
-      if (!id)
+      if (!req.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
+      const { id } = req.body;
+
+      if (!isValid(id)) throw new Error("Invalid document ID.");
 
       const allProperties = await Property.findOne({ ownerID: id });
 
@@ -442,7 +443,8 @@ const post_controllers = {
       if (propertiesOwned === (null || undefined))
         throw new Error("No properties found/registered in the database.");
 
-      if (propertiesOwned) res.status(200).json({ propertiesOwned });
+      if (propertiesOwned)
+        res.status(200).json({ propertiesOwned: propertiesOwned[0] });
     } catch (err) {
       if (err?.message)
         res
