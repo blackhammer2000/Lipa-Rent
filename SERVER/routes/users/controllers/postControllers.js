@@ -441,10 +441,12 @@ const post_controllers = {
       const { propertiesOwned } = allProperties;
 
       if (propertiesOwned === (null || undefined))
-        throw new Error("No properties found/registered in the database.");
+        throw new Error("Error when reading the properties.");
 
-      if (propertiesOwned)
-        res.status(200).json({ propertiesOwned: propertiesOwned[0] });
+      if (!Object.keys(propertiesOwned[0]))
+        throw new Error("No properties have been added.");
+
+      res.status(200).json({ propertiesOwned: propertiesOwned[0] });
     } catch (err) {
       if (err?.message)
         res
