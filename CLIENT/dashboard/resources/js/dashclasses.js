@@ -42,7 +42,7 @@ class UserInterface {
     this.clearTable(tableBody);
 
     const fragment = document.createDocumentFragment();
-    const tableNumber = 1;
+    let tableNumber = 1;
 
     for (const key in properties) {
       const propertyRow = this.createPropertyRow(properties[key], tableNumber);
