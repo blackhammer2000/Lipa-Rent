@@ -42,11 +42,13 @@ class UserInterface {
     this.clearTable(tableBody);
 
     const fragment = document.createDocumentFragment();
+    const tableNumber = 1;
 
-    properties.forEach((property, index) => {
-      const propertyRow = this.createPropertyRow(property, index);
+    for (const key in properties) {
+      const propertyRow = this.createPropertyRow(properties[key], tableNumber);
       fragment.append(propertyRow);
-    });
+      tableNumber++;
+    }
 
     tableBody.append(fragment);
   }
