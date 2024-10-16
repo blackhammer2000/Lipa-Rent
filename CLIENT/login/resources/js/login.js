@@ -35,7 +35,7 @@ loginForm.addEventListener("submit", async (e) => {
       ? localStorage.removeItem("liparentAccessToken")
       : localStorage.setItem("liparentAccessToken", JSON.stringify(token));
 
-    location.assign("CLIENT/dashboard/dashboard.html");
+    location.assign("/CLIENT/dashboard/dashboard.html");
     return;
   }
 });
