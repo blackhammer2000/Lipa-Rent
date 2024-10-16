@@ -36,5 +36,69 @@ class Store {
 }
 
 class UserInterface {
-  static renderProperties() {}
+  static renderProperties(properties, tableBody) {
+    if (!properties) return;
+
+    this.clearTable(tableBody);
+
+    const fragment = document.createDocumentFragment();
+
+    properties.forEach((property, index) => {
+      const propertyRow = this.createPropertyRow(property, index);
+      fragment.append(propertyRow);
+    });
+
+    tableBody.append(fragment);
+  }
+
+  static createPropertyRow(property, index) {
+    if (!property) return;
+
+    const {
+      propertyID,
+      propertyName,
+      propertyNumber,
+      propertyLocation,
+      propertyValue,
+    } = property;
+
+    const row = document.createElement("tr");
+
+    const tablenumberCell = document.createElement("td");
+    const tablenumberCellText = document.createTextNode(index);
+    tablenumberCell.append(tablenumberCellText);
+    row.append(tablenumberCell);
+
+    const tableIdCell = document.createElement("td");
+    const tableIdCellText = document.createTextNode(propertyID);
+    tableIdCell.append(tableIdCellText);
+    row.append(tableIdCell);
+
+    const tablePropertyNameCell = document.createElement("td");
+    const tablePropertyNameCellText = document.createTextNode(propertyName);
+    tablePropertyNameCell.append(tablePropertyNameCellText);
+    row.append(tablePropertyNameCell);
+
+    const tablePropertyNumberCell = document.createElement("td");
+    const tablePropertyNumberCellText = document.createTextNode(propertyNumber);
+    tablePropertyNumberCell.append(tablePropertyNumberCellText);
+    row.append(tablePropertyNumberCell);
+
+    const tablePropertyLocationCell = document.createElement("td");
+    const tablePropertyLocationCellText =
+      document.createTextNode(propertyLocation);
+    tablePropertyLocationCell.append(tablePropertyLocationCellText);
+    row.append(tablePropertyLocationCell);
+
+    const tablePropertyValueCell = document.createElement("td");
+    const tablePropertyValueCellText = document.createTextNode(propertyValue);
+    tablePropertyValueCell.append(tablePropertyValueCellText);
+    row.append(tablePropertyValueCell);
+
+    return row;
+  }
+
+  static clearTable(tableBody) {
+    tableBody.querySelectorAll("td").forEach((row) => row.remove());
+  }
 }
