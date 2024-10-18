@@ -2,3 +2,16 @@ tbody tr:hover {
   cursor: pointer;
   opacity: 0.5;
 }
+
+body {
+  position: relative;
+}
+
+.editproperty {
+  position: absolute;
+  content: "";
+  top: 10%;
+  left: 10%;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.95);
+}
