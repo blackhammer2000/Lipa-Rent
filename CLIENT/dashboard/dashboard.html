@@ -22,6 +22,7 @@
       rel="stylesheet"
       href="../indexResources/bootstrap/css/bootstrap.min.css.map"
     />
+    <link rel="stylesheet" href="./resources/css/dashboard.css" />
 
     <script src="./resources/js/dashclasses.js" defer></script>
     <script src="./resources/js/dashboard.js" defer></script>
@@ -63,7 +64,9 @@
       </div>
 
       <div class="hero mt-5 d-flex flex-column container-fluid text-center">
-        <h2>PROPERTIES OF PETER KARANJA, ID: 377725864</h2>
+        <h2 data-dashboard-description="">
+          PROPERTIES OF PETER KARANJA, ID: 377725864
+        </h2>
 
         <table class="table table-active mt-2">
           <thead class="show">
@@ -114,6 +117,73 @@
           </ul>
         </div>
       </footer>
+    </div>
+
+    <div
+      class="editproperty w-50 d-flex justify-content-center align-items-center border-left border-success"
+    >
+      <fieldset class="border border-success p-5 border-radius-50">
+        <legend class="font-weight-bold text-center">EDIT PROPERTY</legend>
+        <form action="" class="form">
+          <div class="form-group">
+            <input
+              data-name
+              placeholder="Name"
+              type="text"
+              class="form-control text-uppercase"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              data-national-id
+              placeholder="NATIONAL ID"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              data-email
+              placeholder="EMAIL"
+              type="email"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              data-phone
+              placeholder="PHONE"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              data-password
+              placeholder="PASSWORD"
+              type="password"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              data-confirm-password
+              placeholder="CONFIRM PASSWORD"
+              type="password"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group text-center">
+            <button class="btn btn-success w-100">SIGN UP</button>
+          </div>
+        </form>
+      </fieldset>
     </div>
   </body>
 </html>

@@ -11,6 +11,6 @@
   const properties = await Store.readAllPropertiesOwned(accessToken);
 
   if (!properties) return;
-  console.log(properties);
+
   UserInterface.renderProperties(properties, tableBody);
 })();
