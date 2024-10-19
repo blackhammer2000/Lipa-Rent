@@ -114,12 +114,15 @@ class UserInterface {
 
     const editPropertyDiv = document.querySelector("[data-edit-property]");
     const propertyIdSpan = editPropertyDiv.querySelector(
-      "[data-edit-propertyID]"
+      "[data-edit-property-id]"
+    );
+    const propertyNumberSpan = editPropertyDiv.querySelector(
+      "[data-edit-property-number]"
     );
 
     editPropertyDiv.classList.toggle("hide");
 
-    const editForm = editPropertyDiv.querySelector("form");
+    const editForm = editPropertyDiv.querySelector("[data-edit-property-form]");
 
     const propertyId =
       e.target.parentElement.parentElement.children[1].innerText;
@@ -138,9 +141,40 @@ class UserInterface {
     );
 
     propertyIdSpan.innerText = propertyId;
+    propertyNumberSpan.innerText = propertyNumber;
     propertyNameFormInput.value = propertyName;
     propertyNumberFormInput.value = propertyNumber;
     propertyLocationFormInput.value = propertyLocation;
+  }
+
+  static editProperty(e, form, accessToken) {
+    e.preventDefault();
+
+    const propertyId =
+      form.parentElement.parentElement.parentElement.querySelector("tbody");
+
+    const editedPropertyName = form.querySelector("[data-edit-name]");
+    const editedPropertyNumber = form.querySelector("[data-edit-number]");
+    const editedPropertyLocation = form.querySelector("[data-edit-location]");
+
+    const editPropertyRequestOptions = {
+      mode: "cors",
+      method: "PATCH",
+      headers: {
+        ContentType: "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        propertyNo: propertyNumber,
+        editedProperty: {
+          propertyName: editedPropertyName.value,
+          propertyNumber: editedPropertyNumber.value,
+          propertyLocation: editedPropertyLocation.value,
+        },
+      }),
+    };
   }
 
   static clearTable(tableBody) {

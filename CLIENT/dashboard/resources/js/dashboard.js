@@ -13,4 +13,10 @@
   if (!properties) return;
 
   UserInterface.renderProperties(properties, tableBody);
+
+  const editPropertyForm = document.querySelector("[data-edit-property-form]");
+
+  editPropertyForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
 })();
