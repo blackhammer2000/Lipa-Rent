@@ -13,5 +13,5 @@
   if (!properties) return;
 
   UserInterface.renderProperties(properties, tableBody);
-  UserInterface.addEventListenersToRows(tableBody);
+  UserInterface.addEventListenersToPropertyRows(tableBody);
 })();

@@ -100,7 +100,7 @@ class UserInterface {
     return row;
   }
 
-  static addEventListenersToRows(tableBody, eventHandler) {
+  static addEventListenersToPropertyRows(tableBody, eventHandler) {
     if (!tableBody || !eventHandler) return;
 
     tableBody.querySelectorAll("tr").forEach((tableRow) => {
