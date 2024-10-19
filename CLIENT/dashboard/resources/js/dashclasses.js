@@ -133,11 +133,12 @@ class UserInterface {
     const propertyLocation =
       e.target.parentElement.parentElement.children[4].innerText;
 
-    const propertyNameFormInput = editForm.querySelector("[data-edit-name]");
-    const propertyNumberFormInput =
-      editForm.querySelector("[data-edit-number]");
+    const propertyNameFormInput = editForm.querySelector("[data-edited-name]");
+    const propertyNumberFormInput = editForm.querySelector(
+      "[data-edited-number]"
+    );
     const propertyLocationFormInput = editForm.querySelector(
-      "[data-edit-location]"
+      "[data-edited-location]"
     );
 
     propertyIdSpan.innerText = propertyId;
@@ -147,7 +148,7 @@ class UserInterface {
     propertyLocationFormInput.value = propertyLocation;
   }
 
-  static editProperty(e, form, accessToken) {
+  static async editProperty(e, form, accessToken) {
     e.preventDefault();
 
     const propertyId = form.parentElement.querySelector(
@@ -165,7 +166,7 @@ class UserInterface {
       mode: "cors",
       method: "PATCH",
       headers: {
-        ContentType: "application/json",
+        "Content-Type": "application/json",
         user: true,
         token: accessToken,
       },
@@ -179,6 +180,13 @@ class UserInterface {
         },
       }),
     };
+
+    const editPropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/edit/property",
+      editPropertyRequestOptions
+    );
+
+    const editedProperties = await editPropertyRequest.json();
   }
 
   static clearTable(tableBody) {
