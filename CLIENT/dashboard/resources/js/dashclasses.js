@@ -113,11 +113,16 @@ class UserInterface {
     e.preventDefault();
 
     const editPropertyDiv = document.querySelector("[data-edit-property]");
+    const propertyIdSpan = editPropertyDiv.querySelector(
+      "[data-edit-propertyID]"
+    );
 
     editPropertyDiv.classList.toggle("hide");
 
     const editForm = editPropertyDiv.querySelector("form");
 
+    const propertyId =
+      e.target.parentElement.parentElement.children[1].innerText;
     const propertyName =
       e.target.parentElement.parentElement.children[2].innerText;
     const propertyNumber =
@@ -132,6 +137,7 @@ class UserInterface {
       "[data-edit-location]"
     );
 
+    propertyIdSpan.innerText = propertyId;
     propertyNameFormInput.value = propertyName;
     propertyNumberFormInput.value = propertyNumber;
     propertyLocationFormInput.value = propertyLocation;

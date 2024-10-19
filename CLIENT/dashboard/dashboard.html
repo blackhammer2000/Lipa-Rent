@@ -171,11 +171,13 @@
       class="propertyModal hide container justify-content-center align-items-center"
     >
       <fieldset class="border border-success p-5 border-radius-50">
-        <legend class="font-weight-bold text-center">EDIT PROPERTY</legend>
-        <h3 data-propertydescription-edit></h3>
+        <legend class="font-weight-bold text-center">
+          EDIT PROPERTY: <span data-edit-propertyID></span>
+        </legend>
 
         <form action="" class="form">
           <div class="form-group">
+            <label class="font-weight-bold">PROPERTY NAME:</label>
             <input
               data-edit-name
               type="text"
@@ -184,6 +186,7 @@
             />
           </div>
           <div class="form-group">
+            <label class="font-weight-bold">PROPERTY NUMBER:</label>
             <input
               data-edit-number
               type="text"
@@ -192,6 +195,7 @@
             />
           </div>
           <div class="form-group">
+            <label class="font-weight-bold">PROPERTY LOCATION:</label>
             <input
               data-edit-location
               type="text"
