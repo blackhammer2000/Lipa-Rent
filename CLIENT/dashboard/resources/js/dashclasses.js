@@ -56,13 +56,8 @@ class UserInterface {
   static createPropertyRow(property, index) {
     if (!property) return;
 
-    const {
-      propertyID,
-      propertyName,
-      propertyNumber,
-      propertyLocation,
-      propertyValue,
-    } = property;
+    const { propertyID, propertyName, propertyNumber, propertyLocation } =
+      property;
 
     const row = document.createElement("tr");
 
@@ -92,20 +87,19 @@ class UserInterface {
     tablePropertyLocationCell.append(tablePropertyLocationCellText);
     row.append(tablePropertyLocationCell);
 
-    const tablePropertyValueCell = document.createElement("td");
-    const tablePropertyValueCellText = document.createTextNode(propertyValue);
-    tablePropertyValueCell.append(tablePropertyValueCellText);
-    row.append(tablePropertyValueCell);
-
     const rowCTAbuttonCell = document.createElement("td");
+
     const rowCTAeditButtonCell = document.createElement("button");
-    rowCTAeditButtonCell.className = "btn btn-primary mr-2";
+    rowCTAeditButtonCell.className = "btn btn-primary mr-2 edit";
     const rowCTAeditButtonCellText = document.createTextNode("Edit");
     rowCTAeditButtonCell.append(rowCTAeditButtonCellText);
+    rowCTAeditButtonCell.addEventListener("click", (e) => {
+      this.populateEditPropertyForm(e);
+    });
     rowCTAbuttonCell.append(rowCTAeditButtonCell);
-    const rowCTAdeleteButtonCell = document.createElement("button");
-    rowCTAdeleteButtonCell.className = "btn btn-danger ml-";
 
+    const rowCTAdeleteButtonCell = document.createElement("button");
+    rowCTAdeleteButtonCell.className = "btn btn-danger ml-2 delete";
     const rowCTAdeleteButtonCellText = document.createTextNode("Delete");
     rowCTAdeleteButtonCell.append(rowCTAdeleteButtonCellText);
     rowCTAbuttonCell.append(rowCTAdeleteButtonCell);
@@ -113,6 +107,34 @@ class UserInterface {
     row.append(rowCTAbuttonCell);
 
     return row;
+  }
+
+  static populateEditPropertyForm(e) {
+    e.preventDefault();
+
+    const editPropertyDiv = document.querySelector("[data-edit-property]");
+
+    editPropertyDiv.classList.toggle("hide");
+
+    const editForm = editPropertyDiv.querySelector("form");
+
+    const propertyName =
+      e.target.parentElement.parentElement.children[2].innerText;
+    const propertyNumber =
+      e.target.parentElement.parentElement.children[3].innerText;
+    const propertyLocation =
+      e.target.parentElement.parentElement.children[4].innerText;
+
+    const propertyNameFormInput = editForm.querySelector("[data-edit-name]");
+    const propertyNumberFormInput =
+      editForm.querySelector("[data-edit-number]");
+    const propertyLocationFormInput = editForm.querySelector(
+      "[data-edit-location]"
+    );
+
+    propertyNameFormInput.value = propertyName;
+    propertyNumberFormInput.value = propertyNumber;
+    propertyLocationFormInput.value = propertyLocation;
   }
 
   static clearTable(tableBody) {
