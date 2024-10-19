@@ -150,12 +150,16 @@ class UserInterface {
   static editProperty(e, form, accessToken) {
     e.preventDefault();
 
-    const propertyId =
-      form.parentElement.parentElement.parentElement.querySelector("tbody");
+    const propertyId = form.parentElement.querySelector(
+      "[data-edit-property-id]"
+    );
+    const propertyNo = form.parentElement.querySelector(
+      "[data-edit-property-number]"
+    );
 
-    const editedPropertyName = form.querySelector("[data-edit-name]");
-    const editedPropertyNumber = form.querySelector("[data-edit-number]");
-    const editedPropertyLocation = form.querySelector("[data-edit-location]");
+    const editedPropertyName = form.querySelector("[data-edited-name]");
+    const editedPropertyNumber = form.querySelector("[data-edited-number]");
+    const editedPropertyLocation = form.querySelector("[data-edited-location]");
 
     const editPropertyRequestOptions = {
       mode: "cors",
@@ -167,7 +171,7 @@ class UserInterface {
       },
       body: JSON.stringify({
         propertyId,
-        propertyNo: propertyNumber,
+        propertyNo,
         editedProperty: {
           propertyName: editedPropertyName.value,
           propertyNumber: editedPropertyNumber.value,

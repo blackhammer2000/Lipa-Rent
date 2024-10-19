@@ -173,16 +173,17 @@
       <fieldset class="border border-success p-5 border-radius-50">
         <legend class="font-weight-bold text-center">EDIT PROPERTY</legend>
 
-        <h5 class="text-center" data-edit-property-credentials>
-          ID: <span data-edit-property-id></span> <br />Number:
-          <span data-edit-property-number></span>
+        <h5 class="text-center">
+          ID: <span class="font-weight-light" data-edit-property-id></span>
+          <br />Number:
+          <span class="font-weight-light" data-edit-property-number></span>
         </h5>
 
         <form data-edit-property-form action="" class="form">
           <div class="form-group">
             <label class="font-weight-bold">PROPERTY NAME:</label>
             <input
-              data-edit-name
+              data-edited-name
               type="text"
               class="form-control text-uppercase"
               required
@@ -191,7 +192,7 @@
           <div class="form-group">
             <label class="font-weight-bold">PROPERTY NUMBER:</label>
             <input
-              data-edit-number
+              data-edited-number
               type="text"
               class="form-control text-uppercase"
               required
@@ -200,7 +201,7 @@
           <div class="form-group">
             <label class="font-weight-bold">PROPERTY LOCATION:</label>
             <input
-              data-edit-location
+              data-edited-location
               type="text"
               class="form-control text-uppercase"
               required
