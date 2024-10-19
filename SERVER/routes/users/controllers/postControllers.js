@@ -252,19 +252,9 @@ const post_controllers = {
 
   //?  below is the expected requestBody from the user when creating a property.
   //* {
+  //*   propertyName: "ELKO APARTMENTS",
   //*   propertyNumber: "NGONG/NGONG/12058",
-  //*   propertyTitleDetails: {
-  //*     name: "PETER KARANJA",
-  //*     nationalID: "37725864",
-  //*     asWho: "SELF",
-  //*   },
   //*   propertyLocation: "NGONG",
-  //*   propertyValue: "12.3M",
-  //*   propertyPurpose: {
-  //*     purposedUse: "commercial",
-  //*     purposeType: "lease",
-  //*   },
-  //*   isIdle: false,
   //* },
 
   createNewProperty: async (req, res) => {

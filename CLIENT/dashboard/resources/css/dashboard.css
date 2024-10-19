@@ -1,13 +1,8 @@
-tbody tr:hover {
-  cursor: pointer;
-  opacity: 0.5;
-}
-
 body {
   position: relative;
 }
 
-.editproperty {
+.propertyModal {
   position: absolute;
   content: "";
   top: 10%;

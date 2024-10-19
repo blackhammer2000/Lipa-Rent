@@ -97,15 +97,22 @@ class UserInterface {
     tablePropertyValueCell.append(tablePropertyValueCellText);
     row.append(tablePropertyValueCell);
 
+    const rowCTAbuttonCell = document.createElement("td");
+    const rowCTAeditButtonCell = document.createElement("button");
+    rowCTAeditButtonCell.className = "btn btn-primary mr-2";
+    const rowCTAeditButtonCellText = document.createTextNode("Edit");
+    rowCTAeditButtonCell.append(rowCTAeditButtonCellText);
+    rowCTAbuttonCell.append(rowCTAeditButtonCell);
+    const rowCTAdeleteButtonCell = document.createElement("button");
+    rowCTAdeleteButtonCell.className = "btn btn-danger ml-";
+
+    const rowCTAdeleteButtonCellText = document.createTextNode("Delete");
+    rowCTAdeleteButtonCell.append(rowCTAdeleteButtonCellText);
+    rowCTAbuttonCell.append(rowCTAdeleteButtonCell);
+
+    row.append(rowCTAbuttonCell);
+
     return row;
-  }
-
-  static addEventListenersToPropertyRows(tableBody, eventHandler) {
-    if (!tableBody || !eventHandler) return;
-
-    tableBody.querySelectorAll("tr").forEach((tableRow) => {
-      tableRow.addEventListener("click", eventHandler);
-    });
   }
 
   static clearTable(tableBody) {
