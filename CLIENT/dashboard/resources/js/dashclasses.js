@@ -100,6 +100,14 @@ class UserInterface {
     return row;
   }
 
+  static addEventListenersToRows(tableBody, eventHandler) {
+    if (!tableBody || !eventHandler) return;
+
+    tableBody.querySelectorAll("tr").forEach((tableRow) => {
+      tableRow.addEventListener("click", eventHandler);
+    });
+  }
+
   static clearTable(tableBody) {
     tableBody.querySelectorAll("td").forEach((row) => row.remove());
   }
