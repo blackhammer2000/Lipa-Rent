@@ -13,5 +13,8 @@
   if (!properties) return;
 
   UserInterface.renderProperties(properties, tableBody);
-  UserInterface.addEventListenersToPropertyRows(tableBody);
+  UserInterface.addEventListenersToPropertyRows(
+    tableBody,
+    populateEditPropertyForm
+  );
 })();
