@@ -18,5 +18,6 @@
 
   editPropertyForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    UserInterface.editProperty(e, editPropertyForm, accessToken);
   });
 })();

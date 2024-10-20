@@ -108,13 +108,7 @@ const patchControllers = {
         throw new Error("Error when updating the property in the database.");
 
       res.status(200).json({
-        editedProperties: {
-          ...properties[0],
-          [checkIfPropertyIdIsRegistered.propertyID]: {
-            propertyID: checkIfPropertyIdIsRegistered.propertyID,
-            ...editedProperty,
-          },
-        },
+        editedProperties: propertiesOwned[0],
       });
     } catch (err) {
       if (err?.message)

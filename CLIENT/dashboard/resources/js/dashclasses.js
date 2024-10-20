@@ -171,8 +171,8 @@ class UserInterface {
         token: accessToken,
       },
       body: JSON.stringify({
-        propertyId,
-        propertyNo,
+        propertyId: propertyId?.value,
+        propertyNo: propertyNo?.value,
         editedProperty: {
           propertyName: editedPropertyName.value,
           propertyNumber: editedPropertyNumber.value,
@@ -186,7 +186,10 @@ class UserInterface {
       editPropertyRequestOptions
     );
 
-    const editedProperties = await editPropertyRequest.json();
+    const { editedProperties, error } = await editPropertyRequest.json();
+
+    alert(editedProperties);
+    alert(error);
   }
 
   static clearTable(tableBody) {
