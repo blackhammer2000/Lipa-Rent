@@ -227,6 +227,13 @@ class UserInterface {
       "[data-edit-property-number]"
     )?.innerText;
 
+    if (
+      !confirm(
+        `Do you want to edit, property with ID: "${propertyId}", with Number: "${previousPropertyNo}"?`
+      )
+    )
+      return;
+
     const editedPropertyName = form.querySelector("[data-edited-name]")?.value;
     const editedPropertyNumber = form.querySelector(
       "[data-edited-number]"
