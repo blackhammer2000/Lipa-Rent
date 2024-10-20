@@ -281,7 +281,7 @@ class UserInterface {
 
     if (message && deletedProperties) {
       alert(message);
-      this.renderProperties(deletedProperties, tableBody);
+      this.renderProperties(deletedProperties, accessToken, tableBody);
       return;
     }
   }
