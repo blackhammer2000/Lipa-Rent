@@ -174,9 +174,9 @@ class UserInterface {
         propertyId: propertyId?.value,
         propertyNo: propertyNo?.value,
         editedProperty: {
-          propertyName: editedPropertyName.value,
-          propertyNumber: editedPropertyNumber.value,
-          propertyLocation: editedPropertyLocation.value,
+          propertyName: editedPropertyName?.value,
+          propertyNumber: editedPropertyNumber?.value,
+          propertyLocation: editedPropertyLocation?.value,
         },
       }),
     };
