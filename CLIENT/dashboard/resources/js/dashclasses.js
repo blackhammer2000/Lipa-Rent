@@ -102,6 +102,9 @@ class UserInterface {
     rowCTAdeleteButtonCell.className = "btn btn-danger ml-2 delete";
     const rowCTAdeleteButtonCellText = document.createTextNode("Delete");
     rowCTAdeleteButtonCell.append(rowCTAdeleteButtonCellText);
+    rowCTAeditButtonCell.addEventListener("click", (e) => {
+      this.deletePropertyAndRender(e);
+    });
     rowCTAbuttonCell.append(rowCTAdeleteButtonCell);
 
     row.append(rowCTAbuttonCell);
@@ -198,6 +201,47 @@ class UserInterface {
       alert(message);
       this.renderProperties(editedProperties, tableBody);
       form.parentElement.parentElement.classList.add("hide");
+    }
+  }
+
+  static async deletePropertyAndRender(e, accessToken, tableBody) {
+    e.preventDefault();
+
+    const propertyId =
+      e.target.parentElement.parentElement.children[1].innerText;
+    const propertyNo =
+      e.target.parentElement.parentElement.children[3].innerText;
+
+    const deletePropertyRequestOptions = {
+      mode: "cors",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        propertyNo,
+      }),
+    };
+
+    const deletePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/delete/property",
+      deletePropertyRequestOptions
+    );
+
+    const { message, deletedProperties, error } =
+      await deletePropertyRequest.json();
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    if (message && deletedProperties) {
+      alert(message);
+      this.renderProperties(deletedProperties, tableBody);
+      return
     }
   }
 

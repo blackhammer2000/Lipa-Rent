@@ -54,8 +54,6 @@ const patchControllers = {
 
   editPropertyDetails: async (req, res) => {
     try {
-      console.log(req.body);
-
       if (!req.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
       if (!req.body.propertyNo)
