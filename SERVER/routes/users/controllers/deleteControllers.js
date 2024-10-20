@@ -99,12 +99,10 @@ const patchControllers = {
 
       res.status(200).json({
         message: `Property with ID: ${propertyId} and Number: ${propertyNo} has been deleted`,
+        deletedProperties: propertiesOwned[0],
       });
     } catch (err) {
-      if (err?.message)
-        res
-          .status(500)
-          .json({ error: err?.message, response_status: "danger" });
+      if (err?.message) res.status(500).json({ error: err?.message });
     }
   },
 
