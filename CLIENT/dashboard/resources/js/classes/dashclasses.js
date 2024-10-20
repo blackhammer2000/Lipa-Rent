@@ -168,7 +168,7 @@ class UserInterface {
     rowCTAdeleteButtonCell.className = "btn btn-danger ml-2 delete";
     const rowCTAdeleteButtonCellText = document.createTextNode("Delete");
     rowCTAdeleteButtonCell.append(rowCTAdeleteButtonCellText);
-    rowCTAeditButtonCell.addEventListener("click", (e) => {
+    rowCTAdeleteButtonCell.addEventListener("click", (e) => {
       this.deletePropertyAndRender(e, accessToken, tableBody);
     });
     rowCTAbuttonCell.append(rowCTAdeleteButtonCell);
@@ -266,8 +266,17 @@ class UserInterface {
 
     const propertyId =
       e.target.parentElement.parentElement.children[1].innerText;
+    const propertyName =
+      e.target.parentElement.parentElement.children[2].innerText;
     const propertyNo =
       e.target.parentElement.parentElement.children[3].innerText;
+
+    if (
+      !confirm(
+        `Do you want to delete, "${propertyName}", with Number: "${propertyNo}"?`
+      )
+    )
+      return;
 
     const { message, deletedProperties, error } = await Store.deleteProperty(
       accessToken,
