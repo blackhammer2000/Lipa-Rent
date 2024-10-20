@@ -40,7 +40,8 @@ class Store {
     editedProperty,
     accessToken
   ) {
-    if (!editedProperty || !accessToken) return;
+    if (!propertyId || !previousPropertyNo || !editedProperty || !accessToken)
+      return;
 
     const editPropertyRequestOptions = {
       mode: "cors",
