@@ -154,7 +154,7 @@ class UserInterface {
     const propertyId = form.parentElement.querySelector(
       "[data-edit-property-id]"
     );
-    const propertyNo = form.parentElement.querySelector(
+    const previousPropertyNo = form.parentElement.querySelector(
       "[data-edit-property-number]"
     );
 
@@ -172,7 +172,7 @@ class UserInterface {
       },
       body: JSON.stringify({
         propertyId: propertyId?.value,
-        propertyNo: propertyNo?.value,
+        propertyNo: previousPropertyNo?.value,
         editedProperty: {
           propertyName: editedPropertyName?.value,
           propertyNumber: editedPropertyNumber?.value,
