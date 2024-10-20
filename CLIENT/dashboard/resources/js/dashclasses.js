@@ -33,6 +33,41 @@ class Store {
 
     if (propertiesOwned) return propertiesOwned;
   }
+
+  static async editProperty(
+    propertyId,
+    previousPropertyNo,
+    editedProperty,
+    accessToken
+  ) {
+    if (!editedProperty || !accessToken) return;
+
+    const editPropertyRequestOptions = {
+      mode: "cors",
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        propertyNo: previousPropertyNo,
+        editedProperty,
+      }),
+    };
+
+    const editPropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/edit/property",
+      editPropertyRequestOptions
+    );
+
+    const editPropertyResponse = await editPropertyRequest.json();
+
+    return editPropertyResponse;
+  }
+
+  static async deleteProperty(accessToken, propertyId, PropertyNo) {}
 }
 
 class UserInterface {
@@ -161,41 +196,31 @@ class UserInterface {
 
     const propertyId = form.parentElement.querySelector(
       "[data-edit-property-id]"
-    );
+    )?.innerText;
     const previousPropertyNo = form.parentElement.querySelector(
       "[data-edit-property-number]"
-    );
+    )?.innerText;
 
-    const editedPropertyName = form.querySelector("[data-edited-name]");
-    const editedPropertyNumber = form.querySelector("[data-edited-number]");
-    const editedPropertyLocation = form.querySelector("[data-edited-location]");
+    const editedPropertyName = form.querySelector("[data-edited-name]")?.value;
+    const editedPropertyNumber = form.querySelector(
+      "[data-edited-number]"
+    )?.value;
+    const editedPropertyLocation = form.querySelector(
+      "[data-edited-location]"
+    )?.value;
 
-    const editPropertyRequestOptions = {
-      mode: "cors",
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        user: true,
-        token: accessToken,
-      },
-      body: JSON.stringify({
-        propertyId: propertyId?.innerText,
-        propertyNo: previousPropertyNo?.innerText,
-        editedProperty: {
-          propertyName: editedPropertyName?.value,
-          propertyNumber: editedPropertyNumber?.value,
-          propertyLocation: editedPropertyLocation?.value,
-        },
-      }),
+    const editedProperty = {
+      editedPropertyName,
+      editedPropertyNumber,
+      editedPropertyLocation,
     };
 
-    const editPropertyRequest = await fetch(
-      "http://localhost:4000/api/user/owner/edit/property",
-      editPropertyRequestOptions
+    const { message, editedProperties, error } = await Store.editProperty(
+      propertyId,
+      previousPropertyNo,
+      editedProperty,
+      accessToken
     );
-
-    const { message, editedProperties, error } =
-      await editPropertyRequest.json();
 
     if (error) {
       alert(error);
@@ -204,8 +229,9 @@ class UserInterface {
 
     if (editedProperties && message) {
       alert(message);
-      this.renderProperties(editedProperties, tableBody);
+      this.renderProperties(editedProperties, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
+      return;
     }
   }
 

@@ -25,4 +25,12 @@
       tableBody
     );
   });
+
+  const createPropertyForm = document.querySelector(
+    "[data-edit-property-form]"
+  );
+
+  createPropertyForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
 })();
