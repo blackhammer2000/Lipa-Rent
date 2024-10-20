@@ -12,7 +12,7 @@
 
   if (!properties) return;
 
-  UserInterface.renderProperties(properties, tableBody);
+  UserInterface.renderProperties(properties, accessToken, tableBody);
 
   const editPropertyForm = document.querySelector("[data-edit-property-form]");
 

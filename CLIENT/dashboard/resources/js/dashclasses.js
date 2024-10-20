@@ -36,7 +36,7 @@ class Store {
 }
 
 class UserInterface {
-  static renderProperties(properties, tableBody) {
+  static renderProperties(properties, accessToken, tableBody) {
     if (!properties) return;
 
     this.clearTable(tableBody);
@@ -45,7 +45,12 @@ class UserInterface {
     let tableNumber = 1;
 
     for (const key in properties) {
-      const propertyRow = this.createPropertyRow(properties[key], tableNumber);
+      const propertyRow = this.createPropertyRow(
+        properties[key],
+        tableNumber,
+        accessToken,
+        tableBody
+      );
       fragment.append(propertyRow);
       tableNumber++;
     }
@@ -53,7 +58,7 @@ class UserInterface {
     tableBody.append(fragment);
   }
 
-  static createPropertyRow(property, index) {
+  static createPropertyRow(property, index, accessToken, tableBody) {
     if (!property) return;
 
     const { propertyID, propertyName, propertyNumber, propertyLocation } =
@@ -103,7 +108,7 @@ class UserInterface {
     const rowCTAdeleteButtonCellText = document.createTextNode("Delete");
     rowCTAdeleteButtonCell.append(rowCTAdeleteButtonCellText);
     rowCTAeditButtonCell.addEventListener("click", (e) => {
-      this.deletePropertyAndRender(e);
+      this.deletePropertyAndRender(e, accessToken, tableBody);
     });
     rowCTAbuttonCell.append(rowCTAdeleteButtonCell);
 
@@ -233,6 +238,7 @@ class UserInterface {
 
     const { message, deletedProperties, error } =
       await deletePropertyRequest.json();
+
     if (error) {
       alert(error);
       return;
@@ -241,7 +247,7 @@ class UserInterface {
     if (message && deletedProperties) {
       alert(message);
       this.renderProperties(deletedProperties, tableBody);
-      return
+      return;
     }
   }
 
