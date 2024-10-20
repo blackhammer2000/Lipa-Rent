@@ -87,7 +87,7 @@ const patchControllers = {
 
       editedProperty.propertyID ? delete editedProperty.propertyID : null;
 
-      for (const key in editedRoom) {
+      for (const key in editedProperty) {
         if (key === "propertyID") {
           checkIfPropertyIdIsRegistered[key] =
             checkIfPropertyIdIsRegistered[key];
@@ -110,6 +110,7 @@ const patchControllers = {
         throw new Error("Error when updating the property in the database.");
 
       res.status(200).json({
+        message: `Property with the ID: ${propertyId} successfully edited.`,
         editedProperties: propertiesOwned[0],
       });
     } catch (err) {

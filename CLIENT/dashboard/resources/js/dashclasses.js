@@ -148,7 +148,7 @@ class UserInterface {
     propertyLocationFormInput.value = propertyLocation;
   }
 
-  static async editProperty(e, form, accessToken) {
+  static async editPropertyAndRender(e, form, accessToken, tableBody) {
     e.preventDefault();
 
     const propertyId = form.parentElement.querySelector(
@@ -186,10 +186,19 @@ class UserInterface {
       editPropertyRequestOptions
     );
 
-    const { editedProperties, error } = await editPropertyRequest.json();
+    const { message, editedProperties, error } =
+      await editPropertyRequest.json();
 
-    alert(editedProperties);
-    alert(error);
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    if (editedProperties && message) {
+      alert(message);
+      this.renderProperties(editedProperties, tableBody);
+      form.parentElement.parentElement.classList.add("hide");
+    }
   }
 
   static clearTable(tableBody) {
