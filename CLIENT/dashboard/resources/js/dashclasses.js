@@ -171,8 +171,8 @@ class UserInterface {
         token: accessToken,
       },
       body: JSON.stringify({
-        propertyId: propertyId?.value,
-        propertyNo: previousPropertyNo?.value,
+        propertyId: propertyId?.innerText,
+        propertyNo: previousPropertyNo?.innerText,
         editedProperty: {
           propertyName: editedPropertyName?.value,
           propertyNumber: editedPropertyNumber?.value,
