@@ -297,11 +297,6 @@ const post_controllers = {
 
       propertiesOwned[0][newProperty.propertyID] = newProperty;
 
-      // const newPropertiesObject = {
-      //   ...propertiesOwned[0],
-      //   [newProperty.propertyID]: newProperty,
-      // };
-
       const addNewProperty = await Property.updateOne(
         { ownerID: id },
         { $set: { propertiesOwned } }
@@ -401,7 +396,7 @@ const post_controllers = {
       )
         res.status(200).json({
           message: `Property with ID: ${newProperty.propertyID} and Number: ${newProperty.propertyNumber} has been created successfully.`,
-          newProperty,
+          newProperties: propertiesOwned[0],
         });
     } catch (err) {
       if (err?.message)
