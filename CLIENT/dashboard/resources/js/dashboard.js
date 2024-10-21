@@ -26,9 +26,16 @@
     );
   });
 
-  const createPropertyForm = document.querySelector(
-    "[data-edit-property-form]"
+  const createPropertyButton = document.querySelector(
+    "[data-create-property-button]"
   );
+  const createPropertyModal = document.querySelector("[data-create-property]");
+  const createPropertyForm = createPropertyModal.querySelector("form");
+
+  createPropertyButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.toggleOpenAndCloseCreatePropertyModal(createPropertyModal);
+  });
 
   createPropertyForm.addEventListener("submit", (e) => {
     e.preventDefault();

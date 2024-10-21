@@ -303,6 +303,12 @@ class UserInterface {
     }
   }
 
+  static toggleOpenAndCloseCreatePropertyModal(modal) {
+    if (!modal) return;
+
+    modal.classList.toggle("hide");
+  }
+
   static clearTable(tableBody) {
     tableBody.querySelectorAll("td").forEach((row) => row.remove());
   }
