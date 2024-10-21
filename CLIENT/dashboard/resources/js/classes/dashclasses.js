@@ -207,7 +207,10 @@ class UserInterface {
   static populateEditPropertyForm(e) {
     e.preventDefault();
 
-    const editPropertyModal = document.querySelector("[data-edit-property]");
+    const editPropertyModal =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.nextElementSibling.nextElementSibling;
+
     const propertyIdSpan = editPropertyModal.querySelector(
       "[data-edit-property-id]"
     );
@@ -398,6 +401,7 @@ class UserInterface {
   static clearTable(tableBody) {
     tableBody.querySelectorAll("td").forEach((row) => row.remove());
   }
+
   static clearFormInputs(form) {
     form.querySelectorAll("input").forEach((input) => (input.value = ""));
   }
