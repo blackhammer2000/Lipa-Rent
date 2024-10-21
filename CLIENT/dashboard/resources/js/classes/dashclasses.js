@@ -376,6 +376,7 @@ class UserInterface {
     if (newProperties && message) {
       alert(message);
       this.renderProperties(newProperties, accessToken, tableBody);
+      this.clearFormInputs(form);
       form.parentElement.parentElement.classList.add("hide");
       return;
     }
@@ -383,5 +384,8 @@ class UserInterface {
 
   static clearTable(tableBody) {
     tableBody.querySelectorAll("td").forEach((row) => row.remove());
+  }
+  static clearFormInputs(form) {
+    form.querySelectorAll("input").forEach((input) => (input.value = ""));
   }
 }
