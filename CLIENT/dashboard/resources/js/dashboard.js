@@ -15,15 +15,23 @@
   UserInterface.renderProperties(properties, accessToken, tableBody);
 
   const editPropertyForm = document.querySelector("[data-edit-property-form]");
+  const closeEditPropertyModal = editPropertyForm.parentElement.querySelector(
+    "[data-close-edit-modal]"
+  );
 
   editPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    await UserInterface.editPropertyAndRender(
+    UserInterface.editPropertyAndRender(
       e,
       editPropertyForm,
       accessToken,
       tableBody
     );
+  });
+
+  closeEditPropertyModal.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.closeEditPropertyModal(e);
   });
 
   const createPropertyButton = document.querySelector(
@@ -37,9 +45,9 @@
     UserInterface.toggleOpenAndCloseCreatePropertyModal(createPropertyModal);
   });
 
-  createPropertyForm.addEventListener("submit", async (e) => {
+  createPropertyForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    await UserInterface.createPropertyAndRender(
+    UserInterface.createPropertyAndRender(
       e,
       accessToken,
       createPropertyForm,

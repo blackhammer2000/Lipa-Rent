@@ -215,7 +215,7 @@ class UserInterface {
       "[data-edit-property-number]"
     );
 
-    editPropertyModal.classList.toggle("hide");
+    editPropertyModal.classList.remove("hide");
 
     const editForm = editPropertyModal.querySelector(
       "[data-edit-property-form]"
@@ -294,6 +294,12 @@ class UserInterface {
       form.parentElement.parentElement.classList.add("hide");
       return;
     }
+  }
+
+  static closeEditPropertyModal(e) {
+    e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
+      "hide"
+    );
   }
 
   static async deletePropertyAndRender(e, accessToken, tableBody) {
