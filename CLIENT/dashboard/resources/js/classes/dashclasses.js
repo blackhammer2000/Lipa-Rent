@@ -337,10 +337,15 @@ class UserInterface {
     }
   }
 
-  static toggleOpenAndCloseCreatePropertyModal(modal) {
+  static openCreatePropertyModal(modal) {
     if (!modal) return;
+    modal.classList.remove("hide");
+  }
 
-    modal.classList.toggle("hide");
+  static closeCreatePropertyModal(e) {
+    e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
+      "hide"
+    );
   }
 
   static async createPropertyAndRender(e, accessToken, form, tableBody) {

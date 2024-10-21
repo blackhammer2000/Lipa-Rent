@@ -15,9 +15,8 @@
   UserInterface.renderProperties(properties, accessToken, tableBody);
 
   const editPropertyForm = document.querySelector("[data-edit-property-form]");
-  const closeEditPropertyModal = editPropertyForm.parentElement.querySelector(
-    "[data-close-edit-modal]"
-  );
+  const closeEditPropertyModalButton =
+    editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
 
   editPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -29,7 +28,7 @@
     );
   });
 
-  closeEditPropertyModal.addEventListener("click", (e) => {
+  closeEditPropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.closeEditPropertyModal(e);
   });
@@ -38,11 +37,14 @@
     "[data-create-property-button]"
   );
   const createPropertyModal = document.querySelector("[data-create-property]");
+  const closeCreatePropertyModalButton = createPropertyModal.querySelector(
+    "[data-close-create-modal]"
+  );
   const createPropertyForm = createPropertyModal.querySelector("form");
 
   createPropertyButton.addEventListener("click", (e) => {
     e.preventDefault();
-    UserInterface.toggleOpenAndCloseCreatePropertyModal(createPropertyModal);
+    UserInterface.openCreatePropertyModal(createPropertyModal);
   });
 
   createPropertyForm.addEventListener("submit", (e) => {
@@ -53,5 +55,10 @@
       createPropertyForm,
       tableBody
     );
+  });
+
+  closeCreatePropertyModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.closeCreatePropertyModal(e);
   });
 })();

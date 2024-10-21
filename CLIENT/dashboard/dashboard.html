@@ -135,8 +135,12 @@
       class="propertyModal hide container justify-content-center align-items-center"
     >
       <fieldset class="border border-success p-5 border-radius-50">
-        <legend class="font-weight-bold text-center">CREATE PROPERTY</legend>
-        <h3 data-propertydescription-edit></h3>
+        <legend class="d-flex justify-content-around text-center">
+          <h4>CREATE PROPERTY</h4>
+          <span class="closeModal" draggable="true">
+            <button data-close-create-modal class="btn btn-danger">X</button>
+          </span>
+        </legend>
 
         <form action="" class="form">
           <div class="form-group">
