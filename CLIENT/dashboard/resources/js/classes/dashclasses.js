@@ -181,23 +181,23 @@ class UserInterface {
 
     const rowCTAbuttonCell = document.createElement("td");
 
-    const rowCTAeditButtonCell = document.createElement("button");
-    rowCTAeditButtonCell.className = "btn btn-primary mr-2 edit";
-    const rowCTAeditButtonCellText = document.createTextNode("Edit");
-    rowCTAeditButtonCell.append(rowCTAeditButtonCellText);
-    rowCTAeditButtonCell.addEventListener("click", (e) => {
+    const editButtonCell = document.createElement("button");
+    editButtonCell.className = "btn btn-primary mr-2 edit";
+    const editButtonCellText = document.createTextNode("Edit");
+    editButtonCell.append(editButtonCellText);
+    editButtonCell.addEventListener("click", (e) => {
       this.populateEditPropertyForm(e);
     });
-    rowCTAbuttonCell.append(rowCTAeditButtonCell);
+    rowCTAbuttonCell.append(editButtonCell);
 
-    const rowCTAdeleteButtonCell = document.createElement("button");
-    rowCTAdeleteButtonCell.className = "btn btn-danger ml-2 delete";
-    const rowCTAdeleteButtonCellText = document.createTextNode("Delete");
-    rowCTAdeleteButtonCell.append(rowCTAdeleteButtonCellText);
-    rowCTAdeleteButtonCell.addEventListener("click", (e) => {
+    const deleteButtonCell = document.createElement("button");
+    deleteButtonCell.className = "btn btn-danger ml-2 delete";
+    const deleteButtonCellText = document.createTextNode("Delete");
+    deleteButtonCell.append(deleteButtonCellText);
+    deleteButtonCell.addEventListener("click", (e) => {
       this.deletePropertyAndRender(e, accessToken, tableBody);
     });
-    rowCTAbuttonCell.append(rowCTAdeleteButtonCell);
+    rowCTAbuttonCell.append(deleteButtonCell);
 
     row.append(rowCTAbuttonCell);
 
@@ -207,17 +207,19 @@ class UserInterface {
   static populateEditPropertyForm(e) {
     e.preventDefault();
 
-    const editPropertyDiv = document.querySelector("[data-edit-property]");
-    const propertyIdSpan = editPropertyDiv.querySelector(
+    const editPropertyModal = document.querySelector("[data-edit-property]");
+    const propertyIdSpan = editPropertyModal.querySelector(
       "[data-edit-property-id]"
     );
-    const propertyNumberSpan = editPropertyDiv.querySelector(
+    const propertyNumberSpan = editPropertyModal.querySelector(
       "[data-edit-property-number]"
     );
 
-    editPropertyDiv.classList.toggle("hide");
+    editPropertyModal.classList.toggle("hide");
 
-    const editForm = editPropertyDiv.querySelector("[data-edit-property-form]");
+    const editForm = editPropertyModal.querySelector(
+      "[data-edit-property-form]"
+    );
 
     const propertyId =
       e.target.parentElement.parentElement.children[1].innerText;
