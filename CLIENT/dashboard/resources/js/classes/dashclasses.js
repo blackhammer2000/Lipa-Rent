@@ -94,6 +94,32 @@ class Store {
 
     return deletePropertyResponse;
   }
+
+  static async createProperty(accessToken, newProperty) {
+    if (!accessToken || !newProperty) return;
+
+    const createNewPropertyRequestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        newProperty,
+      }),
+    };
+
+    const createPropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/create/property",
+      createNewPropertyRequestOptions
+    );
+
+    const createPropertyResponse = await createPropertyRequest.json();
+
+    return createPropertyResponse;
+  }
 }
 
 class UserInterface {
@@ -307,6 +333,35 @@ class UserInterface {
     if (!modal) return;
 
     modal.classList.toggle("hide");
+  }
+
+  static async createPropertyAndRender(e, accessToken, form, tableBody) {
+    e.preventDefault();
+
+    if (!accessToken || !form || !tableBody) return;
+
+    const newPropertyName = form.querySelector(
+      "[data-new-property-name]"
+    )?.value;
+    const newPropertyNumber = form.querySelector(
+      "[data-new-property-number]"
+    )?.value;
+    const newPropertyLocation = form.querySelector(
+      "[data-new-property-location]"
+    )?.value;
+
+    if (
+      !confirm(
+        `Do you want to create property with Name: "${newPropertyName}", and Number: "${newPropertyNumber}", located at: "${newPropertyLocation}"?`
+      )
+    )
+      return;
+
+    const newProperty = {
+      propertyName: newPropertyName,
+      propertyNumber: newPropertyNumber,
+      propertyLocation: newPropertyLocation,
+    };
   }
 
   static clearTable(tableBody) {
