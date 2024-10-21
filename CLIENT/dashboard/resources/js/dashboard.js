@@ -39,7 +39,6 @@
 
   createPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     await UserInterface.createPropertyAndRender(
       e,
       accessToken,
