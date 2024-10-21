@@ -16,9 +16,9 @@
 
   const editPropertyForm = document.querySelector("[data-edit-property-form]");
 
-  editPropertyForm.addEventListener("submit", (e) => {
+  editPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    UserInterface.editPropertyAndRender(
+    await UserInterface.editPropertyAndRender(
       e,
       editPropertyForm,
       accessToken,
@@ -37,7 +37,14 @@
     UserInterface.toggleOpenAndCloseCreatePropertyModal(createPropertyModal);
   });
 
-  createPropertyForm.addEventListener("submit", (e) => {
+  createPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    await UserInterface.createPropertyAndRender(
+      e,
+      accessToken,
+      createPropertyForm,
+      tableBody
+    );
   });
 })();

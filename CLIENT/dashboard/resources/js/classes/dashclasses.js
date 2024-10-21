@@ -362,6 +362,23 @@ class UserInterface {
       propertyNumber: newPropertyNumber,
       propertyLocation: newPropertyLocation,
     };
+
+    const { message, newProperties, error } = await Store.createProperty(
+      accessToken,
+      newProperty
+    );
+
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    if (newProperties && message) {
+      alert(message);
+      this.renderProperties(newProperties, accessToken, tableBody);
+      form.parentElement.parentElement.classList.add("hide");
+      return;
+    }
   }
 
   static clearTable(tableBody) {
