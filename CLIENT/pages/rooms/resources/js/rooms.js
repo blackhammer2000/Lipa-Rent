@@ -6,18 +6,18 @@
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
 
-  //   const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
-  //     ? JSON.parse(localStorage.getItem("liparentSelectedPropertyId"))
-  //     : null;
+  const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
+    ? localStorage.getItem("liparentSelectedPropertyId")
+    : null;
 
   const tableBody = document.querySelector("[data-table]");
 
-  //   if (selectedPropertyId !== (null || undefined))
-  //     UserInterface.readAndRenderAllRoomsOnSingleProperty(
-  //       accessToken,
-  //       selectedPropertyId,
-  //       tableBody
-  //     );
+  if (selectedPropertyId !== (null || undefined))
+    UserInterface.readAndRenderAllRoomsOnSingleProperty(
+      accessToken,
+      selectedPropertyId,
+      tableBody
+    );
 
   const selectPropertyForm = document.querySelector("[data-select-property]");
 

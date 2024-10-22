@@ -53,6 +53,12 @@ class UserInterface {
     tableBody.append(fragment);
   }
 
+  static updateTableDescription(propertyId) {
+    if (!propertyId) return;
+    document.querySelector(
+      "[data-table-description]"
+    ).innerText = `All Rooms for Property ID: ${propertyId}`;
+  }
   static async readAndRenderAllRoomsOnSingleProperty(
     accessToken,
     propertyId,
@@ -70,8 +76,14 @@ class UserInterface {
 
     if (propertyRooms && message) {
       alert(message);
+
+      localStorage.getItem("liparentSelectedPropertyId")
+        ? localStorage.removeItem("liparentSelectedPropertyId")
+        : null;
       localStorage.setItem("liparentSelectedPropertyId", propertyId);
-      UserInterface.renderRooms(propertyRooms, accessToken, tableBody);
+
+      this.updateTableDescription(propertyId);
+      this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
   }
