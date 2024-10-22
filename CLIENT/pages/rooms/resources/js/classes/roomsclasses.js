@@ -70,7 +70,7 @@ class UserInterface {
       await Store.readAllRoomsOnSingleProperty(accessToken, propertyId);
 
     if (error) {
-      alert(error);
+      this.handleErrors(error);
       return;
     }
 
@@ -175,6 +175,19 @@ class UserInterface {
     row.append(rowCTAbuttonCell);
 
     return row;
+  }
+
+  static handleErrors(error) {
+    if (!error) return;
+
+    alert(error);
+    if (error === "session expired") this.handleLogout();
+  }
+
+  static handleLogout() {
+    localStorage.removeItem("liparentAccessToken");
+    localStorage.removeItem("liparentSelectedPropertyId");
+    location.assign("/CLIENT/login/login.html");
   }
 
   static clearTable(tableBody) {

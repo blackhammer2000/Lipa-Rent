@@ -655,7 +655,7 @@ const post_controllers = {
 
       const propertyRooms = selectUsingPropertyID?.rooms;
 
-      if (!Object.keys(propertyRooms))
+      if (!Array.from(Object.keys(propertyRooms)).length)
         throw new Error("No rooms have been added to this property.");
 
       res.status(200).json({

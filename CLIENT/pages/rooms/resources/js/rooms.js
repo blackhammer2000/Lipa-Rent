@@ -80,4 +80,7 @@
   //     e.preventDefault();
   //     UserInterface.closeCreatePropertyModal(e);
   //   });
+
+  const logoutButton = document.querySelector("[data-logout]");
+  logoutButton.addEventListener("click", () => UserInterface.handleLogout());
 })();
