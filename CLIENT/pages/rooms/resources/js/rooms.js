@@ -23,7 +23,7 @@
 
   selectPropertyForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const propertyId = selectPropertyForm.querySelector("input")?.value;
+    const propertyId = selectPropertyForm.querySelector("input")?.value.trim();
 
     if (propertyId)
       UserInterface.readAndRenderAllRoomsOnSingleProperty(

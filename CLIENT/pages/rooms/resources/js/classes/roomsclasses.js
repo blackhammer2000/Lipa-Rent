@@ -20,11 +20,13 @@ class Store {
       requestOptions
     );
 
-    const readAllRoomsOnSinglePropertyResponse =
+    const { propertyRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    if (readAllRoomsOnSinglePropertyResponse)
-      return readAllRoomsOnSinglePropertyResponse;
+    console.log({ propertyRooms, message, error });
+
+    if (error) return { error };
+    if (propertyRooms && message) return { propertyRooms, message, error };
   }
 }
 
