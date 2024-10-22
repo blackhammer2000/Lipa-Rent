@@ -58,19 +58,17 @@ class UserInterface {
   ) {
     if (!accessToken || !propertyId || !tableBody) return;
 
-    const { rooms, message, error } = await Store.readAllRoomsOnSingleProperty(
-      accessToken,
-      propertyId
-    );
+    const { propertyRooms, message, error } =
+      await Store.readAllRoomsOnSingleProperty(accessToken, propertyId);
 
     if (error) {
       alert(error);
       return;
     }
 
-    if (rooms && message) {
+    if (propertyRooms && message) {
       alert(message);
-      UserInterface.renderRooms(rooms, accessToken, tableBody);
+      UserInterface.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
   }
