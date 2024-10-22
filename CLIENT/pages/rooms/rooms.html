@@ -52,12 +52,26 @@
           >
             <form
               action=""
-              class="w-100 d-flex justify-content-center align-items-center"
+              class="mr-2 d-flex justify-content-center align-items-center"
             >
               <div class="form-group w-100">
                 <input
                   class="form-control text-uppercase"
-                  placeholder="Search by Property Number"
+                  placeholder="PROPERTY NUMBER"
+                  type="search"
+                  name=""
+                  id=""
+                />
+              </div>
+            </form>
+            <form
+              action=""
+              class="w-50 d-flex justify-content-center align-items-center ml-2"
+            >
+              <div class="form-group w-100">
+                <input
+                  class="form-control text-uppercase"
+                  placeholder="PROPERTY ID"
                   type="search"
                   name=""
                   id=""
@@ -70,8 +84,8 @@
         <div class="routers mt-4 d-flex w-50 justify-content-center">
           <ul class="list-unstyled d-flex">
             <li class="mr-4">
-              <a href="../pages/rooms/rooms.html"
-                ><button class="btn btn-outline-success">ROOMS</button></a
+              <a href="../../dashboard/dashboard.html"
+                ><button class="btn btn-outline-success">DASH</button></a
               >
             </li>
             <li>
@@ -110,6 +124,7 @@
               <th>ROOM NUMBER</th>
               <th>ROOM TYPE</th>
               <th>VACANCY</th>
+              <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody data-table></tbody>
