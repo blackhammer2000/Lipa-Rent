@@ -624,7 +624,6 @@ const post_controllers = {
 
   //?  below is the expected requestBody from the user when reading all rooms on property.
   //* {
-  //*   propertyNumber: "NGONG/NGONG/12058",
   //*   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //* }
 
@@ -632,9 +631,8 @@ const post_controllers = {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
 
-      const { id, propertyNo, propertyId } = req.body;
+      const { id, propertyId } = req.body;
 
       if (!id)
         throw new Error("Unauthorized action, not a user or not logged in.");
@@ -653,10 +651,6 @@ const post_controllers = {
       if (!selectUsingPropertyID)
         throw new Error(
           "Selected propertyID Rooms are not found/not registered in the database."
-        );
-      if (selectUsingPropertyID.propertyNumber !== propertyNo)
-        throw new Error(
-          "Selected propertyNumber Rooms are not found/not registered in the database."
         );
 
       const propertyRooms = selectUsingPropertyID?.rooms;
