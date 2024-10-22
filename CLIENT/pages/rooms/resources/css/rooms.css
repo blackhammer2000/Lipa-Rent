@@ -1,5 +1,7 @@
 body {
   position: relative;
+  min-height: 100vh;
+  overflow-y: hidden;
 }
 
 .roomModal {
@@ -14,4 +16,10 @@ body {
 
 .hide {
   display: none;
+}
+
+.hero {
+  /* display: grid;
+  place-items: center; */
+  min-height: 60vh;
 }
