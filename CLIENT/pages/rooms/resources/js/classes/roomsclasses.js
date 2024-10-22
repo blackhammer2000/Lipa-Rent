@@ -53,41 +53,6 @@ class UserInterface {
     tableBody.append(fragment);
   }
 
-  static updateTableDescription(propertyId) {
-    if (!propertyId) return;
-    document.querySelector(
-      "[data-table-description]"
-    ).innerText = `All Rooms for Property ID: ${propertyId}`;
-  }
-  static async readAndRenderAllRoomsOnSingleProperty(
-    accessToken,
-    propertyId,
-    tableBody
-  ) {
-    if (!accessToken || !propertyId || !tableBody) return;
-
-    const { propertyRooms, message, error } =
-      await Store.readAllRoomsOnSingleProperty(accessToken, propertyId);
-
-    if (error) {
-      this.handleErrors(error);
-      return;
-    }
-
-    if (propertyRooms && message) {
-      alert(message);
-
-      localStorage.getItem("liparentSelectedPropertyId")
-        ? localStorage.removeItem("liparentSelectedPropertyId")
-        : null;
-      localStorage.setItem("liparentSelectedPropertyId", propertyId);
-
-      this.updateTableDescription(propertyId);
-      this.renderRooms(propertyRooms, accessToken, tableBody);
-      return;
-    }
-  }
-
   static createRoomRow(room, index, accessToken, tableBody) {
     if (!room) return;
 
@@ -175,6 +140,42 @@ class UserInterface {
     row.append(rowCTAbuttonCell);
 
     return row;
+  }
+
+  static async readAndRenderAllRoomsOnSingleProperty(
+    accessToken,
+    propertyId,
+    tableBody
+  ) {
+    if (!accessToken || !propertyId || !tableBody) return;
+
+    const { propertyRooms, message, error } =
+      await Store.readAllRoomsOnSingleProperty(accessToken, propertyId);
+
+    if (error) {
+      this.handleErrors(error);
+      return;
+    }
+
+    if (propertyRooms && message) {
+      alert(message);
+
+      localStorage.getItem("liparentSelectedPropertyId")
+        ? localStorage.removeItem("liparentSelectedPropertyId")
+        : null;
+      localStorage.setItem("liparentSelectedPropertyId", propertyId);
+
+      this.updateTableDescription(propertyId);
+      this.renderRooms(propertyRooms, accessToken, tableBody);
+      return;
+    }
+  }
+
+  static updateTableDescription(propertyId) {
+    if (!propertyId) return;
+    document.querySelector(
+      "[data-table-description]"
+    ).innerText = `All Rooms for Property ID: ${propertyId}`;
   }
 
   static handleErrors(error) {
