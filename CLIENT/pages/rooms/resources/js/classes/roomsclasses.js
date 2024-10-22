@@ -39,7 +39,7 @@ class UserInterface {
     const fragment = document.createDocumentFragment();
     let tableNumber = 1;
 
-    for (const key in properties) {
+    for (const key in rooms) {
       const roomRow = this.createRoomRow(
         rooms[key],
         tableNumber,
@@ -70,6 +70,7 @@ class UserInterface {
 
     if (propertyRooms && message) {
       alert(message);
+      localStorage.setItem("liparentSelectedPropertyId", propertyId);
       UserInterface.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
