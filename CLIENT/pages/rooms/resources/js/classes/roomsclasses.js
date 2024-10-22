@@ -58,14 +58,21 @@ class UserInterface {
   ) {
     if (!accessToken || !propertyId || !tableBody) return;
 
-    const { rooms } = await Store.readAllRoomsOnSingleProperty(
+    const { rooms, message, error } = await Store.readAllRoomsOnSingleProperty(
       accessToken,
       propertyId
     );
 
-    if (!rooms) return;
+    if (error) {
+      alert(error);
+      return;
+    }
 
-    UserInterface.renderRooms(rooms, accessToken, tableBody);
+    if (rooms && message) {
+      alert(message);
+      UserInterface.renderRooms(rooms, accessToken, tableBody);
+      return;
+    }
   }
 
   static createRoomRow(room, index, accessToken, tableBody) {
