@@ -78,7 +78,15 @@ class UserInterface {
   static createRoomRow(room, index, accessToken, tableBody) {
     if (!room) return;
 
-    const { roomID, roomNumber, roomRate, roomVacancy } = room;
+    const {
+      roomID,
+      roomNumber,
+      roomType,
+      roomArea,
+      roomRatePerMonth,
+      currentTenantId,
+      isOccupied,
+    } = room;
 
     const row = document.createElement("tr");
 
@@ -97,15 +105,39 @@ class UserInterface {
     tableRoomNumberCell.append(tableRoomNumberCellText);
     row.append(tableRoomNumberCell);
 
+    const tableRoomTypeCell = document.createElement("td");
+    const tableRoomTypeCellText = document.createTextNode(roomType);
+    tableRoomTypeCell.append(tableRoomTypeCellText);
+    row.append(tableRoomTypeCell);
+
+    const tableRoomAreaCell = document.createElement("td");
+    const tableRoomAreaCellText = document.createTextNode(roomArea);
+    tableRoomAreaCell.append(tableRoomAreaCellText);
+    row.append(tableRoomAreaCell);
+
     const tableRoomRateCell = document.createElement("td");
-    const tableRoomRateCellText = document.createTextNode(`KES. ${roomRate}`);
+    const tableRoomRateCellText = document.createTextNode(
+      `KES. ${roomRatePerMonth}`
+    );
     tableRoomRateCell.append(tableRoomRateCellText);
     row.append(tableRoomRateCell);
 
     const tableRoomVacancyCell = document.createElement("td");
-    const tableRoomVacancyCellText = document.createTextNode(roomVacancy);
+    const tableRoomVacancyCellText = document.createTextNode(
+      `${isOccupied ? "Occupied" : "Vacant"}`
+    );
     tableRoomVacancyCell.append(tableRoomVacancyCellText);
+    tableRoomVacancyCell.className = `${
+      isOccupied ? "text-success" : "text-danger"
+    }`;
     row.append(tableRoomVacancyCell);
+
+    const tableRoomCurrentTenantIdCell = document.createElement("td");
+    const tableRoomCurrentTenantIdCellText =
+      document.createTextNode(currentTenantId);
+    tableRoomCurrentTenantIdCell.append(tableRoomCurrentTenantIdCellText);
+
+    row.append(tableRoomCurrentTenantIdCell);
 
     const rowCTAbuttonCell = document.createElement("td");
 
