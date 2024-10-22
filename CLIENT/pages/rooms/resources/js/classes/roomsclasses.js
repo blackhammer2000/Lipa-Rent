@@ -81,7 +81,7 @@ class UserInterface {
     row.append(tablenumberCell);
 
     const tabRoomIdCell = document.createElement("td");
-    const tabRoomIdCellText = document.createTextNode(roomID);
+    const tableRoomIdCellText = document.createTextNode(roomID);
     tabRoomIdCell.append(tableRoomIdCellText);
     row.append(tabRoomIdCell);
 
