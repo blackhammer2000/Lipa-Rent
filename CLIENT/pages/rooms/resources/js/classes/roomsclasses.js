@@ -107,7 +107,7 @@ class UserInterface {
     const editButtonCellText = document.createTextNode("Edit");
     editButtonCell.append(editButtonCellText);
     // editButtonCell.addEventListener("click", (e) => {
-    //   this.populateEditPropertyForm(e);
+    //   this.populateEditRoomForm(e);
     // });
     rowCTAbuttonCell.append(editButtonCell);
 
@@ -116,7 +116,7 @@ class UserInterface {
     const deleteButtonCellText = document.createTextNode("Delete");
     deleteButtonCell.append(deleteButtonCellText);
     // deleteButtonCell.addEventListener("click", (e) => {
-    //   this.deletePropertyAndRender(e, accessToken, tableBody);
+    //   this.deleteRoomAndRender(e, accessToken, tableBody);
     // });
     rowCTAbuttonCell.append(deleteButtonCell);
 
