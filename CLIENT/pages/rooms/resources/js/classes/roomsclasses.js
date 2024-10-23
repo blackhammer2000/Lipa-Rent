@@ -142,8 +142,9 @@ class UserInterface {
     row.append(tableRoomVacancyCell);
 
     const tableRoomCurrentTenantIdCell = document.createElement("td");
-    const tableRoomCurrentTenantIdCellText =
-      document.createTextNode(currentTenantId);
+    const tableRoomCurrentTenantIdCellText = document.createTextNode(
+      currentTenantId ? currentTenantId : "none"
+    );
     tableRoomCurrentTenantIdCell.append(tableRoomCurrentTenantIdCellText);
 
     row.append(tableRoomCurrentTenantIdCell);
@@ -244,6 +245,8 @@ class UserInterface {
 
       this.updateTableDescription(propertyId);
       this.renderRooms(propertyRooms, accessToken, tableBody);
+      this.clearFormInputs(form);
+      form.parentElement.parentElement.classList.add("hide");
       return;
     }
   }
