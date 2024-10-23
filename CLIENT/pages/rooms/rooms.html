@@ -163,7 +163,9 @@
         <legend class="d-flex justify-content-around text-center">
           <h4>CREATE ROOM</h4>
           <span class="closeModal" draggable="true">
-            <button data-close-create-modal class="btn btn-danger">X</button>
+            <button data-close-create-room-modal class="btn btn-danger">
+              X
+            </button>
           </span>
         </legend>
 
@@ -181,6 +183,15 @@
             <input
               data-new-room-rate
               placeholder="ROOM RATE PER MONTH"
+              type="text"
+              class="form-control text-uppercase"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              data-new-room-area
+              placeholder="ROOM AREA(sqFt)"
               type="text"
               class="form-control text-uppercase"
               required

@@ -202,8 +202,26 @@ class UserInterface {
     }
   }
 
-  static async addRoomToPropertyAndRender(accessToken, propertyId, newRoom) {
-    if (!accessToken || !propertyId || !newRoom) return;
+  static async addRoomToPropertyAndRender(e, accessToken, form, tableBody) {
+    if (!accessToken || !propertyId || !form || !tableBody) return;
+
+    const newRoomNumber = form.querySelector("[data-new-room-number]")?.value;
+    const newRoomRate = form.querySelector("[data-new-room-rate]")?.value;
+    const newRoomArea = form.querySelector("[data-new-room-area]")?.value;
+    const newRoomType = form.querySelector("[data-new-room-type]")?.value;
+
+    const newRoom = {
+      roomNumber: newRoomNumber,
+      roomRate: newRoomRate,
+      roomArea: newRoomArea,
+      roomType: newRoomType,
+    };
+
+    const propertyId =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .querySelector("[data-table-description]")
+        .innerText.trim()
+        .slice(-12);
 
     const { propertyRooms, message, error } = await Store.addRoomToProperty(
       accessToken,
@@ -228,6 +246,17 @@ class UserInterface {
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
+  }
+
+  static openCreateRoomModal(modal) {
+    if (!modal) return;
+    modal.classList.remove("hide");
+  }
+
+  static closeCreatePropertyModal(e) {
+    e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
+      "hide"
+    );
   }
 
   static updateTableDescription(propertyId) {

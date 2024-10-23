@@ -33,7 +33,7 @@
       );
   });
 
-  //   const editPropertyForm = document.querySelector("[data-edit-property-form]");
+  //   const editPropertyForm = document.querySelector("[data-edit-room-form]");
   //   const closeEditPropertyModalButton =
   //     editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
 
@@ -47,39 +47,40 @@
   //     );
   //   });
 
-  //   closeEditPropertyModalButton.addEventListener("click", (e) => {
-  //     e.preventDefault();
-  //     UserInterface.closeEditPropertyModal(e);
-  //   });
+  closeEditPropertyModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.closeEditPropertyModal(e);
+  });
 
-  //   const createPropertyButton = document.querySelector(
-  //     "[data-create-property-button]"
-  //   );
-  //   const createPropertyModal = document.querySelector("[data-create-property]");
-  //   const closeCreatePropertyModalButton = createPropertyModal.querySelector(
-  //     "[data-close-create-modal]"
-  //   );
-  //   const createPropertyForm = createPropertyModal.querySelector("form");
+  const createPropertyButton = document.querySelector(
+    "[data-create-room-button]"
+  );
+  const createPropertyModal = document.querySelector("[data-create-room]");
+  const closeCreatePropertyModalButton = createPropertyModal.querySelector(
+    "[data-close-create-room-modal]"
+  );
+  const createPropertyForm = createPropertyModal.querySelector("form");
 
-  //   createPropertyButton.addEventListener("click", (e) => {
-  //     e.preventDefault();
-  //     UserInterface.openCreatePropertyModal(createPropertyModal);
-  //   });
+  createPropertyButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.openCreateRoomModal(createPropertyModal);
+  });
 
-  //   createPropertyForm.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-  //     UserInterface.createPropertyAndRender(
-  //       e,
-  //       accessToken,
-  //       createPropertyForm,
-  //       tableBody
-  //     );
-  //   });
+  createPropertyForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  //   closeCreatePropertyModalButton.addEventListener("click", (e) => {
-  //     e.preventDefault();
-  //     UserInterface.closeCreatePropertyModal(e);
-  //   });
+    UserInterface.addRoomToPropertyAndRender(
+      e,
+      accessToken,
+      createPropertyForm,
+      tableBody
+    );
+  });
+
+  closeCreatePropertyModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.closeCreatePropertyModal(e);
+  });
 
   const logoutButton = document.querySelector("[data-logout]");
   logoutButton.addEventListener("click", () => UserInterface.handleLogout());
