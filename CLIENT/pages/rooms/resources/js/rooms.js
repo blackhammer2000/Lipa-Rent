@@ -47,10 +47,10 @@
   //     );
   //   });
 
-  closeEditPropertyModalButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    UserInterface.closeEditPropertyModal(e);
-  });
+  //   closeEditPropertyModalButton.addEventListener("click", (e) => {
+  //     e.preventDefault();
+  //     UserInterface.closeEditPropertyModal(e);
+  //   });
 
   const createPropertyButton = document.querySelector(
     "[data-create-room-button]"
@@ -79,7 +79,7 @@
 
   closeCreatePropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
-    UserInterface.closeCreatePropertyModal(e);
+    UserInterface.closeCreateRoomModal(e);
   });
 
   const logoutButton = document.querySelector("[data-logout]");

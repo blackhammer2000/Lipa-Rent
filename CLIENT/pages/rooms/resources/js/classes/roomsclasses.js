@@ -203,7 +203,7 @@ class UserInterface {
   }
 
   static async addRoomToPropertyAndRender(e, accessToken, form, tableBody) {
-    if (!accessToken || !propertyId || !form || !tableBody) return;
+    if (!accessToken || !form || !tableBody) return;
 
     const newRoomNumber = form.querySelector("[data-new-room-number]")?.value;
     const newRoomRate = form.querySelector("[data-new-room-rate]")?.value;
@@ -212,8 +212,8 @@ class UserInterface {
 
     const newRoom = {
       roomNumber: newRoomNumber,
-      roomRate: newRoomRate,
-      roomArea: newRoomArea,
+      roomRatePerMonth: newRoomRate,
+      roomArea: `${newRoomArea} sqFt`,
       roomType: newRoomType,
     };
 
@@ -253,7 +253,7 @@ class UserInterface {
     modal.classList.remove("hide");
   }
 
-  static closeCreatePropertyModal(e) {
+  static closeCreateRoomModal(e) {
     e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
       "hide"
     );
