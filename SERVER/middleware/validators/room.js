@@ -4,8 +4,9 @@ const roomValidator = async (req, res, next) => {
   try {
     const roomSchema = Joi.object({
       roomNumber: Joi.string().uppercase().required(),
-      roomRatePerMonth: Joi.number().required(),
+      roomRatePerMonth: Joi.string().required(),
       roomType: Joi.string().required(),
+      roomArea: Joi.string().required(),
     });
 
     const isValidRoomData = await roomSchema.validateAsync(req.body.newRoom);
