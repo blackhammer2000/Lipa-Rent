@@ -543,25 +543,26 @@ const post_controllers = {
       }
 
       newRoom.isOccupied = false;
+      newRoom.currentTenantID = null;
       newRoom.roomID = crypto.randomUUID()?.slice(-12);
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
       if (propertyRooms === (null || undefined))
-        throw new Error("No rooms have been added to this property.");
+        throw new Error("Error when ading new room.");
 
-      let checkIfRoomNumberIsRegisteredUnderTheSelctedProperty = false;
+      let checkIfRoomNumberIsRegisteredUnderTheSelectedProperty = false;
 
       for (const key in propertyRooms) {
         if (propertyRooms[key]?.roomNumber === newRoom?.roomNumber) {
-          checkIfRoomNumberIsRegisteredUnderTheSelctedProperty =
-            !checkIfRoomNumberIsRegisteredUnderTheSelctedProperty;
+          checkIfRoomNumberIsRegisteredUnderTheSelectedProperty =
+            !checkIfRoomNumberIsRegisteredUnderTheSelectedProperty;
 
           break;
         }
       }
 
-      if (checkIfRoomNumberIsRegisteredUnderTheSelctedProperty)
+      if (checkIfRoomNumberIsRegisteredUnderTheSelectedProperty)
         throw new Error(
           "Room with the given room number has already been registered."
         );
@@ -615,8 +616,8 @@ const post_controllers = {
 
           if (updateRents.acknowledged && updateRents.modifiedCount)
             res.status(200).json({
-              message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property.`,
-              updateProperties,
+              message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property: ${propertyId}.`,
+              propertyRooms: rooms,
             });
         }
       } else {
