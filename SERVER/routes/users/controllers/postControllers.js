@@ -531,26 +531,27 @@ const post_controllers = {
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
-      if (propertyRooms === (null || undefined))
-        throw new Error("Error when adding new room.");
+      if (!Array.from(Object.keys(propertyRooms)).length) {
+        rooms[0][propertyId].rooms[newRoom.roomID] = newRoom;
+      } else {
+        let checkIfRoomNumberIsRegisteredUnderTheSelectedProperty = false;
 
-      let checkIfRoomNumberIsRegisteredUnderTheSelectedProperty = false;
+        for (const key in propertyRooms) {
+          if (propertyRooms[key]?.roomNumber === newRoom?.roomNumber) {
+            checkIfRoomNumberIsRegisteredUnderTheSelectedProperty =
+              !checkIfRoomNumberIsRegisteredUnderTheSelectedProperty;
 
-      for (const key in propertyRooms) {
-        if (propertyRooms[key]?.roomNumber === newRoom?.roomNumber) {
-          checkIfRoomNumberIsRegisteredUnderTheSelectedProperty =
-            !checkIfRoomNumberIsRegisteredUnderTheSelectedProperty;
-
-          break;
+            break;
+          }
         }
+
+        if (checkIfRoomNumberIsRegisteredUnderTheSelectedProperty)
+          throw new Error(
+            "Room with the given room number has already been registered."
+          );
+
+        rooms[0][propertyId].rooms[newRoom.roomID] = newRoom;
       }
-
-      if (checkIfRoomNumberIsRegisteredUnderTheSelectedProperty)
-        throw new Error(
-          "Room with the given room number has already been registered."
-        );
-
-      rooms[0][propertyId].rooms[newRoom.roomID] = newRoom;
 
       const updateProperties = await Room.updateOne(
         { ownerID: id },

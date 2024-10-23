@@ -28,6 +28,37 @@ class Store {
     if (error) return { error };
     if (propertyRooms && message) return { propertyRooms, message, error };
   }
+
+  static async addRoomToProperty(accessToken, propertyId, newRoom) {
+    if (!accessToken || !propertyId || !newRoom) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        newRoom,
+      }),
+    };
+
+    const readAllRoomsOnSinglePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/create/property/room",
+      requestOptions
+    );
+
+    const { propertyRooms, message, error } =
+      await readAllRoomsOnSinglePropertyRequest.json();
+
+    console.log({ propertyRooms, message, error });
+
+    if (error) return { error };
+    if (propertyRooms && message) return { propertyRooms, message, error };
+  }
 }
 
 class UserInterface {
@@ -151,6 +182,34 @@ class UserInterface {
 
     const { propertyRooms, message, error } =
       await Store.readAllRoomsOnSingleProperty(accessToken, propertyId);
+
+    if (error) {
+      this.handleErrors(error);
+      return;
+    }
+
+    if (propertyRooms && message) {
+      alert(message);
+
+      localStorage.getItem("liparentSelectedPropertyId")
+        ? localStorage.removeItem("liparentSelectedPropertyId")
+        : null;
+      localStorage.setItem("liparentSelectedPropertyId", propertyId);
+
+      this.updateTableDescription(propertyId);
+      this.renderRooms(propertyRooms, accessToken, tableBody);
+      return;
+    }
+  }
+
+  static async addRoomToPropertyAndRender(accessToken, propertyId, newRoom) {
+    if (!accessToken || !propertyId || !newRoom) return;
+
+    const { propertyRooms, message, error } = await Store.addRoomToProperty(
+      accessToken,
+      propertyId,
+      newRoom
+    );
 
     if (error) {
       this.handleErrors(error);
