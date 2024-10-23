@@ -499,18 +499,15 @@ const post_controllers = {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property Id.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
       if (!req.body.newRoom) throw new Error("provide a valid room.");
 
-      const { id, propertyId, propertyNo, newRoom } = req.body;
+      const { id, propertyId, newRoom } = req.body;
 
       if (!id)
         throw new Error("Unauthorized action, not a user or not logged in.");
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
-
-      if (!newRoom) throw new Error("provide a valid property.");
 
       const roomsDocument = await Room.findOne({ ownerID: id });
 
@@ -523,24 +520,10 @@ const post_controllers = {
 
       const checkIfPropertyIdIsRegistered = rooms[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered."
-          );
-
-        if (checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered."
-          );
-      }
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered."
+        );
 
       newRoom.isOccupied = false;
       newRoom.currentTenantID = null;
@@ -549,7 +532,7 @@ const post_controllers = {
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
       if (propertyRooms === (null || undefined))
-        throw new Error("Error when ading new room.");
+        throw new Error("Error when adding new room.");
 
       let checkIfRoomNumberIsRegisteredUnderTheSelectedProperty = false;
 
@@ -617,7 +600,7 @@ const post_controllers = {
           if (updateRents.acknowledged && updateRents.modifiedCount)
             res.status(200).json({
               message: `New room with the Number: ${newRoom.roomNumber} and ID: ${newRoom.roomID} has been successfuly added to the property: ${propertyId}.`,
-              propertyRooms: rooms,
+              propertyRooms,
             });
         }
       } else {
