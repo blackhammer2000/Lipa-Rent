@@ -485,10 +485,15 @@ const post_controllers = {
   //! ROOM ENDPOINTS THAT DEAL WITH THE ADDING AND READING OF THE ROOMS DATA IN THE DATABASE.
 
   //?  below is the expected requestBody from the user when creating a room  in property
-  //* {
+  //*  {
+  //*   propertyID: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //*   newRoom: {
   //*   roomNumber: "PK1",
   //*   roomRatePerMonth: "6000",
-  //*   roomType: "SingleRoom",}
+  //*   roomArea: "2500sqFT",
+  //*   roomType: "SingleRoom",
+  //*    }
+  //*  }
 
   createSingleRoomOnProperty: async (req, res) => {
     try {
