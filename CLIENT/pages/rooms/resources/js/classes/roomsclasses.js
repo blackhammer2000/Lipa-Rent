@@ -94,6 +94,28 @@ class Store {
 }
 
 class UserInterface {
+  static renderPropertySelectionOptions() {
+    const properties = localStorage.getItem("liparentProperties")
+      ? JSON.parse(localStorage.getItem("liparentProperties"))
+      : null;
+
+    if (!properties) return;
+
+    const optionsBody = document.querySelector("select");
+    optionsBody.querySelectorAll("option").forEach((option) => option.remove());
+
+    const fragment = document.createDocumentFragment();
+
+    for (const key in properties) {
+      const option = document.createElement("option");
+      option.value = key;
+      option.innerText = properties[key].propertyName;
+      fragment.append(option);
+    }
+
+    optionsBody.append(fragment);
+  }
+
   static renderRooms(rooms, accessToken, tableBody) {
     if (!rooms || !accessToken || !tableBody) return;
 

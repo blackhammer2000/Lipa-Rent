@@ -6,6 +6,8 @@
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
 
+  UserInterface.renderPropertySelectionOptions();
+
   const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
     ? localStorage.getItem("liparentSelectedPropertyId")
     : null;
