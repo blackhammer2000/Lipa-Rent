@@ -86,7 +86,7 @@ class Store {
     const { editedRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    console.log({ editedRooms, message, error });
+    console.log(editedRooms, message, error);
 
     if (error) return { error };
     if (editedRooms && message) return { editedRooms, message };
@@ -370,6 +370,8 @@ class UserInterface {
       roomId,
       editedRoom
     );
+
+    console.log(editedRooms, error, message);
 
     if (error) {
       alert(error);
