@@ -301,24 +301,19 @@ class UserInterface {
     );
   }
 
-  static async editPropertyAndRender(e, form, accessToken, tableBody) {
+  static async editRoomAndRender(e, form, accessToken, tableBody) {
     e.preventDefault();
 
-    const propertyId = table.querySelector(
-      "[data-edit-property-id]"
+    const propertyId = tableBody.parentElement.previousElementSibling
+      .querySelector("[ data-table-description]")
+      ?.innerText.trim()
+      .slice(-12);
+
+    const roomId = form.parentElement.querySelector(
+      "[data-edit-room-id]"
     )?.innerText;
 
-    const roomId = table.querySelector("[data-edit-property-id]")?.innerText;
-    const previousPropertyNo = form.parentElement.querySelector(
-      "[data-edit-property-number]"
-    )?.innerText;
-
-    if (
-      !confirm(
-        `Do you want to edit, room with ID: "${roomId}", with Number: "${previousRoomNo}"?`
-      )
-    )
-      return;
+    if (!confirm(`Do you want to edit room with ID: "${roomId}"?`)) return;
 
     const editedRoomNumber = form.querySelector("[data-edited-number]")?.value;
     const editedRoomType = form.querySelector("[data-edited-type]")?.value;
@@ -331,6 +326,8 @@ class UserInterface {
       editedRoomArea,
       editedRoomRate,
     };
+
+    console.log(editedRoom, propertyId);
 
     const { message, editedRooms, error } = await Store.editRoom(
       propertyId,

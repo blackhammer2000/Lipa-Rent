@@ -37,15 +37,15 @@
   const closeEditPropertyModalButton =
     editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
 
-  // editPropertyForm.addEventListener("submit", async (e) => {
-  //   e.preventDefault();
-  //   UserInterface.editPropertyAndRender(
-  //     e,
-  //     editPropertyForm,
-  //     accessToken,
-  //     tableBody
-  //   );
-  // });
+  editPropertyForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    UserInterface.editRoomAndRender(
+      e,
+      editPropertyForm,
+      accessToken,
+      tableBody
+    );
+  });
 
   closeEditPropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
