@@ -23,7 +23,7 @@ class Store {
     const { propertyRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    console.log({ propertyRooms, message, error });
+    // console.log({ propertyRooms, message, error });
 
     if (error) return { error };
     if (propertyRooms && message) return { propertyRooms, message, error };
@@ -89,7 +89,7 @@ class Store {
     console.log({ editedRooms, message, error });
 
     if (error) return { error };
-    if (editedRooms && message) return { editedRooms, message, error };
+    if (editedRooms && message) return { editedRooms, message };
   }
 }
 
@@ -345,7 +345,12 @@ class UserInterface {
       "[data-edit-room-id]"
     )?.innerText;
 
-    if (!confirm(`Do you want to edit room with ID: "${roomId}"?`)) return;
+    if (
+      !confirm(
+        `Do you want to edit room with ID: "${roomId}" on property with ID: "${propertyId}"?`
+      )
+    )
+      return;
 
     const editedRoomNumber = form.querySelector("[data-edited-number]")?.value;
     const editedRoomType = form.querySelector("[data-edited-type]")?.value;
@@ -359,11 +364,11 @@ class UserInterface {
       editedRoomRate,
     };
 
-    const { message, editedRooms, error } = await Store.editRoom(
+    const { message, editedRooms, error } = await Store.editRoomOnProperty(
+      accessToken,
       propertyId,
       roomId,
-      editedRoom,
-      accessToken
+      editedRoom
     );
 
     if (error) {
@@ -373,7 +378,7 @@ class UserInterface {
 
     if (editedRooms && message) {
       alert(message);
-      this.renderProperties(editedRooms, accessToken, tableBody);
+      this.renderRooms(editedRooms, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
       return;
     }
