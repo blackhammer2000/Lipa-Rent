@@ -12,6 +12,7 @@
 
   if (!properties) return;
 
+  localStorage.setItem("liparentProperties", JSON.stringify(properties));
   UserInterface.renderProperties(properties, accessToken, tableBody);
 
   const editPropertyForm = document.querySelector("[data-edit-property-form]");
