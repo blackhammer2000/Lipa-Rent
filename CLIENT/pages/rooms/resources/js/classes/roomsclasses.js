@@ -59,6 +59,38 @@ class Store {
     if (error) return { error };
     if (propertyRooms && message) return { propertyRooms, message, error };
   }
+
+  static async editRoomOnProperty(accessToken, propertyId, roomId, editedRoom) {
+    if (!accessToken || !propertyId || !roomId || !editedRoom) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        roomId,
+        editedRoom,
+      }),
+    };
+
+    const readAllRoomsOnSinglePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/edit/property/room",
+      requestOptions
+    );
+
+    const { editedRooms, message, error } =
+      await readAllRoomsOnSinglePropertyRequest.json();
+
+    console.log({ editedRooms, message, error });
+
+    if (error) return { error };
+    if (editedRooms && message) return { editedRooms, message, error };
+  }
 }
 
 class UserInterface {
@@ -326,8 +358,6 @@ class UserInterface {
       editedRoomArea,
       editedRoomRate,
     };
-
-    console.log(editedRoom, propertyId);
 
     const { message, editedRooms, error } = await Store.editRoom(
       propertyId,
