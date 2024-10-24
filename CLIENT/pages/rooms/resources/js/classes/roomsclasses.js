@@ -155,9 +155,9 @@ class UserInterface {
     editButtonCell.className = "btn btn-primary mr-2 edit";
     const editButtonCellText = document.createTextNode("Edit");
     editButtonCell.append(editButtonCellText);
-    // editButtonCell.addEventListener("click", (e) => {
-    //   this.populateEditRoomForm(e);
-    // });
+    editButtonCell.addEventListener("click", (e) => {
+      this.populateEditRoomForm(e);
+    });
     rowCTAbuttonCell.append(editButtonCell);
 
     const deleteButtonCell = document.createElement("button");
@@ -172,6 +172,34 @@ class UserInterface {
     row.append(rowCTAbuttonCell);
 
     return row;
+  }
+
+  static populateEditRoomForm(e) {
+    e.preventDefault();
+
+    const editRoomModal =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.nextElementSibling.nextElementSibling;
+
+    editRoomModal.classList.remove("hide");
+
+    const editForm = editRoomModal.querySelector("[data-edit-room-form]");
+
+    const roomNumber =
+      e.target.parentElement.parentElement.children[2].innerText;
+    const roomType = e.target.parentElement.parentElement.children[3].innerText;
+    const roomArea = e.target.parentElement.parentElement.children[4].innerText;
+    const roomRate = e.target.parentElement.parentElement.children[5].innerText;
+
+    const roomNumberFormInput = editForm.querySelector("[data-edited-number]");
+    const roomTypeFormInput = editForm.querySelector("[data-edited-type]");
+    const roomAreaFormInput = editForm.querySelector("[data-edited-area]");
+    const roomRateFormInput = editForm.querySelector("[data-edited-rate]");
+
+    roomNumberFormInput.value = roomNumber;
+    roomTypeFormInput.value = roomType;
+    roomAreaFormInput.value = roomArea;
+    roomRateFormInput.value = roomRate;
   }
 
   static async readAndRenderAllRoomsOnSingleProperty(

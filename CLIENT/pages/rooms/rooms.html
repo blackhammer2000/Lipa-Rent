@@ -227,14 +227,14 @@
           </span>
         </legend>
 
-        <h5 class="text-center">
+        <!-- <h5 class="text-center">
           Room Id:
           <span class="font-weight-light" data-edit-room-id></span> ----- Room
           Number:
           <span class="font-weight-light" data-edit-room-number></span>
-        </h5>
+        </h5> -->
 
-        <form data-edit-property-form action="" class="form">
+        <form data-edit-room-form action="" class="form">
           <div class="form-group">
             <label class="font-weight-bold">ROOM NUMBER:</label>
             <input
@@ -245,18 +245,27 @@
             />
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">ROOM RATE:</label>
+            <label class="font-weight-bold">ROOM TYPE:</label>
             <input
-              data-edited-rate
+              data-edited-type
               type="text"
               class="form-control text-uppercase"
               required
             />
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">ROOM TYPE:</label>
+            <label class="font-weight-bold">ROOM AREA:</label>
             <input
-              data-edited-type
+              data-edited-area
+              type="text"
+              class="form-control text-uppercase"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">ROOM RATE:</label>
+            <input
+              data-edited-rate
               type="text"
               class="form-control text-uppercase"
               required
