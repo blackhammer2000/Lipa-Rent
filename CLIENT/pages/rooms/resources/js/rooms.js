@@ -33,24 +33,24 @@
       );
   });
 
-  //   const editPropertyForm = document.querySelector("[data-edit-room-form]");
-  //   const closeEditPropertyModalButton =
-  //     editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
+  const editPropertyForm = document.querySelector("[data-edit-room-form]");
+  const closeEditPropertyModalButton =
+    editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
 
-  //   editPropertyForm.addEventListener("submit", async (e) => {
-  //     e.preventDefault();
-  //     UserInterface.editPropertyAndRender(
-  //       e,
-  //       editPropertyForm,
-  //       accessToken,
-  //       tableBody
-  //     );
-  //   });
+  // editPropertyForm.addEventListener("submit", async (e) => {
+  //   e.preventDefault();
+  //   UserInterface.editPropertyAndRender(
+  //     e,
+  //     editPropertyForm,
+  //     accessToken,
+  //     tableBody
+  //   );
+  // });
 
-  //   closeEditPropertyModalButton.addEventListener("click", (e) => {
-  //     e.preventDefault();
-  //     UserInterface.closeEditPropertyModal(e);
-  //   });
+  closeEditPropertyModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.closeEditRoomModal(e);
+  });
 
   const createPropertyButton = document.querySelector(
     "[data-create-room-button]"
