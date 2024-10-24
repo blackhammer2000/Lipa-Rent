@@ -273,6 +273,9 @@ class UserInterface {
 
     const editForm = editRoomModal.querySelector("[data-edit-room-form]");
 
+    const roomIdSpan = editRoomModal.querySelector("[data-edit-room-id]");
+
+    const roomId = e.target.parentElement.parentElement.children[1].innerText;
     const roomNumber =
       e.target.parentElement.parentElement.children[2].innerText;
     const roomType = e.target.parentElement.parentElement.children[3].innerText;
@@ -284,6 +287,8 @@ class UserInterface {
     const roomAreaFormInput = editForm.querySelector("[data-edited-area]");
     const roomRateFormInput = editForm.querySelector("[data-edited-rate]");
 
+    roomIdSpan.innerText = roomId;
+
     roomNumberFormInput.value = roomNumber;
     roomTypeFormInput.value = roomType;
     roomAreaFormInput.value = roomArea.slice(0, roomArea.indexOf("s")).trim();
@@ -294,6 +299,57 @@ class UserInterface {
     e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
       "hide"
     );
+  }
+
+  static async editPropertyAndRender(e, form, accessToken, tableBody) {
+    e.preventDefault();
+
+    const propertyId = table.querySelector(
+      "[data-edit-property-id]"
+    )?.innerText;
+
+    const roomId = table.querySelector("[data-edit-property-id]")?.innerText;
+    const previousPropertyNo = form.parentElement.querySelector(
+      "[data-edit-property-number]"
+    )?.innerText;
+
+    if (
+      !confirm(
+        `Do you want to edit, room with ID: "${roomId}", with Number: "${previousRoomNo}"?`
+      )
+    )
+      return;
+
+    const editedRoomNumber = form.querySelector("[data-edited-number]")?.value;
+    const editedRoomType = form.querySelector("[data-edited-type]")?.value;
+    const editedRoomArea = form.querySelector("[data-edited-area]")?.value;
+    const editedRoomRate = form.querySelector("[data-edited-rate]")?.value;
+
+    const editedRoom = {
+      editedRoomNumber,
+      editedRoomType,
+      editedRoomArea,
+      editedRoomRate,
+    };
+
+    const { message, editedRooms, error } = await Store.editRoom(
+      propertyId,
+      roomId,
+      editedRoom,
+      accessToken
+    );
+
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    if (editedRooms && message) {
+      alert(message);
+      this.renderProperties(editedRooms, accessToken, tableBody);
+      form.parentElement.parentElement.classList.add("hide");
+      return;
+    }
   }
 
   static updateTableDescription(propertyId) {
