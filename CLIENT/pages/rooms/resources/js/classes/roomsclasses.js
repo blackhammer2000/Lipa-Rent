@@ -115,7 +115,7 @@ class UserInterface {
     for (const key in properties) {
       const option = document.createElement("option");
       option.value = key;
-      option.innerText = properties[key].propertyName;
+      option.innerText = properties[key].propertyName.toUpperCase();
       fragment.append(option);
     }
 
@@ -417,9 +417,18 @@ class UserInterface {
   static updateTableDescription(propertyId) {
     if (!propertyId) return;
 
+    const propertyName =
+      JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
+        ?.propertyName || null;
+
+    if (!propertyName) {
+      alert("property name not found, cannot update table description");
+      return;
+    }
+
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Rooms for, Property ID: ${propertyId}`;
+    ).innerText = `All Rooms for, ${propertyName.toUpperCase()}, Property ID: ${propertyId}`;
   }
 
   static handleErrors(error) {
