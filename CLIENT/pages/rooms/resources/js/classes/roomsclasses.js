@@ -410,6 +410,7 @@ class UserInterface {
 
   static updateTableDescription(propertyId) {
     if (!propertyId) return;
+
     document.querySelector(
       "[data-table-description]"
     ).innerText = `All Rooms for Property ID: ${propertyId}`;
