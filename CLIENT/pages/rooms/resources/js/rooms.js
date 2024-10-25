@@ -23,12 +23,12 @@
 
   const selectPropertyForm = document.querySelector("[data-select-property]");
 
-  selectPropertyForm.addEventListener("submit", (e) => {
+  selectPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const propertyId = selectPropertyForm.querySelector("input")?.value.trim();
 
     if (propertyId)
-      UserInterface.readAndRenderAllRoomsOnSingleProperty(
+      await UserInterface.readAndRenderAllRoomsOnSingleProperty(
         accessToken,
         propertyId,
         tableBody
