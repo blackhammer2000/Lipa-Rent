@@ -27,7 +27,10 @@
     e.preventDefault();
     const propertyId = selectPropertyForm.querySelector("select")?.value.trim();
 
-    if (!propertyId) return;
+    if (!propertyId) {
+      alert("Select a property!");
+      return;
+    }
 
     console.log(propertyId);
 

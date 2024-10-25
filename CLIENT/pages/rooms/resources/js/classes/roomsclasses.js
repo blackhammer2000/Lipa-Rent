@@ -107,6 +107,11 @@ class UserInterface {
 
     const fragment = document.createDocumentFragment();
 
+    const placeHolderOption = document.createElement("option");
+    placeHolderOption.value = "";
+    placeHolderOption.innerText = "SELECT PROPERTY";
+    fragment.append(placeHolderOption);
+
     for (const key in properties) {
       const option = document.createElement("option");
       option.value = key;
