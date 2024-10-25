@@ -648,13 +648,12 @@ const post_controllers = {
       if (!Array.from(Object.keys(propertyRooms)).length)
         res.status(200).json({
           propertyRooms: {},
-          message: `"No rooms have been added to property: "${selectUsingPropertyID?.propertyName}".`,
+          message: `"No rooms have been added to property: "${propertyId}".`,
         });
       else
         res.status(200).json({
-          propertyName: selectUsingPropertyID?.propertyName,
           propertyRooms,
-          message: `Rooms for property: "${selectUsingPropertyID?.propertyName}" retrieved successfully.`,
+          message: `Rooms for property: "${propertyId}" retrieved successfully.`,
         });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
