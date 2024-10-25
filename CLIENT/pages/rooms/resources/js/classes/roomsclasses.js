@@ -241,7 +241,7 @@ class UserInterface {
   ) {
     if (!accessToken || !propertyId || !tableBody) return;
 
-    const { propertyName, propertyRooms, message, error } =
+    const { propertyRooms, message, error } =
       await Store.readAllRoomsOnSingleProperty(accessToken, propertyId);
 
     if (error) {
@@ -257,7 +257,7 @@ class UserInterface {
         : null;
       localStorage.setItem("liparentSelectedPropertyId", propertyId);
 
-      this.updateTableDescription(propertyId, propertyName);
+      this.updateTableDescription(propertyId);
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
