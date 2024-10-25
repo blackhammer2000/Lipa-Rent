@@ -27,12 +27,13 @@
     e.preventDefault();
     const propertyId = selectPropertyForm.querySelector("input")?.value.trim();
 
-    if (propertyId)
-      await UserInterface.readAndRenderAllRoomsOnSingleProperty(
-        accessToken,
-        propertyId,
-        tableBody
-      );
+    if (!propertyId) return;
+
+    await UserInterface.readAndRenderAllRoomsOnSingleProperty(
+      accessToken,
+      propertyId,
+      tableBody
+    );
   });
 
   const editPropertyForm = document.querySelector("[data-edit-room-form]");
