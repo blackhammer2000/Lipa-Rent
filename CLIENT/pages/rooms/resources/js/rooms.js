@@ -25,9 +25,11 @@
 
   selectPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const propertyId = selectPropertyForm.querySelector("input")?.value.trim();
+    const propertyId = selectPropertyForm.querySelector("select")?.value.trim();
 
     if (!propertyId) return;
+
+    console.log(propertyId);
 
     await UserInterface.readAndRenderAllRoomsOnSingleProperty(
       accessToken,
