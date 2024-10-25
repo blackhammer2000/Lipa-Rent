@@ -39,7 +39,7 @@
   const closeEditPropertyModalButton =
     editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
 
-  editPropertyForm.addEventListener("submit", async (e) => {
+  editPropertyForm.addEventListener("submit", (e) => {
     e.preventDefault();
     UserInterface.editRoomAndRender(
       e,
