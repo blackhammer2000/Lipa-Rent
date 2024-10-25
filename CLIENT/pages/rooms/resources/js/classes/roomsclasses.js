@@ -20,13 +20,14 @@ class Store {
       requestOptions
     );
 
-    const { propertyRooms, message, error } =
+    const { propertyName, propertyRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
     // console.log({ propertyRooms, message, error });
 
     if (error) return { error };
-    if (propertyRooms && message) return { propertyRooms, message, error };
+    if (propertyRooms && message)
+      return { propertyName, propertyRooms, message, error };
   }
 
   static async addRoomToProperty(accessToken, propertyId, newRoom) {
@@ -235,7 +236,7 @@ class UserInterface {
   ) {
     if (!accessToken || !propertyId || !tableBody) return;
 
-    const { propertyRooms, message, error } =
+    const { propertyName, propertyRooms, message, error } =
       await Store.readAllRoomsOnSingleProperty(accessToken, propertyId);
 
     if (error) {
@@ -251,7 +252,7 @@ class UserInterface {
         : null;
       localStorage.setItem("liparentSelectedPropertyId", propertyId);
 
-      this.updateTableDescription(propertyId);
+      this.updateTableDescription(propertyId, propertyName);
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
@@ -408,12 +409,12 @@ class UserInterface {
     }
   }
 
-  static updateTableDescription(propertyId) {
-    if (!propertyId) return;
+  static updateTableDescription(propertyId, propertyName) {
+    if (!propertyId || !propertyName) return;
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Rooms for Property ID: ${propertyId}`;
+    ).innerText = `All Rooms for, ${propertyName} Property ID: ${propertyId}`;
   }
 
   static handleErrors(error) {
