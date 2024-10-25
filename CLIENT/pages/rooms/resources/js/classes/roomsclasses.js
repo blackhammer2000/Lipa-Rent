@@ -274,7 +274,7 @@ class UserInterface {
     const newRoom = {
       roomNumber: newRoomNumber,
       roomRatePerMonth: newRoomRate,
-      roomArea: `${newRoomArea}-SQFT`,
+      roomArea: newRoomArea,
       roomType: newRoomType,
     };
 
@@ -351,7 +351,7 @@ class UserInterface {
 
     roomNumberFormInput.value = roomNumber;
     roomTypeFormInput.value = roomType;
-    roomAreaFormInput.value = roomArea.slice(0, roomArea.indexOf("s")).trim();
+    roomAreaFormInput.value = roomArea;
     roomRateFormInput.value = roomRate;
   }
 
