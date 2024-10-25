@@ -414,12 +414,12 @@ class UserInterface {
     }
   }
 
-  static updateTableDescription(propertyId, propertyName) {
-    if (!propertyId || !propertyName) return;
+  static updateTableDescription(propertyId) {
+    if (!propertyId) return;
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Rooms for, ${propertyName} Property ID: ${propertyId}`;
+    ).innerText = `All Rooms for, Property ID: ${propertyId}`;
   }
 
   static handleErrors(error) {
