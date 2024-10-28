@@ -108,10 +108,8 @@ const patchControllers = {
 
   //?  below is the expected requestBody from the user when deleting a room on property.
   //* {
-  //*   propertyNo: "NGONG/NGONG/12058",
   //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //*   roomId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //*   roomNo: "2A",
   //* }
 
   deleteRoomDetails: async (req, res) => {
@@ -119,11 +117,9 @@ const patchControllers = {
       if (!req.body.id)
         throw new Error("Unauthorized action, not a user or not logged in.");
       if (!req.body.propertyId) throw new Error("provide a valid property Id.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property Nd.");
       if (!req.body.roomId) throw new Error("provide a valid room Id.");
-      if (!req.body.roomNo) throw new Error("provide a valid room No.");
 
-      const { id, propertyId, propertyNo, roomId, roomNo } = req.body;
+      const { id, propertyId, roomId } = req.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -140,10 +136,6 @@ const patchControllers = {
         throw new Error(
           "Selected propertyID Rooms are not found/not registered in the database."
         );
-      if (selectPropertyUsingPropertyID.propertyNumber !== propertyNo)
-        throw new Error(
-          "Selected propertyNumber Rooms are not found/not registered in the database."
-        );
 
       const propertyRooms = selectPropertyUsingPropertyID?.rooms;
 
@@ -153,8 +145,6 @@ const patchControllers = {
         throw new Error(
           "Selected room ID is not found/not registered in the property."
         );
-      if (selectRoomInPropertyUsingRoomID.roomNumber !== roomNo)
-        throw new Error("Selected room ID and room number Room do not match.");
 
       delete rooms[0][propertyId].rooms[roomId];
 
@@ -169,6 +159,7 @@ const patchControllers = {
 
       if (deleteRoom.acknowledged && deleteRoom.modifiedCount)
         res.status(200).json({
+          deletedRooms: rooms[0][propertyId],
           message: `Room with the Number: ${roomNo} and ID: ${roomId} has been deleted.`,
         });
     } catch (err) {

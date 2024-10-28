@@ -28,25 +28,25 @@ const {
 //   verifyAccessToken,
 //   deleteOwnerDetails
 // );
-router.patch(
+router.delete(
   "/api/user/owner/delete/property",
   isUser,
   verifyAccessToken,
   deletePropertyDetails
 );
-router.patch(
+router.delete(
   "/api/user/owner/delete/property/room",
   isUser,
   verifyAccessToken,
   deleteRoomDetails
 );
-router.patch(
+router.delete(
   "/api/user/owner/delete/property/room/tenant",
   isUser,
   verifyAccessToken,
   deleteTenantDetails
 );
-router.patch(
+router.delete(
   "/api/user/owner/delete/property/room/tenant/rent/payment",
   isUser,
   verifyAccessToken,
