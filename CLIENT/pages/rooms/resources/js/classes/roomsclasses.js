@@ -336,7 +336,7 @@ class UserInterface {
       this.updateTableDescription(propertyId);
       this.renderRooms(propertyRooms, accessToken, tableBody);
       this.clearFormInputs(form);
-      form?.parentElement.parentElement.classList.add("hide");
+      //   form?.parentElement.parentElement.classList.add("hide");
       return;
     }
   }
