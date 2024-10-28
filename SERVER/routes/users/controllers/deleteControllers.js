@@ -87,7 +87,7 @@ const patchControllers = {
           "The property number given does not match the number of the property saved in the database with the given ID."
         );
 
-      delete propertiesOwned[0][checkIfPropertyIdIsRegistered.propertyID];
+      delete propertiesOwned[0][propertyId];
 
       const deleteProperty = await Property.updateOne(
         { ownerID: id },
