@@ -155,7 +155,7 @@ const patchControllers = {
           "Selected room ID is not found/not registered in the property."
         );
 
-      if (!Object.keys(selectRoomInPropertyUsingRoomID))
+      if (!Object.keys(propertyRooms))
         throw new Error("No rooms have been added to this property.");
 
       editedRoom.roomID ? delete editedRoom.roomID : null;
@@ -185,7 +185,7 @@ const patchControllers = {
       if (updateRooms.acknowledged && updateRooms.modifiedCount)
         res.status(200).json({
           message: `Room with the ID: ${roomId} has been successfuly edited.`,
-          editedRooms: rooms[0][propertyId],
+          editedRooms: rooms[0][propertyId]?.rooms,
         });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
