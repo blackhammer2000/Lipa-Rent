@@ -90,9 +90,11 @@ class Store {
       deletePropertyRequestOptions
     );
 
-    const deletePropertyResponse = await deletePropertyRequest.json();
+    const { message, deletedProperties, error } =
+      await deletePropertyRequest.json();
 
-    return deletePropertyResponse;
+    if (error) return { error };
+    if (deletedProperties && message) return { deletedProperties, message };
   }
 
   static async createProperty(accessToken, newProperty) {
@@ -322,7 +324,7 @@ class UserInterface {
     )
       return;
 
-    const { message, deletedProperties, error } = await Store.deleteProperty(
+    const { deletedProperties, message, error } = await Store.deleteProperty(
       accessToken,
       propertyId,
       propertyNo
@@ -333,7 +335,7 @@ class UserInterface {
       return;
     }
 
-    if (message && deletedProperties) {
+    if (deletedProperties && message) {
       alert(message);
       this.renderProperties(deletedProperties, accessToken, tableBody);
       return;
