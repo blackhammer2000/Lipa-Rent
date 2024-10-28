@@ -21,5 +21,6 @@ body {
 .hero {
   /* display: grid;
   place-items: center; */
-  min-height: 60vh;
+  max-height: 60vh;
+  overflow-y: scroll;
 }
