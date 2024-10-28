@@ -90,7 +90,7 @@ class Store {
       deletePropertyRequestOptions
     );
 
-    const { message, deletedProperties, error } =
+    const { deletedProperties, message, error } =
       await deletePropertyRequest.json();
 
     if (error) return { error };
