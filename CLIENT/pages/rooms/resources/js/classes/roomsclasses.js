@@ -465,11 +465,33 @@ class UserInterface {
     )
       return;
 
-    const { deletedRooms, message, error } = await Store.deleteRoomOnPorperty(
-      accessToken,
-      propertyId,
-      roomId
+    // const { deletedRooms, message, error } = await Store.deleteRoomOnPorperty(
+    //   accessToken,
+    //   propertyId,
+    //   roomId
+    // );
+
+    const requestOptions = {
+      mode: "cors",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        roomId,
+      }),
+    };
+
+    const readAllRoomsOnSinglePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/delete/property/room",
+      requestOptions
     );
+
+    const { deletedRooms, message, error } =
+      await readAllRoomsOnSinglePropertyRequest.json();
 
     if (error) {
       this.handleErrors(error);
