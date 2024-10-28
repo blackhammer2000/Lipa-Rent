@@ -20,14 +20,14 @@ class Store {
       requestOptions
     );
 
-    const { propertyName, propertyRooms, message, error } =
+    const {  propertyRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
     // console.log({ propertyRooms, message, error });
 
     if (error) return { error };
     if (propertyRooms && message)
-      return { propertyName, propertyRooms, message, error };
+      return {propertyRooms, message };
   }
 
   static async addRoomToProperty(accessToken, propertyId, newRoom) {
