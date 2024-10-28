@@ -146,6 +146,8 @@ const patchControllers = {
           "Selected room ID is not found/not registered in the property."
         );
 
+      const roomNo = selectRoomInPropertyUsingRoomID.roomNumber;
+
       delete rooms[0][propertyId].rooms[roomId];
 
       const deleteRoom = await Room.updateOne(
@@ -159,7 +161,7 @@ const patchControllers = {
 
       if (deleteRoom.acknowledged && deleteRoom.modifiedCount)
         res.status(200).json({
-          deletedRooms: rooms[0][propertyId],
+          deletedRooms: rooms[0][propertyId]?.rooms,
           message: `Room with the Number: ${roomNo} and ID: ${roomId} has been deleted.`,
         });
     } catch (err) {
