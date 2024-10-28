@@ -20,14 +20,13 @@ class Store {
       requestOptions
     );
 
-    const {  propertyRooms, message, error } =
+    const { propertyRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
     // console.log({ propertyRooms, message, error });
 
     if (error) return { error };
-    if (propertyRooms && message)
-      return {propertyRooms, message };
+    if (propertyRooms && message) return { propertyRooms, message };
   }
 
   static async addRoomToProperty(accessToken, propertyId, newRoom) {
@@ -91,6 +90,37 @@ class Store {
 
     if (error) return { error };
     if (editedRooms && message) return { editedRooms, message };
+  }
+
+  static async deleteRoomOnPorperty(accessToken, propertyId, roomId) {
+    if (!accessToken || !propertyId || !roomId) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        roomId,
+      }),
+    };
+
+    const readAllRoomsOnSinglePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/delete/property/room",
+      requestOptions
+    );
+
+    const { deletedRooms, message, error } =
+      await readAllRoomsOnSinglePropertyRequest.json();
+
+    console.log(deletedRooms, message, error);
+
+    if (error) return { error };
+    if (deletedRooms && message) return { deletedRooms, message };
   }
 }
 
@@ -224,9 +254,9 @@ class UserInterface {
     deleteButtonCell.className = "btn btn-danger ml-2 delete";
     const deleteButtonCellText = document.createTextNode("Delete");
     deleteButtonCell.append(deleteButtonCellText);
-    // deleteButtonCell.addEventListener("click", (e) => {
-    //   this.deleteRoomAndRender(e, accessToken, tableBody);
-    // });
+    deleteButtonCell.addEventListener("click", (e) => {
+      this.deleteRoomAndRender(e, accessToken, tableBody);
+    });
     rowCTAbuttonCell.append(deleteButtonCell);
 
     row.append(rowCTAbuttonCell);
@@ -411,6 +441,40 @@ class UserInterface {
       this.renderRooms(editedRooms, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
       return;
+    }
+  }
+
+  static async deleteRoomAndRender(e, accessToken, tableBody) {
+    e.preventDefault();
+    if (!accessToken || !tableBody) return;
+
+    const propertyId = tableBody.parentElement.previousElementSibling
+      .querySelector("[ data-table-description]")
+      ?.innerText.trim()
+      .slice(-12);
+
+    const roomId = e.target.parentElement.parentElement.children[1]?.innerText;
+
+    if (
+      !confirm(
+        `Do you want to delete room with ID: "${roomId}" on property with ID: "${propertyId}"?`
+      )
+    )
+      return;
+
+    const { deletedRooms, message, error } = await Store.deleteRoomOnPorperty(
+      accessToken,
+      propertyId,
+      roomId
+    );
+
+    if (error) {
+      this.handleErrors(error);
+    }
+
+    if (deletedRooms && message) {
+      alert(message);
+      this.renderRooms(deletedRooms, accessToken, tableBody);
     }
   }
 
