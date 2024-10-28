@@ -326,11 +326,33 @@ class UserInterface {
     )
       return;
 
-    const { deletedProperties, message, error } = await Store.deleteProperty(
-      accessToken,
-      propertyId,
-      propertyNo
+    // const { deletedProperties, message, error } = await Store.deleteProperty(
+    //   accessToken,
+    //   propertyId,
+    //   propertyNo
+    // );
+
+    const deletePropertyRequestOptions = {
+      mode: "cors",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        propertyNo,
+      }),
+    };
+
+    const deletePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/delete/property",
+      deletePropertyRequestOptions
     );
+
+    const { deletedProperties, message, error } =
+      await deletePropertyRequest.json();
 
     if (error) {
       alert(error);
