@@ -313,7 +313,7 @@ class UserInterface {
     e.preventDefault();
 
     const propertyId =
-      e.target.parentElement.parentElement.children[1].innerText;
+      e.target.parentElement.parentElement?.children[1].innerText;
     const propertyName =
       e.target.parentElement.parentElement.children[2].innerText;
     const propertyNo =
