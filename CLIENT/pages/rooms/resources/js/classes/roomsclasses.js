@@ -462,9 +462,6 @@ class UserInterface {
 
     const roomId = e.target.parentElement.parentElement.children[1]?.innerText;
 
-    console.log(propertyId);
-    console.log(roomId);
-
     if (
       !confirm(
         `Do you want to delete room with ID: "${roomId}" on property with ID: "${propertyId}"?`
