@@ -362,7 +362,8 @@ class UserInterface {
 
     const editRoomModal =
       e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.parentElement.nextElementSibling.nextElementSibling;
+        .parentElement.parentElement.parentElement.nextElementSibling
+        .nextElementSibling;
 
     editRoomModal.classList.remove("hide");
 
