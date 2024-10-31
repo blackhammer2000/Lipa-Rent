@@ -1,5 +1,9 @@
 const loginForm = document.querySelector("form");
 
+localStorage.removeItem("liparentAccessToken");
+localStorage.removeItem("liparentProperties");
+localStorage.removeItem("liparentSelectedPropertyId");
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 

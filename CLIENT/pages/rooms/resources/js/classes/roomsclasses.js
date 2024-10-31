@@ -500,6 +500,7 @@ class UserInterface {
     if (deletedRooms && message) {
       alert(message);
       this.renderRooms(deletedRooms, accessToken, tableBody);
+      return;
     }
   }
 
@@ -529,6 +530,7 @@ class UserInterface {
 
   static handleLogout() {
     localStorage.removeItem("liparentAccessToken");
+    localStorage.removeItem("liparentProperties");
     localStorage.removeItem("liparentSelectedPropertyId");
     location.assign("/CLIENT/login/login.html");
   }

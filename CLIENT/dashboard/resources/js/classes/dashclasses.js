@@ -149,6 +149,7 @@ class UserInterface {
     }
 
     tableBody.append(fragment);
+    localStorage.setItem("liparentProperties", JSON.stringify(properties));
   }
 
   static createPropertyRow(property, index, accessToken, tableBody) {
