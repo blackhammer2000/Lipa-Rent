@@ -215,7 +215,9 @@ class UserInterface {
     row.append(tableRoomAreaCell);
 
     const tableRoomRateCell = document.createElement("td");
-    const tableRoomRateCellText = document.createTextNode(roomRatePerMonth);
+    const tableRoomRateCellText = document.createTextNode(
+      `KES.${roomRatePerMonth}`
+    );
     tableRoomRateCell.append(tableRoomRateCellText);
     row.append(tableRoomRateCell);
 
@@ -368,7 +370,8 @@ class UserInterface {
       e.target.parentElement.parentElement.children[2].innerText;
     const roomType = e.target.parentElement.parentElement.children[3].innerText;
     const roomArea = e.target.parentElement.parentElement.children[4].innerText;
-    const roomRate = e.target.parentElement.parentElement.children[5].innerText;
+    const roomRate =
+      e.target.parentElement.parentElement.children[5].innerText.slice(4);
 
     const roomNumberFormInput = editForm.querySelector("[data-edited-number]");
     const roomTypeFormInput = editForm.querySelector("[data-edited-type]");

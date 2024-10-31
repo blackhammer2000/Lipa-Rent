@@ -21,6 +21,11 @@ body {
 .hero {
   /* display: grid;
   place-items: center; */
-  max-height: 60vh;
+  height: 60vh;
+  overflow: hidden;
+}
+
+table {
+  height: 90%;
   overflow-y: scroll;
 }
