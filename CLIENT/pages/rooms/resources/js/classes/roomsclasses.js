@@ -160,6 +160,11 @@ class UserInterface {
     const fragment = document.createDocumentFragment();
     let tableNumber = 1;
 
+    if (!rooms) {
+      alert("No rooms to show, please add rooms to the property.");
+      return;
+    }
+
     for (const key in rooms) {
       const roomRow = this.createRoomRow(
         rooms[key],
@@ -449,10 +454,11 @@ class UserInterface {
     e.preventDefault();
     if (!accessToken || !tableBody) return;
 
-    const propertyId = tableBody.parentElement.previousElementSibling
-      .querySelector("[ data-table-description]")
-      ?.innerText.trim()
-      .slice(-12);
+    const propertyId =
+      tableBody.parentElement.parentElement.previousElementSibling
+        .querySelector("[ data-table-description]")
+        ?.innerText.trim()
+        .slice(-12);
 
     const roomId = e.target.parentElement.parentElement.children[1]?.innerText;
 
