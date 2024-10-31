@@ -215,9 +215,7 @@ class UserInterface {
     row.append(tableRoomAreaCell);
 
     const tableRoomRateCell = document.createElement("td");
-    const tableRoomRateCellText = document.createTextNode(
-      `KES. ${roomRatePerMonth}`
-    );
+    const tableRoomRateCellText = document.createTextNode(roomRatePerMonth);
     tableRoomRateCell.append(tableRoomRateCellText);
     row.append(tableRoomRateCell);
 
@@ -416,10 +414,10 @@ class UserInterface {
     const editedRoomRate = form.querySelector("[data-edited-rate]")?.value;
 
     const editedRoom = {
-      editedRoomNumber,
-      editedRoomType,
-      editedRoomArea,
-      editedRoomRate,
+      roomNumber: editedRoomNumber,
+      roomType: editedRoomType,
+      roomArea: editedRoomArea,
+      roomRatePerMonth: editedRoomRate,
     };
 
     const { message, editedRooms, error } = await Store.editRoomOnProperty(

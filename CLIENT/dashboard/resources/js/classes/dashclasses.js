@@ -281,9 +281,9 @@ class UserInterface {
     )?.value;
 
     const editedProperty = {
-      editedPropertyName,
-      editedPropertyNumber,
-      editedPropertyLocation,
+      propertyName: editedPropertyName,
+      propertyNumber: editedPropertyNumber,
+      propertyLocation: editedPropertyLocation,
     };
 
     const { message, editedProperties, error } = await Store.editProperty(
