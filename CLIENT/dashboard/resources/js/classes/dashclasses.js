@@ -365,6 +365,15 @@ class UserInterface {
     if (deletedProperties && message) {
       alert(message);
       this.renderProperties(deletedProperties, accessToken, tableBody);
+
+      const localStorageSelectedPropertyId =
+        localStorage.getItem("liparentSelectedPropertyId") || null;
+
+      if (
+        localStorageSelectedPropertyId &&
+        localStorageSelectedPropertyId === propertyId
+      )
+        localStorage.removeItem("liparentSelectedPropertyId");
       return;
     }
   }

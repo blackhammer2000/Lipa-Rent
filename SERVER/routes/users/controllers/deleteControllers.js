@@ -134,7 +134,7 @@ const patchControllers = {
 
       if (!selectPropertyUsingPropertyID)
         throw new Error(
-          "Selected propertyID Rooms are not found/not registered in the database."
+          "Selected propertyID is not found/not registered in the rooms database."
         );
 
       const propertyRooms = selectPropertyUsingPropertyID?.rooms;

@@ -184,7 +184,7 @@ const post_controllers = {
         email,
       });
 
-      if (!user) throw new Error("Incorrect Email or Password.");
+      if (!user) throw new Error("Incorrect Email,NationalID or Password.");
 
       const { _id, paid, disabled } = user;
 
@@ -197,7 +197,8 @@ const post_controllers = {
         ownerID: _id,
       });
 
-      if (!dbPassword) throw new Error("Incorrect Email or Password.");
+      if (!dbPassword)
+        throw new Error("Incorrect Email,NationalID or Password.");
 
       const passwordMatch = await compare(
         encryptedPassword,
@@ -640,7 +641,7 @@ const post_controllers = {
 
       if (!selectUsingPropertyID)
         throw new Error(
-          "Selected propertyID Rooms are not found/not registered in the database."
+          "Selected propertyID is not found/not registered in the database."
         );
 
       const propertyRooms = selectUsingPropertyID?.rooms;
