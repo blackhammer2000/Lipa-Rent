@@ -63,9 +63,11 @@ class Store {
       editPropertyRequestOptions
     );
 
-    const editPropertyResponse = await editPropertyRequest.json();
+    const { message, editedProperties, error } =
+      await editPropertyRequest.json();
 
-    return editPropertyResponse;
+    if (error) return { error };
+    if (message && editedProperties) return { message, editedProperties };
   }
 
   static async deleteProperty(accessToken, propertyId, propertyNo) {
