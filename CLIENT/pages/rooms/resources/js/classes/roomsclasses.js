@@ -299,14 +299,14 @@ class UserInterface {
 
     if (propertyRooms && message) {
       alert(message);
-      this.setSelectedPropertyIdAndEnableTenantsButton(propertyId);
+      this.setSelectedPropertyIdAndEnableNavButton(propertyId);
       this.updateTableDescription(propertyId);
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
   }
 
-  static setSelectedPropertyIdAndEnableTenantsButton(propertyId) {
+  static setSelectedPropertyIdAndEnableNavButton(propertyId) {
     localStorage.getItem("liparentSelectedPropertyId")
       ? localStorage.removeItem("liparentSelectedPropertyId")
       : null;
