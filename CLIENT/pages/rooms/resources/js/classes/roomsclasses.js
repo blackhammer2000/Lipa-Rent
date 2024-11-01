@@ -286,16 +286,22 @@ class UserInterface {
 
     if (propertyRooms && message) {
       alert(message);
-
-      localStorage.getItem("liparentSelectedPropertyId")
-        ? localStorage.removeItem("liparentSelectedPropertyId")
-        : null;
-      localStorage.setItem("liparentSelectedPropertyId", propertyId);
-
+      this.setSelectedPropertyIdAndToggleTenantsButton(propertyId);
       this.updateTableDescription(propertyId);
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
+  }
+
+  static setSelectedPropertyIdAndToggleTenantsButton(propertyId) {
+    localStorage.getItem("liparentSelectedPropertyId")
+      ? localStorage.removeItem("liparentSelectedPropertyId")
+      : null;
+    localStorage.setItem("liparentSelectedPropertyId", propertyId);
+
+    const tenantsButton = document.querySelector("[data-tenants]");
+
+    tenantsButton.disabled = "false";
   }
 
   static async addRoomToPropertyAndRender(e, accessToken, form, tableBody) {
