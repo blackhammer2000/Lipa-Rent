@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LiPARENT | ROOMS</title>
+    <title>LiPARENT | TENANTS</title>
 
     <link
       rel="stylesheet"
@@ -21,11 +21,11 @@
       rel="stylesheet"
       href="../../indexResources/bootstrap/css/bootstrap.min.css.map"
     />
-    <link rel="stylesheet" href="./resources/css/rooms.css" />
+    <link rel="stylesheet" href="./resources/css/tenants.css" />
 
-    <script src="./resources/js/helpers.js" defer></script>
-    <script src="./resources/js/classes/roomsclasses.js" defer></script>
-    <script src="./resources/js/rooms.js" defer></script>
+    <!-- <script src="./resources/js/helpers.js" defer></script> -->
+    <script src="./resources/js/classes/tenantsClasses.js" defer></script>
+    <script src="./resources/js/tenants.js" defer></script>
   </head>
   <body>
     <div class="home container-fluid font-italic">
@@ -108,6 +108,7 @@
                 <th>TENANT NAME</th>
                 <th>TENANT NATIONAL ID</th>
                 <th>TENANT PHONE</th>
+                <th>TENANT ACTIONS</th>
               </tr>
             </thead>
             <tbody data-table></tbody>
@@ -153,14 +154,14 @@
 
     <!-- CREATE NEW PROPERTY MODAL -->
     <div
-      data-create-room
-      class="roomModal hide container justify-content-center align-items-center"
+      data-create-tenant
+      class="tenantModal hide container justify-content-center align-items-center"
     >
       <fieldset class="border border-success p-5 border-radius-50">
         <legend class="d-flex justify-content-around text-center">
           <h4>CREATE ROOM</h4>
           <span class="closeModal" draggable="true">
-            <button data-close-create-room-modal class="btn btn-danger">
+            <button data-close-create-tenant-modal class="btn btn-danger">
               X
             </button>
           </span>
@@ -169,8 +170,8 @@
         <form action="" class="form">
           <div class="form-group">
             <input
-              data-new-room-number
-              placeholder="ROOM NUMBER"
+              data-new-tenant-number
+              placeholder="TENANT NAME"
               type="text"
               class="form-control text-uppercase"
               required
@@ -178,8 +179,8 @@
           </div>
           <div class="form-group">
             <input
-              data-new-room-rate
-              placeholder="ROOM RATE PER MONTH"
+              data-new-tenant-nationalID
+              placeholder="NATIONAL ID"
               type="text"
               class="form-control text-uppercase"
               required
@@ -187,17 +188,8 @@
           </div>
           <div class="form-group">
             <input
-              data-new-room-area
-              placeholder="ROOM AREA(sqFt)"
-              type="text"
-              class="form-control text-uppercase"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <input
-              data-new-room-type
-              placeholder="ROOM TYPE"
+              data-new-tenant-phone
+              placeholder="TENANT PHONE"
               type="text"
               class="form-control text-uppercase"
               required
@@ -205,7 +197,7 @@
           </div>
 
           <div class="form-group text-center">
-            <button class="btn btn-success w-100">ADD ROOM</button>
+            <button class="btn btn-success w-100">ADD TENANT</button>
           </div>
         </form>
       </fieldset>
@@ -213,8 +205,8 @@
 
     <!-- EDIT PROPERTY MODAL -->
     <div
-      data-edit-room
-      class="roomModal hide container justify-content-center align-items-center"
+      data-edit-tenant
+      class="tenantModal hide container justify-content-center align-items-center"
     >
       <fieldset class="border border-success p-5 border-radius-50">
         <legend class="d-flex justify-content-around text-center">
@@ -225,42 +217,33 @@
         </legend>
 
         <h5 class="text-center">
-          Room Id:
-          <span class="font-weight-light" data-edit-room-id></span>
+          Tenant Id:
+          <span class="font-weight-light" data-edit-tenant-id></span>
         </h5>
 
-        <form data-edit-room-form action="" class="form">
+        <form data-edit-tenant-form action="" class="form">
           <div class="form-group">
-            <label class="font-weight-bold">ROOM NUMBER:</label>
+            <label class="font-weight-bold">TENANT NAME:</label>
             <input
-              data-edited-number
+              data-edited-name
               type="text"
               class="form-control text-uppercase"
               required
             />
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">ROOM TYPE:</label>
+            <label class="font-weight-bold">NATIONAL ID</label>
             <input
-              data-edited-type
+              data-edited-nationalID
               type="text"
               class="form-control text-uppercase"
               required
             />
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">ROOM AREA:</label>
+            <label class="font-weight-bold">TENANT PHONE:</label>
             <input
-              data-edited-area
-              type="text"
-              class="form-control text-uppercase"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label class="font-weight-bold">ROOM RATE:</label>
-            <input
-              data-edited-rate
+              data-edited-phone
               type="text"
               class="form-control text-uppercase"
               required
@@ -268,8 +251,8 @@
           </div>
 
           <div class="form-group text-center">
-            <button data-edit-room-button class="btn btn-primary w-100">
-              EDIT ROOM
+            <button data-edit-tenant-button class="btn btn-primary w-100">
+              EDIT TENANT
             </button>
           </div>
         </form>
