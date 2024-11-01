@@ -14,6 +14,8 @@
 
   const tableBody = document.querySelector("[data-table]");
 
+  UserInterface.setNavButtonsStatus(selectedPropertyId);
+
   if (selectedPropertyId !== (null || undefined))
     UserInterface.readAndRenderAllRoomsOnSingleProperty(
       accessToken,

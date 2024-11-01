@@ -152,6 +152,19 @@ class UserInterface {
     optionsBody.append(fragment);
   }
 
+  static setNavButtonsStatus(selectedPropertyId) {
+    const tenantsButton = document.querySelector("[data-nav-tenants]");
+    const rentsButton = document.querySelector("[data-nav-rents]");
+
+    if (selectedPropertyId) {
+      tenantsButton.removeAttribute("disabled");
+      rentsButton.removeAttribute("disabled");
+    }
+
+    tenantsButton.setAttribute("disabled", "true");
+    rentsButton.setAttribute("disabled", "true");
+  }
+
   static renderRooms(rooms, accessToken, tableBody) {
     if (!rooms || !accessToken || !tableBody) return;
 
@@ -300,7 +313,10 @@ class UserInterface {
     localStorage.setItem("liparentSelectedPropertyId", propertyId);
 
     const tenantsButton = document.querySelector("[data-nav-tenants]");
+    const rentsButton = document.querySelector("[data-nav-rents]");
+
     tenantsButton.removeAttribute("disabled");
+    rentsButton.removeAttribute("disabled");
   }
 
   static async addRoomToPropertyAndRender(e, accessToken, form, tableBody) {
