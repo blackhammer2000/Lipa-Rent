@@ -216,7 +216,8 @@ class UserInterface {
 
     const editPropertyModal =
       e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.parentElement.nextElementSibling.nextElementSibling;
+        .parentElement.parentElement.parentElement.nextElementSibling
+        .nextElementSibling;
 
     const propertyIdSpan = editPropertyModal.querySelector(
       "[data-edit-property-id]"
@@ -431,7 +432,7 @@ class UserInterface {
       alert(message);
       this.renderProperties(newProperties, accessToken, tableBody);
       this.clearFormInputs(form);
-      form.parentElement.parentElement.classList.add("hide");
+      // form.parentElement.parentElement.classList.add("hide");
       return;
     }
   }
