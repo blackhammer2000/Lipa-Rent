@@ -71,6 +71,7 @@ const patchControllers = {
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
 
+      //! deleting the property
       const ownerPropertiesDocument = await Property.findOne({ ownerID: id });
 
       if (!ownerPropertiesDocument) throw new Error(ownerPropertiesDocument);
@@ -95,7 +96,88 @@ const patchControllers = {
       );
 
       if (!deleteProperty.acknowledged && !deleteProperty.modifiedCount)
-        throw new Error("Error when updating the property in the database.");
+        throw new Error("Error when deleting the property in the database.");
+
+      //! deleting the rooms for the property
+      const ownerRoomsDocument = await Room.findOne({ ownerID: id });
+
+      if (!ownerRoomsDocument) throw new Error(ownerRoomsDocument);
+
+      const { rooms } = ownerRoomsDocument;
+
+      const propertyRooms = rooms[0][propertyId] || null;
+
+      if (!propertyRooms)
+        throw new Error("Cannot find rooms for the property.");
+
+      delete rooms[0][propertyId];
+
+      const deletePropertyRooms = await Room.updateOne(
+        { ownerID: id },
+        { $set: { rooms } }
+      );
+
+      if (
+        !deletePropertyRooms.acknowledged &&
+        !deletePropertyRooms.modifiedCount
+      )
+        throw new Error(
+          "Error when deleting the property rooms in the database."
+        );
+
+      //! deleting the tenants for the property
+      const ownerTenantsDocument = await Tenant.findOne({ ownerID: id });
+
+      if (!ownerTenantsDocument) throw new Error(ownerTenantsDocument);
+
+      const { tenants } = ownerTenantsDocument;
+
+      const propertyRoomsTenants = tenants[0][propertyId] || null;
+
+      if (!propertyRoomsTenants)
+        throw new Error("Cannot find tenants for the property.");
+
+      delete tenants[0][propertyId];
+
+      const deletePropertyRoomsTenants = await Tenant.updateOne(
+        { ownerID: id },
+        { $set: { tenants } }
+      );
+
+      if (
+        !deletePropertyRoomsTenants.acknowledged &&
+        !deletePropertyRoomsTenants.modifiedCount
+      )
+        throw new Error(
+          "Error when deleting the property tenants in the database."
+        );
+
+      //! deleting the rents for the property
+      const ownerRentsDocument = await Rent.findOne({ ownerID: id });
+
+      if (!ownerRentsDocument) throw new Error(ownerRentsDocument);
+
+      const { rents } = ownerRentsDocument;
+
+      const propertyRents = rents[0][propertyId] || null;
+
+      if (!propertyRents)
+        throw new Error("Cannot find rents for the property.");
+
+      delete rents[0][propertyId];
+
+      const deletePropertyRents = await Tenant.updateOne(
+        { ownerID: id },
+        { $set: { rents } }
+      );
+
+      if (
+        !deletePropertyRents.acknowledged &&
+        !deletePropertyRents.modifiedCount
+      )
+        throw new Error(
+          "Error when deleting the property rents in the database."
+        );
 
       res.status(200).json({
         message: `Property with ID: ${propertyId} and Number: ${propertyNo} has been deleted`,
