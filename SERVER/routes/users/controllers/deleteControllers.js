@@ -241,6 +241,59 @@ const patchControllers = {
         }
       );
 
+      //! deleting the tenants for the property
+      const ownerTenantsDocument = await Tenant.findOne({ ownerID: id });
+
+      if (!ownerTenantsDocument) throw new Error(ownerTenantsDocument);
+
+      const { tenants } = ownerTenantsDocument;
+
+      const propertyRoomsTenants =
+        tenants[0][propertyId].tenants[roomId] || null;
+
+      if (!propertyRoomsTenants)
+        throw new Error("Cannot find tenants for the property.");
+
+      delete tenants[0][propertyId].tenants[roomId];
+
+      const deletePropertyRoomsTenants = await Tenant.updateOne(
+        { ownerID: id },
+        { $set: { tenants } }
+      );
+
+      if (
+        !deletePropertyRoomsTenants.acknowledged &&
+        !deletePropertyRoomsTenants.modifiedCount
+      )
+        throw new Error(
+          "Error when deleting the room tenants in the database."
+        );
+
+      //! deleting the rents for the property
+      const ownerRentsDocument = await Rent.findOne({ ownerID: id });
+
+      if (!ownerRentsDocument) throw new Error(ownerRentsDocument);
+
+      const { rents } = ownerRentsDocument;
+
+      const propertyRents = rents[0][propertyId].rentPayments[roomId] || null;
+
+      if (!propertyRents)
+        throw new Error("Cannot find rents for the property.");
+
+      delete rents[0][propertyId].rentPayments[roomId];
+
+      const deletePropertyRents = await Rent.updateOne(
+        { ownerID: id },
+        { $set: { rents } }
+      );
+
+      if (
+        !deletePropertyRents.acknowledged &&
+        !deletePropertyRents.modifiedCount
+      )
+        throw new Error("Error when deleting the room rents in the database.");
+
       if (deleteRoom.acknowledged && deleteRoom.modifiedCount)
         res.status(200).json({
           deletedRooms: rooms[0][propertyId]?.rooms,
@@ -280,24 +333,15 @@ const patchControllers = {
 
       const checkIfPropertyIdIsRegistered = tenants[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
-          );
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the tenants database."
+        );
 
-        if (!checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
-          );
-      }
+      if (checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
+        throw new Error(
+          "Property with the given property Id and does not match with property number provided."
+        );
 
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
 
@@ -327,6 +371,34 @@ const patchControllers = {
           },
         }
       );
+
+      //! deleting the rents for the property
+      const ownerRentsDocument = await Rent.findOne({ ownerID: id });
+
+      if (!ownerRentsDocument) throw new Error(ownerRentsDocument);
+
+      const { rents } = ownerRentsDocument;
+
+      const propertyRents =
+        rents[0][propertyId].rentPayments[roomId][tenantId] || null;
+
+      if (!propertyRents)
+        throw new Error("Cannot find rents for the tenant being deleted.");
+
+      delete rents[0][propertyId].rentPayments[roomId][tenantId];
+
+      const deletePropertyRents = await Rent.updateOne(
+        { ownerID: id },
+        { $set: { rents } }
+      );
+
+      if (
+        !deletePropertyRents.acknowledged &&
+        !deletePropertyRents.modifiedCount
+      )
+        throw new Error(
+          "Error when deleting the property rents for the tenant in the database."
+        );
 
       if (deleteTenant.acknowledged && deleteTenant.modifiedCount)
         res.status(200).json({
