@@ -401,10 +401,11 @@ class UserInterface {
   static async editRoomAndRender(e, form, accessToken, tableBody) {
     e.preventDefault();
 
-    const propertyId = tableBody.parentElement.previousElementSibling
-      .querySelector("[ data-table-description]")
-      ?.innerText.trim()
-      .slice(-12);
+    const propertyId =
+      tableBody.parentElement.parentElement.previousElementSibling
+        .querySelector("[ data-table-description]")
+        ?.innerText.trim()
+        .slice(-12);
 
     const roomId = form.parentElement.querySelector(
       "[data-edit-room-id]"
