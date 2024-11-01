@@ -166,7 +166,7 @@ const patchControllers = {
 
       delete rents[0][propertyId];
 
-      const deletePropertyRents = await Tenant.updateOne(
+      const deletePropertyRents = await Rent.updateOne(
         { ownerID: id },
         { $set: { rents } }
       );
