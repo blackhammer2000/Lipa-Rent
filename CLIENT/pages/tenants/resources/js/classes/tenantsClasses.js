@@ -122,12 +122,8 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static renderTenants(tenants, accessToken, tableBody) {
-    if (!accessToken || !tableBody) return;
+    if (!tenants || !accessToken || !tableBody) return;
 
-    if (!tenants) {
-      alert("No tenants to show, please add tenants to the property.");
-      return;
-    }
     this.clearTable(tableBody);
 
     const fragment = document.createDocumentFragment();
