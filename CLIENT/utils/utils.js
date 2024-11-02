@@ -17,7 +17,13 @@ class UserinterfaceUtilities {
     if (!error) return;
 
     alert(error);
-    if (error === "session expired") this.handleLogout();
+
+    if (
+      error &&
+      error?.toLowerCase() === ("session expired" || "jwt malformed")
+    )
+      this.handleLogout();
+    return;
   }
 
   static handleLogout() {
@@ -28,7 +34,7 @@ class UserinterfaceUtilities {
   }
 
   static clearTable(tableBody) {
-    tableBody.querySelectorAll("td").forEach((row) => row.remove());
+    tableBody.querySelectorAll("tr").forEach((row) => row.remove());
   }
 
   static clearFormInputs(form) {

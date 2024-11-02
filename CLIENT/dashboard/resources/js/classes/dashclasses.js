@@ -20,16 +20,7 @@ class Store extends StoreUtilities {
 
     const { propertiesOwned, error } = await getAllPropertiesData?.json();
 
-    if (error && error?.toLowerCase() !== "session expired") {
-      alert(error);
-      return;
-    }
-
-    if (
-      error &&
-      error?.toLowerCase() === ("session expired" || "jwt malformed")
-    )
-      location?.assign("/CLIENT/login/login.html");
+    if (error) UserInterface.handleErrors(error);
 
     if (propertiesOwned) return propertiesOwned;
   }
@@ -209,6 +200,14 @@ class UserInterface extends UserinterfaceUtilities {
     row.append(rowCTAbuttonCell);
 
     return row;
+  }
+
+  static async readAndRenderProperties(properties, accessToken, tableBody) {
+    const properties = await Store.readAllPropertiesOwned(accessToken);
+
+    if (!properties) return;
+
+    UserInterface.renderProperties(properties, accessToken, tableBody);
   }
 
   static populateEditPropertyForm(e) {
