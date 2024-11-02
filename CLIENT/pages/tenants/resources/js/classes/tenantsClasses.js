@@ -200,7 +200,10 @@ class UserInterface extends UserinterfaceUtilities {
     return row;
   }
 
-  static async readAndRenderTenants(accessToken, tableBody) {
+  static async readAndRenderTenants(accessToken, form, tableBody) {
     if (!accessToken || !tableBody) return;
+
+    const selectedRoomNumber =
+      selectRoomNumberForm.querySelector("select")?.value;
   }
 }

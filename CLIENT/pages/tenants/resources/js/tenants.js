@@ -16,6 +16,8 @@
       selectedPropertyId
     );
 
+  const tableBody = document.querySelector("[data-table]");
+
   const selectRoomNumberForm = document.querySelector(
     "[data-room-number-form]"
   );
@@ -23,8 +25,11 @@
   selectRoomNumberForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const selectedRoomNumber =
-      selectRoomNumberForm.querySelector("select")?.value;
+    UserInterface.readAndRenderTenants(
+      accessToken,
+      selectRoomNumberForm,
+      tableBody
+    );
   });
 
   const addNewTenantButton = document.querySelector(
