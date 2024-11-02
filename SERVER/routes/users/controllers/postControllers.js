@@ -820,7 +820,7 @@ const post_controllers = {
 
       res.status(200).json({
         message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
-        newTenants: tenants[0][propertyId].tenants[roomId],
+        newRoomTenants: tenants[0][propertyId].tenants[roomId],
       });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
