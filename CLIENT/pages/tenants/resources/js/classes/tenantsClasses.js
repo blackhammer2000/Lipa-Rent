@@ -1,6 +1,28 @@
 class Store extends StoreUtilities {
-  static preFetchRoomNumbersForSelectedProperty(accessToken, propertyId) {
+  static async preFetchRoomNumbersForSelectedProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({ propertyId }),
+    };
+
+    const readRoomTenantsRequest = await fetch(
+      "http://localhost:4000/api/user/owner/read/property/rooms",
+      requestOptions
+    );
+
+    const { propertyRooms, error } = await readRoomTenantsRequest.json();
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (propertyRooms) return propertyRooms;
   }
 
   static async readAllTenantsForRoomInProperty(
@@ -69,6 +91,36 @@ class Store extends StoreUtilities {
   }
 }
 class UserInterface extends UserinterfaceUtilities {
+  static async renderRoomNumbersForSelection(accessToken, propertyId) {
+    if (!propertyId || !accessToken) return;
+
+    const propertyRooms = await Store.preFetchRoomNumbersForSelectedProperty(
+      accessToken,
+      propertyId
+    );
+
+    if (!propertyRooms) return;
+
+    const optionsBody = document.querySelector("select");
+    optionsBody.querySelectorAll("option").forEach((option) => option.remove());
+
+    const fragment = document.createDocumentFragment();
+
+    const placeHolderOption = document.createElement("option");
+    placeHolderOption.value = "";
+    placeHolderOption.innerText = "SELECT ROOM";
+    fragment.append(placeHolderOption);
+
+    for (const key in propertyRooms) {
+      const option = document.createElement("option");
+      option.value = key;
+      option.innerText = propertyRooms[key].roomNumber.toUpperCase();
+      fragment.append(option);
+    }
+
+    optionsBody.append(fragment);
+  }
+
   static renderTenants(tenants, accessToken, tableBody) {
     if (!accessToken || !tableBody) return;
 

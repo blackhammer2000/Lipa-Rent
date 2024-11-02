@@ -6,9 +6,19 @@
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
 
-  Store.readAllTenantsForRoomInProperty(
-    accessToken,
-    "f61167454fa6",
-    "1bd1299235ff"
-  );
+  const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
+    ? localStorage.getItem("liparentSelectedPropertyId")
+    : null;
+
+  if (selectedPropertyId)
+    UserInterface.renderRoomNumbersForSelection(
+      accessToken,
+      selectedPropertyId
+    );
+
+  //   Store.readAllTenantsForRoomInProperty(
+  //     accessToken,
+  //     "f61167454fa6",
+  //     "1bd1299235ff"
+  //   );
 })();
