@@ -1,4 +1,4 @@
-class Store {
+class Store extends StoreUtilities {
   static async readAllRoomsOnSingleProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
@@ -124,7 +124,7 @@ class Store {
   }
 }
 
-class UserInterface {
+class UserInterface extends UserinterfaceUtilities {
   static renderPropertySelectionOptions() {
     const properties = localStorage.getItem("liparentProperties")
       ? JSON.parse(localStorage.getItem("liparentProperties"))
@@ -150,19 +150,6 @@ class UserInterface {
     }
 
     optionsBody.append(fragment);
-  }
-
-  static setNavButtonsStatus(selectedPropertyId) {
-    const tenantsButton = document.querySelector("[data-nav-tenants]");
-    const rentsButton = document.querySelector("[data-nav-rents]");
-
-    if (selectedPropertyId) {
-      tenantsButton.removeAttribute("disabled");
-      rentsButton.removeAttribute("disabled");
-    }
-
-    tenantsButton.setAttribute("disabled", "true");
-    rentsButton.setAttribute("disabled", "true");
   }
 
   static renderRooms(rooms, accessToken, tableBody) {
@@ -546,27 +533,5 @@ class UserInterface {
     document.querySelector(
       "[data-table-description]"
     ).innerText = `All Rooms for, ${propertyName.toUpperCase()}, Property ID: ${propertyId}`;
-  }
-
-  static handleErrors(error) {
-    if (!error) return;
-
-    alert(error);
-    if (error === "session expired") this.handleLogout();
-  }
-
-  static handleLogout() {
-    localStorage.removeItem("liparentAccessToken");
-    localStorage.removeItem("liparentProperties");
-    localStorage.removeItem("liparentSelectedPropertyId");
-    location.assign("/CLIENT/login/login.html");
-  }
-
-  static clearTable(tableBody) {
-    tableBody.querySelectorAll("td").forEach((row) => row.remove());
-  }
-
-  static clearFormInputs(form) {
-    form.querySelectorAll("input").forEach((input) => (input.value = ""));
   }
 }
