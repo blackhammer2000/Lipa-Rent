@@ -773,11 +773,11 @@ const post_controllers = {
         );
 
       const checkIfTenantIsRegistered =
-        checkIfRoomIdIsRegistered[newTenant?.tenantID];
+        checkIfRoomIdIsRegistered[newTenant?.tenantNationalID];
 
       if (checkIfTenantIsRegistered)
         throw new Error(
-          "Tenant with the given ID has already been registered in the tenants database."
+          "Tenant with the given National ID has already been registered in this room."
         );
 
       newTenant.tenantID = crypto.randomUUID().slice(-12);

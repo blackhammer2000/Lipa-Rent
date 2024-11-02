@@ -42,7 +42,7 @@ class Store extends StoreUtilities {
         user: true,
         token: accessToken,
       },
-      body: JSON.stringify({ propertyId, roomId }),
+      body: JSON.stringify({ propertyId, roomId, newTenant }),
     };
 
     const readRoomTenantsRequest = await fetch(
