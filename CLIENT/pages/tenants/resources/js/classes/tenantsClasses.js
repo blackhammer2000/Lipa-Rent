@@ -1,4 +1,4 @@
-class Store {
+class Store extends StoreUtilities {
   static async readAllTenantsForRoomInProperty(
     propertyId,
     roomId,
@@ -27,7 +27,7 @@ class Store {
     console.log(res);
   }
 }
-class UserInterface {
+class UserInterface extends UserinterfaceUtilities {
   static renderTenants(tenants, accessToken, tableBody) {
     if (!accessToken || !tableBody) return;
 
@@ -55,10 +55,4 @@ class UserInterface {
   }
 
   static createTenantRow(tenant, index, accessToken, tableBody) {}
-
-  static clearTable(tableBody) {
-    if (!tableBody) return;
-
-    tableBody.querySelectorAll("tr").forEach((row) => row.remove());
-  }
 }

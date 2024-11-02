@@ -1,4 +1,4 @@
-class Store {
+class Store extends StoreUtilities {
   static async readAllPropertiesOwned(accessToken) {
     if (accessToken === (null || undefined))
       location.assign("/CLIENT/login/login.html");
@@ -128,7 +128,7 @@ class Store {
   }
 }
 
-class UserInterface {
+class UserInterface extends UserinterfaceUtilities {
   static renderProperties(properties, accessToken, tableBody) {
     if (!properties) return;
 
@@ -435,13 +435,5 @@ class UserInterface {
       // form.parentElement.parentElement.classList.add("hide");
       return;
     }
-  }
-
-  static clearTable(tableBody) {
-    tableBody.querySelectorAll("td").forEach((row) => row.remove());
-  }
-
-  static clearFormInputs(form) {
-    form.querySelectorAll("input").forEach((input) => (input.value = ""));
   }
 }
