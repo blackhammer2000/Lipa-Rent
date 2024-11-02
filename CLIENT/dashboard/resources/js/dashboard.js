@@ -8,6 +8,8 @@
 
   const tableBody = document.querySelector("[data-table]");
 
+  UserInterface.readAndRenderProperties(accessToken, tableBody);
+
   const editPropertyForm = document.querySelector("[data-edit-property-form]");
   const closeEditPropertyModalButton =
     editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");

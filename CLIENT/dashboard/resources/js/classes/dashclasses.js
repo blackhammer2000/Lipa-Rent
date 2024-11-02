@@ -202,7 +202,7 @@ class UserInterface extends UserinterfaceUtilities {
     return row;
   }
 
-  static async readAndRenderProperties(properties, accessToken, tableBody) {
+  static async readAndRenderProperties(accessToken, tableBody) {
     const properties = await Store.readAllPropertiesOwned(accessToken);
 
     if (!properties) return;

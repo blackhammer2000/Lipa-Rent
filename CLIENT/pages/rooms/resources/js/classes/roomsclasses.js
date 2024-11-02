@@ -294,16 +294,14 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static setSelectedPropertyIdAndEnableNavButton(propertyId) {
+    if (!propertyId) return;
+
     localStorage.getItem("liparentSelectedPropertyId")
       ? localStorage.removeItem("liparentSelectedPropertyId")
       : null;
     localStorage.setItem("liparentSelectedPropertyId", propertyId);
 
-    const tenantsButton = document.querySelector("[data-nav-tenants]");
-    const rentsButton = document.querySelector("[data-nav-rents]");
-
-    tenantsButton.removeAttribute("disabled");
-    rentsButton.removeAttribute("disabled");
+    this.setNavButtonsStatus(propertyId);
   }
 
   static async addRoomToPropertyAndRender(e, accessToken, form, tableBody) {
