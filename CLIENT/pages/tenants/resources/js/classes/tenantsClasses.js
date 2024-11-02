@@ -1,4 +1,8 @@
 class Store extends StoreUtilities {
+  static preFetchRoomNumbersForSelectedProperty(accessToken, propertyId) {
+    if (!accessToken || !propertyId) return;
+  }
+
   static async readAllTenantsForRoomInProperty(
     accessToken,
     propertyId,
@@ -31,8 +35,13 @@ class Store extends StoreUtilities {
       console.log(selectedRoomOnPropertyTenants);
   }
 
-  static async addNewTenantToRoomInProperty(accessToken, propertyId, roomId) {
-    if (!propertyId || !roomId || !accessToken) return;
+  static async addNewTenantToRoomInProperty(
+    accessToken,
+    propertyId,
+    roomId,
+    newTenant
+  ) {
+    if (!propertyId || !roomId || !accessToken || !newTenant) return;
 
     const requestOptions = {
       mode: "cors",
@@ -45,13 +54,16 @@ class Store extends StoreUtilities {
       body: JSON.stringify({ propertyId, roomId, newTenant }),
     };
 
-    const readRoomTenantsRequest = await fetch(
+    const addNewTenantToRoomRequest = await fetch(
       "http://localhost:4000/api/user/owner/read/property/room/tenants",
       requestOptions
     );
 
-    const { selectedRoominPropertyTenants } =
-      await readRoomTenantsRequest.json();
+    const { newRoomTenants, error } = await addNewTenantToRoomRequest.json();
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (newRoomTenants) console.log(newRoomTenants);
 
     console.log(res);
   }
