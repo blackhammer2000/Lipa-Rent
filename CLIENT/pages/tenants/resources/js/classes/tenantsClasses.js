@@ -53,8 +53,7 @@ class Store extends StoreUtilities {
 
     if (error) UserInterface.handleErrors(error);
 
-    if (selectedRoomOnPropertyTenants)
-      console.log(selectedRoomOnPropertyTenants);
+    if (selectedRoomOnPropertyTenants) return selectedRoomOnPropertyTenants;
   }
 
   static async addNewTenantToRoomInProperty(
@@ -199,5 +198,9 @@ class UserInterface extends UserinterfaceUtilities {
     row.append(rowCTAbuttonCell);
 
     return row;
+  }
+
+  static async readAndRenderTenants(accessToken, tableBody) {
+    if (!accessToken || !tableBody) return;
   }
 }

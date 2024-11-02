@@ -16,9 +16,30 @@
       selectedPropertyId
     );
 
-  //   Store.readAllTenantsForRoomInProperty(
-  //     accessToken,
-  //     "f61167454fa6",
-  //     "1bd1299235ff"
-  //   );
+  const selectRoomNumberForm = document.querySelector(
+    "[data-room-number-form]"
+  );
+
+  selectRoomNumberForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const selectedRoomNumber =
+      selectRoomNumberForm.querySelector("select")?.value;
+  });
+
+  const addNewTenantButton = document.querySelector(
+    "[data-create-tenant-button]"
+  );
+  addNewTenantButton.addEventListener("click", () => {
+    const addNewTenantModal = document.querySelector("[data-create-tenant]");
+    addNewTenantModal.classList.toggle("hide");
+  });
+
+  const closeNewTenantModal = document.querySelector(
+    "[data-close-create-tenant-modal]"
+  );
+  closeNewTenantModal.addEventListener("click", () => {
+    const addNewTenantModal = document.querySelector("[data-create-tenant]");
+    addNewTenantModal.classList.add("hide");
+  });
 })();

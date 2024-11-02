@@ -4,7 +4,7 @@ body {
   overflow-y: hidden;
 }
 
-.roomModal {
+.tenantModal {
   position: absolute;
   content: "";
   top: 10%;
