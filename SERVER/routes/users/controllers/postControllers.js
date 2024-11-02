@@ -795,32 +795,33 @@ const post_controllers = {
         }
       );
 
-      if (updateTenants.acknowledged && updateTenants.modifiedCount) {
-        const findRents = await Rent.findOne({ ownerID: id });
+      if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
+        throw new Error("Could not update the tenants database.");
 
-        const rents = findRents ? findRents.rents : null;
+      const findRents = await Rent.findOne({ ownerID: id });
 
-        if (!rents) throw new Error("rents doc prop not found.");
+      const rents = findRents ? findRents.rents : null;
 
-        rents[0][propertyId].rentPayments[roomId][newTenant.tenantID] = [];
+      if (!rents) throw new Error("rents doc prop not found.");
 
-        const updateRents = await Rent.updateOne(
-          { ownerID: id },
-          {
-            $set: {
-              rents,
-            },
-          }
-        );
+      rents[0][propertyId].rentPayments[roomId][newTenant.tenantID] = [];
 
-        if (updateRents.acknowledged && updateRents.modifiedCount)
-          res.status(200).json({
-            message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
-            updateTenants,
-          });
-      } else {
-        throw new Error("Could not update the database.");
-      }
+      const updateRents = await Rent.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            rents,
+          },
+        }
+      );
+
+      if (!updateRents.acknowledged && !updateRents.modifiedCount)
+        throw new Error("Could not update the rents database.");
+
+      res.status(200).json({
+        message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
+        newTenants: tenants[0][propertyId].tenants[roomId],
+      });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
