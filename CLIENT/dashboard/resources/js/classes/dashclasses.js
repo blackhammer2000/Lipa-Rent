@@ -83,13 +83,11 @@ class Store extends StoreUtilities {
       deletePropertyRequestOptions
     );
 
-    console.log(deletePropertyRequest);
+    const deletedPropertiesResponse = await deletePropertyRequest.json();
 
-    const { deletedProperties, message, error } =
-      await deletePropertyRequest.json();
+    if (error) UserInterface.handleErrors(error);
 
-    if (error) return { error };
-    if (deletedProperties && message) return { deletedProperties, message };
+    if (deletedProperties && message) return deletedPropertiesResponse;
   }
 
   static async createProperty(accessToken, newProperty) {
@@ -357,10 +355,7 @@ class UserInterface extends UserinterfaceUtilities {
     const { deletedProperties, message, error } =
       await deletePropertyRequest.json();
 
-    if (error) {
-      alert(error);
-      return;
-    }
+    if (error) this.handleErrors(error);
 
     if (deletedProperties && message) {
       alert(message);
