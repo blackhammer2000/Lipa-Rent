@@ -22,7 +22,8 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const res = await readRoomTenantsRequest.json();
+    const { selectedRoominPropertyTenants } =
+      await readRoomTenantsRequest.json();
 
     console.log(res);
   }

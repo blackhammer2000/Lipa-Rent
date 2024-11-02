@@ -729,8 +729,9 @@ const post_controllers = {
   //*   propertyNo: "NGONG/NGONG/12058",
   //*   roomId: "PK1",
   //*   newTenant: {
-  //*    tenantNationalID: "35501094",
   //*    tenantName: "LIXO PESSAR",
+  //*    tenantNationalID: "35501094",
+  //*    tenantPhone: "254711776471",
   //*     }
   //*  }
 
@@ -738,11 +739,10 @@ const post_controllers = {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
       if (!req.body.roomId) throw new Error("provide a valid room ID.");
       if (!req.body.newTenant) throw new Error("provide a valid tenant.");
 
-      const { id, propertyId, propertyNo, roomId, newTenant } = req?.body;
+      const { id, propertyId, roomId, newTenant } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -755,24 +755,10 @@ const post_controllers = {
 
       const checkIfPropertyIdIsRegistered = tenants[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
-          );
-
-        if (!checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
-          );
-      }
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the tenants database."
+        );
 
       const propertyTenants = checkIfPropertyIdIsRegistered?.tenants;
 
@@ -794,9 +780,9 @@ const post_controllers = {
           "Tenant with the given ID has already been registered in the tenants database."
         );
 
-      newTenant.moveOutDate = null;
-      newTenant.dateRegistered = Date.now();
       newTenant.tenantID = crypto.randomUUID().slice(-12);
+      newTenant.moveInDate = Date.now();
+      newTenant.moveOutDate = null;
 
       tenants[0][propertyId].tenants[roomId][newTenant.tenantID] = newTenant;
 
