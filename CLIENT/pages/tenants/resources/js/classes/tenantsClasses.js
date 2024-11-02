@@ -1,9 +1,37 @@
 class Store extends StoreUtilities {
   static async readAllTenantsForRoomInProperty(
+    accessToken,
     propertyId,
-    roomId,
-    accessToken
+    roomId
   ) {
+    if (!propertyId || !roomId || !accessToken) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({ propertyId, roomId }),
+    };
+
+    const readRoomTenantsRequest = await fetch(
+      "http://localhost:4000/api/user/owner/read/property/room/tenants",
+      requestOptions
+    );
+
+    const { selectedRoomOnPropertyTenants, error } =
+      await readRoomTenantsRequest.json();
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (selectedRoomOnPropertyTenants)
+      console.log(selectedRoomOnPropertyTenants);
+  }
+
+  static async addNewTenantToRoomInProperty(accessToken, propertyId, roomId) {
     if (!propertyId || !roomId || !accessToken) return;
 
     const requestOptions = {

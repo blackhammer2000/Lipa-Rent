@@ -18,11 +18,9 @@ class UserinterfaceUtilities {
 
     alert(error);
 
-    if (
-      error &&
-      error?.toLowerCase() === ("session expired" || "jwt malformed")
-    )
+    if (error?.toLowerCase() === ("session expired" || "jwt malformed"))
       this.handleLogout();
+
     return;
   }
 
