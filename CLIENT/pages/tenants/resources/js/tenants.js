@@ -7,8 +7,8 @@
     location.assign("/CLIENT/login/login.html");
 
   Store.readAllTenantsForRoomInProperty(
+    accessToken,
     "f61167454fa6",
-    "1bd1299235ff",
-    accessToken
+    "1bd1299235ff"
   );
 })();
