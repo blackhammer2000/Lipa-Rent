@@ -232,9 +232,9 @@ class UserInterface extends UserinterfaceUtilities {
   static updateTableDescription(
     propertyId,
     selectedRoomId,
-    selectedRoomNUmber
+    selectedRoomNumber
   ) {
-    if (!propertyId || !selectedRoomId || !selectedRoomNUmber) return;
+    if (!propertyId || !selectedRoomId || !selectedRoomNumber) return;
 
     const propertyName =
       JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
@@ -244,11 +244,12 @@ class UserInterface extends UserinterfaceUtilities {
       alert("property name not found, cannot update table description");
       return;
     }
+
     this.setSelectedRoomIdInLocalStorage(selectedRoomId);
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Tenants for room: ${selectedRoomNUmber.toUpperCase()} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `All Tenants for room: ${selectedRoomNumber.toUpperCase()} in: ${propertyName.toUpperCase()}`;
   }
 
   static setSelectedRoomIdInLocalStorage(selectedRoomId) {

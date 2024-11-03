@@ -28,6 +28,7 @@ class UserinterfaceUtilities {
     localStorage.removeItem("liparentAccessToken");
     localStorage.removeItem("liparentProperties");
     localStorage.removeItem("liparentSelectedPropertyId");
+    localStorage.removeItem("liparentSelectedRoomId");
     location.assign("/CLIENT/login/login.html");
   }
 
