@@ -883,8 +883,7 @@ const post_controllers = {
   //?  below is the expected requestBody from the user when reading all tenants for a room in property
   //*  {
   //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //*   propertyNo: "NGONG/NGONG/12058",
-  //*   roomId: "PK1",
+  //*   roomId: "87g87tg78t8g7",
   //*  }
   readAllTenantsInRoomOnProperty: async (req, res) => {
     try {
@@ -913,16 +912,23 @@ const post_controllers = {
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
 
       if (!selectedPropertyTenants)
-        throw new Error("No tenants have been added to this property.");
+        throw new Error("No rooms have been added to this property.");
 
       const selectedRoomOnPropertyTenants = selectedPropertyTenants[roomId];
 
       if (!selectedRoomOnPropertyTenants)
-        throw new Error(
-          `No room with the roomID: ${roomId} been added to this property.`
-        );
+        throw new Error(`No tenants found found for ${roomId}.`);
 
-      res.status(200).json({ selectedRoomOnPropertyTenants });
+      if (!Array.from(Object.keys(selectedRoomOnPropertyTenants)).length)
+        res.status(200).json({
+          selectedRoomOnPropertyTenants: {},
+          message: `"No tenants have been added to room: "${roomId}".`,
+        });
+      else
+        res.status(200).json({
+          selectedRoomOnPropertyTenants,
+          message: `Tenants for room ${roomId} have been successfully retrieved.`,
+        });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }

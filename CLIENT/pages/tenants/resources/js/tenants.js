@@ -10,24 +10,24 @@
     ? localStorage.getItem("liparentSelectedPropertyId")
     : null;
 
-  if (selectedPropertyId)
-    UserInterface.renderRoomNumbersForSelection(
-      accessToken,
-      selectedPropertyId
-    );
+  if (!selectedPropertyId) {
+    alert("please select a property in the room section");
+    return;
+  }
+
+  UserInterface.renderRoomNumbersForSelection(accessToken, selectedPropertyId);
 
   const tableBody = document.querySelector("[data-table]");
 
-  const selectRoomNumberForm = document.querySelector(
-    "[data-room-number-form]"
-  );
+  const selectRoomForm = document.querySelector("[ data-select-room-form]");
 
-  selectRoomNumberForm.addEventListener("submit", (e) => {
+  selectRoomForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     UserInterface.readAndRenderTenants(
       accessToken,
-      selectRoomNumberForm,
+      selectRoomForm,
+      selectedPropertyId,
       tableBody
     );
   });

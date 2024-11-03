@@ -48,12 +48,13 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { selectedRoomOnPropertyTenants, error } =
+    const { selectedRoomOnPropertyTenants, message, error } =
       await readRoomTenantsRequest.json();
 
     if (error) UserInterface.handleErrors(error);
 
-    if (selectedRoomOnPropertyTenants) return selectedRoomOnPropertyTenants;
+    if (selectedRoomOnPropertyTenants)
+      return { selectedRoomOnPropertyTenants, message };
   }
 
   static async addNewTenantToRoomInProperty(
@@ -200,10 +201,47 @@ class UserInterface extends UserinterfaceUtilities {
     return row;
   }
 
-  static async readAndRenderTenants(accessToken, form, tableBody) {
+  static async readAndRenderTenants(accessToken, form, propertyId, tableBody) {
     if (!accessToken || !tableBody) return;
 
-    const selectedRoomNumber =
-      selectRoomNumberForm.querySelector("select")?.value;
+    const selectedRoomId = form.querySelector("select")?.value;
+    const selectedRoomNumber = form.querySelector("select")?.textContent;
+
+    console.log(selectedRoomNumber);
+
+    const { selectedRoomOnPropertyTenants, message } =
+      await Store.readAllTenantsForRoomInProperty(
+        accessToken,
+        propertyId,
+        selectedRoomId
+      );
+    if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
+      alert(message);
+      this.updateTableDescription(
+        propertyId,
+        selectedRoomId,
+        selectedRoomNumber
+      );
+      return;
+    }
+
+    this.renderTenants(tenants, accessToken, tableBody);
+  }
+
+  static updateTableDescription(propertyId, roomId, roomNumber) {
+    if (!propertyId || !roomId || !roomNumber) return;
+
+    const propertyName =
+      JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
+        ?.propertyName || null;
+
+    if (!propertyName) {
+      alert("property name not found, cannot update table description");
+      return;
+    }
+
+    document.querySelector(
+      "[data-table-description]"
+    ).innerText = `All Tenants for room: ${roomNumber.toUpperCase()} in: ${propertyName.toUpperCase()}`;
   }
 }
