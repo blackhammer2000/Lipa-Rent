@@ -183,7 +183,14 @@ class UserInterface extends UserinterfaceUtilities {
   static createTenantRow(tenant, index, accessToken, tableBody) {
     if (!tenant || !index || !accessToken || !tableBody) return;
 
-    const { tenantID, tenantName, tenantNationalID, tenantPhone } = tenant;
+    const {
+      tenantID,
+      tenantName,
+      tenantNationalID,
+      tenantPhone,
+      moveInDate,
+      moveOutDate,
+    } = tenant;
 
     const row = document.createElement("tr");
 
@@ -212,6 +219,16 @@ class UserInterface extends UserinterfaceUtilities {
     const tableTenantNumberCellText = document.createTextNode(tenantPhone);
     tableTenantNumberCell.append(tableTenantNumberCellText);
     row.append(tableTenantNumberCell);
+
+    const tableTenantMoveInDateCell = document.createElement("td");
+    const tableTenantMoveInDateCellText = document.createTextNode(moveInDate);
+    tableTenantMoveInDateCell.append(tableTenantMoveInDateCellText);
+    row.append(tableTenantMoveInDateCell);
+
+    const tableTenantMoveOutDateCell = document.createElement("td");
+    const tableTenantMoveOutDateCellText = document.createTextNode(moveOutDate);
+    tableTenantMoveOutDateCell.append(tableTenantMoveOutDateCellText);
+    row.append(tableTenantMoveOutDateCell);
 
     const rowCTAbuttonCell = document.createElement("td");
 
@@ -337,18 +354,24 @@ class UserInterface extends UserinterfaceUtilities {
       e.target.parentElement.parentElement.children[3].innerText;
     const tenantPhone =
       e.target.parentElement.parentElement.children[4].innerText;
+    const tenantMoveOutDate =
+      e.target.parentElement.parentElement.children[6].innerText;
 
     const tenantNameFormInput = editForm.querySelector("[data-edited-name]");
     const tenantNationalIDFormInput = editForm.querySelector(
       "[data-edited-nationalID]"
     );
     const tenantPhoneFormInput = editForm.querySelector("[data-edited-phone]");
+    const tenantMoveOutFormInput = editForm.querySelector(
+      "[data-edited-moveout]"
+    );
 
     tenantIdSpan.innerText = tenantId;
 
     tenantNameFormInput.value = tenantName;
     tenantNationalIDFormInput.value = tenantNationalID;
     tenantPhoneFormInput.value = tenantPhone;
+    tenantMoveOutFormInput.value = tenantMoveOutDate;
   }
 
   static async editRoomTenantAndRender(
@@ -373,16 +396,20 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
-    const editedTenantName = form.querySelector("[data-edited-number]")?.value;
+    const editedTenantName = form.querySelector("[data-edited-name]")?.value;
     const editedTenantNationalID = form.querySelector(
-      "[data-edited-number]"
+      "[data-edited-nationalID]"
     )?.value;
-    const editedTenantPhone = form.querySelector("[data-edited-number]")?.value;
+    const editedTenantPhone = form.querySelector("[data-edited-phone]")?.value;
+    const editedTenantMoveOutDate = form.querySelector(
+      "[data-edited-moveout]"
+    )?.value;
 
     const editedTenant = {
       tenantName: editedTenantName,
       tenantNationalID: editedTenantNationalID,
       tenantPhone: editedTenantPhone,
+      moveOutDate: editedTenantMoveOutDate,
     };
 
     const { message, editedRoomTenants } =

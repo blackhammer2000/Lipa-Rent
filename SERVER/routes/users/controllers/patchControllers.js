@@ -255,15 +255,11 @@ const patchControllers = {
 
       const updateTenants = await Tenant.updateOne(
         { ownerID: id },
-        {
-          $set: {
-            tenants,
-          },
-        }
+        { $set: { tenants } }
       );
 
       if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
-        throw new Error(updateTenants);
+        throw new Error("Could not update database after editing the tenant.");
 
       res.status(200).json({
         message: `Tenant with the ID: ${tenantId} has been successfuly edited.`,
