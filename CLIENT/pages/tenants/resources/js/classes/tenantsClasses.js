@@ -249,7 +249,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Tenants for room: ${selectedRoomNumber.toUpperCase()} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `All Tenants for room: ${selectedRoomId} in: ${propertyName.toUpperCase()}`;
   }
 
   static setSelectedRoomIdInLocalStorage(selectedRoomId) {
