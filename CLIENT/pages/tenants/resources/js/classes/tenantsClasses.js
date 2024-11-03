@@ -129,7 +129,7 @@ class UserInterface extends UserinterfaceUtilities {
     let tableNumber = 1;
 
     for (const key in tenants) {
-      const roomRow = this.createRoomRow(
+      const roomRow = this.createTenantRow(
         tenants[key],
         tableNumber,
         accessToken,
