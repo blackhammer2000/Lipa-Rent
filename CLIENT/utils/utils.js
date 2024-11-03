@@ -25,10 +25,7 @@ class UserinterfaceUtilities {
   }
 
   static handleLogout() {
-    localStorage.removeItem("liparentAccessToken");
-    localStorage.removeItem("liparentProperties");
-    localStorage.removeItem("liparentSelectedPropertyId");
-    localStorage.removeItem("liparentSelectedRoomId");
+    this.clearLocalStorage();
     location.assign("/CLIENT/login/login.html");
   }
 
@@ -38,5 +35,12 @@ class UserinterfaceUtilities {
 
   static clearFormInputs(form) {
     form.querySelectorAll("input").forEach((input) => (input.value = ""));
+  }
+
+  static clearLocalStorage() {
+    localStorage.removeItem("liparentAccessToken");
+    localStorage.removeItem("liparentProperties");
+    localStorage.removeItem("liparentSelectedPropertyId");
+    localStorage.removeItem("liparentSelectedRoomId");
   }
 }
