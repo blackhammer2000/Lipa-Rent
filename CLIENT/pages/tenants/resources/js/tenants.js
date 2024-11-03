@@ -73,4 +73,24 @@
       newTenantForm
     );
   });
+
+  const editTenantForm = document.querySelector("[data-edit-tenant-form]");
+  const closeEditPropertyModalButton =
+    editTenantForm.parentElement.querySelector("[data-close-edit-modal]");
+
+  editTenantForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    UserInterface.editRoomTenantAndRender(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      selectedRoomId,
+      editTenantForm
+    );
+  });
+
+  closeEditPropertyModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    UserInterface.closeEditRoomModal(e);
+  });
 })();

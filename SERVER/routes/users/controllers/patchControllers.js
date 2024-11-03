@@ -201,8 +201,7 @@ const patchControllers = {
       if (!req.body.editedTenant)
         throw new Error("provide a valid editedTenant.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId, editedTenant } =
-        req?.body;
+      const { id, propertyId, roomId, tenantId, editedTenant } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");

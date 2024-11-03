@@ -116,7 +116,7 @@ class Store extends StoreUtilities {
     };
 
     const readAllRoomsOnSinglePropertyRequest = await fetch(
-      "http://localhost:4000/api/user/owner/edit/property/room",
+      "http://localhost:4000/api/user/owner/edit/property/room/tenant",
       requestOptions
     );
 
@@ -124,7 +124,7 @@ class Store extends StoreUtilities {
       await readAllRoomsOnSinglePropertyRequest.json();
 
     if (error) UserInterface.handleErrors(error);
-    if (editedRooms && message) return { editedRooms, message };
+    if (editedRoomTenants && message) return { editedRoomTenants, message };
   }
 }
 class UserInterface extends UserinterfaceUtilities {
@@ -219,9 +219,9 @@ class UserInterface extends UserinterfaceUtilities {
     editButtonCell.className = "btn btn-primary mr-2 edit";
     const editButtonCellText = document.createTextNode("Edit");
     editButtonCell.append(editButtonCellText);
-    // editButtonCell.addEventListener("click", (e) => {
-    //   this.populateEditRoomForm(e);
-    // });
+    editButtonCell.addEventListener("click", (e) => {
+      this.populateEditTenantForm(e);
+    });
     rowCTAbuttonCell.append(editButtonCell);
 
     const deleteButtonCell = document.createElement("button");
@@ -316,6 +316,41 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
+  static populateEditTenantForm(e) {
+    e.preventDefault();
+
+    const editRoomModal =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.parentElement.nextElementSibling
+        .nextElementSibling;
+
+    editRoomModal.classList.remove("hide");
+
+    const editForm = editRoomModal.querySelector("[data-edit-tenant-form]");
+
+    const tenantIdSpan = editRoomModal.querySelector("[data-edit-tenant-id]");
+
+    const tenantId = e.target.parentElement.parentElement.children[1].innerText;
+    const tenantName =
+      e.target.parentElement.parentElement.children[2].innerText;
+    const tenantNationalID =
+      e.target.parentElement.parentElement.children[3].innerText;
+    const tenantPhone =
+      e.target.parentElement.parentElement.children[4].innerText;
+
+    const tenantNameFormInput = editForm.querySelector("[data-edited-name]");
+    const tenantNationalIDFormInput = editForm.querySelector(
+      "[data-edited-nationalID]"
+    );
+    const tenantPhoneFormInput = editForm.querySelector("[data-edited-phone]");
+
+    tenantIdSpan.innerText = tenantId;
+
+    tenantNameFormInput.value = tenantName;
+    tenantNationalIDFormInput.value = tenantNationalID;
+    tenantPhoneFormInput.value = tenantPhone;
+  }
+
   static async editRoomTenantAndRender(
     accessToken,
     tableBody,
@@ -325,9 +360,15 @@ class UserInterface extends UserinterfaceUtilities {
   ) {
     if (!accessToken || !tableBody || !propertyId || !roomId || !form) return;
 
+    const tenantId = form.parentElement.querySelector(
+      "[data-edit-tenant-id]"
+    )?.innerText;
+
+    if (!tenantId) return;
+
     if (
       !confirm(
-        `Do you want to edit tenant with ID: "${tenantID}" on roomID: "${propertyId}"?`
+        `Do you want to edit tenant with ID: "${tenantId}" on roomID: "${propertyId}"?`
       )
     )
       return;
@@ -344,12 +385,14 @@ class UserInterface extends UserinterfaceUtilities {
       tenantPhone: editedTenantPhone,
     };
 
-    const { message, editedRoomTenants } = await Store.editRoomOnProperty(
-      accessToken,
-      propertyId,
-      roomId,
-      editedTenant
-    );
+    const { message, editedRoomTenants } =
+      await Store.editTenantOnRoomInProperty(
+        accessToken,
+        propertyId,
+        roomId,
+        tenantId,
+        editedTenant
+      );
 
     console.log(editedRoomTenants, message);
 

@@ -1,6 +1,6 @@
 const loginForm = document.querySelector("form");
 
-UserInterface.clearLocalStorage();
+UserinterfaceUtilities.clearLocalStorage();
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
