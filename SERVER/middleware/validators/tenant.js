@@ -3,8 +3,9 @@ const Joi = require("joi");
 const tenantValidator = async (req, res, next) => {
   try {
     const tenantSchema = Joi.object({
-      tenantNationalID: Joi.string().required(),
       tenantName: Joi.string().required(),
+      tenantNationalID: Joi.string().required(),
+      tenantPhone: Joi.string().required(),
     });
 
     const isValidTenantData = await tenantSchema.validateAsync(

@@ -77,7 +77,7 @@ class Store extends StoreUtilities {
     };
 
     const addNewTenantToRoomRequest = await fetch(
-      "http://localhost:4000/api/user/owner/read/property/room/tenants",
+      "http://localhost:4000/api/user/owner/create/property/room/tenant",
       requestOptions
     );
 
@@ -257,34 +257,13 @@ class UserInterface extends UserinterfaceUtilities {
       tenantPhone,
     };
 
-    // const { newRoomTenants, message } =
-    //   await Store.addNewTenantToRoomInProperty(
-    //     accessToken,
-    //     propertyId,
-    //     selectedRoomId,
-    //     newTenant
-    //   );
-
-    const requestOptions = {
-      mode: "cors",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        user: true,
-        token: accessToken,
-      },
-      body: JSON.stringify({ propertyId, roomId: selectedRoomId, newTenant }),
-    };
-
-    const addNewTenantToRoomRequest = await fetch(
-      "http://localhost:4000/api/user/owner/read/property/room/tenants",
-      requestOptions
-    );
-
-    const { newRoomTenants, message, error } =
-      await addNewTenantToRoomRequest.json();
-
-    if (error) this.handleErrors(error);
+    const { newRoomTenants, message } =
+      await Store.addNewTenantToRoomInProperty(
+        accessToken,
+        propertyId,
+        selectedRoomId,
+        newTenant
+      );
 
     if (newRoomTenants && message) {
       alert(message);

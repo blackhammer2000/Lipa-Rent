@@ -57,9 +57,9 @@
   });
 
   const newTenantForm = addNewTenantModal.querySelector("form");
-  newTenantForm.addEventListener("submit", (e) => {
+  newTenantForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    UserInterface.addNewTenantAndRender(
+    await UserInterface.addNewTenantAndRender(
       accessToken,
       tableBody,
       selectedPropertyId,
