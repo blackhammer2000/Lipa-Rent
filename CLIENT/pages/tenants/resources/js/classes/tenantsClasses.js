@@ -205,7 +205,7 @@ class UserInterface extends UserinterfaceUtilities {
     if (!accessToken || !tableBody) return;
 
     const selectedRoomId = form.querySelector("select")?.value;
-    const selectedRoomNumber = form.querySelector("select")?.textContent;
+    const selectedRoomNumber = form.querySelector("select")?.innerText;
 
     console.log(selectedRoomNumber);
 
@@ -215,6 +215,7 @@ class UserInterface extends UserinterfaceUtilities {
         propertyId,
         selectedRoomId
       );
+
     if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
       alert(message);
       this.updateTableDescription(
@@ -228,8 +229,12 @@ class UserInterface extends UserinterfaceUtilities {
     this.renderTenants(tenants, accessToken, tableBody);
   }
 
-  static updateTableDescription(propertyId, roomId, roomNumber) {
-    if (!propertyId || !roomId || !roomNumber) return;
+  static updateTableDescription(
+    propertyId,
+    selectedRoomId,
+    selectedRoomNUmber
+  ) {
+    if (!propertyId || !selectedRoomId || !selectedRoomNUmber) return;
 
     const propertyName =
       JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
@@ -239,9 +244,15 @@ class UserInterface extends UserinterfaceUtilities {
       alert("property name not found, cannot update table description");
       return;
     }
+    this.setSelectedRoomIdInLocalStorage(selectedRoomId);
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Tenants for room: ${roomNumber.toUpperCase()} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `All Tenants for room: ${selectedRoomNUmber.toUpperCase()} in: ${propertyName.toUpperCase()}`;
+  }
+
+  static setSelectedRoomIdInLocalStorage(selectedRoomId) {
+    localStorage.removeItem("liparentSelectedRoomId");
+    localStorage.setItem("liparentSelectedRoomId", selectedRoomId);
   }
 }
