@@ -12,8 +12,16 @@
 
   if (!selectedPropertyId) {
     alert("please select a property in the room section");
+    location.assign("/CLIENT/pages/rooms/rooms");
     return;
   }
+
+  const selectedRoomId = localStorage.getItem("liparentSelectedRoomId")
+    ? localStorage.getItem("liparentSelectedRoomId")
+    : null;
+
+  if (selectedPropertyId)
+    UserInterface.updateTableDescription(selectedPropertyId, selectedRoomId);
 
   UserInterface.renderRoomNumbersForSelection(accessToken, selectedPropertyId);
 
@@ -32,11 +40,12 @@
     );
   });
 
+  const addNewTenantModal = document.querySelector("[data-create-tenant]");
+
   const addNewTenantButton = document.querySelector(
     "[data-create-tenant-button]"
   );
-  addNewTenantButton.addEventListener("click", () => {
-    const addNewTenantModal = document.querySelector("[data-create-tenant]");
+  addNewTenantButton.addEventListener("click", (e) => {
     addNewTenantModal.classList.toggle("hide");
   });
 
@@ -44,7 +53,19 @@
     "[data-close-create-tenant-modal]"
   );
   closeNewTenantModal.addEventListener("click", () => {
-    const addNewTenantModal = document.querySelector("[data-create-tenant]");
     addNewTenantModal.classList.add("hide");
+  });
+
+  const newTenantForm = addNewTenantModal.querySelector(
+    "[data-new-tenant-form]"
+  );
+  newTenantForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    UserInterface.addNewTenantAndRender(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      newTenantForm
+    );
   });
 })();

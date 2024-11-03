@@ -81,13 +81,12 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { newRoomTenants, error } = await addNewTenantToRoomRequest.json();
+    const { newRoomTenants, message, error } =
+      await addNewTenantToRoomRequest.json();
 
     if (error) UserInterface.handleErrors(error);
 
-    if (newRoomTenants) console.log(newRoomTenants);
-
-    console.log(res);
+    if (newRoomTenants && message) return { newRoomTenants, message };
   }
 }
 class UserInterface extends UserinterfaceUtilities {
@@ -207,7 +206,7 @@ class UserInterface extends UserinterfaceUtilities {
     const selectedRoomId = form.querySelector("select")?.value;
     const selectedRoomNumber = form.querySelector("select")?.innerText;
 
-    console.log(selectedRoomNumber);
+    // console.log(selectedRoomNumber);
 
     const { selectedRoomOnPropertyTenants, message } =
       await Store.readAllTenantsForRoomInProperty(
@@ -226,15 +225,72 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
+    this.setSelectedRoomIdInLocalStorage(selectedRoomId);
     this.renderTenants(tenants, accessToken, tableBody);
   }
 
-  static updateTableDescription(
-    propertyId,
-    selectedRoomId,
-    selectedRoomNumber
-  ) {
-    if (!propertyId || !selectedRoomId || !selectedRoomNumber) return;
+  static async addNewTenantAndRender(accessToken, tableBody, propertyId, form) {
+    if (!accessToken || !tableBody || !propertyId || !form) return;
+
+    const selectedRoomId =
+      localStorage.getItem("liparentSelectedRoomId") || null;
+
+    if (!selectedRoomId) return;
+
+    const tenantName = form.querySelector("[data-new-tenant-name]")?.value;
+    const tenantNationalID = form.querySelector(
+      "[data-new-tenant-natioanlID]"
+    )?.vaalue;
+    const tenantPhone = form.querySelector("[data-new-tenant-phone]")?.value;
+
+    if (
+      !confirm(`Do you want to add ${tenantName} to roomID: ${selectedRoomId}?`)
+    )
+      return;
+
+    const newTenant = {
+      tenantName,
+      tenantNationalID,
+      tenantPhone,
+    };
+
+    // const { newRoomTenants, message } =
+    //   await Store.addNewTenantToRoomInProperty(
+    //     accessToken,
+    //     propertyId,
+    //     selectedRoomId,
+    //     newTenant
+    //   );
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({ propertyId, roomId: selectedRoomId, newTenant }),
+    };
+
+    const addNewTenantToRoomRequest = await fetch(
+      "http://localhost:4000/api/user/owner/read/property/room/tenants",
+      requestOptions
+    );
+
+    const { newRoomTenants, message, error } =
+      await addNewTenantToRoomRequest.json();
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (newRoomTenants && message) {
+      alert(message);
+      this.renderTenants(newRoomTenants, accessToken, tableBody);
+    }
+  }
+
+  static updateTableDescription(propertyId, selectedRoomId) {
+    if (!propertyId || !selectedRoomId) return;
 
     const propertyName =
       JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
@@ -245,11 +301,9 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
-    this.setSelectedRoomIdInLocalStorage(selectedRoomId);
-
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Tenants for room: ${selectedRoomId} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `Tenants for room: ${selectedRoomId} in: ${propertyName.toUpperCase()}`;
   }
 
   static setSelectedRoomIdInLocalStorage(selectedRoomId) {

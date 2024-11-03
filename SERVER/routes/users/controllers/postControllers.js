@@ -726,7 +726,6 @@ const post_controllers = {
   //?  below is the expected requestBody from the user when creating a tenant for a room in property
   //*  {
   //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //*   propertyNo: "NGONG/NGONG/12058",
   //*   roomId: "PK1",
   //*   newTenant: {
   //*    tenantName: "LIXO PESSAR",
@@ -781,7 +780,7 @@ const post_controllers = {
         );
 
       newTenant.tenantID = crypto.randomUUID().slice(-12);
-      newTenant.moveInDate = Date.now();
+      newTenant.moveInDate = new Date().toLocaleDateString();
       newTenant.moveOutDate = null;
 
       tenants[0][propertyId].tenants[roomId][newTenant.tenantID] = newTenant;
