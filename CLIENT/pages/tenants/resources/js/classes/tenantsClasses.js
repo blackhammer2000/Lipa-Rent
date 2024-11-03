@@ -215,6 +215,8 @@ class UserInterface extends UserinterfaceUtilities {
         selectedRoomId
       );
 
+    this.setSelectedRoomIdInLocalStorage(selectedRoomId);
+
     if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
       alert(message);
       this.updateTableDescription(
@@ -225,7 +227,6 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
-    this.setSelectedRoomIdInLocalStorage(selectedRoomId);
     this.renderTenants(tenants, accessToken, tableBody);
   }
 
