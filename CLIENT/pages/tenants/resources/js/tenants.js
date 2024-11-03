@@ -75,8 +75,9 @@
   });
 
   const editTenantForm = document.querySelector("[data-edit-tenant-form]");
-  const closeEditPropertyModalButton =
-    editTenantForm.parentElement.querySelector("[data-close-edit-modal]");
+  const closeEditTenantModalButton = editTenantForm.parentElement.querySelector(
+    "[data-close-edit-modal]"
+  );
 
   editTenantForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -89,8 +90,10 @@
     );
   });
 
-  closeEditPropertyModalButton.addEventListener("click", (e) => {
+  closeEditTenantModalButton.addEventListener("click", (e) => {
     e.preventDefault();
-    UserInterface.closeEditRoomModal(e);
+    e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
+      "hide"
+    );
   });
 })();
