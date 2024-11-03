@@ -3,6 +3,7 @@ const loginForm = document.querySelector("form");
 localStorage.removeItem("liparentAccessToken");
 localStorage.removeItem("liparentProperties");
 localStorage.removeItem("liparentSelectedPropertyId");
+localStorage.removeItem("liparentSelectedRoomId");
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -35,10 +36,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   if (message && token) {
     alert(message);
-    localStorage.getItem("liparentAccessToken")
-      ? localStorage.removeItem("liparentAccessToken")
-      : localStorage.setItem("liparentAccessToken", JSON.stringify(token));
-
+    localStorage.setItem("liparentAccessToken", JSON.stringify(token));
     location.assign("/CLIENT/dashboard/dashboard.html");
     return;
   }
