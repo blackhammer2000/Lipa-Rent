@@ -88,7 +88,7 @@ class Store extends StoreUtilities {
 
     console.log(editedRooms, message, error);
 
-    if (error) return { error };
+    if (error) UserInterface.handleErrors(error);
     if (editedRooms && message) return { editedRooms, message };
   }
 
@@ -438,19 +438,12 @@ class UserInterface extends UserinterfaceUtilities {
       roomRatePerMonth: editedRoomRate,
     };
 
-    const { message, editedRooms, error } = await Store.editRoomOnProperty(
+    const { message, editedRooms } = await Store.editRoomOnProperty(
       accessToken,
       propertyId,
       roomId,
       editedRoom
     );
-
-    console.log(editedRooms, error, message);
-
-    if (error) {
-      alert(error);
-      return;
-    }
 
     if (editedRooms && message) {
       alert(message);

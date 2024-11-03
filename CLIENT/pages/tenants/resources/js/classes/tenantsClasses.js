@@ -368,7 +368,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (
       !confirm(
-        `Do you want to edit tenant with ID: "${tenantId}" on roomID: "${propertyId}"?`
+        `Do you want to edit tenant with ID: "${tenantId}" on roomID: "${roomId}"?`
       )
     )
       return;
