@@ -196,7 +196,6 @@ const patchControllers = {
     try {
       if (!req.body.id) throw new Error("Unknown user...please log in");
       if (!req.body.propertyId) throw new Error("provide a valid property Id.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property No.");
       if (!req.body.roomId) throw new Error("provide a valid room Id.");
       if (!req.body.tenantId) throw new Error("provide a valid tenant Id.");
       if (!req.body.editedTenant)
@@ -216,24 +215,10 @@ const patchControllers = {
 
       const checkIfPropertyIdIsRegistered = tenants[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
-          );
-
-        if (!checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
-          );
-      }
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the tenants database."
+        );
 
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
 
@@ -278,11 +263,13 @@ const patchControllers = {
         }
       );
 
-      if (updateTenants.acknowledged && updateTenants.modifiedCount)
-        res.status(200).json({
-          message: `Tenant with the ID: ${tenantId} has been successfuly edited.`,
-          selectedTenantOnRoomOnProperty,
-        });
+      if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
+        throw new Error(updateTenants);
+
+      res.status(200).json({
+        message: `Tenant with the ID: ${tenantId} has been successfuly edited.`,
+        editedRoomTenants: tenants[0][propertyId].tenants[roomId],
+      });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }

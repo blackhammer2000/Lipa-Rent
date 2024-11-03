@@ -88,6 +88,44 @@ class Store extends StoreUtilities {
 
     if (newRoomTenants && message) return { newRoomTenants, message };
   }
+
+  static async editTenantOnRoomInProperty(
+    accessToken,
+    propertyId,
+    roomId,
+    tenantId,
+    editedTenant
+  ) {
+    if (!accessToken || !propertyId || !roomId || !tenantId || !editedTenant)
+      return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        roomId,
+        tenantId,
+        editedTenant,
+      }),
+    };
+
+    const readAllRoomsOnSinglePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/edit/property/room",
+      requestOptions
+    );
+
+    const { editedRoomTenants, message, error } =
+      await readAllRoomsOnSinglePropertyRequest.json();
+
+    if (error) UserInterface.handleErrors(error);
+    if (editedRooms && message) return { editedRooms, message };
+  }
 }
 class UserInterface extends UserinterfaceUtilities {
   static async renderRoomNumbersForSelection(accessToken, propertyId) {
@@ -275,6 +313,51 @@ class UserInterface extends UserinterfaceUtilities {
     if (newRoomTenants && message) {
       alert(message);
       this.renderTenants(newRoomTenants, accessToken, tableBody);
+    }
+  }
+
+  static async editRoomTenantAndRender(
+    accessToken,
+    tableBody,
+    propertyId,
+    roomId,
+    form
+  ) {
+    if (!accessToken || !tableBody || !propertyId || !roomId || !form) return;
+
+    if (
+      !confirm(
+        `Do you want to edit tenant with ID: "${tenantID}" on roomID: "${propertyId}"?`
+      )
+    )
+      return;
+
+    const editedTenantName = form.querySelector("[data-edited-number]")?.value;
+    const editedTenantNationalID = form.querySelector(
+      "[data-edited-number]"
+    )?.value;
+    const editedTenantPhone = form.querySelector("[data-edited-number]")?.value;
+
+    const editedTenant = {
+      tenantName: editedTenantName,
+      tenantNationalID: editedTenantNationalID,
+      tenantPhone: editedTenantPhone,
+    };
+
+    const { message, editedRoomTenants } = await Store.editRoomOnProperty(
+      accessToken,
+      propertyId,
+      roomId,
+      editedTenant
+    );
+
+    console.log(editedRoomTenants, message);
+
+    if (editedRoomTenants && message) {
+      alert(message);
+      this.renderTenants(editedRoomTenants, accessToken, tableBody);
+      form.parentElement.parentElement.classList.add("hide");
+      return;
     }
   }
 
