@@ -240,9 +240,11 @@ class UserInterface extends UserinterfaceUtilities {
 
     const tenantName = form.querySelector("[data-new-tenant-name]")?.value;
     const tenantNationalID = form.querySelector(
-      "[data-new-tenant-natioanlID]"
-    )?.vaalue;
+      "[data-new-tenant-nationalID]"
+    )?.value;
     const tenantPhone = form.querySelector("[data-new-tenant-phone]")?.value;
+
+    console.log(tenantName, tenantNationalID);
 
     if (
       !confirm(`Do you want to add ${tenantName} to roomID: ${selectedRoomId}?`)
@@ -282,7 +284,7 @@ class UserInterface extends UserinterfaceUtilities {
     const { newRoomTenants, message, error } =
       await addNewTenantToRoomRequest.json();
 
-    if (error) UserInterface.handleErrors(error);
+    if (error) this.handleErrors(error);
 
     if (newRoomTenants && message) {
       alert(message);

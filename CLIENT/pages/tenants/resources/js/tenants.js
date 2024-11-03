@@ -56,9 +56,7 @@
     addNewTenantModal.classList.add("hide");
   });
 
-  const newTenantForm = addNewTenantModal.querySelector(
-    "[data-new-tenant-form]"
-  );
+  const newTenantForm = addNewTenantModal.querySelector("form");
   newTenantForm.addEventListener("submit", (e) => {
     e.preventDefault();
     UserInterface.addNewTenantAndRender(
