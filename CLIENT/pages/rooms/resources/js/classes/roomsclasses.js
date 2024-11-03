@@ -514,6 +514,13 @@ class UserInterface extends UserinterfaceUtilities {
     if (deletedRooms && message) {
       alert(message);
       this.renderRooms(deletedRooms, accessToken, tableBody);
+
+      const selectedRoomId =
+        localStorage.getItem("liparentSelectedRoomId") || null;
+
+      if (selectedRoomId && selectedRoomId === roomId)
+        localStorage.removeItem("liparentSelectedRoomId");
+
       return;
     }
   }
