@@ -204,11 +204,19 @@ class UserInterface extends UserinterfaceUtilities {
     if (!accessToken || !tableBody) return;
 
     const selectedRoomId = form.querySelector("select")?.value;
+    const localStorageSelectedRoomId =
+      localStorage.getItem("liparentSelectedRoomId") || null;
 
     if (!selectedRoomId) {
       alert("please select a room.");
       return;
     }
+
+    if (
+      localStorageSelectedRoomId &&
+      localStorageSelectedRoomId === selectedRoomId
+    )
+      return;
 
     const { selectedRoomOnPropertyTenants, message } =
       await Store.readAllTenantsForRoomInProperty(
