@@ -6,6 +6,8 @@
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
 
+  const tableBody = document.querySelector("[data-table]");
+
   const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
     ? localStorage.getItem("liparentSelectedPropertyId")
     : null;
@@ -20,12 +22,17 @@
     ? localStorage.getItem("liparentSelectedRoomId")
     : null;
 
-  if (selectedPropertyId)
+  if (selectedPropertyId && selectedRoomId) {
     UserInterface.updateTableDescription(selectedPropertyId, selectedRoomId);
+    UserInterface.updateTableBodyState(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      selectedRoomId
+    );
+  }
 
   UserInterface.renderRoomNumbersForSelection(accessToken, selectedPropertyId);
-
-  const tableBody = document.querySelector("[data-table]");
 
   const selectRoomForm = document.querySelector("[ data-select-room-form]");
 

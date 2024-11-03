@@ -204,9 +204,11 @@ class UserInterface extends UserinterfaceUtilities {
     if (!accessToken || !tableBody) return;
 
     const selectedRoomId = form.querySelector("select")?.value;
-    const selectedRoomNumber = form.querySelector("select")?.innerText;
 
-    // console.log(selectedRoomNumber);
+    if (!selectedRoomId) {
+      alert("please select a room.");
+      return;
+    }
 
     const { selectedRoomOnPropertyTenants, message } =
       await Store.readAllTenantsForRoomInProperty(
@@ -215,19 +217,16 @@ class UserInterface extends UserinterfaceUtilities {
         selectedRoomId
       );
 
+    alert(message);
+    this.updateTableDescription(propertyId, selectedRoomId);
     this.setSelectedRoomIdInLocalStorage(selectedRoomId);
 
     if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
-      alert(message);
-      this.updateTableDescription(
-        propertyId,
-        selectedRoomId,
-        selectedRoomNumber
-      );
+      this.clearTable(tableBody);
       return;
     }
 
-    this.renderTenants(tenants, accessToken, tableBody);
+    this.renderTenants(selectedRoomOnPropertyTenants, accessToken, tableBody);
   }
 
   static async addNewTenantAndRender(accessToken, tableBody, propertyId, form) {
@@ -286,6 +285,31 @@ class UserInterface extends UserinterfaceUtilities {
     document.querySelector(
       "[data-table-description]"
     ).innerText = `Tenants for room: ${selectedRoomId} in: ${propertyName.toUpperCase()}`;
+  }
+
+  static async updateTableBodyState(
+    accessToken,
+    tableBody,
+    propertyId,
+    selectedRoomId
+  ) {
+    if (!accessToken || !tableBody || !propertyId || !selectedRoomId) return;
+
+    const { selectedRoomOnPropertyTenants, message } =
+      await Store.readAllTenantsForRoomInProperty(
+        accessToken,
+        propertyId,
+        selectedRoomId
+      );
+
+    alert(message);
+
+    if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
+      this.updateTableDescription(propertyId, selectedRoomId);
+      return;
+    }
+
+    this.renderTenants(selectedRoomOnPropertyTenants, accessToken, tableBody);
   }
 
   static setSelectedRoomIdInLocalStorage(selectedRoomId) {
