@@ -316,11 +316,10 @@ const patchControllers = {
     try {
       if (!req.body.id) throw new Error("Unknown user...please log in");
       if (!req.body.propertyId) throw new Error("provide a valid property Id.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property No.");
       if (!req.body.roomId) throw new Error("provide a valid room Id.");
       if (!req.body.tenantId) throw new Error("provide a valid tenant Id.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId } = req?.body;
+      const { id, propertyId, roomId, tenantId } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -338,11 +337,6 @@ const patchControllers = {
           "Property with the given property Id has not been registered in the tenants database."
         );
 
-      if (checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-        throw new Error(
-          "Property with the given property Id and does not match with property number provided."
-        );
-
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
 
       if (!selectedPropertyTenants)
@@ -355,6 +349,9 @@ const patchControllers = {
 
       const selectedTenantOnRoomOnProperty =
         selectedRoomOnPropertyTenants[tenantId];
+
+      const selectedTenantOnRoomOnPropertyName =
+        selectedTenantOnRoomOnProperty?.tenantName;
 
       if (!selectedTenantOnRoomOnProperty)
         throw new Error(
@@ -402,7 +399,8 @@ const patchControllers = {
 
       if (deleteTenant.acknowledged && deleteTenant.modifiedCount)
         res.status(200).json({
-          message: `Tenant with the Name: ${selectedTenantOnRoomOnProperty.name} and ID: ${tenantId} has been successfuly deleted.`,
+          message: `Tenant with the Name: ${selectedTenantOnRoomOnPropertyName} and ID: ${tenantId} has been successfuly deleted.`,
+          deletedRoomTenants: tenants[0][propertyId].tenants[roomId],
         });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });

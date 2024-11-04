@@ -462,6 +462,8 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
+    console.log(tenantId);
+
     // const { deletedRooms, message, error } = await Store.deleteRoomOnPorperty(
     //   accessToken,
     //   propertyId,
@@ -477,8 +479,8 @@ class UserInterface extends UserinterfaceUtilities {
         token: accessToken,
       },
       body: JSON.stringify({
-        propertyId,
-        roomId,
+        propertyId: selectedPropertyId,
+        roomId: selectedRoomId,
         tenantId,
       }),
     };
