@@ -46,9 +46,11 @@ class UserinterfaceUtilities {
     const form = hero.querySelector(".first");
 
     if (alertBoxActive) {
-      alertBox.innerText = message;
+      alertBoxActive.innerText = message;
       clearTimeout(alertTimeOut);
-      alertTimeOut();
+      setTimeout(() => {
+        alertBoxActive.remove();
+      }, 1000);
     }
 
     const alertBox = document.createElement("div");
@@ -59,11 +61,9 @@ class UserinterfaceUtilities {
 
     hero.insertBefore(alertBox, form);
 
-    const alertTimeOut = setTimeout(() => {
+    var alertTimeOut = setTimeout(() => {
       alertBox.remove();
-    }, 4000);
-
-    alertTimeOut();
+    }, 1000);
   }
 
   static handleErrors(error) {
