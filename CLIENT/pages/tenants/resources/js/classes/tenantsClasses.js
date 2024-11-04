@@ -245,9 +245,9 @@ class UserInterface extends UserinterfaceUtilities {
     deleteButtonCell.className = "btn btn-danger ml-2 delete";
     const deleteButtonCellText = document.createTextNode("Delete");
     deleteButtonCell.append(deleteButtonCellText);
-    // deleteButtonCell.addEventListener("click", (e) => {
-    //   this.deleteRoomAndRender(e, accessToken, tableBody);
-    // });
+    deleteButtonCell.addEventListener("click", (e) => {
+      this.deleteRoomTenantAndRender(e, tenantID, accessToken, tableBody);
+    });
     rowCTAbuttonCell.append(deleteButtonCell);
 
     row.append(rowCTAbuttonCell);
@@ -427,6 +427,84 @@ class UserInterface extends UserinterfaceUtilities {
       alert(message);
       this.renderTenants(editedRoomTenants, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
+      return;
+    }
+  }
+
+  static async deleteRoomTenantAndRender(e, tenantId, accessToken, tableBody) {
+    e.preventDefault();
+    if (!accessToken || !tableBody) return;
+
+    const selectedPropertyId = localStorage.getItem(
+      "liparentSelectedPropertyId"
+    )
+      ? localStorage.getItem("liparentSelectedPropertyId")
+      : null;
+
+    if (!selectedPropertyId) {
+      alert("please select a property in the room section");
+      location.assign("/CLIENT/pages/rooms/rooms");
+      return;
+    }
+
+    const selectedRoomId =
+      localStorage.getItem("liparentSelectedRoomId") || null;
+
+    if (!selectedRoomId) {
+      alert("please select a room.");
+      return;
+    }
+
+    if (
+      !confirm(
+        `Do you want to delete tenant with ID: "${tenantId}" from roomID: "${selectedRoomId}"?`
+      )
+    )
+      return;
+
+    // const { deletedRooms, message, error } = await Store.deleteRoomOnPorperty(
+    //   accessToken,
+    //   propertyId,
+    //   roomId
+    // );
+
+    const requestOptions = {
+      mode: "cors",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        roomId,
+        tenantId,
+      }),
+    };
+
+    const readAllRoomsOnSinglePropertyRequest = await fetch(
+      "http://localhost:4000/api/user/owner/delete/property/room/tenant",
+      requestOptions
+    );
+
+    const { deletedRoomTenants, message, error } =
+      await readAllRoomsOnSinglePropertyRequest.json();
+
+    if (error) {
+      this.handleErrors(error);
+    }
+
+    if (deletedRoomTenants && message) {
+      alert(message);
+      this.renderTenants(deletedRoomTenants, accessToken, tableBody);
+
+      //   const selectedRoomId =
+      //     localStorage.getItem("liparentSelectedRoomId") || null;
+
+      //   if (selectedRoomId && selectedRoomId === roomId)
+      //     localStorage.removeItem("liparentSelectedRoomId");
+
       return;
     }
   }
