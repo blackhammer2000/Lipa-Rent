@@ -336,16 +336,16 @@ class UserInterface extends UserinterfaceUtilities {
   static populateEditTenantForm(e) {
     e.preventDefault();
 
-    const editRoomModal =
+    const editTenantModal =
       e.target.parentElement.parentElement.parentElement.parentElement
         .parentElement.parentElement.parentElement.nextElementSibling
         .nextElementSibling;
 
-    editRoomModal.classList.remove("hide");
+    editTenantModal.classList.remove("hide");
 
-    const editForm = editRoomModal.querySelector("[data-edit-tenant-form]");
+    const editForm = editTenantModal.querySelector("[data-edit-tenant-form]");
 
-    const tenantIdSpan = editRoomModal.querySelector("[data-edit-tenant-id]");
+    const tenantIdSpan = editTenantModal.querySelector("[data-edit-tenant-id]");
 
     const tenantId = e.target.parentElement.parentElement.children[1].innerText;
     const tenantName =
