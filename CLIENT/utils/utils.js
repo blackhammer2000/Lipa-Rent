@@ -19,6 +19,7 @@ class UserinterfaceUtilities {
 
     loaderText.innerText = `${message}...`;
     loader.classList.remove("hide");
+    loader.classList.add("d-flex");
   }
 
   static closeLoader() {
@@ -27,6 +28,7 @@ class UserinterfaceUtilities {
 
     loaderText.innerText = "";
     loader.classList.add("hide");
+    loader.classList.remove("d-flex");
   }
 
   static handleErrors(error) {
