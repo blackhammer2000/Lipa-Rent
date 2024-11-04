@@ -13,6 +13,22 @@ class UserinterfaceUtilities {
     rentsButton.setAttribute("disabled", "true");
   }
 
+  static openLoader(message) {
+    const loader = document.querySelector("[ data-loader]");
+    const loaderText = loader.querySelector("[ data-loaderText]");
+
+    loaderText.innerText = `${message}...`;
+    loader.classList.remove("hide");
+  }
+
+  static closeLoader() {
+    const loader = document.querySelector("[ data-loader]");
+    const loaderText = loader.querySelector("[ data-loaderText]");
+
+    loaderText.innerText = "";
+    loader.classList.add("hide");
+  }
+
   static handleErrors(error) {
     if (!error) return;
 
