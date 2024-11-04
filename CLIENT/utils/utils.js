@@ -54,7 +54,7 @@ class UserinterfaceUtilities {
     }
 
     const alertBox = document.createElement("div");
-    alertBox.className = `alert alert-${className}`;
+    alertBox.className = `alert text-white alert-${className}`;
 
     const text = document.createTextNode(message);
     alertBox.append(text);
