@@ -28,7 +28,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   const { error, message, token } = await loginRequest.json();
 
-  UserinterfaceUtilities.closeLoader();
+  if (error || (message && token)) UserinterfaceUtilities.closeLoader();
 
   if (error) {
     UserinterfaceUtilities.alertMessage(error, "danger");

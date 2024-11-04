@@ -41,7 +41,7 @@ class UserinterfaceUtilities {
   static alertMessage(message, className) {
     if (!message || !className) return;
 
-    const alertBoxActive = document.querySelector(".alertBox");
+    const alertBoxActive = document.querySelector(".alert");
     const hero = document.querySelector(".hero");
     const first = hero.querySelector(".first");
 
@@ -54,7 +54,7 @@ class UserinterfaceUtilities {
     }
 
     const alertBox = document.createElement("div");
-    alertBox.className = `alertBox alert text-white alert-${className} d-flex justify-content-center align-items-center p-2 font-weight-bold`;
+    alertBox.className = `alert alert-${className}`;
 
     const text = document.createTextNode(message);
     alertBox.append(text);
