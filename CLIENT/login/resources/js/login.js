@@ -31,12 +31,12 @@ loginForm.addEventListener("submit", async (e) => {
   UserinterfaceUtilities.closeLoader();
 
   if (error) {
-    alert(error);
+    UserinterfaceUtilities.alertMessage(error, "danger");
     return;
   }
 
   if (message && token) {
-    alert(message);
+    UserinterfaceUtilities.alertMessage(message, "success");
     localStorage.setItem("liparentAccessToken", JSON.stringify(token));
     location.assign("/CLIENT/dashboard/dashboard.html");
     return;
