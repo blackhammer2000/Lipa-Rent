@@ -260,7 +260,7 @@ class UserInterface extends UserinterfaceUtilities {
     const deleteButtonCellText = document.createTextNode("Delete");
     deleteButtonCell.append(deleteButtonCellText);
     deleteButtonCell.addEventListener("click", (e) => {
-      this.deleteRoomAndRender(e, accessToken, tableBody);
+      this.deleteRoomAndRender(e, roomID, accessToken, tableBody);
     });
     rowCTAbuttonCell.append(deleteButtonCell);
 
@@ -453,7 +453,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static async deleteRoomAndRender(e, accessToken, tableBody) {
+  static async deleteRoomAndRender(e, roomId, accessToken, tableBody) {
     e.preventDefault();
     if (!accessToken || !tableBody) return;
 
@@ -467,8 +467,6 @@ class UserInterface extends UserinterfaceUtilities {
       alert("please select a property.");
       return;
     }
-
-    const roomId = e.target.parentElement.parentElement.children[1]?.innerText;
 
     if (
       !confirm(

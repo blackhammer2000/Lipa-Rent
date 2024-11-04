@@ -191,7 +191,7 @@ class UserInterface extends UserinterfaceUtilities {
     const deleteButtonCellText = document.createTextNode("Delete");
     deleteButtonCell.append(deleteButtonCellText);
     deleteButtonCell.addEventListener("click", (e) => {
-      this.deletePropertyAndRender(e, accessToken, tableBody);
+      this.deletePropertyAndRender(e, propertyID, accessToken, tableBody);
     });
     rowCTAbuttonCell.append(deleteButtonCell);
 
@@ -310,11 +310,9 @@ class UserInterface extends UserinterfaceUtilities {
     );
   }
 
-  static async deletePropertyAndRender(e, accessToken, tableBody) {
+  static async deletePropertyAndRender(e, propertyId, accessToken, tableBody) {
     e.preventDefault();
 
-    const propertyId =
-      e.target.parentElement?.parentElement?.children[1].innerText;
     const propertyName =
       e.target.parentElement.parentElement.children[2].innerText;
     const propertyNo =

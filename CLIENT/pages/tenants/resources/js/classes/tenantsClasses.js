@@ -462,9 +462,7 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
-    console.log(tenantId);
-
-    // const { deletedRooms, message, error } = await Store.deleteRoomOnPorperty(
+    // const { deletedRoomTenants, message, error } = await Store.deleteRoomOnPorperty(
     //   accessToken,
     //   propertyId,
     //   roomId
