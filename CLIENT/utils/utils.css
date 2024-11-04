@@ -1,0 +1,42 @@
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow-y: hidden;
+}
+
+.hide {
+  display: none;
+}
+
+.loader {
+  position: absolute;
+  width: fit-content;
+  content: "";
+  top: 16%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 10px;
+}
+
+.loaderSpinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid;
+  border-radius: 50%;
+  border-width: 5px;
+  border-color: white transparent;
+  animation: spin 1.3s ease infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disablePointerEvents {
+  pointer-events: none;
+}
