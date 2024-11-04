@@ -43,7 +43,7 @@ class UserinterfaceUtilities {
 
     const alertBoxActive = document.querySelector(".alertBox");
     const hero = document.querySelector(".hero");
-    const form = hero.querySelector("fieldset");
+    const form = hero.querySelector(".first");
 
     if (alertBoxActive) {
       alertBox.innerText = message;
@@ -52,7 +52,7 @@ class UserinterfaceUtilities {
     }
 
     const alertBox = document.createElement("div");
-    alertBox.className = ` alertBox alert text-white alert-${className} d-flex justify-content-center align-items-center p-2 font-weight-bold`;
+    alertBox.className = `alertBox alert text-white alert-${className} d-flex justify-content-center align-items-center p-2 font-weight-bold`;
 
     const text = document.createTextNode(message);
     alertBox.append(text);
