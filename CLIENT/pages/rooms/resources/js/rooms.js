@@ -8,11 +8,11 @@
 
   UserInterface.renderPropertySelectionOptions();
 
+  const tableBody = document.querySelector("[data-table]");
+
   const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
     ? localStorage.getItem("liparentSelectedPropertyId")
     : null;
-
-  const tableBody = document.querySelector("[data-table]");
 
   UserInterface.setNavButtonsStatus(selectedPropertyId);
 

@@ -457,17 +457,22 @@ class UserInterface extends UserinterfaceUtilities {
     e.preventDefault();
     if (!accessToken || !tableBody) return;
 
-    const propertyId =
-      tableBody.parentElement.parentElement.previousElementSibling
-        .querySelector("[ data-table-description]")
-        ?.innerText.trim()
-        .slice(-12);
+    const selectedPropertyId = localStorage.getItem(
+      "liparentSelectedPropertyId"
+    )
+      ? localStorage.getItem("liparentSelectedPropertyId")
+      : null;
+
+    if (!selectedPropertyId) {
+      alert("please select a property.");
+      return;
+    }
 
     const roomId = e.target.parentElement.parentElement.children[1]?.innerText;
 
     if (
       !confirm(
-        `Do you want to delete room with ID: "${roomId}" on property with ID: "${propertyId}"?`
+        `Do you want to delete room with ID: "${roomId}" on property with ID: "${selectedPropertyId}"?`
       )
     )
       return;
@@ -532,6 +537,6 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `All Rooms for, ${propertyName.toUpperCase()}, Property ID: ${propertyId}`;
+    ).innerText = `Rooms for ${propertyName.toUpperCase()}, Property ID: ${propertyId}`;
   }
 }
