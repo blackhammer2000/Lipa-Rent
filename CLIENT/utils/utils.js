@@ -43,7 +43,7 @@ class UserinterfaceUtilities {
 
     const alertBoxActive = document.querySelector(".alertBox");
     const hero = document.querySelector(".hero");
-    const form = hero.querySelector(".first");
+    const first = hero.querySelector(".first");
 
     if (alertBoxActive) {
       alertBoxActive.innerText = message;
@@ -59,7 +59,7 @@ class UserinterfaceUtilities {
     const text = document.createTextNode(message);
     alertBox.append(text);
 
-    hero.insertBefore(alertBox, form);
+    hero.insertBefore(alertBox, first);
 
     var alertTimeOut = setTimeout(() => {
       alertBox.remove();
