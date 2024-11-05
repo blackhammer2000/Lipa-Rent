@@ -19,8 +19,8 @@ class UserinterfaceUtilities {
     const hero = document.querySelector(".hero");
     const first = hero.querySelector(".first");
 
-    const alertBox = document.createElement("div");
-    alertBox.className = `loaderBox alert text-white alert-dark bg-dark}`;
+    const loaderBox = document.createElement("div");
+    loaderBox.className = `loaderBox alert text-white alert-dark bg-dark}`;
 
     const loader = document.createElement("div");
     loader.className =
@@ -35,25 +35,9 @@ class UserinterfaceUtilities {
     loaderSpinner.className = "loaderSpinner ml-3";
     loader.append(loaderSpinner);
 
-    alertBox.append(loader);
+    loaderBox.append(loader);
 
-    hero.insertBefore(alertBox, first);
-
-    // const loader = document.createElement("div");
-    // loader.className =
-    //   "loader text-white bg-secondary d-flex justify-content-between align-items-center p-2 font-weight-bold";
-
-    // const loaderText = document.createElement("div");
-    // const text = document.createTextNode(`${message}...`);
-    // loaderText.append(text);
-    // loader.append(loaderText);
-
-    // const loaderSpinner = document.createElement("div");
-    // loaderSpinner.className = "loaderSpinner ml-3";
-    // loader.append(loaderSpinner);
-
-    // const body = document.querySelector("body");
-    // body.append(loader);
+    hero.insertBefore(loaderBox, first);
   }
 
   static closeLoader() {
