@@ -20,11 +20,11 @@ class UserinterfaceUtilities {
     const first = hero.querySelector(".first");
 
     const loaderBox = document.createElement("div");
-    loaderBox.className = `loaderBox alert text-white alert-dark bg-dark}`;
+    loaderBox.className = `loaderBox w-25 alert text-white  }`;
 
     const loader = document.createElement("div");
     loader.className =
-      "loader d-flex justify-content-between align-items-center p-2 font-weight-bold";
+      "loader bg-dark w-50 d-flex justify-content-around align-items-center p-2 font-weight-bold";
 
     const loaderText = document.createElement("div");
     const text = document.createTextNode(`${message}...`);
@@ -58,14 +58,14 @@ class UserinterfaceUtilities {
     }
 
     const alertBox = document.createElement("div");
-    alertBox.className = `alert text-white alert-${className} bg-${className}`;
+    alertBox.className = `alertBox alert w-50 text-white alert-${className} bg-${className}`;
 
     const text = document.createTextNode(message);
     alertBox.append(text);
 
     var alertTimeOut = setTimeout(() => {
       alertBox.remove();
-    }, 2000);
+    }, 4000);
 
     hero.insertBefore(alertBox, first);
   }
@@ -73,7 +73,7 @@ class UserinterfaceUtilities {
   static handleErrors(error) {
     if (!error) return;
 
-    alert(error);
+    this.alertMessage(error, "danger");
 
     if (error?.toLowerCase() === ("session expired" || "jwt malformed"))
       this.handleLogout();

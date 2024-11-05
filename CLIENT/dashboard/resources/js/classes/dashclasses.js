@@ -3,6 +3,8 @@ class Store extends StoreUtilities {
     if (accessToken === (null || undefined))
       location.assign("/CLIENT/login/login.html");
 
+    UserInterface.openLoader("Reading properties");
+
     const requestOptions = {
       method: "POST",
       mode: "cors",
@@ -20,6 +22,8 @@ class Store extends StoreUtilities {
 
     const { propertiesOwned, error } = await getAllPropertiesData?.json();
 
+    if (propertiesOwned || error) UserInterface.closeLoader();
+
     if (error) UserInterface.handleErrors(error);
 
     if (propertiesOwned) return propertiesOwned;
@@ -33,6 +37,8 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !previousPropertyNo || !editedProperty || !accessToken)
       return;
+
+    UserInterface.openLoader("Editing property");
 
     const editPropertyRequestOptions = {
       mode: "cors",
@@ -57,12 +63,16 @@ class Store extends StoreUtilities {
     const { message, editedProperties, error } =
       await editPropertyRequest.json();
 
-    if (error) return { error };
+    if (message || editedProperties || error) UserInterface.closeLoader();
+
+    if (error) UserInterface.handleErrors(error);
     if (message && editedProperties) return { message, editedProperties };
   }
 
   static async deleteProperty(accessToken, propertyId, propertyNo) {
     if (!accessToken || !propertyId || propertyNo) return;
+
+    UserInterface.openLoader("Deleting property");
 
     const deletePropertyRequestOptions = {
       mode: "cors",
@@ -85,6 +95,8 @@ class Store extends StoreUtilities {
 
     const deletedPropertiesResponse = await deletePropertyRequest.json();
 
+    if (deletedPropertiesResponse) UserInterface.closeLoader();
+
     if (error) UserInterface.handleErrors(error);
 
     if (deletedProperties && message) return deletedPropertiesResponse;
@@ -92,6 +104,8 @@ class Store extends StoreUtilities {
 
   static async createProperty(accessToken, newProperty) {
     if (!accessToken || !newProperty) return;
+
+    UserInterface.openLoader("Adding new property");
 
     const createNewPropertyRequestOptions = {
       mode: "cors",
@@ -112,6 +126,8 @@ class Store extends StoreUtilities {
     );
 
     const createPropertyResponse = await createPropertyRequest.json();
+
+    if (createPropertyResponse) UserInterface.closeLoader();
 
     return createPropertyResponse;
   }
@@ -204,7 +220,7 @@ class UserInterface extends UserinterfaceUtilities {
     const properties = await Store.readAllPropertiesOwned(accessToken);
 
     if (!properties) return;
-
+    this.alertMessage("Properties fetched sucessfully.", "success");
     UserInterface.renderProperties(properties, accessToken, tableBody);
   }
 
@@ -284,20 +300,15 @@ class UserInterface extends UserinterfaceUtilities {
       propertyLocation: editedPropertyLocation,
     };
 
-    const { message, editedProperties, error } = await Store.editProperty(
+    const { message, editedProperties } = await Store.editProperty(
       propertyId,
       previousPropertyNo,
       editedProperty,
       accessToken
     );
 
-    if (error) {
-      alert(error);
-      return;
-    }
-
     if (editedProperties && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderProperties(editedProperties, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
       return;
@@ -356,7 +367,7 @@ class UserInterface extends UserinterfaceUtilities {
     if (error) this.handleErrors(error);
 
     if (deletedProperties && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderProperties(deletedProperties, accessToken, tableBody);
 
       const localStorageSelectedPropertyId =
@@ -416,12 +427,12 @@ class UserInterface extends UserinterfaceUtilities {
     );
 
     if (error) {
-      alert(error);
+      this.handleErrors(error);
       return;
     }
 
     if (newProperties && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderProperties(newProperties, accessToken, tableBody);
       this.clearFormInputs(form);
       // form.parentElement.parentElement.classList.add("hide");

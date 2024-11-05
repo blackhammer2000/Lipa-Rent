@@ -18,6 +18,17 @@ body {
   border-radius: 10px;
 } */
 
+.loaderBox {
+  z-index: 3;
+  margin-left: 40%;
+  border-radius: 10px;
+}
+
+.alertBox {
+  margin-left: 25%;
+  border-radius: 10px;
+}
+
 .loaderSpinner {
   width: 20px;
   height: 20px;
