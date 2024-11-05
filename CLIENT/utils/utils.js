@@ -53,21 +53,25 @@ class UserinterfaceUtilities {
     const first = hero.querySelector(".first");
 
     if (alertBoxActive) {
-      alertBox.remove();
+      alertBoxActive.remove();
       if (alertTimeOut) clearTimeout(alertTimeOut);
     }
 
+    const alert = document.createElement("div");
+    alert.className =
+      "d-flex justify-content-center align-items-center container bg-primary";
     const alertBox = document.createElement("div");
     alertBox.className = `alertBox alert w-50 text-white alert-${className} bg-${className}`;
 
     const text = document.createTextNode(message);
     alertBox.append(text);
+    alert.append(alertBox);
 
     var alertTimeOut = setTimeout(() => {
       alertBox.remove();
     }, 4000);
 
-    hero.insertBefore(alertBox, first);
+    hero.insertBefore(alert, first);
   }
 
   static handleErrors(error) {

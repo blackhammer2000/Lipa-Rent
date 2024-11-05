@@ -22,7 +22,7 @@ class Store extends StoreUtilities {
 
     const { propertyRooms, error } = await readRoomTenantsRequest.json();
 
-    UserInterface.closeLoader();
+    if (propertyRooms || error) UserInterface.closeLoader();
 
     if (error) UserInterface.handleErrors(error);
 
@@ -279,7 +279,7 @@ class UserInterface extends UserinterfaceUtilities {
       localStorage.getItem("liparentSelectedRoomId") || null;
 
     if (!selectedRoomId) {
-      alert("please select a room.");
+      this.handleErrors("please select a room.");
       return;
     }
 
@@ -296,7 +296,7 @@ class UserInterface extends UserinterfaceUtilities {
         selectedRoomId
       );
 
-    alert(message);
+    this.alertMessage(message, "success");
     this.updateTableDescription(propertyId, selectedRoomId);
     this.setSelectedRoomIdInLocalStorage(selectedRoomId);
 
@@ -314,15 +314,13 @@ class UserInterface extends UserinterfaceUtilities {
     const selectedRoomId =
       localStorage.getItem("liparentSelectedRoomId") || null;
 
-    if (!selectedRoomId) return;
+    if (!selectedRoomId) this.handleErrors("please select a room");
 
     const tenantName = form.querySelector("[data-new-tenant-name]")?.value;
     const tenantNationalID = form.querySelector(
       "[data-new-tenant-nationalID]"
     )?.value;
     const tenantPhone = form.querySelector("[data-new-tenant-phone]")?.value;
-
-    console.log(tenantName, tenantNationalID);
 
     if (
       !confirm(`Do you want to add ${tenantName} to roomID: ${selectedRoomId}?`)
@@ -344,7 +342,7 @@ class UserInterface extends UserinterfaceUtilities {
       );
 
     if (newRoomTenants && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderTenants(newRoomTenants, accessToken, tableBody);
     }
   }
@@ -440,7 +438,7 @@ class UserInterface extends UserinterfaceUtilities {
     console.log(editedRoomTenants, message);
 
     if (editedRoomTenants && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderTenants(editedRoomTenants, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
       return;
@@ -458,7 +456,7 @@ class UserInterface extends UserinterfaceUtilities {
       : null;
 
     if (!selectedPropertyId) {
-      alert("please select a property in the room section");
+      this.handleErrors("please select a property in the room section");
       location.assign("/CLIENT/pages/rooms/rooms");
       return;
     }
@@ -467,7 +465,7 @@ class UserInterface extends UserinterfaceUtilities {
       localStorage.getItem("liparentSelectedRoomId") || null;
 
     if (!selectedRoomId) {
-      this.alertMessage("please select a room.", "danger");
+      this.handleErrors("please select a room.");
       return;
     }
 
@@ -516,7 +514,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     if (deletedRoomTenants && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderTenants(deletedRoomTenants, accessToken, tableBody);
 
       //   const selectedRoomId =
@@ -561,7 +559,7 @@ class UserInterface extends UserinterfaceUtilities {
         selectedRoomId
       );
 
-    alert(message);
+    this.alertMessage(message, "success");
 
     if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
       this.updateTableDescription(propertyId, selectedRoomId);

@@ -20,12 +20,10 @@ body {
 
 .loaderBox {
   z-index: 3;
-  margin-left: 40%;
   border-radius: 10px;
 }
 
 .alertBox {
-  margin-left: 25%;
   border-radius: 10px;
 }
 

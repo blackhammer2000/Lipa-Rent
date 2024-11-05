@@ -292,7 +292,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     if (propertyRooms && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.setSelectedPropertyIdAndEnableNavButton(propertyId);
       this.updateTableDescription(propertyId);
       this.renderRooms(propertyRooms, accessToken, tableBody);
@@ -328,11 +328,16 @@ class UserInterface extends UserinterfaceUtilities {
       roomType: newRoomType,
     };
 
-    const propertyId =
-      e.target.parentElement.parentElement.parentElement.parentElement
-        .querySelector("[data-table-description]")
-        .innerText.trim()
-        .slice(-12);
+    const selectedPropertyId = localStorage.getItem(
+      "liparentSelectedPropertyId"
+    )
+      ? localStorage.getItem("liparentSelectedPropertyId")
+      : null;
+
+    if (!selectedPropertyId) {
+      this.handleErrors("please select a property.");
+      return;
+    }
 
     const { propertyRooms, message, error } = await Store.addRoomToProperty(
       accessToken,
@@ -346,7 +351,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     if (propertyRooms && message) {
-      alert(message);
+      this.alertMessage(message, "success");
 
       localStorage.getItem("liparentSelectedPropertyId")
         ? localStorage.removeItem("liparentSelectedPropertyId")
@@ -416,11 +421,16 @@ class UserInterface extends UserinterfaceUtilities {
   static async editRoomAndRender(e, form, accessToken, tableBody) {
     e.preventDefault();
 
-    const propertyId =
-      tableBody.parentElement.parentElement.previousElementSibling
-        .querySelector("[ data-table-description]")
-        ?.innerText.trim()
-        .slice(-12);
+    const selectedPropertyId = localStorage.getItem(
+      "liparentSelectedPropertyId"
+    )
+      ? localStorage.getItem("liparentSelectedPropertyId")
+      : null;
+
+    if (!selectedPropertyId) {
+      this.handleErrors("please select a property.");
+      return;
+    }
 
     const roomId = form.parentElement.querySelector(
       "[data-edit-room-id]"
@@ -428,7 +438,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (
       !confirm(
-        `Do you want to edit room with ID: "${roomId}" on property with ID: "${propertyId}"?`
+        `Do you want to edit room with ID: "${roomId}" on property with ID: "${selectedPropertyId}"?`
       )
     )
       return;
@@ -447,13 +457,13 @@ class UserInterface extends UserinterfaceUtilities {
 
     const { message, editedRooms } = await Store.editRoomOnProperty(
       accessToken,
-      propertyId,
+      selectedPropertyId,
       roomId,
       editedRoom
     );
 
     if (editedRooms && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderRooms(editedRooms, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
       return;
@@ -471,7 +481,7 @@ class UserInterface extends UserinterfaceUtilities {
       : null;
 
     if (!selectedPropertyId) {
-      alert("please select a property.");
+      this.handleErrors("please select a property.");
       return;
     }
 
@@ -497,7 +507,7 @@ class UserInterface extends UserinterfaceUtilities {
         token: accessToken,
       },
       body: JSON.stringify({
-        propertyId,
+        propertyId: selectedPropertyId,
         roomId,
       }),
     };
@@ -515,7 +525,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     if (deletedRooms && message) {
-      alert(message);
+      this.alertMessage(message, "success");
       this.renderRooms(deletedRooms, accessToken, tableBody);
 
       const selectedRoomId =
