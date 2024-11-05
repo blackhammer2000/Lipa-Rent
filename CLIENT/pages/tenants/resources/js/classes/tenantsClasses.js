@@ -2,7 +2,7 @@ class Store extends StoreUtilities {
   static async preFetchRoomNumbersForSelectedProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
-    UserInterface.openLoader("Fetching rooms");
+    UserInterface.openLoader("fetching room numbers");
 
     const requestOptions = {
       mode: "cors",
@@ -36,7 +36,7 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !roomId || !accessToken) return;
 
-    UserInterface.openLoader("Fetching tenants");
+    UserInterface.openLoader("fetching room tenants");
 
     const requestOptions = {
       mode: "cors",
@@ -73,7 +73,7 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !roomId || !accessToken || !newTenant) return;
 
-    UserInterface.openLoader("Adding new tenant");
+    UserInterface.openLoader("adding new tenant");
 
     const requestOptions = {
       mode: "cors",
@@ -111,7 +111,7 @@ class Store extends StoreUtilities {
     if (!accessToken || !propertyId || !roomId || !tenantId || !editedTenant)
       return;
 
-    UserInterface.openLoader("Editing tenant");
+    UserInterface.openLoader("editing tenant");
 
     const requestOptions = {
       mode: "cors",
@@ -467,7 +467,7 @@ class UserInterface extends UserinterfaceUtilities {
       localStorage.getItem("liparentSelectedRoomId") || null;
 
     if (!selectedRoomId) {
-      alert("please select a room.");
+      this.alertMessage("please select a room.", "danger");
       return;
     }
 

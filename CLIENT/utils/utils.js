@@ -27,7 +27,7 @@ class UserinterfaceUtilities {
       "loader bg-dark w-50 d-flex justify-content-around align-items-center p-2 font-weight-bold";
 
     const loaderText = document.createElement("div");
-    const text = document.createTextNode(`${message}...`);
+    const text = document.createTextNode(`Please wait, ${message}...`);
     loaderText.append(text);
     loader.append(loaderText);
 
