@@ -127,3 +127,8 @@ class UserinterfaceUtilities {
     localStorage.removeItem("liparentSelectedRoomId");
   }
 }
+
+const logoutButton = document.querySelector("[data-logout]");
+logoutButton.addEventListener("click", () =>
+  UserinterfaceUtilities.handleLogout()
+);

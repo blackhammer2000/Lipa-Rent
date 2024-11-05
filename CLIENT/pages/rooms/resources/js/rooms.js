@@ -97,7 +97,4 @@
     e.preventDefault();
     UserInterface.closeCreateRoomModal(e);
   });
-
-  const logoutButton = document.querySelector("[data-logout]");
-  logoutButton.addEventListener("click", () => UserInterface.handleLogout());
 })();
