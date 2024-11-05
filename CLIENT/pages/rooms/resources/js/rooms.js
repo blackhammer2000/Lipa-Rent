@@ -30,11 +30,17 @@
     const propertyId = selectPropertyForm.querySelector("select")?.value.trim();
 
     if (!propertyId) {
-      alert("Select a property!");
+      UserInterface.handleErrors("Select a property!");
       return;
     }
 
-    console.log(propertyId);
+    const selectedPropertyId = localStorage.getItem(
+      "liparentSelectedPropertyId"
+    )
+      ? localStorage.getItem("liparentSelectedPropertyId")
+      : null;
+
+    if (selectedPropertyId && selectedPropertyId === propertyId) return;
 
     await UserInterface.readAndRenderAllRoomsOnSingleProperty(
       accessToken,

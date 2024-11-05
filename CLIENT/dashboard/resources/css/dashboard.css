@@ -5,8 +5,8 @@ body {
 .propertyModal {
   position: absolute;
   content: "";
-  top: 10%;
-  left: 10%;
+  top: 15%;
+  left: 12.5%;
   height: fit-content;
   background-color: rgba(255, 255, 255, 0.95);
   /* box-shadow: 5px, 10px, #000; */

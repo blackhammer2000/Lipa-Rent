@@ -83,7 +83,7 @@ class UserinterfaceUtilities {
     alert.className =
       "d-flex justify-content-center align-items-center container";
     const alertBox = document.createElement("div");
-    alertBox.className = `alertBox alert w-50 text-white alert-${className} bg-${className}`;
+    alertBox.className = `alertBox text-center alert w-50 text-white alert-${className} bg-${className}`;
 
     const text = document.createTextNode(message);
     alertBox.append(text);
@@ -91,7 +91,7 @@ class UserinterfaceUtilities {
 
     var alertTimeOut = setTimeout(() => {
       alertBox.remove();
-    }, 4000);
+    }, 1500);
 
     hero.insertBefore(alert, first);
   }

@@ -8,19 +8,12 @@ body {
   display: none;
 }
 
-/* .loader {
-  position: absolute;
-  width: fit-content;
-  content: "";
-  top: 16%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 10px;
-} */
+.loaderContainer {
+  z-index: 3;
+}
 
 .loaderBox {
-  z-index: 3;
-  border-radius: 10px;
+  border-radius: 20px;
   width: fit-content;
 }
 
