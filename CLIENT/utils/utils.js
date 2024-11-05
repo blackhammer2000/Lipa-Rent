@@ -16,9 +16,15 @@ class UserinterfaceUtilities {
   static openLoader(message) {
     if (!message) return;
 
+    const hero = document.querySelector(".hero");
+    const first = hero.querySelector(".first");
+
+    const alertBox = document.createElement("div");
+    alertBox.className = `loaderBox alert text-white alert-dark bg-dark}`;
+
     const loader = document.createElement("div");
     loader.className =
-      "loader text-white bg-secondary d-flex justify-content-between align-items-center p-2 font-weight-bold";
+      "loader d-flex justify-content-between align-items-center p-2 font-weight-bold";
 
     const loaderText = document.createElement("div");
     const text = document.createTextNode(`${message}...`);
@@ -29,41 +35,55 @@ class UserinterfaceUtilities {
     loaderSpinner.className = "loaderSpinner ml-3";
     loader.append(loaderSpinner);
 
-    const body = document.querySelector("body");
-    body.append(loader);
+    alertBox.append(loader);
+
+    hero.insertBefore(alertBox, first);
+
+    // const loader = document.createElement("div");
+    // loader.className =
+    //   "loader text-white bg-secondary d-flex justify-content-between align-items-center p-2 font-weight-bold";
+
+    // const loaderText = document.createElement("div");
+    // const text = document.createTextNode(`${message}...`);
+    // loaderText.append(text);
+    // loader.append(loaderText);
+
+    // const loaderSpinner = document.createElement("div");
+    // loaderSpinner.className = "loaderSpinner ml-3";
+    // loader.append(loaderSpinner);
+
+    // const body = document.querySelector("body");
+    // body.append(loader);
   }
 
   static closeLoader() {
-    const loader = document.querySelector(".loader");
+    const loader = document.querySelector(".alert");
     loader.remove();
   }
 
   static alertMessage(message, className) {
-    if (!message || !className) return;
+    if (!message) return;
 
     const alertBoxActive = document.querySelector(".alert");
     const hero = document.querySelector(".hero");
     const first = hero.querySelector(".first");
 
     if (alertBoxActive) {
-      alertBoxActive.innerText = message;
-      clearTimeout(alertTimeOut);
-      setTimeout(() => {
-        alertBoxActive.remove();
-      }, 1000);
+      alertBox.remove();
+      if (alertTimeOut) clearTimeout(alertTimeOut);
     }
 
     const alertBox = document.createElement("div");
-    alertBox.className = `alert text-white alert-${className}`;
+    alertBox.className = `alert text-white alert-${className} bg-${className}`;
 
     const text = document.createTextNode(message);
     alertBox.append(text);
 
-    hero.insertBefore(alertBox, first);
-
     var alertTimeOut = setTimeout(() => {
       alertBox.remove();
-    }, 1000);
+    }, 2000);
+
+    hero.insertBefore(alertBox, first);
   }
 
   static handleErrors(error) {

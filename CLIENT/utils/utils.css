@@ -8,7 +8,7 @@ body {
   display: none;
 }
 
-.loader {
+/* .loader {
   position: absolute;
   width: fit-content;
   content: "";
@@ -16,7 +16,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   border-radius: 10px;
-}
+} */
 
 .loaderSpinner {
   width: 20px;
