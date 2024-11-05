@@ -2,7 +2,7 @@ class Store extends StoreUtilities {
   static async preFetchRoomNumbersForSelectedProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
-    UserInterface.openLoader("fetching room numbers");
+    UserInterface.openLoader("fetching room numbers", "roomNumbers");
 
     const requestOptions = {
       mode: "cors",
@@ -22,7 +22,7 @@ class Store extends StoreUtilities {
 
     const { propertyRooms, error } = await readRoomTenantsRequest.json();
 
-    if (propertyRooms || error) UserInterface.closeLoader();
+    if (propertyRooms || error) UserInterface.closeLoader("roomNumbers");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -36,7 +36,7 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !roomId || !accessToken) return;
 
-    UserInterface.openLoader("fetching room tenants");
+    UserInterface.openLoader("fetching room tenants", "readTenants");
 
     const requestOptions = {
       mode: "cors",
@@ -57,7 +57,8 @@ class Store extends StoreUtilities {
     const { selectedRoomOnPropertyTenants, message, error } =
       await readRoomTenantsRequest.json();
 
-    UserInterface.closeLoader();
+    if (selectedRoomOnPropertyTenants || message || error)
+      UserInterface.closeLoader("readTenants");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -73,7 +74,7 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !roomId || !accessToken || !newTenant) return;
 
-    UserInterface.openLoader("adding new tenant");
+    UserInterface.openLoader("adding new tenant", "addTenant");
 
     const requestOptions = {
       mode: "cors",
@@ -94,7 +95,8 @@ class Store extends StoreUtilities {
     const { newRoomTenants, message, error } =
       await addNewTenantToRoomRequest.json();
 
-    UserInterface.closeLoader();
+    if (newRoomTenants || message || error)
+      UserInterface.closeLoader("addTenant");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -111,7 +113,7 @@ class Store extends StoreUtilities {
     if (!accessToken || !propertyId || !roomId || !tenantId || !editedTenant)
       return;
 
-    UserInterface.openLoader("editing tenant");
+    UserInterface.openLoader("editing tenant", "editingTenant");
 
     const requestOptions = {
       mode: "cors",
@@ -137,7 +139,8 @@ class Store extends StoreUtilities {
     const { editedRoomTenants, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    UserInterface.closeLoader();
+    if (editedRoomTenants || message || error)
+      UserInterface.closeLoader("editingTenant");
 
     if (error) UserInterface.handleErrors(error);
     if (editedRoomTenants && message) return { editedRoomTenants, message };
@@ -482,7 +485,7 @@ class UserInterface extends UserinterfaceUtilities {
     //   roomId
     // );
 
-    UserInterface.openLoader("deleting tenant");
+    UserInterface.openLoader("deleting tenant", "deletingTenant");
 
     const requestOptions = {
       mode: "cors",
@@ -507,7 +510,8 @@ class UserInterface extends UserinterfaceUtilities {
     const { deletedRoomTenants, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    UserInterface.closeLoader();
+    if (deletedRoomTenants || message || error)
+      UserInterface.closeLoader("deletingTenant");
 
     if (error) {
       this.handleErrors(error);

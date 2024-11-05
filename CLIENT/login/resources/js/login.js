@@ -9,7 +9,7 @@ loginForm.addEventListener("submit", async (e) => {
   const nationalID = loginForm.querySelector("[data-national-id]").value;
   const password = loginForm.querySelector("[data-password]").value;
 
-  UserinterfaceUtilities.openLoader("Logging in");
+  UserinterfaceUtilities.openLoader("Logging in", "login");
 
   const loginRequestOptions = {
     mode: "cors",
@@ -28,7 +28,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   const { error, message, token } = await loginRequest.json();
 
-  if (error || (message && token)) UserinterfaceUtilities.closeLoader();
+  if (error || (message && token)) UserinterfaceUtilities.closeLoader("login");
 
   if (error) {
     UserinterfaceUtilities.alertMessage(error, "danger");

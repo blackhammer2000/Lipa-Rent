@@ -2,7 +2,7 @@ class Store extends StoreUtilities {
   static async readAllRoomsOnSingleProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
-    UserInterface.openLoader("reading property rooms");
+    UserInterface.openLoader("reading property rooms", "readingRooms");
 
     const requestOptions = {
       mode: "cors",
@@ -25,7 +25,8 @@ class Store extends StoreUtilities {
     const { propertyRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    if (propertyRooms || message || error) UserInterface.closeLoader();
+    if (propertyRooms || message || error)
+      UserInterface.closeLoader("readingRooms");
 
     if (error) return { error };
     if (propertyRooms && message) return { propertyRooms, message };
@@ -34,7 +35,7 @@ class Store extends StoreUtilities {
   static async addRoomToProperty(accessToken, propertyId, newRoom) {
     if (!accessToken || !propertyId || !newRoom) return;
 
-    UserInterface.openLoader("adding room");
+    UserInterface.openLoader("adding room", "addingRoom");
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -57,7 +58,8 @@ class Store extends StoreUtilities {
     const { propertyRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    if (propertyRooms || message || error) UserInterface.closeLoader();
+    if (propertyRooms || message || error)
+      UserInterface.closeLoader("addingRoom");
 
     if (error) return { error };
     if (propertyRooms && message) return { propertyRooms, message, error };
@@ -66,7 +68,7 @@ class Store extends StoreUtilities {
   static async editRoomOnProperty(accessToken, propertyId, roomId, editedRoom) {
     if (!accessToken || !propertyId || !roomId || !editedRoom) return;
 
-    UserInterface.openLoader("editing room");
+    UserInterface.openLoader("editing room", "editingRoom");
 
     const requestOptions = {
       mode: "cors",
@@ -91,7 +93,8 @@ class Store extends StoreUtilities {
     const { editedRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    if (editedRooms || message || error) UserInterface.closeLoader();
+    if (editedRooms || message || error)
+      UserInterface.closeLoader("editingRoom");
 
     if (error) UserInterface.handleErrors(error);
     if (editedRooms && message) return { editedRooms, message };
@@ -100,7 +103,7 @@ class Store extends StoreUtilities {
   static async deleteRoomOnPorperty(accessToken, propertyId, roomId) {
     if (!accessToken || !propertyId || !roomId) return;
 
-    UserInterface.openLoader("deleting room");
+    UserInterface.openLoader("deleting room", "deletingRoom");
 
     const requestOptions = {
       mode: "cors",
@@ -124,7 +127,8 @@ class Store extends StoreUtilities {
     const { deletedRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    if ((deletedRooms, message, error)) UserInterface.closeLoader();
+    if ((deletedRooms, message, error))
+      UserInterface.closeLoader("deletingRoom");
 
     if (error) return { error };
     if (deletedRooms && message) return { deletedRooms, message };
@@ -498,6 +502,8 @@ class UserInterface extends UserinterfaceUtilities {
     //   roomId
     // );
 
+    UserInterface.openLoader("deleting room", "deletingRoom");
+
     const requestOptions = {
       mode: "cors",
       method: "DELETE",
@@ -519,6 +525,9 @@ class UserInterface extends UserinterfaceUtilities {
 
     const { deletedRooms, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
+
+    if (deletedRooms || message || error)
+      UserInterface.closeLoader("deletingRoom");
 
     if (error) {
       this.handleErrors(error);

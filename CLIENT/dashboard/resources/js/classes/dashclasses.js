@@ -3,7 +3,7 @@ class Store extends StoreUtilities {
     if (accessToken === (null || undefined))
       location.assign("/CLIENT/login/login.html");
 
-    UserInterface.openLoader("reading properties");
+    UserInterface.openLoader("reading properties", "readProperties");
 
     const requestOptions = {
       method: "POST",
@@ -22,7 +22,7 @@ class Store extends StoreUtilities {
 
     const { propertiesOwned, error } = await getAllPropertiesData?.json();
 
-    if (propertiesOwned || error) UserInterface.closeLoader();
+    if (propertiesOwned || error) UserInterface.closeLoader("readProperties");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -38,7 +38,7 @@ class Store extends StoreUtilities {
     if (!propertyId || !previousPropertyNo || !editedProperty || !accessToken)
       return;
 
-    UserInterface.openLoader("editing property");
+    UserInterface.openLoader("editing property", "editProperty");
 
     const editPropertyRequestOptions = {
       mode: "cors",
@@ -63,7 +63,8 @@ class Store extends StoreUtilities {
     const { message, editedProperties, error } =
       await editPropertyRequest.json();
 
-    if (message || editedProperties || error) UserInterface.closeLoader();
+    if (message || editedProperties || error)
+      UserInterface.closeLoader("editProperty");
 
     if (error) UserInterface.handleErrors(error);
     if (message && editedProperties) return { message, editedProperties };
@@ -72,7 +73,7 @@ class Store extends StoreUtilities {
   static async deleteProperty(accessToken, propertyId, propertyNo) {
     if (!accessToken || !propertyId || propertyNo) return;
 
-    UserInterface.openLoader("deleting property");
+    UserInterface.openLoader("deleting property", "deleteProperty");
 
     const deletePropertyRequestOptions = {
       mode: "cors",
@@ -95,7 +96,7 @@ class Store extends StoreUtilities {
 
     const deletedPropertiesResponse = await deletePropertyRequest.json();
 
-    if (deletedPropertiesResponse) UserInterface.closeLoader();
+    if (deletedPropertiesResponse) UserInterface.closeLoader("deleteProperty");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -105,7 +106,7 @@ class Store extends StoreUtilities {
   static async createProperty(accessToken, newProperty) {
     if (!accessToken || !newProperty) return;
 
-    UserInterface.openLoader("adding new property");
+    UserInterface.openLoader("adding new property", "newProperty");
 
     const createNewPropertyRequestOptions = {
       mode: "cors",
@@ -127,7 +128,7 @@ class Store extends StoreUtilities {
 
     const createPropertyResponse = await createPropertyRequest.json();
 
-    if (createPropertyResponse) UserInterface.closeLoader();
+    if (createPropertyResponse) UserInterface.closeLoader("newProperty");
 
     return createPropertyResponse;
   }

@@ -13,18 +13,15 @@ class UserinterfaceUtilities {
     rentsButton.setAttribute("disabled", "true");
   }
 
-  static openLoader(message) {
+  static createLoaderBox(message, loaderType) {
     if (!message) return;
 
-    const hero = document.querySelector(".hero");
-    const first = hero.querySelector(".first");
-
     const loaderBox = document.createElement("div");
-    loaderBox.className = `loaderBox w-25 alert text-white  }`;
+    loaderBox.className = `loaderBox alert text-white ${loaderType} }`;
 
     const loader = document.createElement("div");
     loader.className =
-      "loader bg-dark w-50 d-flex justify-content-around align-items-center p-2 font-weight-bold";
+      "loader bg-dark d-flex justify-content-around align-items-center p-2 font-weight-bold";
 
     const loaderText = document.createElement("div");
     const text = document.createTextNode(`Please wait, ${message}...`);
@@ -37,12 +34,37 @@ class UserinterfaceUtilities {
 
     loaderBox.append(loader);
 
-    hero.insertBefore(loaderBox, first);
+    return loaderBox;
   }
 
-  static closeLoader() {
-    const loader = document.querySelector(".alert");
-    loader.remove();
+  static openLoader(message, loaderType) {
+    if (!message) return;
+
+    const hero = document.querySelector(".hero");
+    const first = hero.querySelector(".first");
+
+    const loaderContainerActive = hero.querySelector(".loaderContainer");
+    const loaderBox = this.createLoaderBox(message, loaderType);
+
+    if (loaderContainerActive) {
+      loaderContainerActive.append(loaderBox);
+      return;
+    }
+
+    const loaderContainer = document.createElement("div");
+    loaderContainer.className =
+      "loaderContainer d-flex justify-content-center align-items-center container";
+
+    loaderContainer.append(loaderBox);
+
+    hero.insertBefore(loaderContainer, first);
+  }
+
+  static closeLoader(loaderType) {
+    const loaderContainer = document.querySelector(".loaderContainer");
+    loaderContainer.querySelector(`.${loaderType}`)?.remove();
+
+    if (!loaderContainer.children) loaderContainer.remove();
   }
 
   static alertMessage(message, className) {
@@ -59,7 +81,7 @@ class UserinterfaceUtilities {
 
     const alert = document.createElement("div");
     alert.className =
-      "d-flex justify-content-center align-items-center container bg-primary";
+      "d-flex justify-content-center align-items-center container";
     const alertBox = document.createElement("div");
     alertBox.className = `alertBox alert w-50 text-white alert-${className} bg-${className}`;
 

@@ -21,6 +21,7 @@ body {
 .loaderBox {
   z-index: 3;
   border-radius: 10px;
+  width: fit-content;
 }
 
 .alertBox {
