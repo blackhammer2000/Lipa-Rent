@@ -771,8 +771,17 @@ const post_controllers = {
           "Room with the given ID has not been registered in the tenants database."
         );
 
-      const checkIfTenantIsRegistered =
-        checkIfRoomIdIsRegistered[newTenant?.tenantNationalID];
+      let checkIfTenantIsRegistered = false;
+
+      for (const key in checkIfRoomIdIsRegistered) {
+        if (
+          checkIfRoomIdIsRegistered[key]?.tenantNationalID ===
+          newTenant?.tenantNationalID
+        ) {
+          checkIfTenantIsRegistered = !checkIfTenantIsRegistered;
+          break;
+        }
+      }
 
       if (checkIfTenantIsRegistered)
         throw new Error(
