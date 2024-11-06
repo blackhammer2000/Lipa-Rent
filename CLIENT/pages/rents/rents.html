@@ -85,8 +85,8 @@
               >
             </li>
             <li class="ml-4">
-              <a href=""
-                ><button class="btn btn-outline-success">RENTS</button></a
+              <a href="../tenants/tenants.html"
+                ><button class="btn btn-outline-success">TENANTS</button></a
               >
             </li>
           </ul>
@@ -109,13 +109,14 @@
             <thead class="position-sticky bg-white">
               <tr>
                 <th>NO.</th>
-                <th>TENANT ID</th>
-                <th>TENANT NAME</th>
-                <th>TENANT NATIONAL ID</th>
-                <th>TENANT PHONE</th>
-                <th>TENANT MOVE IN</th>
-                <th>TENANT MOVE OUT</th>
-                <th>TENANT ACTIONS</th>
+                <th>PAYMENT ID</th>
+                <th>MONTH</th>
+                <th>PREV. BALANCE</th>
+                <th>AMOUNT PAID</th>
+                <th>NEW BALANCE</th>
+                <th>MODE</th>
+                <th>RECEIPT NO.</th>
+                <th>PAYMENT ACTIONS</th>
               </tr>
             </thead>
             <tbody data-table></tbody>
@@ -177,8 +178,8 @@
         <form data-new-payment-form action="" class="form">
           <div class="form-group">
             <input
-              data-new-payment-name
-              placeholder="TENANT NAME"
+              data-new-payment-month
+              placeholder="PAYMENT MONTH"
               type="text"
               class="form-control text-uppercase"
               required
@@ -186,21 +187,28 @@
           </div>
           <div class="form-group">
             <input
-              data-new-tenant-nationalID
-              placeholder="NATIONAL ID"
+              data-new-payment-amount
+              placeholder="PAYMENT AMOUNT"
               type="text"
               class="form-control text-uppercase"
               required
             />
           </div>
           <div class="form-group">
-            <input
-              data-new-tenant-phone
-              placeholder="TENANT PHONE"
+            <select
+              class="form-control border border-right-0 border-left border-top-0 border-bottom"
+            >
+              <option value="CASH">CASH</option>
+              <option value="M-PESA">M-PESA</option>
+            </select>
+
+            <!-- <input
+              data-new-payment-mode
+              placeholder="PAYMENT MODE"
               type="text"
               class="form-control text-uppercase"
               required
-            />
+            /> -->
           </div>
 
           <div class="form-group text-center">
@@ -224,33 +232,33 @@
         </legend>
 
         <h5 class="text-center">
-          Tenant Id:
+          Payment Id:
           <span class="font-weight-light" data-edit-payment-id></span>
         </h5>
 
         <form data-edit-payment-form action="" class="form">
           <div class="form-group">
-            <label class="font-weight-bold">TENANT NAME:</label>
+            <label class="font-weight-bold">PAYMENT MONTH:</label>
             <input
-              data-edited-name
+              data-edited-month
               type="text"
               class="form-control text-uppercase"
               required
             />
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">NATIONAL ID</label>
+            <label class="font-weight-bold">PAYMENT AMOUNT</label>
             <input
-              data-edited-nationalID
+              data-edited-amount
               type="text"
               class="form-control text-uppercase"
               required
             />
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">TENANT PHONE:</label>
+            <label class="font-weight-bold">PAYMENT MODE:</label>
             <input
-              data-edited-phone
+              data-edited-mode
               type="text"
               class="form-control text-uppercase"
               required

@@ -1096,38 +1096,43 @@ const post_controllers = {
       if (!checkIfPropertyIdIsRegisteredInRoomsDocument?.rooms[roomId])
         throw new Error("No room with the room Id found.");
 
-      const roomRate = rooms[0][propertyId]?.rooms[roomId]?.roomRatePerMonth;
+      const roomRate = Number(
+        rooms[0][propertyId]?.rooms[roomId]?.roomRatePerMonth
+      );
 
-      const thisMonthRentBalance =
-        payment.amountTenantIsPaying === roomRate
-          ? 0
-          : roomRate - Number(payment?.amountTenantIsPaying);
-
-      const unpaidRentBalanceFromLastMonth =
+      const previousPaymentMonth =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
           ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
-              ?.totalRentBalance
+              ?.monthDue
+          : 0;
+
+      const isNewMonth = payment.month === previousPaymentMonth ? 0 : roomRate;
+
+      const unpaidRentBalanceFromLastPayment =
+        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
+          ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
+              ?.newPaymentBalance
           : 0;
 
       const newUnpaidRentBalance =
-        unpaidRentBalanceFromLastMonth !== (null || undefined) &&
+        unpaidRentBalanceFromLastPayment !== (null || undefined) &&
         thisMonthRentBalance !== (null || undefined)
-          ? unpaidRentBalanceFromLastMonth + thisMonthRentBalance
+          ? unpaidRentBalanceFromLastPayment + isNewMonth
           : 0;
 
       const newRentPaymentEntry = {
         paymentID: crypto.randomUUID().slice(-12),
         date: new Date().toLocaleDateString(),
         monthDue: payment?.month,
-        monthlyPayment: roomRate,
-        balanceFromLastMonth: unpaidRentBalanceFromLastMonth,
-        totalAmountDue: unpaidRentBalanceFromLastMonth + roomRate,
+        previousPaymentBalance: unpaidRentBalanceFromLastPayment,
         amountPaid: payment.amountTenantIsPaying,
-        unpaidBalanceThisMonth: thisMonthRentBalance,
-        totalRentBalance: newUnpaidRentBalance,
+        newPaymentBalance: newUnpaidRentBalance - payment.amountTenantIsPaying,
         modeOfPayment: payment.mode,
         recieptNumber: crypto.randomUUID().slice(-12),
       };
+      // monthlyPayment: roomRate,
+      // totalAmountDue: unpaidRentBalanceFromLastPayment,
+      // unpaidBalanceThisMonth: thisMonthRentBalance,
 
       rents[0][propertyId].rentPayments[roomId][tenantId].push(
         newRentPaymentEntry
