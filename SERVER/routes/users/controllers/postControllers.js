@@ -1146,8 +1146,9 @@ const post_controllers = {
         throw new Error("Error while updating database.");
 
       res.status(200).json({
-        selctedTenantRoomRentPayments:
-          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
+        newTenantRoomRentPayments:
+          rents[0][propertyId].rentPayments[roomId][tenantId],
+        message: "New payment successfully added.",
       });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
