@@ -21,6 +21,15 @@ body {
   border-radius: 10px;
 }
 
+.blur {
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+fieldset {
+  border-radius: 10px;
+}
+
 .loaderSpinner {
   width: 20px;
   height: 20px;

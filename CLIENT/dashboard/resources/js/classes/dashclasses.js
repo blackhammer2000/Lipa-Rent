@@ -240,7 +240,12 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-edit-property-number]"
     );
 
+    const homeSection =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.parentElement;
+
     editPropertyModal.classList.remove("hide");
+    homeSection.classList.add("blur");
 
     const editForm = editPropertyModal.querySelector(
       "[data-edit-property-form]"

@@ -9,6 +9,7 @@
   UserInterface.renderPropertySelectionOptions();
 
   const tableBody = document.querySelector("[data-table]");
+  const homeSection = document.querySelector(".home");
 
   const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
     ? localStorage.getItem("liparentSelectedPropertyId")
@@ -66,6 +67,7 @@
   closeEditPropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.closeEditRoomModal(e);
+    homeSection.classList.remove("blur");
   });
 
   const createPropertyButton = document.querySelector(
@@ -80,6 +82,7 @@
   createPropertyButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.openCreateRoomModal(createPropertyModal);
+    homeSection.classList.add("blur");
   });
 
   createPropertyForm.addEventListener("submit", (e) => {
@@ -96,5 +99,6 @@
   closeCreatePropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.closeCreateRoomModal(e);
+    homeSection.classList.remove("blur");
   });
 })();

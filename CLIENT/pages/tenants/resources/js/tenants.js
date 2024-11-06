@@ -6,6 +6,7 @@
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
 
+  const homeSection = document.querySelector(".home");
   const tableBody = document.querySelector("[data-table]");
 
   const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
@@ -53,7 +54,8 @@
     "[data-create-tenant-button]"
   );
   addNewTenantButton.addEventListener("click", (e) => {
-    addNewTenantModal.classList.toggle("hide");
+    addNewTenantModal.classList.remove("hide");
+    homeSection.classList.add("blur");
   });
 
   const closeNewTenantModal = document.querySelector(
@@ -61,6 +63,7 @@
   );
   closeNewTenantModal.addEventListener("click", () => {
     addNewTenantModal.classList.add("hide");
+    homeSection.classList.remove("blur");
   });
 
   const newTenantForm = addNewTenantModal.querySelector("form");
@@ -95,5 +98,6 @@
     e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
       "hide"
     );
+    homeSection.classList.remove("blur");
   });
 })();

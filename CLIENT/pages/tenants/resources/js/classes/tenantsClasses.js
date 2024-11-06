@@ -358,7 +358,14 @@ class UserInterface extends UserinterfaceUtilities {
         .parentElement.parentElement.parentElement.nextElementSibling
         .nextElementSibling;
 
+    const homeSection =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.parentElement;
+
+    console.log(homeSection);
+
     editTenantModal.classList.remove("hide");
+    homeSection.classList.add("blur");
 
     const editForm = editTenantModal.querySelector("[data-edit-tenant-form]");
 

@@ -7,6 +7,7 @@
     location.assign("/CLIENT/login/login.html");
 
   const tableBody = document.querySelector("[data-table]");
+  const homeSection = document.querySelector(".home");
 
   UserInterface.readAndRenderProperties(accessToken, tableBody);
 
@@ -27,6 +28,7 @@
   closeEditPropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.closeEditPropertyModal(e);
+    homeSection.classList.remove("blur");
   });
 
   const createPropertyButton = document.querySelector(
@@ -41,6 +43,7 @@
   createPropertyButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.openCreatePropertyModal(createPropertyModal);
+    homeSection.classList.add("blur");
   });
 
   createPropertyForm.addEventListener("submit", (e) => {
@@ -56,5 +59,6 @@
   closeCreatePropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.closeCreatePropertyModal(e);
+    homeSection.classList.remove("blur");
   });
 })();
