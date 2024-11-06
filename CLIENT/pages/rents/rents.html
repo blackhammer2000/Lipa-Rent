@@ -53,7 +53,7 @@
             class="action d-flex justify-content-center align-items-center w-50"
           >
             <form
-              data-select-room-form
+              data-select-tenant-form
               action=""
               class="mr-2 w-100 d-flex justify-content-center align-items-center"
             >
@@ -96,8 +96,8 @@
       <div class="hero mt-5 d-flex flex-column container-fluid text-center">
         <div class="first d-flex justify-content-between mb-2">
           <div class="text-left w-25">
-            <button data-create-tenant-button class="btn btn-success">
-              ADD TENANT
+            <button data-create-payment-button class="btn btn-success">
+              ADD PAYMENT
             </button>
           </div>
           <div class="text-center w-75">
@@ -166,7 +166,7 @@
     >
       <fieldset class="border border-success p-5 border-radius-50">
         <legend class="d-flex justify-content-around text-center">
-          <h4>ADD TENANT TO ROOM</h4>
+          <h4>ADD PAYMENT</h4>
           <span class="closeModal" draggable="true">
             <button data-close-create-payment-modal class="btn btn-danger">
               X
@@ -204,7 +204,7 @@
           </div>
 
           <div class="form-group text-center">
-            <button class="btn btn-success w-100">ADD TENANT</button>
+            <button class="btn btn-success w-100">ADD PAYMENT</button>
           </div>
         </form>
       </fieldset>
@@ -212,12 +212,12 @@
 
     <!-- EDIT PROPERTY MODAL -->
     <div
-      data-edit-tenant
+      data-edit-payment
       class="tenantModal hide container justify-content-center align-items-center"
     >
       <fieldset class="border border-success p-5 border-radius-50">
         <legend class="d-flex justify-content-around text-center">
-          <h4>EDIT TENANT</h4>
+          <h4>EDIT PAYMENT</h4>
           <span class="closeModal" draggable="true">
             <button data-close-edit-modal class="btn btn-danger">X</button>
           </span>
@@ -225,10 +225,10 @@
 
         <h5 class="text-center">
           Tenant Id:
-          <span class="font-weight-light" data-edit-tenant-id></span>
+          <span class="font-weight-light" data-edit-payment-id></span>
         </h5>
 
-        <form data-edit-tenant-form action="" class="form">
+        <form data-edit-payment-form action="" class="form">
           <div class="form-group">
             <label class="font-weight-bold">TENANT NAME:</label>
             <input
@@ -267,8 +267,8 @@
           </div>
 
           <div class="form-group text-center">
-            <button data-edit-tenant-button class="btn btn-primary w-100">
-              EDIT TENANT
+            <button data-edit-payment-button class="btn btn-primary w-100">
+              EDIT PAYMENT
             </button>
           </div>
         </form>
