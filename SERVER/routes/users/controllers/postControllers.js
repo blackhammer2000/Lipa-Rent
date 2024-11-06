@@ -1142,12 +1142,13 @@ const post_controllers = {
         }
       );
 
-      if (updateRents.acknowledged && updateRents.modifiedCount)
-        res.status(200).json({
-          selctedTenantRoomRentPayments:
-            checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
-        });
-      else throw new Error(updateRents);
+      if (!updateRents.acknowledged && !updateRents.modifiedCount)
+        throw new Error("Error while updating database.");
+
+      res.status(200).json({
+        selctedTenantRoomRentPayments:
+          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
+      });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
