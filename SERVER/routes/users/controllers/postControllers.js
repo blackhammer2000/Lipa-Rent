@@ -1034,14 +1034,11 @@ const post_controllers = {
       if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
         throw new Error("provide a valid property ID.");
-      if (!req?.body.propertyNo)
-        throw new Error("provide a valid property NO.");
       if (!req?.body.roomId) throw new Error("provide a valid room ID.");
       if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
       if (!req.body.payment) throw new Error("provide a valid amount.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId, payment } =
-        req?.body;
+      const { id, propertyId, roomId, tenantId, payment } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -1054,24 +1051,10 @@ const post_controllers = {
 
       const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
-          );
-
-        if (!checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
-          );
-      }
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the tenants database."
+        );
 
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
 
@@ -1094,7 +1077,26 @@ const post_controllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
-      const roomRate = 6000;
+      const roomsDocument = await Room.findOne({ ownerID: id });
+
+      if (!roomsDocument) throw new Error(roomsDocument);
+
+      const { rooms } = roomsDocument;
+
+      const checkIfPropertyIdIsRegisteredInRoomsDocument = rooms[0][propertyId];
+
+      if (!checkIfPropertyIdIsRegisteredInRoomsDocument)
+        throw new Error(
+          "Property with the given property Id has not been registered in the rooms database."
+        );
+
+      if (!checkIfPropertyIdIsRegisteredInRoomsDocument?.rooms)
+        throw new Error("No rooms have been added to this property.");
+
+      if (!checkIfPropertyIdIsRegisteredInRoomsDocument?.rooms[roomId])
+        throw new Error("No room with the room Id found.");
+
+      const roomRate = rooms[0][propertyId]?.rooms[roomId]?.roomRatePerMonth;
 
       const thisMonthRentBalance =
         payment.amountTenantIsPaying === roomRate
@@ -1124,7 +1126,7 @@ const post_controllers = {
         unpaidBalanceThisMonth: thisMonthRentBalance,
         totalRentBalance: newUnpaidRentBalance,
         modeOfPayment: payment.mode,
-        recieptNumber: "SH45BXDE",
+        recieptNumber: crypto.randomUUID().slice(-12),
       };
 
       rents[0][propertyId].rentPayments[roomId][tenantId].push(
