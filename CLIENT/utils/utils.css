@@ -52,3 +52,7 @@ fieldset {
 .disablePointerEvents {
   pointer-events: none;
 }
+
+thead {
+  top: 0;
+}

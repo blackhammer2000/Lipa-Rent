@@ -1,0 +1,108 @@
+(async function () {
+  const accessToken = localStorage.getItem("liparentAccessToken")
+    ? JSON.parse(localStorage.getItem("liparentAccessToken"))
+    : null;
+
+  if (accessToken === (null || undefined))
+    location.assign("/CLIENT/login/login.html");
+
+  const homeSection = document.querySelector(".home");
+  const tableBody = document.querySelector("[data-table]");
+
+  const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId")
+    ? localStorage.getItem("liparentSelectedPropertyId")
+    : null;
+
+  const selectedRoomId = localStorage.getItem("liparentSelectedRoomId")
+    ? localStorage.getItem("liparentSelectedRoomId")
+    : null;
+
+  if (!selectedPropertyId) {
+    UserInterface.handleErrors("please select a property in the room section");
+    location.assign("/CLIENT/pages/rooms/rooms.html");
+    return;
+  }
+
+  if (!selectedRoomId) {
+    UserInterface.handleErrors("please select a room in the tenants section.");
+    location.assign("/CLIENT/pages/tenants/tenants.html");
+    return;
+  }
+
+  if (selectedPropertyId && selectedRoomId) {
+    UserInterface.updateTableDescription(selectedPropertyId, selectedRoomId);
+    UserInterface.updateTableBodyState(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      selectedRoomId
+    );
+  }
+
+  UserInterface.renderRoomNumbersForSelection(accessToken, selectedPropertyId);
+
+  const selectTenantForm = document.querySelector("[ data-select-tenant-form]");
+
+  selectTenantForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    UserInterface.readAndRenderTenants(
+      accessToken,
+      selectTenantForm,
+      selectedPropertyId,
+      tableBody
+    );
+  });
+
+  const addNewPaymentModal = document.querySelector("[data-create-payment]");
+
+  const addNewPaymentButton = document.querySelector(
+    "[data-create-payment-button]"
+  );
+  addNewPaymentButton.addEventListener("click", (e) => {
+    addNewPaymentModal.classList.remove("hide");
+    homeSection.classList.add("blur");
+  });
+
+  const closeNewPaymentModal = document.querySelector(
+    "[data-close-create-tenant-modal]"
+  );
+  closeNewPaymentModal.addEventListener("click", () => {
+    addNewPaymentModal.classList.add("hide");
+    homeSection.classList.remove("blur");
+  });
+
+  const newPaymentForm = addNewPaymentModal.querySelector("form");
+  newPaymentForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await UserInterface.addNewTenantAndRender(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      newPaymentForm
+    );
+  });
+
+  const editPaymentForm = document.querySelector("[data-edit-payment-form]");
+  const closeEditPaymentModalButton =
+    editTenantForm.parentElement.querySelector("[data-close-edit-modal]");
+
+  editPaymentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    UserInterface.editRoomTenantAndRender(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      selectedRoomId,
+      editPaymentForm
+    );
+  });
+
+  closeEditPaymentModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
+      "hide"
+    );
+    homeSection.classList.remove("blur");
+  });
+})();

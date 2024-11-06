@@ -1,4 +1,4 @@
-.tenantModal {
+.rentModal {
   position: absolute;
   content: "";
   top: 15%;
@@ -10,7 +10,7 @@
 
 .hero {
   /* display: grid;
-    place-items: center; */
+      place-items: center; */
   height: 60vh;
   overflow: hidden;
 }
