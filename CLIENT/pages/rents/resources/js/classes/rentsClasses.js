@@ -78,11 +78,12 @@ class Store extends StoreUtilities {
     accessToken,
     propertyId,
     roomId,
-    newTenant
+    tenantId,
+    newPayment
   ) {
-    if (!propertyId || !roomId || !accessToken || !newTenant) return;
+    if (!propertyId || !roomId || !accessToken || !newPayment) return;
 
-    UserInterface.openLoader("adding new tenant payment", "addPayment");
+    UserInterface.openLoader("adding new tenant payment", "addTenantPayment");
 
     const requestOptions = {
       mode: "cors",
@@ -92,7 +93,7 @@ class Store extends StoreUtilities {
         user: true,
         token: accessToken,
       },
-      body: JSON.stringify({ propertyId, roomId, newTenant }),
+      body: JSON.stringify({ propertyId, roomId, tenantId, newPayment }),
     };
 
     const addNewTenantToRoomRequest = await fetch(
@@ -104,7 +105,7 @@ class Store extends StoreUtilities {
       await addNewTenantToRoomRequest.json();
 
     if (newTenantRoomRentPayments || message || error)
-      UserInterface.closeLoader("addTenant");
+      UserInterface.closeLoader("addTenantPayment");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -222,7 +223,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const {
       paymentID,
-      monthDue,
+      month,
       previousBalance,
       amountPaid,
       newBalance,
@@ -243,7 +244,7 @@ class UserInterface extends UserinterfaceUtilities {
     row.append(tabPaymentIdCell);
 
     const tablePaymentMonthCell = document.createElement("td");
-    const tablePaymentMonthCellText = document.createTextNode(monthDue);
+    const tablePaymentMonthCellText = document.createTextNode(month);
     tablePaymentMonthCell.append(tablePaymentMonthCellText);
     row.append(tablePaymentMonthCell);
 
@@ -355,42 +356,68 @@ class UserInterface extends UserinterfaceUtilities {
     this.renderTenantPayments(selectedTenantPayments, accessToken, tableBody);
   }
 
-  static async addNewTenantAndRender(accessToken, tableBody, propertyId, form) {
+  static async addNewTenantPaymentAndRender(
+    accessToken,
+    tableBody,
+    propertyId,
+    roomId,
+    form
+  ) {
     if (!accessToken || !tableBody || !propertyId || !form) return;
 
-    const selectedRoomId =
-      localStorage.getItem("liparentSelectedRoomId") || null;
+    const selectedTenantId = localStorage.getItem("liparentSelectedTenantId")
+      ? localStorage.getItem("liparentSelectedTenantId")
+      : null;
 
-    if (!selectedRoomId) this.handleErrors("please select a room");
+    const selectedTenantName = localStorage.getItem(
+      "liparentSelectedTenantName"
+    )
+      ? localStorage.getItem("liparentSelectedTenantName")
+      : null;
 
-    const tenantName = form.querySelector("[data-new-tenant-name]")?.value;
-    const tenantNationalID = form.querySelector(
-      "[data-new-tenant-nationalID]"
+    const selectedRoomNumber = localStorage.getItem(
+      "liparentSelectedRoomNumber"
+    )
+      ? localStorage.getItem("liparentSelectedRoomNumber")
+      : null;
+
+    if (!selectedTenantId || !selectedTenantName) return;
+
+    const paymentAmount = form.querySelector(
+      "[data-new-payment-amount]"
     )?.value;
-    const tenantPhone = form.querySelector("[data-new-tenant-phone]")?.value;
+    const paymentMonth = form.querySelector("[data-new-payment-month]")?.value;
+    const paymentMode = form.querySelector("[data-new-payment-mode]")?.value;
 
     if (
-      !confirm(`Do you want to add ${tenantName} to roomID: ${selectedRoomId}?`)
+      !confirm(
+        `Do you want to add a new payemnt by ${selectedTenantName} for room: ${selectedRoomNumber}?`
+      )
     )
       return;
 
-    const newTenant = {
-      tenantName,
-      tenantNationalID,
-      tenantPhone,
+    const newPayment = {
+      amount: paymentAmount,
+      month: paymentMonth,
+      mode: paymentMode,
     };
 
-    const { newRoomTenants, message } =
-      await Store.addNewTenantToRoomInProperty(
+    const { newTenantRoomRentPayments, message } =
+      await Store.addNewTenantPaymentToRoomInProperty(
         accessToken,
         propertyId,
-        selectedRoomId,
-        newTenant
+        roomId,
+        selectedTenantId,
+        newPayment
       );
 
-    if (newRoomTenants && message) {
+    if (newTenantRoomRentPayments && message) {
       this.alertMessage(message, "success");
-      this.renderTenants(newRoomTenants, accessToken, tableBody);
+      this.renderTenantPayments(
+        newTenantRoomRentPayments,
+        accessToken,
+        tableBody
+      );
     }
   }
 

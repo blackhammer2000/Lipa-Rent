@@ -1036,9 +1036,9 @@ const post_controllers = {
         throw new Error("provide a valid property ID.");
       if (!req?.body.roomId) throw new Error("provide a valid room ID.");
       if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
-      if (!req.body.payment) throw new Error("provide a valid amount.");
+      if (!req.body.newPayment) throw new Error("provide a valid amount.");
 
-      const { id, propertyId, roomId, tenantId, payment } = req?.body;
+      const { id, propertyId, roomId, tenantId, newPayment } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -1090,7 +1090,9 @@ const post_controllers = {
           "Property with the given property Id has not been registered in the rooms database."
         );
 
-      if (!checkIfPropertyIdIsRegisteredInRoomsDocument?.rooms)
+      if (
+        !Object.keys(checkIfPropertyIdIsRegisteredInRoomsDocument?.rooms).length
+      )
         throw new Error("No rooms have been added to this property.");
 
       if (!checkIfPropertyIdIsRegisteredInRoomsDocument?.rooms[roomId])
@@ -1103,15 +1105,16 @@ const post_controllers = {
       const previousPaymentMonth =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
           ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
-              ?.monthDue
+              ?.month
           : 0;
 
-      const isNewMonth = payment.month === previousPaymentMonth ? 0 : roomRate;
+      const isNewMonth =
+        newPayment.month === previousPaymentMonth ? 0 : roomRate;
 
       const unpaidRentBalanceFromLastPayment =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
           ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
-              ?.newPaymentBalance
+              ?.newBalance
           : 0;
 
       const newUnpaidRentBalance =
@@ -1123,12 +1126,15 @@ const post_controllers = {
       const newRentPaymentEntry = {
         paymentID: crypto.randomUUID().slice(-12),
         date: new Date().toLocaleDateString(),
-        monthDue: payment?.month,
+        month: newPayment?.month,
         previousPaymentBalance: unpaidRentBalanceFromLastPayment,
-        amountPaid: payment.amountTenantIsPaying,
-        newPaymentBalance: newUnpaidRentBalance - payment.amountTenantIsPaying,
-        modeOfPayment: payment.mode,
-        recieptNumber: crypto.randomUUID().slice(-12),
+        amountPaid: newPayment.amount,
+        newBalance: newUnpaidRentBalance - newPayment.amount,
+        modeOfPayment: newPayment.mode,
+        recieptNumber:
+          newPayment.mode.toLowerCase() === "cash"
+            ? "cash"
+            : crypto.randomUUID().slice(-12),
       };
       // monthlyPayment: roomRate,
       // totalAmountDue: unpaidRentBalanceFromLastPayment,

@@ -81,17 +81,17 @@
     homeSection.classList.remove("blur");
   });
 
-  //   const newPaymentForm = addNewPaymentModal.querySelector("form");
-  //   newPaymentForm.addEventListener("submit", async (e) => {
-  //     e.preventDefault();
-  //     await UserInterface.addNewTenantAndRender(
-  //       accessToken,
-  //       tableBody,
-  //       selectedPropertyId,
-  //       selectedRoomId,
-  //       newPaymentForm
-  //     );
-  //   });
+  const newPaymentForm = addNewPaymentModal.querySelector("form");
+  newPaymentForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await UserInterface.addNewTenantPaymentAndRender(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      selectedRoomId,
+      newPaymentForm
+    );
+  });
 
   //   const editPaymentForm = document.querySelector("[data-edit-payment-form]");
   //   const closeEditPaymentModalButton =
