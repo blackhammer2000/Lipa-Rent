@@ -328,7 +328,7 @@ class UserInterface extends UserinterfaceUtilities {
     if (propertyRooms && message) {
       this.alertMessage(message, "success");
       this.setSelectedPropertyIdAndEnableNavButton(propertyId);
-      this.setSelectedPropertyName(propertyName);
+      this.setSelectedPropertyNameInLocalStorage(propertyName);
       this.updateTableDescription(propertyName);
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
@@ -585,21 +585,12 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static updateTableDescription(propertyId) {
-    if (!propertyId) return;
-
-    const propertyName =
-      JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
-        ?.propertyName || null;
-
-    if (!propertyName) {
-      alert("property name not found, cannot update table description");
-      return;
-    }
+  static updateTableDescription(propertyName) {
+    if (!propertyName) return;
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `Rooms for ${propertyName.toUpperCase()}, Property ID: ${propertyId}`;
+    ).innerText = `Rooms for ${propertyName.toUpperCase()}.`;
   }
 
   static setSelectedPropertyNameInLocalStorage(propertyName) {

@@ -122,9 +122,12 @@ class UserinterfaceUtilities {
 
   static clearLocalStorage() {
     localStorage.removeItem("liparentAccessToken");
-    localStorage.removeItem("liparentProperties");
     localStorage.removeItem("liparentSelectedPropertyId");
+    localStorage.removeItem("liparentSelectedPropertyName");
     localStorage.removeItem("liparentSelectedRoomId");
+    localStorage.removeItem("liparentSelectedRoomNumber");
+    localStorage.removeItem("liparentSelectedTenantId");
+    localStorage.removeItem("liparentSelectedTenantName");
   }
 }
 

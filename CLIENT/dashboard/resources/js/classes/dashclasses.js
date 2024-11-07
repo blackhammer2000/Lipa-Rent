@@ -155,7 +155,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     tableBody.append(fragment);
-    localStorage.setItem("liparentProperties", JSON.stringify(properties));
+    // localStorage.setItem("liparentProperties", JSON.stringify(properties));
   }
 
   static createPropertyRow(property, index, accessToken, tableBody) {
