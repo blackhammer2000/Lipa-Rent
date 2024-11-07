@@ -170,6 +170,7 @@ class UserInterface extends UserinterfaceUtilities {
     for (const key in propertyRooms) {
       const option = document.createElement("option");
       option.value = key;
+      option.id = key;
       option.innerText = propertyRooms[key].roomNumber.toUpperCase();
       fragment.append(option);
     }
@@ -277,7 +278,9 @@ class UserInterface extends UserinterfaceUtilities {
   static async readAndRenderTenants(accessToken, form, propertyId, tableBody) {
     if (!accessToken || !tableBody) return;
 
+    const selectedRoomForm = form.querySelector("select");
     const selectedRoomId = form.querySelector("select")?.value;
+
     const localStorageSelectedRoomId =
       localStorage.getItem("liparentSelectedRoomId") || null;
 
@@ -292,6 +295,9 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
+    const selectedRoomNumber =
+      selectedRoomForm.children[selectedRoomId].innerText;
+
     const { selectedRoomOnPropertyTenants, message } =
       await Store.readAllTenantsForRoomInProperty(
         accessToken,
@@ -300,7 +306,8 @@ class UserInterface extends UserinterfaceUtilities {
       );
 
     this.alertMessage(message, "success");
-    this.updateTableDescription(propertyId, selectedRoomId);
+    this.updateTableDescription(propertyId, selectedRoomNumber);
+    this.setSelectedRoomNumberInLocalStorage(selectedRoomNumber);
     this.setSelectedRoomIdInLocalStorage(selectedRoomId);
 
     if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
@@ -538,7 +545,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static updateTableDescription(propertyId, selectedRoomId) {
+  static updateTableDescription(propertyId, selectedRoomNumber) {
     if (!propertyId || !selectedRoomId) return;
 
     const propertyName =
@@ -552,7 +559,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `Tenants for room: ${selectedRoomId} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `Tenants for room: ${selectedRoomNumber} in: ${propertyName.toUpperCase()}`;
   }
 
   static async updateTableBodyState(
@@ -583,5 +590,9 @@ class UserInterface extends UserinterfaceUtilities {
   static setSelectedRoomIdInLocalStorage(selectedRoomId) {
     localStorage.removeItem("liparentSelectedRoomId");
     localStorage.setItem("liparentSelectedRoomId", selectedRoomId);
+  }
+  static setSelectedRoomNumberInLocalStorage(selectedRoomNumber) {
+    localStorage.removeItem("liparentSelectedRoomNumber");
+    localStorage.setItem("liparentSelectedRoomNumber", selectedRoomNumber);
   }
 }
