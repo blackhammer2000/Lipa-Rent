@@ -15,12 +15,22 @@
     ? localStorage.getItem("liparentSelectedPropertyId")
     : null;
 
+  const selectedPropertyName = localStorage.getItem(
+    "liparentSelectedPropertyName"
+  )
+    ? localStorage.getItem("liparentSelectedPropertyId")
+    : null;
+
   UserInterface.setNavButtonsStatus(selectedPropertyId);
 
-  if (selectedPropertyId !== (null || undefined))
+  if (
+    selectedPropertyId !== (null || undefined) &&
+    selectedPropertyName !== (null || undefined)
+  )
     UserInterface.readAndRenderAllRoomsOnSingleProperty(
       accessToken,
       selectedPropertyId,
+      selectedPropertyName,
       tableBody
     );
 

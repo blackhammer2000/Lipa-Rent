@@ -306,9 +306,9 @@ class UserInterface extends UserinterfaceUtilities {
       );
 
     this.alertMessage(message, "success");
-    this.updateTableDescription(propertyId, selectedRoomNumber);
     this.setSelectedRoomNumberInLocalStorage(selectedRoomNumber);
     this.setSelectedRoomIdInLocalStorage(selectedRoomId);
+    this.updateTableDescription();
 
     if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
       this.clearTable(tableBody);
@@ -545,21 +545,26 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static updateTableDescription(propertyId, selectedRoomNumber) {
-    if (!propertyId || !selectedRoomNumber) return;
-
+  static updateTableDescription() {
     const propertyName =
-      JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
-        ?.propertyName || null;
+      localStorage.getItem("liparentSelectedPropertyName") || null;
 
     if (!propertyName) {
-      alert("property name not found, cannot update table description");
+      this.handleErrors("property name not found.");
+      return;
+    }
+
+    const roomNumber =
+      localStorage.getItem("liparentSelectedRoomNumber") || null;
+
+    if (!roomNumber) {
+      this.handleErrors("selected room number not found.");
       return;
     }
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `Tenants for room: ${selectedRoomNumber} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `Tenants for room: ${roomNumber} in: ${propertyName.toUpperCase()}`;
   }
 
   static async updateTableBodyState(

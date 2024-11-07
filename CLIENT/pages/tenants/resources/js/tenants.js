@@ -24,13 +24,13 @@
     : null;
 
   if (selectedPropertyId && selectedRoomId) {
-    UserInterface.updateTableDescription(selectedPropertyId, selectedRoomId);
     UserInterface.updateTableBodyState(
       accessToken,
       tableBody,
       selectedPropertyId,
       selectedRoomId
     );
+    UserInterface.updateTableDescription();
   }
 
   UserInterface.renderRoomNumbersForSelection(accessToken, selectedPropertyId);

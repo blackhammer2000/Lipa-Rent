@@ -329,7 +329,7 @@ class UserInterface extends UserinterfaceUtilities {
       this.alertMessage(message, "success");
       this.setSelectedPropertyIdAndEnableNavButton(propertyId);
       this.setSelectedPropertyNameInLocalStorage(propertyName);
-      this.updateTableDescription(propertyName);
+      this.updateTableDescription();
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
@@ -585,8 +585,14 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static updateTableDescription(propertyName) {
-    if (!propertyName) return;
+  static updateTableDescription() {
+    const propertyName =
+      localStorage.getItem("liparentSelectedPropertyName") || null;
+
+    if (!propertyName) {
+      this.handleErrors("property name not found.");
+      return;
+    }
 
     document.querySelector(
       "[data-table-description]"

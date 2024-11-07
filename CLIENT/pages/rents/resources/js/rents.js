@@ -33,15 +33,16 @@
     return;
   }
 
-  //   if (selectedPropertyId && selectedRoomId && selectedTenantId) {
-  //     UserInterface.updateTableDescription(selectedPropertyId, selectedRoomId);
-  //     UserInterface.updateTableBodyState(
-  //       accessToken,
-  //       tableBody,
-  //       selectedPropertyId,
-  //       selectedRoomId
-  //     );
-  //   }
+  if (selectedPropertyId && selectedRoomId && selectedTenantId) {
+    UserInterface.updateTableDescription();
+    UserInterface.updateTableBodyState(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      selectedRoomId,
+      selectedTenantId
+    );
+  }
 
   UserInterface.renderTenantNamesForSelection(
     accessToken,
@@ -53,7 +54,6 @@
 
   selectTenantForm.addEventListener("submit", (e) => {
     e.preventDefault();
-
     UserInterface.readAndRenderPayments(
       accessToken,
       selectTenantForm,

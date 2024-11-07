@@ -342,9 +342,9 @@ class UserInterface extends UserinterfaceUtilities {
     if (selectedTenantPayments.length && message)
       this.alertMessage(message, "success");
 
-    this.updateTableDescription(tenantName);
     this.setSelectedTenantNameInLocalStorage(tenantName);
     this.setSelectedTenantIdInLocalStorage(selectedTenantId);
+    this.updateTableDescription();
 
     if (!selectedTenantPayments.length && message) {
       this.clearTable(tableBody);
@@ -582,9 +582,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static updateTableDescription(tenantName) {
-    if (!tenantName) return;
-
+  static updateTableDescription() {
     const propertyName =
       localStorage.getItem("liparentSelectedPropertyName") || null;
 
@@ -598,6 +596,15 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (!roomNumber) {
       this.handleErrors("selected room number not found.");
+      return;
+    }
+
+    const tenantName = localStorage.getItem("liparentSelectedTenantName")
+      ? localStorage.getItem("liparentSelectedTenantName")
+      : null;
+
+    if (!tenantName) {
+      this.handleErrors("selected tenant name not found");
       return;
     }
 
