@@ -18,7 +18,7 @@
   const selectedPropertyName = localStorage.getItem(
     "liparentSelectedPropertyName"
   )
-    ? localStorage.getItem("liparentSelectedPropertyId")
+    ? localStorage.getItem("liparentSelectedPropertyName")
     : null;
 
   UserInterface.setNavButtonsStatus(selectedPropertyId);
