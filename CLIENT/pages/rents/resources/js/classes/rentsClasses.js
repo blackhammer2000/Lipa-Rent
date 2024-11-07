@@ -306,26 +306,28 @@ class UserInterface extends UserinterfaceUtilities {
     roomId,
     tableBody
   ) {
-    if (!accessToken || !tableBody) return;
+    if (!accessToken || !form || !propertyId || !roomId || !tableBody) return;
 
     const selectedTenantForm = form.querySelector("select");
     const selectedTenantId = form.querySelector("select")?.value;
 
+    if (!selectedTenantId) {
+      this.handleErrors("please select a tenant.");
+      return;
+    }
+
     const tenantName = selectedTenantForm.children[selectedTenantId].innerText;
+
+    console.log(tenantName);
 
     const localStorageSelectedTenantId =
       localStorage.getItem("liparentSelectedTenantId") || null;
 
-    if (!selectedTenantId) {
-      this.handleErrors("please select a room.");
-      return;
-    }
-
-    if (
-      localStorageSelectedTenantId &&
-      localStorageSelectedTenantId === selectedTenantId
-    )
-      return;
+    // if (
+    //   localStorageSelectedTenantId &&
+    //   localStorageSelectedTenantId === selectedTenantId
+    // )
+    //   return;
 
     const { selectedTenantPayments, message } =
       await Store.readAllTenantPaymentsForRoomInProperty(
@@ -335,13 +337,18 @@ class UserInterface extends UserinterfaceUtilities {
         selectedTenantId
       );
 
-    this.alertMessage(message, "success");
-    this.updateTableDescription(propertyId, roomId, tenantName);
+    console.log(selectedTenantPayments, message);
+
+    if (selectedTenantPayments.length && message)
+      this.alertMessage(message, "success");
+
+    this.updateTableDescription(tenantName);
     this.setSelectedTenantNameInLocalStorage(tenantName);
     this.setSelectedTenantIdInLocalStorage(selectedTenantId);
 
-    if (!Object.keys(selectedTenantPayments).length && message) {
+    if (!selectedTenantPayments.length && message) {
       this.clearTable(tableBody);
+      this.handleErrors(message);
       return;
     }
 
@@ -575,23 +582,28 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static updateTableDescription(propertyId, selectedRoomId, tenantName) {
-    if (!propertyId || !selectedRoomId) return;
+  static updateTableDescription(tenantName) {
+    if (!tenantName) return;
 
     const propertyName =
-      JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]
-        ?.propertyName || null;
+      localStorage.getItem("liparentSelectedPropertyName") || null;
 
     if (!propertyName) {
-      this.handleErrors(
-        "property name not found, cannot update table description"
-      );
+      this.handleErrors("property name not found.");
+      return;
+    }
+
+    const roomNumber =
+      localStorage.getItem("liparentSelectedRoomNumber") || null;
+
+    if (!roomNumber) {
+      this.handleErrors("selected room number not found.");
       return;
     }
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `Payments by ${tenantName} for room: ${selectedRoomId} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `Payments by ${tenantName} for Room: ${roomNumber} in: ${propertyName}.`;
   }
 
   static async updateTableBodyState(
@@ -622,5 +634,10 @@ class UserInterface extends UserinterfaceUtilities {
   static setSelectedTenantIdInLocalStorage(selectedTenantId) {
     localStorage.removeItem("liparentSelectedTenantId");
     localStorage.setItem("liparentSelectedTenantId", selectedTenantId);
+  }
+
+  static setSelectedTenantNameInLocalStorage(selectedTenantName) {
+    localStorage.removeItem("liparentSelectedTenantName");
+    localStorage.setItem("liparentSelectedTenantName", selectedTenantName);
   }
 }

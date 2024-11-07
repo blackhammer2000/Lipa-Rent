@@ -1246,7 +1246,7 @@ const post_controllers = {
       if (!req?.body.roomId) throw new Error("provide a valid room ID.");
       if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId } = req?.body;
+      const { id, propertyId, roomId, tenantId } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -1280,21 +1280,25 @@ const post_controllers = {
       const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
         checkIfRoomIdIsRegisteredUnderSelectedProperty[tenantId];
 
-      if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
+      if (
+        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty ===
+        (null || undefined)
+      )
         throw new Error(
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
-      // if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.length)
-      //   throw new Error(
-      //     "The requested payment reports for the tenant ID were not found."
-      //   );
-
-      res.status(200).json({
-        selectedTenantPayments:
-          checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
-        message: "Rent payments retrieved successfully.",
-      });
+      if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.length)
+        res.status(200).json({
+          selectedTenantPayments: [],
+          message: "No payment have been made by this tenant.",
+        });
+      else
+        res.status(200).json({
+          selectedTenantPayments:
+            checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty,
+          message: "Rent payments retrieved successfully.",
+        });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }

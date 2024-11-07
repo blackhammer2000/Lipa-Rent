@@ -6,7 +6,7 @@
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
 
-  UserInterface.renderPropertySelectionOptions();
+  UserInterface.renderPropertySelectionOptions(accessToken);
 
   const tableBody = document.querySelector("[data-table]");
   const homeSection = document.querySelector(".home");
@@ -28,7 +28,10 @@
 
   selectPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const selectedPropertyIdForm = selectPropertyForm.querySelector("select");
     const propertyId = selectPropertyForm.querySelector("select")?.value.trim();
+
+    const propertyName = selectedPropertyIdForm.children[propertyId].innerText;
 
     if (!propertyId) {
       UserInterface.handleErrors("Select a property!");
@@ -46,6 +49,7 @@
     await UserInterface.readAndRenderAllRoomsOnSingleProperty(
       accessToken,
       propertyId,
+      propertyName,
       tableBody
     );
   });

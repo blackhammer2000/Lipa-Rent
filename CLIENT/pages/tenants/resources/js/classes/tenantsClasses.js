@@ -546,7 +546,7 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static updateTableDescription(propertyId, selectedRoomNumber) {
-    if (!propertyId || !selectedRoomId) return;
+    if (!propertyId || !selectedRoomNumber) return;
 
     const propertyName =
       JSON.parse(localStorage.getItem("liparentProperties"))[propertyId]

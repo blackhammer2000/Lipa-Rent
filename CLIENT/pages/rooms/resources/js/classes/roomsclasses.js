@@ -1,4 +1,34 @@
 class Store extends StoreUtilities {
+  static async preFetchPropertiesNames(accessToken) {
+    if (accessToken === (null || undefined))
+      location.assign("/CLIENT/login/login.html");
+
+    UserInterface.openLoader("reading properties names", "readProperties");
+
+    const requestOptions = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: accessToken,
+        user: true,
+      },
+    };
+
+    const getAllPropertiesData = await fetch(
+      "http://localhost:4000/api/user/owner/read/properties",
+      requestOptions
+    );
+
+    const { propertiesOwned, error } = await getAllPropertiesData?.json();
+
+    if (propertiesOwned || error) UserInterface.closeLoader("readProperties");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (propertiesOwned) return propertiesOwned;
+  }
+
   static async readAllRoomsOnSingleProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
@@ -136,12 +166,10 @@ class Store extends StoreUtilities {
 }
 
 class UserInterface extends UserinterfaceUtilities {
-  static renderPropertySelectionOptions() {
-    const properties = localStorage.getItem("liparentProperties")
-      ? JSON.parse(localStorage.getItem("liparentProperties"))
-      : null;
+  static async renderPropertySelectionOptions(accessToken) {
+    const propertiesOwned = await Store.preFetchPropertiesNames(accessToken);
 
-    if (!properties) return;
+    if (!propertiesOwned) return;
 
     const optionsBody = document.querySelector("select");
     optionsBody.querySelectorAll("option").forEach((option) => option.remove());
@@ -153,10 +181,11 @@ class UserInterface extends UserinterfaceUtilities {
     placeHolderOption.innerText = "SELECT PROPERTY";
     fragment.append(placeHolderOption);
 
-    for (const key in properties) {
+    for (const key in propertiesOwned) {
       const option = document.createElement("option");
       option.value = key;
-      option.innerText = properties[key].propertyName.toUpperCase();
+      option.id = key;
+      option.innerText = propertiesOwned[key].propertyName.toUpperCase();
       fragment.append(option);
     }
 
@@ -283,6 +312,7 @@ class UserInterface extends UserinterfaceUtilities {
   static async readAndRenderAllRoomsOnSingleProperty(
     accessToken,
     propertyId,
+    propertyName,
     tableBody
   ) {
     if (!accessToken || !propertyId || !tableBody) return;
@@ -298,7 +328,8 @@ class UserInterface extends UserinterfaceUtilities {
     if (propertyRooms && message) {
       this.alertMessage(message, "success");
       this.setSelectedPropertyIdAndEnableNavButton(propertyId);
-      this.updateTableDescription(propertyId);
+      this.setSelectedPropertyName(propertyName);
+      this.updateTableDescription(propertyName);
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
@@ -569,5 +600,11 @@ class UserInterface extends UserinterfaceUtilities {
     document.querySelector(
       "[data-table-description]"
     ).innerText = `Rooms for ${propertyName.toUpperCase()}, Property ID: ${propertyId}`;
+  }
+
+  static setSelectedPropertyNameInLocalStorage(propertyName) {
+    if (!propertyName) return;
+    localStorage.removeItem("liparentSelectedPropertyName");
+    localStorage.setItem("liparentSelectedPropertyName", propertyName);
   }
 }
