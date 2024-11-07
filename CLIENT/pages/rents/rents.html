@@ -163,7 +163,7 @@
     <!-- CREATE NEW PAYMENT MODAL -->
     <div
       data-create-payment
-      class="tenantModal hide container justify-content-center align-items-center"
+      class="rentModal hide container justify-content-center align-items-center"
     >
       <fieldset class="border border-success p-5 border-radius-50">
         <legend class="d-flex justify-content-around text-center">
@@ -178,15 +178,6 @@
         <form data-new-payment-form action="" class="form">
           <div class="form-group">
             <input
-              data-new-payment-month
-              placeholder="PAYMENT MONTH"
-              type="text"
-              class="form-control text-uppercase"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <input
               data-new-payment-amount
               placeholder="PAYMENT AMOUNT"
               type="text"
@@ -196,19 +187,34 @@
           </div>
           <div class="form-group">
             <select
+              data-new-payment-month
+              required
               class="form-control border border-right-0 border-left border-top-0 border-bottom"
             >
-              <option value="CASH">CASH</option>
-              <option value="M-PESA">M-PESA</option>
+              <option value="">SELECT PAYMENT MONTH</option>
+              <option value="JANUARY">JANUARY</option>
+              <option value="FEBRUARY">FEBRUARY</option>
+              <option value="MARCH">MARCH</option>
+              <option value="APRIL">APRIL</option>
             </select>
-
             <!-- <input
-              data-new-payment-mode
-              placeholder="PAYMENT MODE"
+              data-new-payment-month
+              placeholder="PAYMENT MONTH"
               type="text"
               class="form-control text-uppercase"
               required
             /> -->
+          </div>
+          <div class="form-group">
+            <select
+              data-new-payment-month
+              required
+              class="form-control border border-right-0 border-left border-top-0 border-bottom"
+            >
+              <option value="">SELECT PAYMENT MODE</option>
+              <option value="CASH">CASH</option>
+              <option value="M-PESA">M-PESA</option>
+            </select>
           </div>
 
           <div class="form-group text-center">
@@ -221,7 +227,7 @@
     <!-- EDIT PROPERTY MODAL -->
     <div
       data-edit-payment
-      class="tenantModal hide container justify-content-center align-items-center"
+      class="rentModal hide container justify-content-center align-items-center"
     >
       <fieldset class="border border-success p-5 border-radius-50">
         <legend class="d-flex justify-content-around text-center">
@@ -264,16 +270,6 @@
               required
             />
           </div>
-          <div class="form-group">
-            <label class="font-weight-bold">TENANT MOVE OUT DATE:</label>
-            <input
-              data-edited-moveout
-              type="text"
-              class="form-control text-uppercase"
-              required
-            />
-          </div>
-
           <div class="form-group text-center">
             <button data-edit-payment-button class="btn btn-primary w-100">
               EDIT PAYMENT
