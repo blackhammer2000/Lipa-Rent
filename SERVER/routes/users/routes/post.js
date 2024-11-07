@@ -114,25 +114,25 @@ router.post(
 
 // RENTS DB ROUTES
 router.post(
-  "/api/user/owner/create/property/room/tenant/rent/payment",
+  "/api/user/owner/create/property/room/tenant/payment",
   isUser,
   verifyAccessToken,
   createRentPaymentForRoomInPropertyByTenant
 );
 router.post(
-  "/api/user/owner/read/property/room/tenants/rents/payments",
+  "/api/user/owner/read/property/room/tenants/payments",
   isUser,
   verifyAccessToken,
   readAllRentPaymentsForRoomInProperty
 );
 router.post(
-  "/api/user/owner/read/property/room/tenant/rents/payments",
+  "/api/user/owner/read/property/room/tenant/payments",
   isUser,
   verifyAccessToken,
   readAllRentPaymentsForRoomInPropertyByTenant
 );
 router.post(
-  "/api/user/owner/read/property/room/tenant/rent/payment",
+  "/api/user/owner/read/property/room/tenant/payment",
   isUser,
   verifyAccessToken,
   readRentPaymentForRoomInPropertyByTenant
