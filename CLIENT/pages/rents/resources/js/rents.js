@@ -63,23 +63,23 @@
     );
   });
 
-  //   const addNewPaymentModal = document.querySelector("[data-create-payment]");
+  const addNewPaymentModal = document.querySelector("[data-create-payment]");
 
-  //   const addNewPaymentButton = document.querySelector(
-  //     "[data-create-payment-button]"
-  //   );
-  //   addNewPaymentButton.addEventListener("click", (e) => {
-  //     addNewPaymentModal.classList.remove("hide");
-  //     homeSection.classList.add("blur");
-  //   });
+  const addNewPaymentButton = document.querySelector(
+    "[data-create-payment-button]"
+  );
+  addNewPaymentButton.addEventListener("click", (e) => {
+    addNewPaymentModal.classList.remove("hide");
+    homeSection.classList.add("blur");
+  });
 
-  //   const closeNewPaymentModal = document.querySelector(
-  //     "[data-close-create-tenant-modal]"
-  //   );
-  //   closeNewPaymentModal.addEventListener("click", () => {
-  //     addNewPaymentModal.classList.add("hide");
-  //     homeSection.classList.remove("blur");
-  //   });
+  const closeNewPaymentModal = document.querySelector(
+    "[data-close-create-payment-modal]"
+  );
+  closeNewPaymentModal.addEventListener("click", () => {
+    addNewPaymentModal.classList.add("hide");
+    homeSection.classList.remove("blur");
+  });
 
   //   const newPaymentForm = addNewPaymentModal.querySelector("form");
   //   newPaymentForm.addEventListener("submit", async (e) => {
@@ -88,6 +88,7 @@
   //       accessToken,
   //       tableBody,
   //       selectedPropertyId,
+  //       selectedRoomId,
   //       newPaymentForm
   //     );
   //   });
