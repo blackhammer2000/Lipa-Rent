@@ -617,25 +617,34 @@ class UserInterface extends UserinterfaceUtilities {
     accessToken,
     tableBody,
     propertyId,
-    selectedRoomId
+    roomId,
+    selectedTenantId
   ) {
-    if (!accessToken || !tableBody || !propertyId || !selectedRoomId) return;
+    if (
+      !accessToken ||
+      !tableBody ||
+      !propertyId ||
+      !roomId ||
+      !selectedTenantId
+    )
+      return;
 
-    const { selectedRoomOnPropertyTenants, message } =
-      await Store.readAllTenantsForRoomInProperty(
+    const { selectedTenantPayments, message } =
+      await Store.readAllTenantPaymentsForRoomInProperty(
         accessToken,
         propertyId,
-        selectedRoomId
+        roomId,
+        selectedTenantId
       );
 
-    this.alertMessage(message, "success");
-
-    if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
-      this.updateTableDescription(propertyId, selectedRoomId);
+    if (!selectedTenantPayments.length && message) {
+      this.handleErrors(message);
+      this.updateTableDescription();
       return;
     }
 
-    this.renderTenants(selectedRoomOnPropertyTenants, accessToken, tableBody);
+    this.alertMessage(message, "success");
+    this.renderTenants(selectedTenantPayments, accessToken, tableBody);
   }
 
   static setSelectedTenantIdInLocalStorage(selectedTenantId) {
