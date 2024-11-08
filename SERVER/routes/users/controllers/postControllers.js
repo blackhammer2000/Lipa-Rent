@@ -1119,7 +1119,7 @@ const post_controllers = {
 
       const newUnpaidRentBalance =
         unpaidRentBalanceFromLastPayment !== (null || undefined) &&
-        thisMonthRentBalance !== (null || undefined)
+        isNewMonth !== (null || undefined)
           ? unpaidRentBalanceFromLastPayment + isNewMonth
           : 0;
 

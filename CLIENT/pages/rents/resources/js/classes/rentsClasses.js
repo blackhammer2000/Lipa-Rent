@@ -81,7 +81,8 @@ class Store extends StoreUtilities {
     tenantId,
     newPayment
   ) {
-    if (!propertyId || !roomId || !accessToken || !newPayment) return;
+    if (!propertyId || !roomId || !tenantId || !accessToken || !newPayment)
+      return;
 
     UserInterface.openLoader("adding new tenant payment", "addTenantPayment");
 
@@ -106,6 +107,8 @@ class Store extends StoreUtilities {
 
     if (newTenantRoomRentPayments || message || error)
       UserInterface.closeLoader("addTenantPayment");
+
+    console.log(error, newTenantRoomRentPayments);
 
     if (error) UserInterface.handleErrors(error);
 
@@ -199,21 +202,25 @@ class UserInterface extends UserinterfaceUtilities {
   static renderTenantPayments(tenantPayments, accessToken, tableBody) {
     if (!tenantPayments || !accessToken || !tableBody) return;
 
+    console.log(tenantPayments);
+
     this.clearTable(tableBody);
 
     const fragment = document.createDocumentFragment();
-    let tableNumber = 1;
 
-    for (const key in tenantPayments) {
-      const roomRow = this.createTenantRow(
-        tenantPayments[key],
-        tableNumber,
+    tenantPayments.forEach((payment, index) => {
+      console.log(payment);
+
+      const paymentRow = this.createPaymentRow(
+        payment,
+        index,
         accessToken,
         tableBody
       );
-      fragment.append(roomRow);
-      tableNumber++;
-    }
+
+      console.log(paymentRow);
+      fragment.append(paymentRow);
+    });
 
     tableBody.append(fragment);
   }
@@ -224,24 +231,26 @@ class UserInterface extends UserinterfaceUtilities {
     const {
       paymentID,
       month,
-      previousBalance,
+      previousPaymentBalance,
       amountPaid,
       newBalance,
-      mode,
+      modeOfPayment,
       recieptNumber,
     } = payment;
 
+    console.log(payment);
+
     const row = document.createElement("tr");
 
-    const tablenumberCell = document.createElement("td");
-    const tablenumberCellText = document.createTextNode(index);
-    tablenumberCell.append(tablenumberCellText);
-    row.append(tablenumberCell);
+    const tableNumberCell = document.createElement("td");
+    const tableNumberCellText = document.createTextNode(index + 1);
+    tableNumberCell.append(tableNumberCellText);
+    row.append(tableNumberCell);
 
-    const tabPaymentIdCell = document.createElement("td");
+    const tablePaymentIdCell = document.createElement("td");
     const tablePaymentIdCellText = document.createTextNode(paymentID);
     tablePaymentIdCell.append(tablePaymentIdCellText);
-    row.append(tabPaymentIdCell);
+    row.append(tablePaymentIdCell);
 
     const tablePaymentMonthCell = document.createElement("td");
     const tablePaymentMonthCellText = document.createTextNode(month);
@@ -249,8 +258,9 @@ class UserInterface extends UserinterfaceUtilities {
     row.append(tablePaymentMonthCell);
 
     const tablePreviousBalanceCell = document.createElement("td");
-    const tablePreviousBalanceCellText =
-      document.createTextNode(previousBalance);
+    const tablePreviousBalanceCellText = document.createTextNode(
+      previousPaymentBalance
+    );
     tablePreviousBalanceCell.append(tablePreviousBalanceCellText);
     row.append(tablePreviousBalanceCell);
 
@@ -265,7 +275,7 @@ class UserInterface extends UserinterfaceUtilities {
     row.append(tableNewBalanceCell);
 
     const tablePaymentModeCell = document.createElement("td");
-    const tablePaymentModeCellText = document.createTextNode(mode);
+    const tablePaymentModeCellText = document.createTextNode(modeOfPayment);
     tablePaymentModeCell.append(tablePaymentModeCellText);
     row.append(tablePaymentModeCell);
 
@@ -671,7 +681,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     this.alertMessage(message, "success");
-    this.renderTenants(selectedTenantPayments, accessToken, tableBody);
+    this.renderTenantPayments(selectedTenantPayments, accessToken, tableBody);
   }
 
   static setSelectedTenantIdInLocalStorage(selectedTenantId) {
