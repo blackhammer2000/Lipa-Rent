@@ -230,6 +230,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const {
       paymentID,
+      date,
       month,
       previousPaymentBalance,
       amountPaid,
@@ -251,6 +252,11 @@ class UserInterface extends UserinterfaceUtilities {
     const tablePaymentIdCellText = document.createTextNode(paymentID);
     tablePaymentIdCell.append(tablePaymentIdCellText);
     row.append(tablePaymentIdCell);
+
+    const tablePaymentDateCell = document.createElement("td");
+    const tablePaymentDateCellText = document.createTextNode(date);
+    tablePaymentDateCell.append(tablePaymentDateCellText);
+    row.append(tablePaymentDateCell);
 
     const tablePaymentMonthCell = document.createElement("td");
     const tablePaymentMonthCellText = document.createTextNode(month);
