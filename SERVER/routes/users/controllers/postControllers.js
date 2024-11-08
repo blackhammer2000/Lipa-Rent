@@ -409,7 +409,7 @@ const post_controllers = {
 
   //?  below is the expected requestBody from the user when reading all properties.
   //* {
-  //*  ownerId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  // ...
   //* }
 
   readAllPropertiesOwned: async (req, res) => {
