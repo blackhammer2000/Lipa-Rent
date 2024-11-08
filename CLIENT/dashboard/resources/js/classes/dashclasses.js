@@ -292,6 +292,8 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
+    const homeSection = document.querySelector(".home");
+
     const editedPropertyName = form.querySelector("[data-edited-name]")?.value;
     const editedPropertyNumber = form.querySelector(
       "[data-edited-number]"
@@ -314,6 +316,7 @@ class UserInterface extends UserinterfaceUtilities {
     );
 
     if (editedProperties && message) {
+      homeSection.classList.remove("blur");
       this.alertMessage(message, "success");
       this.renderProperties(editedProperties, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");

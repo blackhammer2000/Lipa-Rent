@@ -427,6 +427,8 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
+    const homeSection = document.querySelector(".home");
+
     const editedTenantName = form.querySelector("[data-edited-name]")?.value;
     const editedTenantNationalID = form.querySelector(
       "[data-edited-nationalID]"
@@ -455,6 +457,7 @@ class UserInterface extends UserinterfaceUtilities {
     console.log(editedRoomTenants, message);
 
     if (editedRoomTenants && message) {
+      homeSection.classList.remove("blur");
       this.alertMessage(message, "success");
       this.renderTenants(editedRoomTenants, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
@@ -596,6 +599,7 @@ class UserInterface extends UserinterfaceUtilities {
     localStorage.removeItem("liparentSelectedRoomId");
     localStorage.setItem("liparentSelectedRoomId", selectedRoomId);
   }
+
   static setSelectedRoomNumberInLocalStorage(selectedRoomNumber) {
     localStorage.removeItem("liparentSelectedRoomNumber");
     localStorage.setItem("liparentSelectedRoomNumber", selectedRoomNumber);

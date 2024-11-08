@@ -501,6 +501,8 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
+    const homeSection = document.querySelector(".home");
+
     const editedTenantName = form.querySelector("[data-edited-name]")?.value;
     const editedTenantNationalID = form.querySelector(
       "[data-edited-nationalID]"
@@ -529,6 +531,7 @@ class UserInterface extends UserinterfaceUtilities {
     console.log(editedRoomTenants, message);
 
     if (editedRoomTenants && message) {
+      homeSection.classList.remove("blur");
       this.alertMessage(message, "success");
       this.renderTenants(editedRoomTenants, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");

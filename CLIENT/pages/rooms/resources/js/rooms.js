@@ -101,9 +101,7 @@
 
   createPropertyForm.addEventListener("submit", (e) => {
     e.preventDefault();
-
     UserInterface.addRoomToPropertyAndRender(
-      e,
       accessToken,
       createPropertyForm,
       tableBody

@@ -348,7 +348,7 @@ class UserInterface extends UserinterfaceUtilities {
     rentsButton.removeAttribute("disabled");
   }
 
-  static async addRoomToPropertyAndRender(e, accessToken, form, tableBody) {
+  static async addRoomToPropertyAndRender(accessToken, form, tableBody) {
     if (!accessToken || !form || !tableBody) return;
 
     const newRoomNumber = form.querySelector("[data-new-room-number]")?.value;
@@ -376,7 +376,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const { propertyRooms, message, error } = await Store.addRoomToProperty(
       accessToken,
-      propertyId,
+      selectedPropertyId,
       newRoom
     );
 
@@ -388,12 +388,12 @@ class UserInterface extends UserinterfaceUtilities {
     if (propertyRooms && message) {
       this.alertMessage(message, "success");
 
-      localStorage.getItem("liparentSelectedPropertyId")
-        ? localStorage.removeItem("liparentSelectedPropertyId")
-        : null;
-      localStorage.setItem("liparentSelectedPropertyId", propertyId);
+      // localStorage.getItem("liparentSelectedPropertyId")
+      //   ? localStorage.removeItem("liparentSelectedPropertyId")
+      //   : null;
+      // localStorage.setItem("liparentSelectedPropertyId", propertyId);
 
-      this.updateTableDescription(propertyId);
+      this.updateTableDescription();
       this.renderRooms(propertyRooms, accessToken, tableBody);
       this.clearFormInputs(form);
       //   form?.parentElement.parentElement.classList.add("hide");
@@ -478,6 +478,8 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-edit-room-id]"
     )?.innerText;
 
+    const homeSection = document.querySelector(".home");
+
     if (
       !confirm(
         `Do you want to edit room with ID: "${roomId}" on property with ID: "${selectedPropertyId}"?`
@@ -505,6 +507,7 @@ class UserInterface extends UserinterfaceUtilities {
     );
 
     if (editedRooms && message) {
+      homeSection.classList.remove("blur");
       this.alertMessage(message, "success");
       this.renderRooms(editedRooms, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
