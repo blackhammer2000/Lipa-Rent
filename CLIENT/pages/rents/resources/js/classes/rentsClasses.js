@@ -202,15 +202,11 @@ class UserInterface extends UserinterfaceUtilities {
   static renderTenantPayments(tenantPayments, accessToken, tableBody) {
     if (!tenantPayments || !accessToken || !tableBody) return;
 
-    console.log(tenantPayments);
-
     this.clearTable(tableBody);
 
     const fragment = document.createDocumentFragment();
 
     tenantPayments.forEach((payment, index) => {
-      console.log(payment);
-
       const paymentRow = this.createPaymentRow(
         payment,
         index,
@@ -218,7 +214,6 @@ class UserInterface extends UserinterfaceUtilities {
         tableBody
       );
 
-      console.log(paymentRow);
       fragment.append(paymentRow);
     });
 
@@ -238,8 +233,6 @@ class UserInterface extends UserinterfaceUtilities {
       modeOfPayment,
       recieptNumber,
     } = payment;
-
-    console.log(payment);
 
     const row = document.createElement("tr");
 
