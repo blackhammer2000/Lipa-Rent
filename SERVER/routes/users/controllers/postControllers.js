@@ -1007,7 +1007,7 @@ const post_controllers = {
   //*  "roomId": "PK3",
   //*   "tenantId": "43261521",
   //*   "payment": {
-  //*     "amountTenantIsPaying": "2000",
+  //*     "amount": "2000",
   //*     "month": "SEP, 2024",
   //*     "mode": "6000",
   //*   }
@@ -1090,7 +1090,7 @@ const post_controllers = {
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
           ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
               ?.month
-          : 0;
+          : null;
 
       const isNewMonth =
         newPayment.month === previousPaymentMonth ? 0 : roomRate;

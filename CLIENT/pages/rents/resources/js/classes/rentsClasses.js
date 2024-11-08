@@ -207,6 +207,7 @@ class UserInterface extends UserinterfaceUtilities {
     const fragment = document.createDocumentFragment();
 
     tenantPayments.forEach((payment, index) => {
+      console.log(payment);
       const paymentRow = this.createPaymentRow(
         payment,
         index,
