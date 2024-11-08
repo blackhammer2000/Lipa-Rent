@@ -1113,14 +1113,13 @@ const post_controllers = {
 
       const unpaidRentBalanceFromLastPayment =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
-          ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
-              ?.newBalance
-          : 0;
-
-      const newUnpaidRentBalance =
-        unpaidRentBalanceFromLastPayment !== (null || undefined) &&
-        isNewMonth !== (null || undefined)
-          ? unpaidRentBalanceFromLastPayment + isNewMonth
+          ? isNewMonth
+            ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(
+                -1
+              )?.newBalance + isNewMonth
+            : checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(
+                -1
+              )?.newBalance
           : 0;
 
       const newRentPaymentEntry = {
@@ -1129,16 +1128,13 @@ const post_controllers = {
         month: newPayment?.month,
         previousPaymentBalance: unpaidRentBalanceFromLastPayment,
         amountPaid: newPayment.amount,
-        newBalance: newUnpaidRentBalance - newPayment.amount,
+        newBalance: unpaidRentBalanceFromLastPayment - newPayment.amount,
         modeOfPayment: newPayment.mode,
         recieptNumber:
           newPayment.mode.toLowerCase() === "cash"
             ? "cash"
             : crypto.randomUUID().slice(-12),
       };
-      // monthlyPayment: roomRate,
-      // totalAmountDue: unpaidRentBalanceFromLastPayment,
-      // unpaidBalanceThisMonth: thisMonthRentBalance,
 
       rents[0][propertyId].rentPayments[roomId][tenantId].push(
         newRentPaymentEntry
