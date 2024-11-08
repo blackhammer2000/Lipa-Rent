@@ -663,7 +663,6 @@ const post_controllers = {
 
   //?  below is the expected requestBody from the user when reading all rooms on property.
   //* {
-  //*   propertyNo: "NGONG/NGONG/12058",
   //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //*   roomId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //* }
@@ -843,9 +842,8 @@ const post_controllers = {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
       if (!req.body.propertyId) throw new Error("provide a valid property ID.");
-      if (!req.body.propertyNo) throw new Error("provide a valid property NO.");
 
-      const { id, propertyId, propertyNo } = req?.body;
+      const { id, propertyId } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -858,24 +856,10 @@ const post_controllers = {
 
       const checkIfPropertyIdIsRegistered = tenants[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
-          );
-
-        if (!checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
-          );
-      }
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the tenants database."
+        );
 
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
 
