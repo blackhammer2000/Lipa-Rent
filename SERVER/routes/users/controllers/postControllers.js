@@ -1105,7 +1105,7 @@ const post_controllers = {
             : checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(
                 -1
               )?.newBalance
-          : 0;
+          : roomRate;
 
       const newRentPaymentEntry = {
         paymentID: crypto.randomUUID().slice(-12),
