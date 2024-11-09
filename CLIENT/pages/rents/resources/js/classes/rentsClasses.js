@@ -398,6 +398,9 @@ class UserInterface extends UserinterfaceUtilities {
     )?.value;
     const paymentMonth = form.querySelector("[data-new-payment-month]")?.value;
     const paymentMode = form.querySelector("[data-new-payment-mode]")?.value;
+    const paymentReceiptNumber = form.querySelector(
+      "[data-new-payment-receiptNumber]"
+    )?.value;
 
     if (
       !confirm(
@@ -410,6 +413,7 @@ class UserInterface extends UserinterfaceUtilities {
       amount: paymentAmount,
       month: paymentMonth,
       mode: paymentMode,
+      recieptNumber: paymentReceiptNumber,
     };
 
     const { newTenantRoomRentPayments, message } =
@@ -431,10 +435,10 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static populateEditTenantForm(e) {
+  static populateEditTenantPaymentForm(e) {
     e.preventDefault();
 
-    const editTenantModal =
+    const editTenantPaymentModal =
       e.target.parentElement.parentElement.parentElement.parentElement
         .parentElement.parentElement.parentElement.nextElementSibling
         .nextElementSibling;
@@ -445,38 +449,37 @@ class UserInterface extends UserinterfaceUtilities {
 
     console.log(homeSection);
 
-    editTenantModal.classList.remove("hide");
+    editTenantPaymentModal.classList.remove("hide");
     homeSection.classList.add("blur");
 
-    const editForm = editTenantModal.querySelector("[data-edit-tenant-form]");
+    const editForm = editTenantModal.querySelector("[data-edit-payment-form]");
 
-    const tenantIdSpan = editTenantModal.querySelector("[data-edit-tenant-id]");
-
-    const tenantId = e.target.parentElement.parentElement.children[1].innerText;
-    const tenantName =
-      e.target.parentElement.parentElement.children[2].innerText;
-    const tenantNationalID =
-      e.target.parentElement.parentElement.children[3].innerText;
-    const tenantPhone =
-      e.target.parentElement.parentElement.children[4].innerText;
-    const tenantMoveOutDate =
-      e.target.parentElement.parentElement.children[6].innerText;
-
-    const tenantNameFormInput = editForm.querySelector("[data-edited-name]");
-    const tenantNationalIDFormInput = editForm.querySelector(
-      "[data-edited-nationalID]"
-    );
-    const tenantPhoneFormInput = editForm.querySelector("[data-edited-phone]");
-    const tenantMoveOutFormInput = editForm.querySelector(
-      "[data-edited-moveout]"
+    const paymentIdSpan = editTenantModal.querySelector(
+      "[data-edit-payment-id]"
     );
 
-    tenantIdSpan.innerText = tenantId;
+    const paymentId =
+      e.target.parentElement.parentElement.children[1].innerText;
+    const amountPaid =
+      e.target.parentElement.parentElement.children[5].innerText;
 
-    tenantNameFormInput.value = tenantName;
-    tenantNationalIDFormInput.value = tenantNationalID;
-    tenantPhoneFormInput.value = tenantPhone;
-    tenantMoveOutFormInput.value = tenantMoveOutDate;
+    const paymentAmountFormInput = editForm.querySelector(
+      "[data-edited-amount]"
+    );
+    // const paymentMonthFormInput = editForm.querySelector(
+    //   "[data-edited-month]"
+    // );
+    // const tenantPhoneFormInput = editForm.querySelector("[data-edited-phone]");
+    // const tenantMoveOutFormInput = editForm.querySelector(
+    //   "[data-edited-moveout]"
+    // );
+
+    paymentIdSpan.innerText = paymentId;
+
+    paymentAmountFormInput.value = amountPaid;
+    // tenantNationalIDFormInput.value = tenantNationalID;
+    // tenantPhoneFormInput.value = tenantPhone;
+    // tenantMoveOutFormInput.value = tenantMoveOutDate;
   }
 
   static async editRoomTenantAndRender(

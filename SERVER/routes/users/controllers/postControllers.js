@@ -1009,7 +1009,8 @@ const post_controllers = {
   //*   "payment": {
   //*     "amount": "2000",
   //*     "month": "SEP, 2024",
-  //*     "mode": "6000",
+  //*     "mode": "MPESA",
+  //*     "receiptNumber": "SH23EQHJS",
   //*   }
   //* }
 
@@ -1117,7 +1118,7 @@ const post_controllers = {
         recieptNumber:
           newPayment.mode.toLowerCase() === "cash"
             ? "cash"
-            : crypto.randomUUID().slice(-12),
+            : newPayment.recieptNumber.toUpperCase(),
       };
 
       rents[0][propertyId].rentPayments[roomId][tenantId].push(
