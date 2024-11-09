@@ -291,9 +291,9 @@ class UserInterface extends UserinterfaceUtilities {
     editButtonCell.className = "btn btn-primary mr-2 edit";
     const editButtonCellText = document.createTextNode("Edit");
     editButtonCell.append(editButtonCellText);
-    // editButtonCell.addEventListener("click", (e) => {
-    //   this.populateEditTenantForm(e);
-    // });
+    editButtonCell.addEventListener("click", (e) => {
+      this.populateEditTenantPaymentForm(e);
+    });
     rowCTAbuttonCell.append(editButtonCell);
 
     const deleteButtonCell = document.createElement("button");
@@ -452,34 +452,38 @@ class UserInterface extends UserinterfaceUtilities {
     editTenantPaymentModal.classList.remove("hide");
     homeSection.classList.add("blur");
 
-    const editForm = editTenantModal.querySelector("[data-edit-payment-form]");
+    const editForm = editTenantPaymentModal.querySelector(
+      "[data-edit-payment-form]"
+    );
 
-    const paymentIdSpan = editTenantModal.querySelector(
+    const paymentIdSpan = editTenantPaymentModal.querySelector(
       "[data-edit-payment-id]"
     );
 
     const paymentId =
       e.target.parentElement.parentElement.children[1].innerText;
+    const month = e.target.parentElement.parentElement.children[3].innerText;
     const amountPaid =
       e.target.parentElement.parentElement.children[5].innerText;
+    const mode = e.target.parentElement.parentElement.children[7].innerText;
+    const receiptNumber =
+      e.target.parentElement.parentElement.children[8].innerText;
 
     const paymentAmountFormInput = editForm.querySelector(
       "[data-edited-amount]"
     );
-    // const paymentMonthFormInput = editForm.querySelector(
-    //   "[data-edited-month]"
-    // );
-    // const tenantPhoneFormInput = editForm.querySelector("[data-edited-phone]");
-    // const tenantMoveOutFormInput = editForm.querySelector(
-    //   "[data-edited-moveout]"
-    // );
+    const paymentMonthFormInput = editForm.querySelector("[data-edited-month]");
+    const paymentModeFormInput = editForm.querySelector("[data-edited-mode]");
+    const paymentReceiptNumberFormInput = editForm.querySelector(
+      "[data-edited-receiptNumber]"
+    );
 
     paymentIdSpan.innerText = paymentId;
 
     paymentAmountFormInput.value = amountPaid;
-    // tenantNationalIDFormInput.value = tenantNationalID;
-    // tenantPhoneFormInput.value = tenantPhone;
-    // tenantMoveOutFormInput.value = tenantMoveOutDate;
+    paymentMonthFormInput.value = month;
+    paymentModeFormInput.value = mode;
+    paymentReceiptNumberFormInput.value = receiptNumber;
   }
 
   static async editRoomTenantAndRender(
