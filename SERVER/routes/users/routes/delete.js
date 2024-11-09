@@ -47,7 +47,7 @@ router.delete(
   deleteTenantDetails
 );
 router.delete(
-  "/api/user/owner/delete/property/room/tenant/rent/payment",
+  "/api/user/owner/delete/property/room/tenant/payment",
   isUser,
   verifyAccessToken,
   deleteRentPaymentDetails

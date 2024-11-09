@@ -421,14 +421,11 @@ const patchControllers = {
       if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
         throw new Error("provide a valid property Id.");
-      if (!req?.body.propertyNo)
-        throw new Error("provide a valid property NO.");
       if (!req?.body.roomId) throw new Error("provide a valid room Id.");
       if (!req?.body.tenantId) throw new Error("provide a valid tenant Id.");
       if (!req.body.paymentId) throw new Error("provide a valid payment Id.");
 
-      const { id, propertyId, propertyNo, roomId, tenantId, paymentId } =
-        req?.body;
+      const { id, propertyId, roomId, tenantId, paymentId } = req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -441,24 +438,10 @@ const patchControllers = {
 
       const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
-          );
-
-        if (!checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
-          );
-      }
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the tenants database."
+        );
 
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
 
@@ -470,7 +453,7 @@ const patchControllers = {
 
       if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
         throw new Error(
-          "Room with the given ID has not been registered in the tenants database."
+          "Room with the given ID has not been registered in the rents database."
         );
 
       const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
@@ -478,20 +461,16 @@ const patchControllers = {
 
       if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
         throw new Error(
-          "Tenant with the given ID has not been registered in the tenants database."
+          "Tenant with the given ID has not been registered in the rents database."
         );
 
       const newTenantPaymentReports =
-        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.map(
-          (payment) => {
-            if (payment.paymentID !== paymentId) return payment;
-          }
+        checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.filter(
+          (payment) => payment.paymentID !== paymentId
         );
 
-      if (!newTenantPaymentReports)
-        throw new Error(
-          "The requested payment report with the given payment ID was not found."
-        );
+      if (newTenantPaymentReports === (null || undefined))
+        throw new Error("Error when getting requested payment reports.");
 
       rents[0][propertyId].rentPayments[roomId][tenantId] =
         newTenantPaymentReports;
@@ -507,7 +486,8 @@ const patchControllers = {
 
       if (deleteRent.acknowledged && deleteRent.modifiedCount)
         res.status(200).json({
-          message: `Rent payment for the room with ID: ${roomId} made by tenant with ID: ${tenantId} has been successfuly deleted.`,
+          deletedTenantPayments: newTenantPaymentReports,
+          message: `Rent payment with ID: ${paymentId} has been successfuly deleted.`,
         });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });

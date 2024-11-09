@@ -207,7 +207,6 @@ class UserInterface extends UserinterfaceUtilities {
     const fragment = document.createDocumentFragment();
 
     tenantPayments.forEach((payment, index) => {
-      console.log(payment);
       const paymentRow = this.createPaymentRow(
         payment,
         index,
@@ -300,9 +299,9 @@ class UserInterface extends UserinterfaceUtilities {
     deleteButtonCell.className = "btn btn-danger ml-2 delete";
     const deleteButtonCellText = document.createTextNode("Delete");
     deleteButtonCell.append(deleteButtonCellText);
-    // deleteButtonCell.addEventListener("click", (e) => {
-    //   this.deleteRoomTenantAndRender(e, tenantID, accessToken, tableBody);
-    // });
+    deleteButtonCell.addEventListener("click", (e) => {
+      this.deleteTenantPaymentAndRender(e, paymentID, accessToken, tableBody);
+    });
     rowCTAbuttonCell.append(deleteButtonCell);
 
     row.append(rowCTAbuttonCell);
@@ -486,7 +485,7 @@ class UserInterface extends UserinterfaceUtilities {
     paymentReceiptNumberFormInput.value = receiptNumber;
   }
 
-  static async editRoomTenantAndRender(
+  static async editTenantAndRender(
     accessToken,
     tableBody,
     propertyId,
@@ -495,17 +494,13 @@ class UserInterface extends UserinterfaceUtilities {
   ) {
     if (!accessToken || !tableBody || !propertyId || !roomId || !form) return;
 
-    const tenantId = form.parentElement.querySelector(
-      "[data-edit-tenant-id]"
+    const paymentId = form.parentElement.querySelector(
+      "[data-edit-payment-id]"
     )?.innerText;
 
-    if (!tenantId) return;
+    if (!paymentId) return;
 
-    if (
-      !confirm(
-        `Do you want to edit tenant with ID: "${tenantId}" on roomID: "${roomId}"?`
-      )
-    )
+    if (!confirm(`Do you want to edit tenant payment with ID: "${paymentId}"?`))
       return;
 
     const homeSection = document.querySelector(".home");
@@ -546,9 +541,14 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static async deleteRoomTenantAndRender(e, tenantId, accessToken, tableBody) {
+  static async deleteTenantPaymentAndRender(
+    e,
+    paymentId,
+    accessToken,
+    tableBody
+  ) {
     e.preventDefault();
-    if (!accessToken || !tableBody) return;
+    if (!paymentId || !accessToken || !tableBody) return;
 
     const selectedPropertyId = localStorage.getItem(
       "liparentSelectedPropertyId"
@@ -557,8 +557,7 @@ class UserInterface extends UserinterfaceUtilities {
       : null;
 
     if (!selectedPropertyId) {
-      this.handleErrors("please select a property in the room section");
-      location.assign("/CLIENT/pages/rooms/rooms");
+      this.handleErrors("please select a property.");
       return;
     }
 
@@ -570,10 +569,16 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
+    const selectedTenantId =
+      localStorage.getItem("liparentSelectedTenantId") || null;
+
+    if (!selectedTenantId) {
+      this.handleErrors("please select a tenant.");
+      return;
+    }
+
     if (
-      !confirm(
-        `Do you want to delete tenant with ID: "${tenantId}" from roomID: "${selectedRoomId}"?`
-      )
+      !confirm(`Do you want to delete tenant payment with ID: "${paymentId}"?`)
     )
       return;
 
@@ -583,7 +588,10 @@ class UserInterface extends UserinterfaceUtilities {
     //   roomId
     // );
 
-    UserInterface.openLoader("deleting tenant", "deletingTenant");
+    UserInterface.openLoader(
+      "deleting tenant payment",
+      "deletingTenantPayment"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -596,28 +604,29 @@ class UserInterface extends UserinterfaceUtilities {
       body: JSON.stringify({
         propertyId: selectedPropertyId,
         roomId: selectedRoomId,
-        tenantId,
+        tenantId: selectedTenantId,
+        paymentId,
       }),
     };
 
     const readAllRoomsOnSinglePropertyRequest = await fetch(
-      "http://localhost:4000/api/user/owner/delete/property/room/tenant",
+      "http://localhost:4000/api/user/owner/delete/property/room/tenant/payment",
       requestOptions
     );
 
-    const { deletedRoomTenants, message, error } =
+    const { deletedTenantPayments, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    if (deletedRoomTenants || message || error)
-      UserInterface.closeLoader("deletingTenant");
+    if (deletedTenantPayments || message || error)
+      UserInterface.closeLoader("deletingTenantPayment");
 
     if (error) {
       this.handleErrors(error);
     }
 
-    if (deletedRoomTenants && message) {
+    if (deletedTenantPayments && message) {
       this.alertMessage(message, "success");
-      this.renderTenants(deletedRoomTenants, accessToken, tableBody);
+      this.renderTenantPayments(deletedTenantPayments, accessToken, tableBody);
 
       //   const selectedRoomId =
       //     localStorage.getItem("liparentSelectedRoomId") || null;
