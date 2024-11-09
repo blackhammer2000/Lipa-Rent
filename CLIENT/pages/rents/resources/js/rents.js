@@ -93,26 +93,26 @@
     );
   });
 
-  //   const editPaymentForm = document.querySelector("[data-edit-payment-form]");
-  //   const closeEditPaymentModalButton =
-  //     editTenantForm.parentElement.querySelector("[data-close-edit-modal]");
+  const editPaymentForm = document.querySelector("[data-edit-payment-form]");
+  const closeEditPaymentModalButton =
+    editPaymentForm.parentElement.querySelector("[data-close-edit-modal]");
 
-  //   editPaymentForm.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-  //     UserInterface.editRoomTenantAndRender(
-  //       accessToken,
-  //       tableBody,
-  //       selectedPropertyId,
-  //       selectedRoomId,
-  //       editPaymentForm
-  //     );
-  //   });
+  // editPaymentForm.addEventListener("submit", (e) => {
+  //   e.preventDefault();
+  //   UserInterface.editRoomTenantAndRender(
+  //     accessToken,
+  //     tableBody,
+  //     selectedPropertyId,
+  //     selectedRoomId,
+  //     editPaymentForm
+  //   );
+  // });
 
-  //   closeEditPaymentModalButton.addEventListener("click", (e) => {
-  //     e.preventDefault();
-  //     e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
-  //       "hide"
-  //     );
-  //     homeSection.classList.remove("blur");
-  //   });
+  closeEditPaymentModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
+      "hide"
+    );
+    homeSection.classList.remove("blur");
+  });
 })();
