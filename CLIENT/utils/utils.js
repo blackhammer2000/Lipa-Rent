@@ -132,6 +132,6 @@ class UserinterfaceUtilities {
 }
 
 const logoutButton = document.querySelector("[data-logout]");
-logoutButton.addEventListener("click", () =>
+logoutButton?.addEventListener("click", () =>
   UserinterfaceUtilities.handleLogout()
 );
