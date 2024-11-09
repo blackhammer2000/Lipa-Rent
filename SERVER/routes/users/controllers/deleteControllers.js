@@ -413,7 +413,7 @@ const patchControllers = {
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //*   "roomId": "PK3",
   //*   "tenantId": "43261521",
-  //*   "paymentId": "ae1eb7d1-a490-4607-bd73-74e168a4a95y",
+  //*   "paymentId": "74e168a4a95y",
   //* }
 
   deleteRentPaymentDetails: async (req, res) => {

@@ -387,12 +387,6 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (propertyRooms && message) {
       this.alertMessage(message, "success");
-
-      // localStorage.getItem("liparentSelectedPropertyId")
-      //   ? localStorage.removeItem("liparentSelectedPropertyId")
-      //   : null;
-      // localStorage.setItem("liparentSelectedPropertyId", propertyId);
-
       this.updateTableDescription();
       this.renderRooms(propertyRooms, accessToken, tableBody);
       this.clearFormInputs(form);

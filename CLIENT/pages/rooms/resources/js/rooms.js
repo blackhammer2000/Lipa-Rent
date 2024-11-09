@@ -56,6 +56,11 @@
 
     if (selectedPropertyId && selectedPropertyId === propertyId) return;
 
+    localStorage.removeItem("liparentSelectedRoomId");
+    localStorage.removeItem("liparentSelectedRoomNumber");
+    localStorage.removeItem("liparentSelectedTenantId");
+    localStorage.removeItem("liparentSelectedTenantName");
+
     await UserInterface.readAndRenderAllRoomsOnSingleProperty(
       accessToken,
       propertyId,
