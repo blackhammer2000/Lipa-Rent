@@ -140,7 +140,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const requestOptions = {
       mode: "cors",
-      method: "cors",
+      method: "POST",
       header: {
         "Content-Type": "application/json",
         user: true,
@@ -152,6 +152,12 @@ class UserInterface extends UserinterfaceUtilities {
       "http://localhost:4000/api/user/read/owner",
       requestOptions
     );
+
+    const { owner } = await readOwnerDetailsRequest.json();
+
+    document.querySelector(
+      "[data-dashboard-description]"
+    )?.innerText = `PROPERTIES OF ${owner}`;
   }
   static renderProperties(properties, accessToken, tableBody) {
     if (!properties) return;
