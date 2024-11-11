@@ -135,6 +135,24 @@ class Store extends StoreUtilities {
 }
 
 class UserInterface extends UserinterfaceUtilities {
+  static async readOwnerDetails(accessToken) {
+    if (!accessToken) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "cors",
+      header: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+    };
+
+    const readOwnerDetailsRequest = await fetch(
+      "http://localhost:4000/api/user/read/owner",
+      requestOptions
+    );
+  }
   static renderProperties(properties, accessToken, tableBody) {
     if (!properties) return;
 
