@@ -360,7 +360,7 @@ class UserInterface extends UserinterfaceUtilities {
     const propertyName =
       e.target.parentElement.parentElement.children[2].innerText;
     const propertyNo =
-      e.target.parentElement.parentElement.children[3].innerText;
+      e?.target.parentElement.parentElement.children[3].innerText;
 
     if (
       !confirm(
