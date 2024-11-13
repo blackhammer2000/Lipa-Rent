@@ -12,6 +12,8 @@ signUpForm.addEventListener("submit", async (e) => {
     "[data-confirm-password]"
   ).value;
 
+  UserinterfaceUtilities.openLoader("signing up", "signUp");
+
   const signUpRequestOptions = {
     mode: "cors",
     method: "POST",
@@ -36,13 +38,15 @@ signUpForm.addEventListener("submit", async (e) => {
 
   const { error, message } = await signUpRequest.json();
 
+  if (error || message) UserinterfaceUtilities.closeLoader("signUp");
+
   if (error) {
-    alert(error);
+    UserinterfaceUtilities.handleErrors(error);
     return;
   }
 
   if (message) {
-    alert(message);
+    UserinterfaceUtilities.alertMessage(message, "success");
     return;
   }
 });
