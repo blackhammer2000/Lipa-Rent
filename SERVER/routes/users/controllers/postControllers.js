@@ -258,8 +258,6 @@ const post_controllers = {
 
       const owner = await Owner.findOne({ _id: id });
 
-      console.log(owner);
-
       if (!owner) throw new Error("Owner details not found.");
 
       res.status(200).json({
