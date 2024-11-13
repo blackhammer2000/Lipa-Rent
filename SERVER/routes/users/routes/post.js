@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const {
-  verifyAccessToken,
+  verifyUserAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
 
 const {
@@ -47,20 +47,20 @@ router.post("/api/user/owner/login", isUser, loginValidator, login);
 router.post(
   "/api/user/owner/create/property",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   propertyValidator,
   createNewProperty
 );
 router.post(
   "/api/user/owner/read/property",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readSinglePropertyOwned
 );
 router.post(
   "/api/user/owner/read/properties",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readAllPropertiesOwned
 );
 
@@ -68,20 +68,20 @@ router.post(
 router.post(
   "/api/user/owner/create/property/room",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   roomValidator,
   createSingleRoomOnProperty
 );
 router.post(
   "/api/user/owner/read/property/rooms",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readAllRoomsOnProperty
 );
 router.post(
   "/api/user/owner/read/property/room",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readSingleRoomOnProperty
 );
 
@@ -89,26 +89,26 @@ router.post(
 router.post(
   "/api/user/owner/create/property/room/tenant",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   tenantValidator,
   createTenantForRoomOnProperty
 );
 router.post(
   "/api/user/owner/read/property/rooms/tenants",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readAllTenantsForAllRoomsOnProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenants",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readAllTenantsInRoomOnProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenant",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readSingleTenantInRoomOnProperty
 );
 
@@ -116,25 +116,25 @@ router.post(
 router.post(
   "/api/user/owner/create/property/room/tenant/payment",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   createRentPaymentForRoomInPropertyByTenant
 );
 router.post(
   "/api/user/owner/read/property/room/tenants/payments",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readAllRentPaymentsForRoomInProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payments",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readAllRentPaymentsForRoomInPropertyByTenant
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payment",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readRentPaymentForRoomInPropertyByTenant
 );
 

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const {
-  verifyAccessToken,
+  verifyUserAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
 
 // const {
@@ -22,10 +22,15 @@ const {
 router.get(
   "/api/user/landlord/read/allproperties",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   readAllPropertiesOwned
 );
 
-router.get("/api/user/read/owner", isUser, verifyAccessToken, readOwnerDetails);
+router.get(
+  "/api/user/read/owner",
+  isUser,
+  verifyUserAccessToken,
+  readOwnerDetails
+);
 
 module.exports = router;

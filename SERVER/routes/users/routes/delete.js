@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const {
-  verifyAccessToken,
+  verifyUserAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
 
 // const {
@@ -31,25 +31,25 @@ const {
 router.delete(
   "/api/user/owner/delete/property",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   deletePropertyDetails
 );
 router.delete(
   "/api/user/owner/delete/property/room",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   deleteRoomDetails
 );
 router.delete(
   "/api/user/owner/delete/property/room/tenant",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   deleteTenantDetails
 );
 router.delete(
   "/api/user/owner/delete/property/room/tenant/payment",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   deleteRentPaymentDetails
 );
 

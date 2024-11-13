@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const {
-  verifyAccessToken,
+  verifyUserAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
 
 // const {
@@ -25,25 +25,25 @@ const {
 router.patch(
   "/api/user/owner/edit/owner",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   editOwnerDetails
 );
 router.patch(
   "/api/user/owner/edit/property",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   editPropertyDetails
 );
 router.patch(
   "/api/user/owner/edit/property/room",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   editRoomDetails
 );
 router.patch(
   "/api/user/owner/edit/property/room/tenant",
   isUser,
-  verifyAccessToken,
+  verifyUserAccessToken,
   editTenantDetails
 );
 // router.patch(

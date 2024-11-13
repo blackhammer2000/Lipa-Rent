@@ -25,7 +25,7 @@ const getControllers = {
     }
   },
 
-  redOwnerDetails: async (req, res) => {
+  readOwnerDetails: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unauthorized action.");
 

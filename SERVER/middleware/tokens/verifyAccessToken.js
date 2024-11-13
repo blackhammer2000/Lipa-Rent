@@ -6,7 +6,7 @@ const {
 
 require("dotenv").config();
 
-const verifyAccessToken = (req, res, next) => {
+const verifyUserAccessToken = (req, res, next) => {
   try {
     if (!req.headers.token) throw new Error("Access Denied.");
 
@@ -19,9 +19,9 @@ const verifyAccessToken = (req, res, next) => {
       process.env.MY_SECRET_KEY
     );
 
-    if (!admin && !user) throw new Error("Unauthorized action, unknown role.");
+    if (!user) throw new Error("Unauthorized action, unknown role.");
 
-    if (user && !admin && disabled === true) throw new Error("session expired");
+    if (user && disabled === true) throw new Error("session expired");
 
     if (!_id || (!currentSubscription && user))
       throw new Error("Please Log in again...");
@@ -35,7 +35,7 @@ const verifyAccessToken = (req, res, next) => {
 
     req.body.id = _id;
 
-    user ? (req.body.user = user) : admin ? (req.body.admin = admin) : null;
+    user ? (req.body.user = user) : null;
 
     delete req.headers.token;
 
@@ -51,4 +51,4 @@ const verifyAccessToken = (req, res, next) => {
   }
 };
 
-module.exports = { verifyAccessToken };
+module.exports = { verifyUserAccessToken };
