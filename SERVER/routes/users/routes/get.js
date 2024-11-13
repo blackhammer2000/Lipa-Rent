@@ -14,7 +14,10 @@ const {
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
-const { readAllPropertiesOwned } = require("../controllers/getControllers");
+const {
+  readAllPropertiesOwned,
+  readOwnerDetails,
+} = require("../controllers/getControllers");
 
 router.get(
   "/api/user/landlord/read/allproperties",
@@ -22,5 +25,7 @@ router.get(
   verifyAccessToken,
   readAllPropertiesOwned
 );
+
+router.get("/api/user/read/owner", isUser, verifyAccessToken, readOwnerDetails);
 
 module.exports = router;

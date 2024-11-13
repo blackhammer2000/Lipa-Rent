@@ -135,7 +135,7 @@ class Store extends StoreUtilities {
 }
 
 class UserInterface extends UserinterfaceUtilities {
-  static async readOwnerDetails(accessToken) {
+  static async readAndUpdateOwnerDetails(accessToken) {
     if (!accessToken) return;
 
     const requestOptions = {
