@@ -141,7 +141,7 @@ class UserInterface extends UserinterfaceUtilities {
     const requestOptions = {
       mode: "cors",
       method: "POST",
-      header: {
+      headers: {
         "Content-Type": "application/json",
         user: true,
         token: accessToken,
