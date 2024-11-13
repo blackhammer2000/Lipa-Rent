@@ -31,7 +31,7 @@ const getControllers = {
 
       const { id } = req.body;
 
-      const owner = await Owner.findOne({ id: id });
+      const owner = await Owner.findOne({ _id: id });
 
       if (!owner) throw new Error("Owner details not found.");
 
