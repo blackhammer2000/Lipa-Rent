@@ -1,6 +1,6 @@
 (async function () {
   const accessToken = localStorage.getItem("liparentAccessToken")
-    ? JSON.parse(localStorage.getItem("liparentAccessToken"))
+    ? localStorage.getItem("liparentAccessToken")
     : null;
 
   if (accessToken === (null || undefined))

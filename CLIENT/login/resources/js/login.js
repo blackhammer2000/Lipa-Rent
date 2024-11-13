@@ -37,7 +37,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   if (message && token) {
     UserinterfaceUtilities.alertMessage(message, "success");
-    localStorage.setItem("liparentAccessToken", JSON.stringify(token));
+    localStorage.setItem("liparentAccessToken", token);
     location.assign("/CLIENT/dashboard/dashboard.html");
     return;
   }
