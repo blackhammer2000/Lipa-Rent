@@ -19,6 +19,8 @@ const {
   signUp,
   login,
 
+  readOwnerDetails,
+
   createNewProperty,
   readSinglePropertyOwned,
   readAllPropertiesOwned,
@@ -42,6 +44,14 @@ const {
 
 router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
 router.post("/api/user/owner/login", isUser, loginValidator, login);
+
+// OWNERS DB ROUTES
+router.post(
+  "/api/user/read/owner",
+  isUser,
+  verifyUserAccessToken,
+  readOwnerDetails
+);
 
 // PROPERTIES DB ROUTES
 router.post(

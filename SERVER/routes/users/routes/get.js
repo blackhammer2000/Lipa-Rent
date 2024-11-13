@@ -26,11 +26,4 @@ router.get(
   readAllPropertiesOwned
 );
 
-router.get(
-  "/api/user/read/owner",
-  isUser,
-  verifyUserAccessToken,
-  readOwnerDetails
-);
-
 module.exports = router;

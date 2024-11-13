@@ -157,7 +157,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector(
       "[data-dashboard-description]"
-    )?.innerText = `PROPERTIES OF ${owner}`;
+    ).innerText = `PROPERTIES OF ${owner}`;
   }
   static renderProperties(properties, accessToken, tableBody) {
     if (!properties) return;

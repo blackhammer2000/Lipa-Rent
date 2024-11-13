@@ -8,7 +8,7 @@
 
   const tableBody = document.querySelector("[data-table]");
   const homeSection = document.querySelector(".home");
-
+  UserInterface.readAndUpdateOwnerDetails(accessToken);
   UserInterface.readAndRenderProperties(accessToken, tableBody);
 
   const editPropertyForm = document.querySelector("[data-edit-property-form]");

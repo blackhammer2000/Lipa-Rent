@@ -249,6 +249,27 @@ const post_controllers = {
     }
   },
 
+  //! READING OWNER DETAILS
+  readOwnerDetails: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unauthorized action.");
+
+      const { id } = req.body;
+
+      const owner = await Owner.findOne({ _id: id });
+
+      console.log(owner);
+
+      if (!owner) throw new Error("Owner details not found.");
+
+      res.status(200).json({
+        owner: owner.name,
+      });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
+
   //! PROPERTY ENDPOINTS THE DEAL WITH THE CREATION AND READING OF PROPERTIES OWNED DATA FROM THE DATABASE.
 
   //?  below is the expected requestBody from the user when creating a property.
