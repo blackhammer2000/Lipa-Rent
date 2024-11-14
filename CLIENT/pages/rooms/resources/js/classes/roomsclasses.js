@@ -205,7 +205,13 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
-    for (const key in rooms) {
+    const sortedRoomsByRoomNumber = Object.keys(rooms).sort((a, b) => {
+      if (rooms[a].roomNumber > rooms[b].roomNumber) return 1;
+      if (rooms[a].roomNumber < rooms[b].roomNumber) return -1;
+      if (rooms[a].roomNumber === rooms[b].roomNumber) return 0;
+    });
+
+    for (const key of sortedRoomsByRoomNumber) {
       const roomRow = this.createRoomRow(
         rooms[key],
         tableNumber,
