@@ -848,10 +848,15 @@ const post_controllers = {
 
       const rooms = findRooms ? findRooms.rooms : null;
 
-      if (!rooms) throw new Error("rents doc prop not found.");
+      if (!rooms) throw new Error("rooms doc prop not found.");
 
-      rooms[0][propertyId].rooms[roomId].currentTenant =
+      rooms[0][propertyId].rooms[roomId].currentTenantID =
         newTenant.tenantNationalID;
+
+      rooms[0][propertyId].rooms[roomId].isOccupied =
+        !rooms[0][propertyId].rooms[roomId].isOccupied;
+
+      console.log(rooms[0][propertyId].rooms[roomId]);
 
       const updateRooms = await Room.updateOne(
         { ownerID: id },

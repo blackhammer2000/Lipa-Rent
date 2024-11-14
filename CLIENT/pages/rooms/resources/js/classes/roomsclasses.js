@@ -228,7 +228,7 @@ class UserInterface extends UserinterfaceUtilities {
       roomType,
       roomArea,
       roomRatePerMonth,
-      currentTenantId,
+      currentTenantID,
       isOccupied,
     } = room;
 
@@ -278,7 +278,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const tableRoomCurrentTenantIdCell = document.createElement("td");
     const tableRoomCurrentTenantIdCellText = document.createTextNode(
-      currentTenantId ? currentTenantId : "none"
+      currentTenantID ? currentTenantID : "none"
     );
     tableRoomCurrentTenantIdCell.append(tableRoomCurrentTenantIdCellText);
 
