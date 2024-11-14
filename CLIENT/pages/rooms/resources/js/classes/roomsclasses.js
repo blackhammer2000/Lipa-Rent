@@ -205,15 +205,15 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
-    const sortedRoomsByRoomNumber = Object.keys(rooms).sort(
-      (roomId1, roomId2) => {
-        if (rooms[roomId1].roomNumber > rooms[roomId2].roomNumber) return 1;
-        if (rooms[roomId1].roomNumber < rooms[roomId2].roomNumber) return -1;
-        if (rooms[roomId1].roomNumber === rooms[roomId2].roomNumber) return 0;
-      }
-    );
+    // const sortedRoomsByRoomNumber = Object.keys(rooms).sort(
+    //   (roomId1, roomId2) => {
+    //     if (rooms[roomId1].roomNumber > rooms[roomId2].roomNumber) return 1;
+    //     if (rooms[roomId1].roomNumber < rooms[roomId2].roomNumber) return -1;
+    //     if (rooms[roomId1].roomNumber === rooms[roomId2].roomNumber) return 0;
+    //   }
+    // );
 
-    for (const key of sortedRoomsByRoomNumber) {
+    for (const key in rooms) {
       const roomRow = this.createRoomRow(
         rooms[key],
         tableNumber,
