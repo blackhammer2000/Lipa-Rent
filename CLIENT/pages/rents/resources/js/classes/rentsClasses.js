@@ -333,11 +333,11 @@ class UserInterface extends UserinterfaceUtilities {
     const localStorageSelectedTenantId =
       localStorage.getItem("liparentSelectedTenantId") || null;
 
-    // if (
-    //   localStorageSelectedTenantId &&
-    //   localStorageSelectedTenantId === selectedTenantId
-    // )
-    //   return;
+    if (
+      localStorageSelectedTenantId &&
+      localStorageSelectedTenantId === selectedTenantId
+    )
+      return;
 
     const { selectedTenantPayments, message } =
       await Store.readAllTenantPaymentsForRoomInProperty(
