@@ -844,6 +844,27 @@ const post_controllers = {
       if (!updateRents.acknowledged && !updateRents.modifiedCount)
         throw new Error("Could not update the rents database.");
 
+      const findRooms = await Room.findOne({ ownerID: id });
+
+      const rooms = findRooms ? findRooms.rooms : null;
+
+      if (!rooms) throw new Error("rents doc prop not found.");
+
+      rooms[0][propertyId].rooms[roomId].currentTenant =
+        newTenant.tenantNationalID;
+
+      const updateRooms = await Room.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            rooms,
+          },
+        }
+      );
+
+      if (!updateRooms.acknowledged && !updateRooms.modifiedCount)
+        throw new Error("Could not update the rooms database.");
+
       res.status(200).json({
         message: `New tenant with the Name: ${newTenant.tenantName} and ID: ${newTenant.tenantID} has been successfuly added to Room: ${roomId} on the property.`,
         newRoomTenants: tenants[0][propertyId].tenants[roomId],
