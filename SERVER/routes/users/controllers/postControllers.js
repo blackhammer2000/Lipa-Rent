@@ -856,8 +856,6 @@ const post_controllers = {
       rooms[0][propertyId].rooms[roomId].isOccupied =
         !rooms[0][propertyId].rooms[roomId].isOccupied;
 
-      console.log(rooms[0][propertyId].rooms[roomId]);
-
       const updateRooms = await Room.updateOne(
         { ownerID: id },
         {
