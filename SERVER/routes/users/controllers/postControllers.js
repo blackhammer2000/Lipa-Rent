@@ -1051,7 +1051,7 @@ const post_controllers = {
   //*   "tenantId": "43261521",
   //*   "payment": {
   //*     "amount": "2000",
-  //*     "month": "SEP, 2024",
+  //*     "month": "SEPTEMBER",
   //*     "mode": "MPESA",
   //*     "receiptNumber": "SH23EQHJS",
   //*   }

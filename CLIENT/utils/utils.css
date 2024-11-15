@@ -8,7 +8,8 @@ body {
   display: none;
 }
 
-.loaderContainer {
+.loaderContainer,
+.alert {
   z-index: 3;
 }
 
