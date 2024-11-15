@@ -455,10 +455,9 @@ const patchControllers = {
   deleteRentPaymentDetails: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
-      if (!req?.body.propertyId)
-        throw new Error("provide a valid property Id.");
-      if (!req?.body.roomId) throw new Error("provide a valid room Id.");
-      if (!req?.body.tenantId) throw new Error("provide a valid tenant Id.");
+      if (!req.body.propertyId) throw new Error("provide a valid property Id.");
+      if (!req.body.roomId) throw new Error("provide a valid room Id.");
+      if (!req.body.tenantId) throw new Error("provide a valid tenant Id.");
       if (!req.body.paymentId) throw new Error("provide a valid payment Id.");
 
       const { id, propertyId, roomId, tenantId, paymentId } = req?.body;
