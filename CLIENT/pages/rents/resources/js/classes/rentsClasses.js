@@ -170,8 +170,6 @@ class UserInterface extends UserinterfaceUtilities {
         roomId
       );
 
-    console.log(selectedRoomOnPropertyTenants);
-
     if (!Object.keys(selectedRoomOnPropertyTenants).length) {
       this.handleErrors(message);
       return;
