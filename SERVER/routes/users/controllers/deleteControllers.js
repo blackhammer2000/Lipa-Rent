@@ -358,6 +358,9 @@ const patchControllers = {
           "No tenant with the given tenantId has been added to this room."
         );
 
+      const selectedTenantNationalID =
+        selectedTenantOnRoomOnProperty.tenantNationalID;
+
       delete tenants[0][propertyId].tenants[roomId][tenantId];
 
       const deleteTenant = await Tenant.updateOne(
@@ -368,6 +371,11 @@ const patchControllers = {
           },
         }
       );
+
+      if (!deleteTenant.acknowledged && !deleteTenant.modifiedCount)
+        throw new Error(
+          "Error when deleting the tenant from the tenant in the database."
+        );
 
       //! deleting the rents for the property
       const ownerRentsDocument = await Rent.findOne({ ownerID: id });
@@ -397,11 +405,38 @@ const patchControllers = {
           "Error when deleting the property rents for the tenant in the database."
         );
 
-      if (deleteTenant.acknowledged && deleteTenant.modifiedCount)
-        res.status(200).json({
-          message: `Tenant with the Name: ${selectedTenantOnRoomOnPropertyName} and ID: ${tenantId} has been successfuly deleted.`,
-          deletedRoomTenants: tenants[0][propertyId].tenants[roomId],
-        });
+      const findRooms = await Room.findOne({ ownerID: id });
+
+      const rooms = findRooms ? findRooms.rooms : null;
+
+      if (!rooms) throw new Error("rents doc prop not found.");
+
+      const currentRoomTenantNationalID =
+        rooms[0][propertyId].rooms[roomId].currentTenantID;
+
+      if (currentRoomTenantNationalID === selectedTenantNationalID) {
+        rooms[0][propertyId].rooms[roomId].currentTenantID = null;
+        rooms[0][propertyId].rooms[roomId].isOccupied = false;
+
+        const updateRooms = await Room.updateOne(
+          { ownerID: id },
+          {
+            $set: {
+              rooms,
+            },
+          }
+        );
+
+        if (!updateRooms.acknowledged && !updateRooms.modifiedCount)
+          throw new Error(
+            "Error when deleting the tenantID  for the room in the database."
+          );
+      }
+
+      res.status(200).json({
+        message: `Tenant with the Name: ${selectedTenantOnRoomOnPropertyName} and ID: ${tenantId} has been successfuly deleted.`,
+        deletedRoomTenants: tenants[0][propertyId].tenants[roomId],
+      });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
