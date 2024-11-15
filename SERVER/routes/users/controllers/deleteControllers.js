@@ -2,14 +2,15 @@ const {
   ObjectId: { isValid },
 } = require("mongodb");
 
-const { Owner } = require("../../../middleware/models/Owner");
 const { Property } = require("../../../middleware/models/Property");
-const { Room } = require("../../../middleware/models/Room");
 const { Tenant } = require("../../../middleware/models/Tenant");
+const { Owner } = require("../../../middleware/models/Owner");
+const { Room } = require("../../../middleware/models/Room");
 const { Rent } = require("../../../middleware/models/Rent");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
+  //! the method below has not been implemented and does not work
   deleteOwnerDetails: async (req, res) => {
     try {
       if (!req.body.id)
