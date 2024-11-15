@@ -405,11 +405,12 @@ const patchControllers = {
           "Error when deleting the property rents for the tenant in the database."
         );
 
+      //! checking if the tenant being deleted is the current tenant occupying the room and updates the rooms document
       const findRooms = await Room.findOne({ ownerID: id });
 
       const rooms = findRooms ? findRooms.rooms : null;
 
-      if (!rooms) throw new Error("rents doc prop not found.");
+      if (!rooms) throw new Error("rooms doc prop not found.");
 
       const currentRoomTenantNationalID =
         rooms[0][propertyId].rooms[roomId].currentTenantID;
