@@ -186,7 +186,7 @@ class UserInterface extends UserinterfaceUtilities {
     const fragment = document.createDocumentFragment();
     let tableNumber = 1;
 
-    const reversedTenants = Object.keys(tenants).reverse();
+    const reversedTenants = Object.keys(tenants)?.reverse();
 
     for (const key of reversedTenants) {
       const roomRow = this.createTenantRow(
