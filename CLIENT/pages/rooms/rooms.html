@@ -31,43 +31,50 @@
   </head>
   <body>
     <div class="home container-fluid font-italic">
-      <div
+      <header
         class="header d-flex container-fluid align-items-center mt-2 border-bottom border-success"
       >
         <div
-          class="heading d-flex flex-column justify-content-center align-items-center w-50 border-success"
+          class="heading d-flex justify-content-start align-items-center w-50 border-success"
         >
-          <div class="logo d-flex justify-content-center w-50">
-            <h1 class="font-weight-bolder">
-              <span>LiPA<span class="text-success">RENT&reg;</span></span>
-            </h1>
-            <img
-              src="../../indexResources/images/black-cat-simple-logo-design-vector.jpg"
-              alt="lipa rent logo"
-              width="50px"
-            />
+          <div class="profile">
+            <a href="../pages/profile/profile.html">
+              <i class="fa fa-user-circle font-weight-bold text-dark"></i
+            ></a>
           </div>
+          <div class="d-flex flex-column container ml-5">
+            <div class="logo d-flex justify-content-center w-50">
+              <h1 class="font-weight-bolder">
+                <span>LiPA<span class="text-success">RENT&reg;</span></span>
+              </h1>
+              <img
+                src="../../indexResources/images/black-cat-simple-logo-design-vector.jpg"
+                alt="lipa rent logo"
+                width="50px"
+              />
+            </div>
 
-          <div
-            class="action d-flex justify-content-center align-items-center w-50"
-          >
-            <form
-              data-select-property
-              action=""
-              class="mr-2 w-100 d-flex justify-content-center align-items-center"
+            <div
+              class="action d-flex justify-content-center align-items-center w-50"
             >
-              <div class="form-group d-flex w-100">
-                <select
-                  class="form-control border border-right-0 border-left border-top-0 border-bottom"
-                ></select>
-                <button
-                  type="submit"
-                  class="btn border border-right border-left-0 border-top-0 border-bottom text-success"
-                >
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
-            </form>
+              <form
+                data-select-room-form
+                action=""
+                class="mr-2 w-100 d-flex justify-content-center align-items-center"
+              >
+                <div class="form-group d-flex w-100">
+                  <select
+                    class="form-control border border-right-0 border-left border-top-0 border-bottom"
+                  ></select>
+                  <button
+                    type="submit"
+                    class="btn border border-right border-left-0 border-top-0 border-bottom text-success"
+                  >
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
 
@@ -94,7 +101,7 @@
             </li>
           </ul>
         </div>
-      </div>
+      </header>
 
       <div class="hero mt-5 d-flex flex-column container-fluid text-center">
         <div class="first d-flex justify-content-between mb-2">
