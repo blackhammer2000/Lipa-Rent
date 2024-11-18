@@ -175,6 +175,10 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
+    const reversedTenantKeysArray = Object.keys(
+      selectedRoomOnPropertyTenants
+    ).reverse();
+
     const optionsBody = document.querySelector("select");
     optionsBody.querySelectorAll("option").forEach((option) => option.remove());
 
@@ -185,7 +189,7 @@ class UserInterface extends UserinterfaceUtilities {
     placeHolderOption.innerText = "SELECT TENANT";
     fragment.append(placeHolderOption);
 
-    for (const key in selectedRoomOnPropertyTenants) {
+    for (const key of reversedTenantKeysArray) {
       const option = document.createElement("option");
       option.value = key;
       option.innerText =
