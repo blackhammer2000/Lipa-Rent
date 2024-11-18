@@ -27,7 +27,7 @@ body {
   pointer-events: none;
 }
 
-.profile > i {
+.profile > a > i {
   cursor: pointer;
   font-size: 2em;
 }
