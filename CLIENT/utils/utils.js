@@ -14,14 +14,14 @@ class UserinterfaceUtilities {
   }
 
   static createLoaderBox(message, loaderType) {
-    if (!message) return;
+    if (!message || !loaderType) return;
 
     const loaderBox = document.createElement("div");
     loaderBox.className = `loaderBox alert text-white ${loaderType} }`;
 
     const loader = document.createElement("div");
     loader.className =
-      "loader bg-dark d-flex justify-content-around align-items-center p-2 font-weight-bold";
+      "loader bg-white text-dark d-flex justify-content-around align-items-center p-2 font-weight-bold";
 
     const loaderText = document.createElement("div");
     const text = document.createTextNode(`Please wait, ${message}...`);
