@@ -27,6 +27,11 @@ body {
   pointer-events: none;
 }
 
+.profile > i {
+  cursor: pointer;
+  font-size: 2em;
+}
+
 fieldset {
   border-radius: 10px;
 }
