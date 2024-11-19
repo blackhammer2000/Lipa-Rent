@@ -24,7 +24,6 @@ const { encrypt } = require("../../helpers/cipher");
 
 const post_controllers = {
   //! SIGN UP NEW USER.
-
   signUp: async (req, res) => {
     try {
       const { name, nationalID, email, phone, password, confirmPassword } =
@@ -169,7 +168,6 @@ const post_controllers = {
   },
 
   //! LOGIN USER.
-
   login: async (req, res) => {
     try {
       if (!req?.body?.email || !req?.body?.nationalID || !req?.body?.password)
