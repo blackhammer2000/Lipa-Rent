@@ -21,7 +21,8 @@
     ? localStorage.getItem("liparentSelectedPropertyName")
     : null;
 
-  UserInterface.setNavButtonsStatus(selectedPropertyId);
+  UserInterface.toggleTenantsNavButtonsStatus();
+  UserInterface.toggleRentsNavButtonsStatus();
 
   if (
     selectedPropertyId !== (null || undefined) &&

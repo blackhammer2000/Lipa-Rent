@@ -23,6 +23,8 @@
     ? localStorage.getItem("liparentSelectedRoomId")
     : null;
 
+  UserInterface.toggleRentsNavButtonsStatus();
+
   if (selectedPropertyId && selectedRoomId) {
     UserInterface.updateTableBodyState(
       accessToken,

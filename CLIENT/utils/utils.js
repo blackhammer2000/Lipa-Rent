@@ -1,15 +1,40 @@
 class StoreUtilities {}
 class UserinterfaceUtilities {
-  static setNavButtonsStatus(selectedPropertyId) {
+  static toggleTenantsNavButtonsStatus() {
+    const selectedPropertyId = localStorage.getItem(
+      "liparentSelectedPropertyId"
+    )
+      ? localStorage.getItem("liparentSelectedPropertyId")
+      : null;
+
     const tenantsButton = document.querySelector("[data-nav-tenants]");
-    const rentsButton = document.querySelector("[data-nav-rents]");
 
     if (selectedPropertyId) {
       tenantsButton.removeAttribute("disabled");
-      rentsButton.removeAttribute("disabled");
+      return;
     }
 
     tenantsButton.setAttribute("disabled", "true");
+  }
+
+  static toggleRentsNavButtonsStatus() {
+    const selectedPropertyId = localStorage.getItem(
+      "liparentSelectedPropertyId"
+    )
+      ? localStorage.getItem("liparentSelectedPropertyId")
+      : null;
+
+    const selectedRoomId = localStorage.getItem("liparentSelectedRoomId")
+      ? localStorage.getItem("liparentSelectedRoomId")
+      : null;
+
+    const rentsButton = document.querySelector("[data-nav-rents]");
+
+    if (selectedPropertyId && selectedRoomId) {
+      rentsButton.removeAttribute("disabled");
+      return;
+    }
+
     rentsButton.setAttribute("disabled", "true");
   }
 

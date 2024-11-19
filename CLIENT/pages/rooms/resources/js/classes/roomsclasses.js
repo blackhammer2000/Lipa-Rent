@@ -335,25 +335,20 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (propertyRooms && message) {
       this.alertMessage(message, "success");
-      this.setSelectedPropertyIdAndEnableNavButton(propertyId);
+      this.setSelectedPropertyIdInLocalStorage(propertyId);
       this.setSelectedPropertyNameInLocalStorage(propertyName);
+      this.EnableTenantsNavButton(propertyId);
       this.updateTableDescription();
       this.renderRooms(propertyRooms, accessToken, tableBody);
       return;
     }
   }
 
-  static setSelectedPropertyIdAndEnableNavButton(propertyId) {
-    localStorage.getItem("liparentSelectedPropertyId")
-      ? localStorage.removeItem("liparentSelectedPropertyId")
-      : null;
-    localStorage.setItem("liparentSelectedPropertyId", propertyId);
+  static EnableTenantsNavButton(propertyId) {
+    if (!propertyId) return;
 
     const tenantsButton = document.querySelector("[data-nav-tenants]");
-    const rentsButton = document.querySelector("[data-nav-rents]");
-
     tenantsButton.removeAttribute("disabled");
-    rentsButton.removeAttribute("disabled");
   }
 
   static async addRoomToPropertyAndRender(accessToken, form, tableBody) {
@@ -608,5 +603,12 @@ class UserInterface extends UserinterfaceUtilities {
     if (!propertyName) return;
     localStorage.removeItem("liparentSelectedPropertyName");
     localStorage.setItem("liparentSelectedPropertyName", propertyName);
+  }
+
+  static setSelectedPropertyIdInLocalStorage(propertyId) {
+    localStorage.getItem("liparentSelectedPropertyId")
+      ? localStorage.removeItem("liparentSelectedPropertyId")
+      : null;
+    localStorage.setItem("liparentSelectedPropertyId", propertyId);
   }
 }

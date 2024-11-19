@@ -310,6 +310,7 @@ class UserInterface extends UserinterfaceUtilities {
     this.alertMessage(message, "success");
     this.setSelectedRoomNumberInLocalStorage(selectedRoomNumber);
     this.setSelectedRoomIdInLocalStorage(selectedRoomId);
+    this.EnableRentsNavButton(propertyId, selectedRoomId);
     this.updateTableDescription();
 
     if (!Object.keys(selectedRoomOnPropertyTenants).length && message) {
@@ -595,6 +596,13 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     this.renderTenants(selectedRoomOnPropertyTenants, accessToken, tableBody);
+  }
+
+  static EnableRentsNavButton(propertyId, roomId) {
+    if (!propertyId || !roomId) return;
+
+    const rentsButton = document.querySelector("[data-nav-rents]");
+    rentsButton.removeAttribute("disabled");
   }
 
   static setSelectedRoomIdInLocalStorage(selectedRoomId) {

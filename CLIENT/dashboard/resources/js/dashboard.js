@@ -9,6 +9,9 @@
   const tableBody = document.querySelector("[data-table]");
   const homeSection = document.querySelector(".home");
 
+  UserInterface.toggleTenantsNavButtonsStatus();
+  UserInterface.toggleRentsNavButtonsStatus();
+
   UserInterface.readAndUpdateOwnerDetails(accessToken);
   UserInterface.readAndRenderProperties(accessToken, tableBody);
 
