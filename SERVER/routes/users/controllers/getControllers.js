@@ -6,6 +6,8 @@ const { Owner } = require("../../../middleware/models/Owner");
 const getControllers = {
   readAllPropertiesOwned: async (req, res) => {
     try {
+      if (!req.body.id) throw new Error("Unauthorized action.");
+
       const { id } = req.body;
 
       if (!id)
