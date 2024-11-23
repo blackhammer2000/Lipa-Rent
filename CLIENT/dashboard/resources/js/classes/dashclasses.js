@@ -159,6 +159,7 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-dashboard-description]"
     ).innerText = `PROPERTIES OF ${owner}`;
   }
+
   static renderProperties(properties, accessToken, tableBody) {
     if (!properties) return;
 
