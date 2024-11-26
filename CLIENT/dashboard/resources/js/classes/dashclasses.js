@@ -153,7 +153,7 @@ class UserInterface extends UserinterfaceUtilities {
       requestOptions
     );
 
-    const { owner } = await readOwnerDetailsRequest?.json();
+    const { owner } = await readOwnerDetailsRequest.json();
 
     document.querySelector(
       "[data-dashboard-description]"
