@@ -126,7 +126,7 @@ class Store extends StoreUtilities {
       createNewPropertyRequestOptions
     );
 
-    const createPropertyResponse = await createPropertyRequest.json();
+    const createPropertyResponse = await createPropertyRequest?.json();
 
     if (createPropertyResponse) UserInterface.closeLoader("newProperty");
 
