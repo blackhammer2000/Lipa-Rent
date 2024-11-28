@@ -351,9 +351,6 @@ class UserInterface extends UserinterfaceUtilities {
 
     console.log(selectedTenantPayments, message);
 
-    if (selectedTenantPayments.length && message)
-      this.alertMessage(message, "success");
-
     this.setSelectedTenantNameInLocalStorage(tenantName);
     this.setSelectedTenantIdInLocalStorage(selectedTenantId);
     this.updateTableDescription();
@@ -364,7 +361,10 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
-    this.renderTenantPayments(selectedTenantPayments, accessToken, tableBody);
+    if (selectedTenantPayments.length && message) {
+      this.alertMessage(message, "success");
+      this.renderTenantPayments(selectedTenantPayments, accessToken, tableBody);
+    }
   }
 
   static async addNewTenantPaymentAndRender(
@@ -668,7 +668,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `Payments by ${tenantName} for Room: ${roomNumber} in: ${propertyName}.`;
+    ).innerText = `PAYMENTS BY ${tenantName} FOR ${roomNumber} IN ${propertyName}`;
   }
 
   static async updateTableBodyState(

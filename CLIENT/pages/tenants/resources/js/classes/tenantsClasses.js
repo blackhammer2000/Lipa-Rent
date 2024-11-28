@@ -570,7 +570,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `Tenants for room: ${roomNumber} in: ${propertyName.toUpperCase()}`;
+    ).innerText = `TENANTS FOR ${roomNumber} IN ${propertyName.toUpperCase()}`;
   }
 
   static async updateTableBodyState(

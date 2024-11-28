@@ -596,7 +596,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector(
       "[data-table-description]"
-    ).innerText = `Rooms for ${propertyName.toUpperCase()}.`;
+    ).innerText = `ROOMS FOR ${propertyName.toUpperCase()}`;
   }
 
   static setSelectedPropertyNameInLocalStorage(propertyName) {
