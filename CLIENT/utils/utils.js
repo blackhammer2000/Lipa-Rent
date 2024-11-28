@@ -154,7 +154,16 @@ class UserinterfaceUtilities {
     localStorage.removeItem("liparentSelectedTenantId");
     localStorage.removeItem("liparentSelectedTenantName");
   }
+
+  static createDropdownMenu(){
+    
+  }
 }
+
+const dropdownMenuButton = document.querySelector(".profile");
+dropdownMenuButton.addEventListener("click", () => {
+  document.querySelector(".userDropdown ul").classList.toggle("d-flex");
+});
 
 const logoutButton = document.querySelector("[data-logout]");
 logoutButton?.addEventListener("click", () =>
