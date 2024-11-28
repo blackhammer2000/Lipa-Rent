@@ -156,7 +156,9 @@ class UserinterfaceUtilities {
   }
 
   static createDropdownMenu() {
-    const documentBody = document.querySelector("body");
+    this.deleteDropdownMenu();
+
+    const documentBody = document.querySelector(".profile");
 
     const dropdown = document.createElement("div");
     dropdown.className = "userDropdown dropdown position-absolute";
@@ -166,10 +168,12 @@ class UserinterfaceUtilities {
 
     const fragment = document.createDocumentFragment();
 
+    const isDash = document.querySelector(".dashboard") ? true : false;
+
     const profile = document.createElement("li");
     profile.className = "dropdown-item";
     const profileLink = document.createElement("a");
-    profileLink.href = "../pages/profile/profile.html";
+    profileLink.href = `${isDash ? "../pages" : ".."}/profile/profile.html`;
     profileLink.innerText = "My Profile";
     profile.append(profileLink);
     fragment.append(profile);
@@ -177,7 +181,9 @@ class UserinterfaceUtilities {
     const subscriptions = document.createElement("li");
     subscriptions.className = "dropdown-item";
     const subscriptionsLink = document.createElement("a");
-    subscriptionsLink.href = "../pages/subscriptions/subscriptions.html";
+    subscriptionsLink.href = `${
+      isDash ? "../pages" : ".."
+    }/subscriptions/subscriptions.html`;
     subscriptionsLink.innerText = "My Subscriptions";
     subscriptions.append(subscriptionsLink);
     fragment.append(subscriptions);

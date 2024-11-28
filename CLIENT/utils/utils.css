@@ -27,6 +27,10 @@ body {
   pointer-events: none;
 }
 
+.profile {
+  position: relative;
+}
+
 .profile > i {
   cursor: pointer;
   font-size: 2em;
@@ -72,7 +76,7 @@ thead {
 }
 
 .userDropdown {
-  top: 6%;
+  bottom: 6%;
   left: 2%;
 }
 
