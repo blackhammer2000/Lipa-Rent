@@ -27,7 +27,7 @@ body {
   pointer-events: none;
 }
 
-.profile > a > i {
+.profile > i {
   cursor: pointer;
   font-size: 2em;
 }
@@ -65,4 +65,9 @@ fieldset {
 
 thead {
   top: 0;
+}
+
+.userDropdown {
+  top: 10%;
+  left: 5%;
 }

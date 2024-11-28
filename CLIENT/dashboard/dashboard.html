@@ -32,7 +32,7 @@
     <script src="./resources/js/dashboard.js" defer></script>
   </head>
   <body>
-    <div class="home container-fluid font-italic">
+    <div class="position-relative container-fluid font-italic">
       <header
         class="header d-flex container-fluid align-items-center mt-2 border-bottom border-success"
       >
@@ -40,9 +40,7 @@
           class="heading d-flex justify-content-start align-items-center w-50 border-success"
         >
           <div class="profile">
-            <a href="../pages/profile/profile.html">
-              <i class="fa fa-user-circle font-weight-bold text-dark"></i
-            ></a>
+            <i class="fa fa-user-circle font-weight-bold text-dark"></i>
           </div>
           <div
             class="logo d-flex justify-content-center align-items-center w-50"
@@ -249,6 +247,15 @@
           </div>
         </form>
       </fieldset>
+    </div>
+
+    <div class="userDropdown d-flex dropdown position-absolute">
+      <ul class="list-unstyled dropdown-menu">
+        <li class="dropdown-item"><a href="">My Profile</a></li>
+        <li class="dropdown-item"><a href="">Subscription Reports</a></li>
+        <li class="dropdown-item"><a href="">Delete Account</a></li>
+        <li class="dropdown-item"><a href="../login/login.html">Log Out</a></li>
+      </ul>
     </div>
   </body>
 </html>
