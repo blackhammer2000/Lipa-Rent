@@ -32,6 +32,10 @@ body {
   font-size: 2em;
 }
 
+.profile > i:active {
+  scale: 0.95;
+}
+
 .logo > i {
   font-size: 2.5em;
 }
@@ -68,6 +72,12 @@ thead {
 }
 
 .userDropdown {
-  top: 10%;
-  left: 5%;
+  top: 6%;
+  left: 2%;
+}
+
+.userDropdown > ul > li > a {
+  text-decoration: none;
+  font-family: inherit;
+  color: inherit;
 }
