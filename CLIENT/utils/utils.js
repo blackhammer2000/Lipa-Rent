@@ -155,14 +155,48 @@ class UserinterfaceUtilities {
     localStorage.removeItem("liparentSelectedTenantName");
   }
 
-  static createDropdownMenu(){
-    
+  static createDropdownMenu() {
+    const documentBody = document.querySelector("body");
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "userDropdown dropdown position-absolute";
+
+    const dropdownMenu = document.createElement("ul");
+    dropdownMenu.className = "d-flex flex-column dropdown-menu list-unstyled";
+
+    const fragment = document.createDocumentFragment();
+
+    const profile = document.createElement("li");
+    profile.className = "dropdown-item";
+    const profileLink = document.createElement("a");
+    profileLink.href = "../pages/profile/profile.html";
+    profileLink.innerText = "My Profile";
+    profile.append(profileLink);
+    fragment.append(profile);
+
+    const subscriptions = document.createElement("li");
+    subscriptions.className = "dropdown-item";
+    const subscriptionsLink = document.createElement("a");
+    subscriptionsLink.href = "../pages/subscriptions/subscriptions.html";
+    subscriptionsLink.innerText = "My Subscriptions";
+    subscriptions.append(subscriptionsLink);
+    fragment.append(subscriptions);
+
+    dropdownMenu.append(fragment);
+    dropdown.append(dropdownMenu);
+    documentBody.append(dropdown);
+  }
+
+  static deleteDropdownMenu() {
+    document.querySelector(".userDropdown")?.remove();
   }
 }
 
 const dropdownMenuButton = document.querySelector(".profile");
 dropdownMenuButton.addEventListener("click", () => {
-  document.querySelector(".userDropdown ul").classList.toggle("d-flex");
+  document.querySelector(".userDropdown")
+    ? UserinterfaceUtilities.deleteDropdownMenu()
+    : UserinterfaceUtilities.createDropdownMenu();
 });
 
 const logoutButton = document.querySelector("[data-logout]");
