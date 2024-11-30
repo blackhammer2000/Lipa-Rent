@@ -16,7 +16,7 @@ const { isUser } = require("../helpers/isUser");
 
 const {
   readAllPropertiesOwned,
-  readOwnerDetails,
+  readSubscriptionsReports,
 } = require("../controllers/getControllers");
 
 router.get(

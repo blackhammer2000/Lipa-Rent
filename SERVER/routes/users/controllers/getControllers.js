@@ -43,9 +43,12 @@ const getControllers = {
 
       if (!subscriptionDocument) throw new Error(subscriptionDocument);
 
-      const { subscription_reports } = ownerPropertiesDocument;
+      const { subscription_reports } = subscriptionDocument;
 
-      res.status(200).json({ subscriptions: subscription_reports });
+      res.status(200).json({
+        message: "Subscriptions retrieved successfully",
+        subscriptions: subscription_reports,
+      });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
