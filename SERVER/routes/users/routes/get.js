@@ -26,4 +26,11 @@ router.get(
   readAllPropertiesOwned
 );
 
+router.get(
+  "/api/user/owner/read/subscriptions",
+  isUser,
+  verifyUserAccessToken,
+  readSubscriptionsReports
+);
+
 module.exports = router;
