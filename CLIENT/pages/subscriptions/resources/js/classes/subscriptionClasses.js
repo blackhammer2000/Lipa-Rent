@@ -114,7 +114,7 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static updateTableDescription() {
-    document.querySelector("[data-table-description]")?.innerText =
+    document.querySelector("[data-table-description]").innerText =
       "SUBSCRIPTION REPORTS";
   }
 }
