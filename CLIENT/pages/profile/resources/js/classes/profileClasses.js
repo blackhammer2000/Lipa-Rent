@@ -15,7 +15,7 @@ class Store extends StoreUtilities {
     };
 
     const readRoomTenantsRequest = await fetch(
-      "http://localhost:4000/api/user/owner/read/owner",
+      "http://localhost:4000/api/user/read/owner",
       requestOptions
     );
 
@@ -63,13 +63,22 @@ class UserInterface extends UserinterfaceUtilities {
   static async populateEditOwnerDetailsForm(accessToken) {
     if (!accessToken) return;
 
+    const form = document.querySelector("[data-edit-account-form]");
+
+    // const isFormPopulated = form
+    //   .querySelectorAll("input")
+    //   .every((input) => input.value);
+
+    // if (isFormPopulated) {
+    //   form.parentElement.parentElement.classList.remove("hide");
+    //   return;
+    // }
+
     const { owner } = await Store.readOwnerDetails(accessToken);
 
     if (!owner) return;
 
     const { name, nationalID, email, phone } = owner;
-
-    const form = document.querySelector("[data-edit-account-form]");
 
     const ownerName = form.querySelector("[data-edited-name]");
     const ownerNatioanlID = form.querySelector("[data-edited-nationalID]");

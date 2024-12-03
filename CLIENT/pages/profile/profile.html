@@ -97,8 +97,12 @@
           <div class="container d-flex flex-column align-items-start">
             <h4>Account Details</h4>
             <ul class="d-flex flex-column list-unstyled text-left">
-              <li data-edit-account class="mb-3">Change Account details</li>
-              <li data-edit-password>Change password</li>
+              <li data-edit-account class="mb-3">
+                <i class="fa fa-user mr-2"></i>Change Account details
+              </li>
+              <li data-edit-password>
+                <i class="fa fa-key mr-2"></i>Change password
+              </li>
             </ul>
           </div>
           <div
@@ -106,7 +110,9 @@
           >
             <h4>Reset Account</h4>
             <ul class="d-flex flex-column list-unstyled text-left">
-              <li data-delete-account>Delete Account</li>
+              <li data-delete-account>
+                <i class="fa fa-trash mr-2"></i>Delete Account
+              </li>
             </ul>
           </div>
         </div>
@@ -163,7 +169,7 @@
 
         <form data-edit-account-form action="" class="form">
           <div class="form-group">
-            <label class="font-weight-bold">USER NAME:</label>
+            <label class="font-weight-bold">NAME:</label>
             <input
               data-edited-name
               type="text"

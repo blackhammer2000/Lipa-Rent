@@ -17,4 +17,15 @@
     UserInterface.populateEditOwnerDetailsForm(accessToken);
     homeSection.classList.add("blur");
   });
+
+  const editOwnerDetailsModalButton = document.querySelector(
+    "[data-close-edit-modal]"
+  );
+  editOwnerDetailsModalButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
+      "hide"
+    );
+    homeSection.classList.remove("blur");
+  });
 })();
