@@ -31,7 +31,7 @@
   closeEditPropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.closeEditPropertyModal(e);
-    homeSection.classList.remove("blur");
+    homeSection?.classList.remove("blur");
   });
 
   const createPropertyButton = document.querySelector(
