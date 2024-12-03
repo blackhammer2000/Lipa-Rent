@@ -16,9 +16,6 @@
   UserInterface.readAndRenderProperties(accessToken, tableBody);
 
   const editPropertyForm = document.querySelector("[data-edit-property-form]");
-  const closeEditPropertyModalButton =
-    editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
-
   editPropertyForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     UserInterface.editPropertyAndRender(
@@ -29,6 +26,8 @@
     );
   });
 
+  const closeEditPropertyModalButton =
+    editPropertyForm.parentElement.querySelector("[data-close-edit-modal]");
   closeEditPropertyModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     UserInterface.closeEditPropertyModal(e);

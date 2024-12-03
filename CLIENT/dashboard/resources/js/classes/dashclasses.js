@@ -328,9 +328,9 @@ class UserInterface extends UserinterfaceUtilities {
     )?.value;
 
     const editedProperty = {
-      propertyName: editedPropertyName,
-      propertyNumber: editedPropertyNumber,
-      propertyLocation: editedPropertyLocation,
+      propertyName: editedPropertyName.toUpperCase(),
+      propertyNumber: editedPropertyNumber.toUpperCase(),
+      propertyLocation: editedPropertyLocation.toUpperCase(),
     };
 
     const { message, editedProperties } = await Store.editProperty(
