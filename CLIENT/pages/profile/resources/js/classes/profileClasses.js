@@ -104,16 +104,25 @@ class UserInterface extends UserinterfaceUtilities {
     const editedPhone = form.querySelector("[data-edited-phone]").value;
 
     const editedOwner = {
-      name: editedName,
+      name: editedName.toUpperCase(),
       nationalID: editedNatioanlID,
       email: editedEmail,
       phone: editedPhone,
     };
 
+    if (
+      !confirm(
+        "Are you sure you wish to proceed with editing the owner details?, If so you will be required to log in again after this process."
+      )
+    )
+      return;
+
     const { message } = await Store.editOwner(accessToken, editedOwner);
 
     if (!message) return;
 
+    form.parentElement.parentElement.classList.add("hide");
     this.alertMessage(message, "success");
+    this.handleLogout();
   }
 }
