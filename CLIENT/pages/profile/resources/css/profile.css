@@ -5,6 +5,10 @@
   overflow: hidden;
 }
 
-.hero > ul > li {
+.hero ul li {
   cursor: pointer;
+}
+
+.hero ul li:hover {
+  text-decoration: underline;
 }
