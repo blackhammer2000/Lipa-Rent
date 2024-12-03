@@ -1,0 +1,10 @@
+.hero {
+  /* display: grid;
+      place-items: center; */
+  height: 60vh;
+  overflow: hidden;
+}
+
+.hero > ul > li {
+  cursor: pointer;
+}
