@@ -28,7 +28,7 @@ class Store extends StoreUtilities {
     if (owner) return { owner };
   }
 
-  static async editOwnerDetails(accessToken, editedOwner) {
+  static async editOwner(accessToken, editedOwner) {
     if (!accessToken) return;
 
     UserInterface.openLoader("editing owner details", "editOwner");
@@ -41,7 +41,7 @@ class Store extends StoreUtilities {
         user: true,
         token: accessToken,
       },
-      body: JSON.stringify(editedOwner),
+      body: JSON.stringify({ editedOwner }),
     };
 
     const editOwnerDetailsRequest = await fetch(
@@ -51,7 +51,7 @@ class Store extends StoreUtilities {
 
     const { message, error } = await editOwnerDetailsRequest.json();
 
-    if (message || error) UserInterface.closeLoader("readUser");
+    if (message || error) UserInterface.closeLoader("editOwner");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -91,5 +91,29 @@ class UserInterface extends UserinterfaceUtilities {
     ownerPhone.value = phone;
 
     form.parentElement.parentElement.classList.remove("hide");
+  }
+
+  static async editOwnerDetails(accessToken, form) {
+    if (!accessToken || !form) return;
+
+    const editedName = form.querySelector("[data-edited-name]").value;
+    const editedNatioanlID = form.querySelector(
+      "[data-edited-nationalID]"
+    ).value;
+    const editedEmail = form.querySelector("[data-edited-email]").value;
+    const editedPhone = form.querySelector("[data-edited-phone]").value;
+
+    const editedOwner = {
+      name: editedName,
+      nationalID: editedNatioanlID,
+      email: editedEmail,
+      phone: editedPhone,
+    };
+
+    const { message } = await Store.editOwner(accessToken, editedOwner);
+
+    if (!message) return;
+
+    this.alertMessage(message, "success");
   }
 }

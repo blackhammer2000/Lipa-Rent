@@ -28,4 +28,11 @@
     );
     homeSection.classList.remove("blur");
   });
+
+  const editOwnerForm = document.querySelector("[data-edit-account-form]");
+  editOwnerForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    UserInterface.editOwnerDetails(accessToken, editOwnerForm);
+    homeSection.classList.remove("blur");
+  });
 })();
