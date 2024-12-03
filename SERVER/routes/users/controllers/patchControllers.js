@@ -22,7 +22,7 @@ const patchControllers = {
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
 
-      const { name, nationalID } = editedOwner;
+      const { name, nationalID, email, phone } = editedOwner;
 
       const ownerPropertiesDocument = await Owner.findOne({
         _id: id.toString(),
@@ -33,9 +33,8 @@ const patchControllers = {
       const ownerUpdate = await Owner.updateOne(
         { _id: id },
         {
-          $set: { name, nationalID },
-        },
-        { new: true }
+          $set: { name, nationalID, email, phone },
+        }
       );
 
       if (!ownerUpdate.acknowledged)
@@ -43,7 +42,7 @@ const patchControllers = {
           "Error when updating the owner details in the database."
         );
 
-      res.status(203).json({ editedOwner });
+      res.status(203).json({ message: "Owner details edited successfully" });
     } catch (err) {
       if (err?.message)
         res
