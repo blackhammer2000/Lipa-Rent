@@ -392,6 +392,13 @@ const patchControllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  verifyResetPasswordToken: async (req, res) => {
+    if (!req.body.id) throw new Error("Unknown user.");
+    if (!req.headers.resetToken) throw new Error("Unauthorized action.");
+
+    
+  },
 };
 
 module.exports = patchControllers;

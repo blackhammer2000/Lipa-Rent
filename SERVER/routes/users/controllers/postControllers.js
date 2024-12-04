@@ -19,6 +19,9 @@ const { Rent } = require("../../../middleware/models/Rent");
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 // const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
+const {
+  signResetPasswordToken,
+} = require("../../../middleware/tokens/resetPasswordToken");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -1425,6 +1428,31 @@ const post_controllers = {
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
+  },
+
+  //?  the request below only requires you to send the accessToken
+
+  genarateResetPasswordToken: async (req, res) => {
+    if (!req.body.id) throw new Error("Unknown user...");
+
+    const { id } = req.body;
+
+    const resetPasswordToken = await signResetPasswordToken({ id });
+
+    const addResetTokenToDB = await Password.updateOne(
+      { ownerID: id },
+      { $set: { resetToken: resetPasswordToken } }
+    );
+
+    if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
+      throw new Error("Error adding reset token to database");
+
+    res
+      .status(200)
+      .json({
+        message: "Reset token has been generated successfully",
+        resetPasswordToken,
+      });
   },
 };
 
