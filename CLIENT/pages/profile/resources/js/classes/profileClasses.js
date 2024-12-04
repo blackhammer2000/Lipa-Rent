@@ -113,7 +113,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (
       !confirm(
-        "Are you sure you wish to proceed with editing the owner details?, If so you will be required to log in again after this process."
+        "Are you sure you wish to proceed with editing the owner details?, If so you will be required to log in again after changing any of the login details."
       )
     )
       return;
@@ -122,8 +122,6 @@ class UserInterface extends UserinterfaceUtilities {
       accessToken,
       editedOwner
     );
-
-    if (!message) return;
 
     form.parentElement.parentElement.classList.add("hide");
     this.alertMessage(message, "success");
