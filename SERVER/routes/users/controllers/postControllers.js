@@ -1446,7 +1446,7 @@ const post_controllers = {
 
       const twentyFourHours = 24 * 60 * 60 * 1000;
 
-      if (lastResetTime && Date.now < lastResetTime + twentyFourHours)
+      if (lastResetTime && Date.now() < lastResetTime + twentyFourHours)
         throw new Error(
           "Password can only be reset 24hrs after the last reset"
         );
