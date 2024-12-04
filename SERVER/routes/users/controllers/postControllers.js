@@ -66,6 +66,8 @@ const post_controllers = {
       const newOwnerPasswordDB = await Password?.create({
         ownerID: newOwner?._id?.toString(),
         password: encrypt(password),
+        resetToken: null,
+        lastReset: null,
       });
 
       if (!newOwnerPasswordDB)

@@ -2,6 +2,8 @@ const {
   ObjectId: { isValid },
 } = require("mongodb");
 
+const { hash } = require("bcrypt");
+
 const { Owner } = require("../../../middleware/models/Owner");
 const { Property } = require("../../../middleware/models/Property");
 const { Room } = require("../../../middleware/models/Room");
@@ -11,6 +13,7 @@ const {
   verifyResetTokenPassword,
 } = require("../../../middleware/tokens/verifyResetPasswordToken");
 const { Password } = require("../../../middleware/models/Password");
+const { encrypt } = require("../../helpers/cipher");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
@@ -392,6 +395,37 @@ const patchControllers = {
           selectedRentPaymentEdit:
             newTenantPaymentReports[requestedPaymentReportIndex],
         });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  editPassword: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.newPassword) throw new Error("Unknown user...");
+
+      const hashedNewPassword = await hash(encrypt(newPassword), 10);
+
+      if (!hashedNewPassword) throw new Error(hashedNewPassword);
+
+      const updatePassword = await Password.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            password: hashedNewPassword,
+            resetToken: "null",
+            lastReset: Date.now(),
+          },
+        }
+      );
+
+      if (!updatePassword.acknowledged && !updatePassword.modifiedCount)
+        throw new Error("Error in reset password in the database");
+
+      res.status(200).json({
+        message: "password has been reset successfully",
+      });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
