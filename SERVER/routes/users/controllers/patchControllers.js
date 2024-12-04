@@ -49,7 +49,13 @@ const patchControllers = {
           "Error when updating the owner details in the database."
         );
 
-      res.status(203).json({ message: "Owner details edited successfully" });
+      const triggerLogOut =
+        ownerPropertiesDocument.nationalID !== nationalID ||
+        ownerPropertiesDocument.email !== email;
+
+      res
+        .status(203)
+        .json({ message: "Owner details edited successfully", triggerLogOut });
     } catch (err) {
       if (err?.message)
         res

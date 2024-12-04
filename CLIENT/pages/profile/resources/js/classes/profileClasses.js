@@ -49,13 +49,14 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { message, error } = await editOwnerDetailsRequest.json();
+    const { message, error, triggerLogOut } =
+      await editOwnerDetailsRequest.json();
 
     if (message || error) UserInterface.closeLoader("editOwner");
 
     if (error) UserInterface.handleErrors(error);
 
-    if (message) return { message };
+    if (message && triggerLogOut) return { message, triggerLogOut };
   }
 }
 
@@ -117,12 +118,15 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
-    const { message } = await Store.editOwner(accessToken, editedOwner);
+    const { message, triggerLogOut } = await Store.editOwner(
+      accessToken,
+      editedOwner
+    );
 
     if (!message) return;
 
     form.parentElement.parentElement.classList.add("hide");
     this.alertMessage(message, "success");
-    this.handleLogout();
+    if (triggerLogOut) this.handleLogout();
   }
 }
