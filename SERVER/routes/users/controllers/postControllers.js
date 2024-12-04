@@ -1433,26 +1433,57 @@ const post_controllers = {
   //?  the request below only requires you to send the accessToken
 
   genarateResetPasswordToken: async (req, res) => {
-    if (!req.body.id) throw new Error("Unknown user...");
+    try {
+      if (!req.body.id) throw new Error("Unknown user...");
 
-    const { id } = req.body;
+      const { id } = req.body;
 
-    const resetPasswordToken = await signResetPasswordToken({ id });
+      const passwordDoc = await Password.findOne({ ownerID: id });
 
-    const addResetTokenToDB = await Password.updateOne(
-      { ownerID: id },
-      { $set: { resetToken: resetPasswordToken } }
-    );
+      const lastResetTime = passwordDoc.lastReset || null;
 
-    if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
-      throw new Error("Error adding reset token to database");
+      const twentyFourHours = 24 * 60 * 60 * 1000;
 
-    res
-      .status(200)
-      .json({
+      if (lastResetTime && Date.now < lastResetTime + twentyFourHours)
+        throw new Error(
+          "Password can only be reset 24hrs after the last reset"
+        );
+
+      const resetPasswordToken = await signResetPasswordToken({ id });
+
+      const addResetTokenToDB = await Password.updateOne(
+        { ownerID: id },
+        { $set: { resetToken: resetPasswordToken } }
+      );
+
+      if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
+        throw new Error("Error adding reset token to database");
+
+      res.status(200).json({
         message: "Reset token has been generated successfully",
         resetPasswordToken,
       });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  verifyResetPasswordToken: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unknown user.");
+      if (!req.headers.resetToken) throw new Error("Unauthorized action.");
+
+      const {
+        headers: { resetToken },
+      } = req.body;
+
+      const isVerifyResetPasswordTokenValid =
+        verifyResetTokenPassword(resetToken);
+
+      res.status(200).json({ isVerifyResetPasswordTokenValid });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
   },
 };
 

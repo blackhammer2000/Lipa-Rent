@@ -7,6 +7,10 @@ const { Property } = require("../../../middleware/models/Property");
 const { Room } = require("../../../middleware/models/Room");
 const { Tenant } = require("../../../middleware/models/Tenant");
 const { Rent } = require("../../../middleware/models/Rent");
+const {
+  verifyResetTokenPassword,
+} = require("../../../middleware/tokens/verifyResetPasswordToken");
+const { Password } = require("../../../middleware/models/Password");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
@@ -391,13 +395,6 @@ const patchControllers = {
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
-  },
-
-  verifyResetPasswordToken: async (req, res) => {
-    if (!req.body.id) throw new Error("Unknown user.");
-    if (!req.headers.resetToken) throw new Error("Unauthorized action.");
-
-    
   },
 };
 
