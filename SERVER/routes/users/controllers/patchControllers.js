@@ -414,7 +414,7 @@ const patchControllers = {
         {
           $set: {
             password: hashedNewPassword,
-            resetToken: "null",
+            resetToken: null,
             lastReset: Date.now(),
           },
         }
