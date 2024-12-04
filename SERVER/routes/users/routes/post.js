@@ -38,6 +38,9 @@ const {
   readAllRentPaymentsForRoomInProperty,
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
+
+  verifyResetPasswordToken,
+  genarateResetPasswordToken,
 } = require("../controllers/postControllers");
 
 // USER SIGN UP AND LOGIN
@@ -146,6 +149,20 @@ router.post(
   isUser,
   verifyUserAccessToken,
   readRentPaymentForRoomInPropertyByTenant
+);
+
+// PASSWORD RESET ROUTES
+router.post(
+  "/api/user/owner/verify/resetToken",
+  isUser,
+  verifyUserAccessToken,
+  verifyResetPasswordToken
+);
+router.post(
+  "/api/user/owner/generate/resetToken",
+  isUser,
+  verifyUserAccessToken,
+  genarateResetPasswordToken
 );
 
 module.exports = router;

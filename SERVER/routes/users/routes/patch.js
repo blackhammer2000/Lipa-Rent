@@ -19,6 +19,7 @@ const {
   editPropertyDetails,
   editRoomDetails,
   editTenantDetails,
+  editPassword,
   // editRentDetails,
 } = require("../controllers/patchControllers");
 
@@ -52,5 +53,12 @@ router.patch(
 //   verifyAccessToken,
 //   editRentDetails
 // );
+
+router.patch(
+  "/api/user/owner/edit/password",
+  isUser,
+  verifyUserAccessToken,
+  editPassword
+);
 
 module.exports = router;
