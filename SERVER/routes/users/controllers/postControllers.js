@@ -67,6 +67,7 @@ const post_controllers = {
         ownerID: newOwner?._id?.toString(),
         password: encrypt(password),
         resetToken: null,
+        resetTokenExpiry: null,
         lastReset: null,
       });
 
@@ -1451,11 +1452,17 @@ const post_controllers = {
           "Password can only be reset 24hrs after the last reset"
         );
 
-      const resetPasswordToken = await signResetPasswordToken({ id });
+      const resetPasswordToken = crypto.randomUUID().slice(-12);
+      const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
 
       const addResetTokenToDB = await Password.updateOne(
         { ownerID: id },
-        { $set: { resetToken: resetPasswordToken } }
+        {
+          $set: {
+            resetToken: resetPasswordToken,
+            resetTokenExpiry: resetPasswordTokenExpiry,
+          },
+        }
       );
 
       if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
@@ -1479,10 +1486,22 @@ const post_controllers = {
         headers: { resetToken },
       } = req.body;
 
-      const isVerifyResetPasswordTokenValid =
-        verifyResetTokenPassword(resetToken);
+      const passwordDoc = await Password.findOne({ ownerID: id });
 
-      res.status(200).json({ isVerifyResetPasswordTokenValid });
+      const resetPasswordToken = passwordDoc.resetToken || null;
+
+      if (!resetPasswordToken || resetPasswordToken !== resetToken)
+        throw new Error("Password token invalid");
+
+      const resetPasswordTokenExpiry = passwordDoc.resetTokenExpiry || null;
+
+      if (!resetPasswordTokenExpiry) throw new Error("Password token invalid");
+
+      const isTokenValid = Date.now() < resetPasswordTokenExpiry ? true : false;
+
+      res.status(200).json({
+        message: isTokenValid ? "Verification successful" : "Token is invalid",
+      });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
