@@ -412,15 +412,29 @@ const patchControllers = {
       if (!req.body.newPassword) throw new Error("Provide valid password");
       if (!req.body.confirmNewPassword)
         throw new Error("Provide valid password");
+      if (!req.headers.resettoken) throw new Error("Unauthorized action.");
+
+      const { id, newPassword, confirmNewPassword } = req.body;
+
+      const {
+        headers: { resettoken },
+      } = req;
 
       if (encrypt(newPassword) !== encrypt(confirmNewPassword))
         throw new Error("Passwords do not match.");
+
+      const passwordDoc = await Password.findOne({ ownerID: id });
+
+      const resetPasswordToken = passwordDoc.resetToken || null;
+
+      if (!resetPasswordToken || resetPasswordToken !== resettoken)
+        throw new Error("Password token invalid");
 
       const hashedNewPassword = await hash(encrypt(newPassword), 10);
 
       if (!hashedNewPassword) throw new Error(hashedNewPassword);
 
-      const updatePassword = await Password.updateOne(
+      const updatePassword = await Password.updateMany(
         { ownerID: id },
         {
           $set: {
@@ -429,7 +443,8 @@ const patchControllers = {
             resetTokenExpiry: null,
             lastReset: Date.now(),
           },
-        }
+        },
+        { new: true }
       );
 
       if (!updatePassword.acknowledged && !updatePassword.modifiedCount)
