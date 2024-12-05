@@ -1496,7 +1496,8 @@ const post_controllers = {
 
       const resetPasswordTokenExpiry = passwordDoc.resetTokenExpiry || null;
 
-      if (!resetPasswordTokenExpiry) throw new Error("Password token invalid");
+      if (!resetPasswordTokenExpiry)
+        throw new Error("Password token invalid, generate new token");
 
       const isTokenValid = Date.now() < resetPasswordTokenExpiry ? true : false;
 
