@@ -409,7 +409,12 @@ const patchControllers = {
   editPassword: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
-      if (!req.body.newPassword) throw new Error("Unknown user...");
+      if (!req.body.newPassword) throw new Error("Provide valid password");
+      if (!req.body.confirmNewPassword)
+        throw new Error("Provide valid password");
+
+      if (encrypt(newPassword) !== encrypt(confirmNewPassword))
+        throw new Error("Passwords do not match.");
 
       const hashedNewPassword = await hash(encrypt(newPassword), 10);
 
@@ -421,6 +426,7 @@ const patchControllers = {
           $set: {
             password: hashedNewPassword,
             resetToken: null,
+            resetTokenExpiry: null,
             lastReset: Date.now(),
           },
         }
