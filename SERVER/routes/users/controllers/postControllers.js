@@ -173,7 +173,7 @@ const post_controllers = {
   //! LOGIN USER.
   login: async (req, res) => {
     try {
-      if (!req?.body?.email || !req?.body?.nationalID || !req?.body?.password)
+      if (!req.body.email || !req.body.nationalID || !req.body.password)
         throw new Error("Provide all the necessary credentials");
 
       const { email, nationalID, password } = req?.body;
@@ -206,7 +206,8 @@ const post_controllers = {
         dbPassword?.password
       );
 
-      if (!passwordMatch) throw new Error("Incorrect Email or Password.");
+      if (!passwordMatch)
+        throw new Error("Incorrect Email,NationalID or Password.");
 
       const { currentSubscription } = await Subscription?.findOne({
         ownerID: _id,
