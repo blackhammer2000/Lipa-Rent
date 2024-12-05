@@ -3,12 +3,12 @@ function isUser(req, res, next) {
     if (!req.headers.user) throw new Error("Unauthorized action, Not a user.");
 
     const {
-      headers: { admin, user },
+      headers: { user },
     } = req;
 
-    if (admin) throw new Error("Unauthorized action, Not a user.");
-
-    if (user) next();
+    if (!user) throw new Error("Unauthorized action, Not a user.");
+ 
+    next();
   } catch (err) {
     if (err?.message) res.status(500).json({ error: err?.message });
   }

@@ -1463,11 +1463,10 @@ const post_controllers = {
         { new: true }
       );
 
-      // if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
-      //   throw new Error("Error adding reset token to database");
+      if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
+        throw new Error("Error adding reset token to database");
 
       res.status(200).json({
-        addResetTokenToDB,
         message: "Password reset token sent",
         resetPasswordToken,
       });
@@ -1479,17 +1478,19 @@ const post_controllers = {
   verifyResetPasswordToken: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user.");
-      if (!req.headers.resetToken) throw new Error("Unauthorized action.");
+      if (!req.headers.resettoken) throw new Error("Unauthorized action.");
+
+      const { id } = req.body;
 
       const {
-        headers: { resetToken },
-      } = req.body;
+        headers: { resettoken },
+      } = req;
 
       const passwordDoc = await Password.findOne({ ownerID: id });
 
       const resetPasswordToken = passwordDoc.resetToken || null;
 
-      if (!resetPasswordToken || resetPasswordToken !== resetToken)
+      if (!resetPasswordToken || resetPasswordToken !== resettoken)
         throw new Error("Password token invalid");
 
       const resetPasswordTokenExpiry = passwordDoc.resetTokenExpiry || null;
@@ -1497,6 +1498,24 @@ const post_controllers = {
       if (!resetPasswordTokenExpiry) throw new Error("Password token invalid");
 
       const isTokenValid = Date.now() < resetPasswordTokenExpiry ? true : false;
+
+      if (!isTokenValid) {
+        const removeInvalidToken = await Password.updateMany(
+          { ownerID: id },
+          {
+            $set: {
+              resetToken: null,
+              resetTokenExpiry: null,
+            },
+          }
+        );
+
+        if (
+          !removeInvalidToken.acknowledged &&
+          !removeInvalidToken.modifiedCount
+        )
+          throw new Error("Error removing invalid reset token.");
+      }
 
       res.status(200).json({
         message: isTokenValid ? "Verification successful" : "Token is invalid",

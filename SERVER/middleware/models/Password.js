@@ -10,6 +10,15 @@ const PasswordSchema = new Schema({
     type: String,
     required: true,
   },
+  resetToken: {
+    type: String,
+  },
+  resetTokenExpiry: {
+    type: Number,
+  },
+  lastReset: {
+    type: Number,
+  },
 });
 
 PasswordSchema.pre("save", async function (next) {
