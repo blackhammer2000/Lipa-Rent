@@ -14,7 +14,7 @@ const verifyUserAccessToken = (req, res, next) => {
       headers: { token },
     } = req;
 
-    const { _id, currentSubscription, user, admin, disabled } = verify(
+    const { _id, currentSubscription, user, disabled } = verify(
       token,
       process.env.MY_SECRET_KEY
     );

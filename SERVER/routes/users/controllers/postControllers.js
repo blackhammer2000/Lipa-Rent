@@ -66,9 +66,6 @@ const post_controllers = {
       const newOwnerPasswordDB = await Password?.create({
         ownerID: newOwner?._id?.toString(),
         password: encrypt(password),
-        resetToken: null,
-        resetTokenExpiry: null,
-        lastReset: null,
       });
 
       if (!newOwnerPasswordDB)
@@ -1455,21 +1452,23 @@ const post_controllers = {
       const resetPasswordToken = crypto.randomUUID().slice(-12);
       const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
 
-      const addResetTokenToDB = await Password.updateOne(
+      const addResetTokenToDB = await Password.updateMany(
         { ownerID: id },
         {
           $set: {
             resetToken: resetPasswordToken,
             resetTokenExpiry: resetPasswordTokenExpiry,
           },
-        }
+        },
+        { new: true }
       );
 
-      if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
-        throw new Error("Error adding reset token to database");
+      // if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
+      //   throw new Error("Error adding reset token to database");
 
       res.status(200).json({
-        message: "Reset token has been generated successfully",
+        addResetTokenToDB,
+        message: "Password reset token sent",
         resetPasswordToken,
       });
     } catch (err) {
