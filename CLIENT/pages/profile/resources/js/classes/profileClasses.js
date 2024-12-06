@@ -111,9 +111,39 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { message } = await generateResetCodeRequest.json();
+    const { message, error } = await generateResetCodeRequest.json();
 
     if (message || error) UserInterface.closeLoader("verifyingCode");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message) return { message };
+  }
+
+  static async editPassword(newPassword, confirmNewPassword, accessToken) {
+    if (!newPassword || !confirmNewPassword || !accessToken) return;
+
+    UserInterface.openLoader("changing password", "changingPassword");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({ newPassword, confirmNewPassword }),
+    };
+
+    const changePasswordRequest = await fetch(
+      "http://localhost:4000/api/user/owner/edit/password",
+      requestOptions
+    );
+
+    const { message, error } = await changePasswordRequest.json();
+
+    if (message || error) UserInterface.closeLoader("changingPassword");
 
     if (error) UserInterface.handleErrors(error);
 
@@ -189,7 +219,7 @@ class UserInterface extends UserinterfaceUtilities {
     if (triggerLogOut) this.handleLogout();
   }
 
-  static createPasswordResetVerificationModal() {
+  static createPasswordResetVerificationModal(accessToken) {
     const modal = document.createElement("div");
     modal.className =
       "resetModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
@@ -239,12 +269,22 @@ class UserInterface extends UserinterfaceUtilities {
     const verifyButton = document.createElement("button");
     verifyButton.className = "btn btn-success";
     verifyButton.innerText = "Verify";
-    verifyButton.addEventListener("click", (e) => {
+    verifyButton.addEventListener("click", async (e) => {
       e.preventDefault();
       const resetCode =
         e.target.parentElement.previousElementSibling.querySelector(
           "form input"
         ).value;
+
+      const { message } = await Store.verifyPasswordResetCode(
+        accessToken,
+        resetCode
+      );
+
+      if (!message) return;
+
+      this.alertMessage(message, "success");
+      document.querySelector(".resetModal").remove();
     });
 
     const sendCodeAgainButton = document.createElement("button");
@@ -284,10 +324,14 @@ class UserInterface extends UserinterfaceUtilities {
     const { message, resetPasswordToken } =
       await Store.genaratePasswordResetCode(accessToken);
 
-    UserInterface.alertMessage(message, "success");
+    this.alertMessage(message, "success");
     alert(resetPasswordToken);
 
     if (message && resetPasswordToken)
-      UserInterface.createPasswordResetVerificationModal();
+      UserInterface.createPasswordResetVerificationModal(accessToken);
+  }
+
+  static async createChangePasswordModal(accessToken) {
+    if (!accessToken) return;
   }
 }

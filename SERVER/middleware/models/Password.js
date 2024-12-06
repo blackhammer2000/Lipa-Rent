@@ -16,6 +16,9 @@ const PasswordSchema = new Schema({
   resetTokenExpiry: {
     type: Number,
   },
+  resetTokenVerified: {
+    type: Boolean,
+  },
   lastReset: {
     type: Number,
   },

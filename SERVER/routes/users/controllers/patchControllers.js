@@ -428,7 +428,16 @@ const patchControllers = {
       const resetPasswordToken = passwordDoc.resetToken || null;
 
       if (!resetPasswordToken || resetPasswordToken !== resettoken)
-        throw new Error("Password token invalid");
+        throw new Error("Invalid Token, generate a new one.");
+
+      const isResetPasswordTokenVerified =
+        passwordDoc.resetTokenVerified || null;
+
+      if (
+        !isResetPasswordTokenVerified ||
+        isResetPasswordTokenVerified !== false
+      )
+        throw new Error("Invalid Token, generate a new one.");
 
       const hashedNewPassword = await hash(encrypt(newPassword), 10);
 
@@ -441,6 +450,7 @@ const patchControllers = {
             password: hashedNewPassword,
             resetToken: null,
             resetTokenExpiry: null,
+            resetTokenVerified: false,
             lastReset: Date.now(),
           },
         },

@@ -1459,6 +1459,7 @@ const post_controllers = {
           $set: {
             resetToken: resetPasswordToken,
             resetTokenExpiry: resetPasswordTokenExpiry,
+            resetTokenVerified: false,
           },
         },
         { new: true }
@@ -1492,12 +1493,12 @@ const post_controllers = {
       const resetPasswordToken = passwordDoc.resetToken || null;
 
       if (!resetPasswordToken || resetPasswordToken !== resettoken)
-        throw new Error("Password token invalid");
+        throw new Error("Invalid Token, generate a new one.");
 
       const resetPasswordTokenExpiry = passwordDoc.resetTokenExpiry || null;
 
       if (!resetPasswordTokenExpiry)
-        throw new Error("Password token invalid, generate new token");
+        throw new Error("Invalid Token, generate a new one.");
 
       const isTokenValid = Date.now() < resetPasswordTokenExpiry ? true : false;
 
@@ -1508,6 +1509,7 @@ const post_controllers = {
             $set: {
               resetToken: null,
               resetTokenExpiry: null,
+              resetTokenVerified: false,
             },
           }
         );
@@ -1520,6 +1522,18 @@ const post_controllers = {
 
         throw new Error("Invalid Token, generate a new one.");
       }
+
+      const verifyToken = await Password.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            resetTokenVerified: true,
+          },
+        }
+      );
+
+      if (!verifyToken.acknowledged && !verifyToken.modifiedCount)
+        throw new Error("Error verifying reset token.");
 
       res.status(200).json({
         message: "Verification successful",
