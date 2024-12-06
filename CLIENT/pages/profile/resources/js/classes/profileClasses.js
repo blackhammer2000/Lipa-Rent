@@ -173,7 +173,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const closeModalButton = document.createElement("button");
     closeModalButton.draggable = "true";
-    closeModalButton.className = "btn btn-danger";
+    closeModalButton.className = "closeResetModal btn btn-danger";
     closeModalButton.innerText = "X";
     legend.append(closeModalButton);
     fieldset.append(legend);
@@ -203,12 +203,29 @@ class UserInterface extends UserinterfaceUtilities {
     formGroup2.className = "form-group";
 
     const verifyButton = document.createElement("button");
-    verifyButton.className = "btn btn-dark";
+    verifyButton.className = "btn btn-success";
     verifyButton.innerText = "Verify";
 
     const sendCodeAgainButton = document.createElement("button");
-    sendCodeAgainButton.className = "ml-2 btn btn-info";
+    sendCodeAgainButton.className = "ml-2 btn btn-dark";
     sendCodeAgainButton.innerText = "Send code again";
+    sendCodeAgainButton.disabled = "true";
+
+    // const newResetCodeTimer = document.createElement("span");
+    // let counter = 10;
+    // newResetCodeTimer.innerText = `(${counter})`;
+
+    // var interval = setInterval(() => {
+    //   if (counter < 1) {
+    //     clearInterval(interval);
+    //     sendCodeAgainButton.disabled = "false";
+    //   }
+
+    //   counter--;
+    //   newResetCodeTimer.innerText = `(${counter})`;
+    // }, 1000);
+
+    // sendCodeAgainButton.append(newResetCodeTimer);
 
     formGroup2.append(verifyButton);
     formGroup2.append(sendCodeAgainButton);
