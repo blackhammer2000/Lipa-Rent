@@ -62,7 +62,7 @@ class Store extends StoreUtilities {
   static async genaratePasswordResetCode(accessToken) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("editing owner details", "editOwner");
+    UserInterface.openLoader("sending reset code", "sendingCode");
 
     const requestOptions = {
       mode: "cors",
@@ -74,19 +74,20 @@ class Store extends StoreUtilities {
       },
     };
 
-    const editOwnerDetailsRequest = await fetch(
+    const generateResetCodeRequest = await fetch(
       "http://localhost:4000/api/user/owner/generate/resetToken",
       requestOptions
     );
 
-    const { message, error, triggerLogOut } =
-      await editOwnerDetailsRequest.json();
+    const { message, resetPasswordToken, error } =
+      await generateResetCodeRequest.json();
 
-    if (message || error) UserInterface.closeLoader("editOwner");
+    if (message || resetPasswordToken || error)
+      UserInterface.closeLoader("sendingCode");
 
     if (error) UserInterface.handleErrors(error);
 
-    if (message && triggerLogOut) return { message, triggerLogOut };
+    if (message && resetPasswordToken) return { message, resetPasswordToken };
   }
 }
 
@@ -216,5 +217,18 @@ class UserInterface extends UserinterfaceUtilities {
     modal.append(fieldset);
 
     document.querySelector("body").append(modal);
+  }
+
+  static async generateResetCodeAndOpenResetModal(accessToken) {
+    if (!accessToken) return;
+
+    const { message, resetPasswordToken } =
+      await Store.genaratePasswordResetCode(accessToken);
+
+    UserInterface.alertMessage(message, "success");
+    alert(resetPasswordToken);
+
+    if (message && resetPasswordToken)
+      UserInterface.createPasswordResetVerificationModal();
   }
 }

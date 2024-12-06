@@ -37,5 +37,8 @@
   });
 
   const changePassword = document.querySelector("[data-edit-password]");
-  changePassword.addEventListener("click", () => {});
+  changePassword.addEventListener("click", () => {
+    UserInterface.generateResetCodeAndOpenResetModal(accessToken);
+    homeSection.classList.add("blur");
+  });
 })();
