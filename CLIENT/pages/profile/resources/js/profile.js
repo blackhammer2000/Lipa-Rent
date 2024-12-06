@@ -42,8 +42,9 @@
     homeSection.classList.add("blur");
   });
 
-  const closeChangePasswordModal = document.querySelector(".closeResetModal ");
-  closeChangePasswordModal?.addEventListener("click", () => {
+  const closeChangePasswordModalButton =
+    document.querySelector(".closeResetModal ");
+  closeChangePasswordModalButton?.addEventListener("click", () => {
     alert("clicked");
     document.querySelector(".resetModal").remove();
     homeSection.classList.remove("blur");
