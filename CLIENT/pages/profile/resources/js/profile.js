@@ -35,4 +35,7 @@
     UserInterface.editOwnerDetails(accessToken, editOwnerForm);
     homeSection.classList.remove("blur");
   });
+
+  const changePassword = document.querySelector("[data-edit-password]");
+  changePassword.addEventListener("click", () => {});
 })();

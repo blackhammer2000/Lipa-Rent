@@ -58,6 +58,36 @@ class Store extends StoreUtilities {
 
     if (message && triggerLogOut) return { message, triggerLogOut };
   }
+
+  static async genaratePasswordResetCode(accessToken) {
+    if (!accessToken) return;
+
+    UserInterface.openLoader("editing owner details", "editOwner");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+    };
+
+    const editOwnerDetailsRequest = await fetch(
+      "http://localhost:4000/api/user/owner/generate/resetToken",
+      requestOptions
+    );
+
+    const { message, error, triggerLogOut } =
+      await editOwnerDetailsRequest.json();
+
+    if (message || error) UserInterface.closeLoader("editOwner");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message && triggerLogOut) return { message, triggerLogOut };
+  }
 }
 
 class UserInterface extends UserinterfaceUtilities {
@@ -126,5 +156,65 @@ class UserInterface extends UserinterfaceUtilities {
     form.parentElement.parentElement.classList.add("hide");
     this.alertMessage(message, "success");
     if (triggerLogOut) this.handleLogout();
+  }
+
+  static createPasswordResetVerificationModal() {
+    const modal = document.createElement("div");
+    modal.className =
+      "resetModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
+
+    const fieldset = document.createElement("fieldset");
+    fieldset.className =
+      "container-fluid d-flex flex-column justify-content-center align-items-center";
+
+    const legend = document.createElement("legend");
+    legend.className = "container-fluid d-flex justify-content-end";
+
+    const closeModalButton = document.createElement("button");
+    closeModalButton.draggable = "true";
+    closeModalButton.className = "btn btn-danger";
+    closeModalButton.innerText = "X";
+    legend.append(closeModalButton);
+    fieldset.append(legend);
+
+    const form = document.createElement("form");
+
+    const formGroup1 = document.createElement("div");
+    formGroup1.className = "form-group";
+
+    const label = document.createElement("label");
+    label.htmlFor = "reset";
+    label.className = "text-center";
+
+    const labelText = document.createElement("h5");
+    labelText.innerText = "Enter password reset code:";
+    label.append(labelText);
+    formGroup1.append(label);
+
+    const input = document.createElement("input");
+    input.className = "form-group";
+    input.type = "text";
+    input.id = "reset";
+    formGroup1.append(input);
+    form.append(formGroup1);
+
+    const formGroup2 = document.createElement("div");
+    formGroup2.className = "form-group";
+
+    const verifyButton = document.createElement("button");
+    verifyButton.className = "btn btn-dark";
+    verifyButton.innerText = "Verify";
+
+    const sendCodeAgainButton = document.createElement("button");
+    sendCodeAgainButton.className = "btn btn-info";
+    sendCodeAgainButton.innerText = "Send code again";
+    formGroup2.append(verifyButton);
+    formGroup2.append(sendCodeAgainButton);
+    form.append(formGroup2);
+
+    fieldset.append(form);
+    modal.append(fieldset);
+
+    document.querySelector("body").append(modal);
   }
 }
