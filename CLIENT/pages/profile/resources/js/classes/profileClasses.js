@@ -89,6 +89,36 @@ class Store extends StoreUtilities {
 
     if (message && resetPasswordToken) return { message, resetPasswordToken };
   }
+
+  static async verifyPasswordResetCode(accessToken, resetToken) {
+    if (!accessToken) return;
+
+    UserInterface.openLoader("verifying reset code", "verifyingCode");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+        resettoken: resetToken,
+      },
+    };
+
+    const generateResetCodeRequest = await fetch(
+      "http://localhost:4000/api/user/owner/verify/resetToken",
+      requestOptions
+    );
+
+    const { message } = await generateResetCodeRequest.json();
+
+    if (message || error) UserInterface.closeLoader("verifyingCode");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message) return { message };
+  }
 }
 
 class UserInterface extends UserinterfaceUtilities {
@@ -175,6 +205,10 @@ class UserInterface extends UserinterfaceUtilities {
     closeModalButton.draggable = "true";
     closeModalButton.className = "closeResetModal btn btn-danger";
     closeModalButton.innerText = "X";
+    closeModalButton.addEventListener("click", () => {
+      document.querySelector(".home").classList.remove("blur");
+      document.querySelector(".resetModal").remove();
+    });
     legend.append(closeModalButton);
     fieldset.append(legend);
 
@@ -205,6 +239,13 @@ class UserInterface extends UserinterfaceUtilities {
     const verifyButton = document.createElement("button");
     verifyButton.className = "btn btn-success";
     verifyButton.innerText = "Verify";
+    verifyButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const resetCode =
+        e.target.parentElement.previousElementSibling.querySelector(
+          "form input"
+        ).value;
+    });
 
     const sendCodeAgainButton = document.createElement("button");
     sendCodeAgainButton.className = "ml-2 btn btn-dark";

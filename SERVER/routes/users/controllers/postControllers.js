@@ -1517,10 +1517,12 @@ const post_controllers = {
           !removeInvalidToken.modifiedCount
         )
           throw new Error("Error removing invalid reset token.");
+
+        throw new Error("Invalid Token, generate a new one.");
       }
 
       res.status(200).json({
-        message: isTokenValid ? "Verification successful" : "Token is invalid",
+        message: "Verification successful",
       });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });

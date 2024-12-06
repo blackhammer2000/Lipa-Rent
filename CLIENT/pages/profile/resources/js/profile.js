@@ -41,12 +41,4 @@
     UserInterface.generateResetCodeAndOpenResetModal(accessToken);
     homeSection.classList.add("blur");
   });
-
-  const closeChangePasswordModalButton =
-    document.querySelector(".closeResetModal ");
-  closeChangePasswordModalButton?.addEventListener("click", () => {
-    alert("clicked");
-    document.querySelector(".resetModal").remove();
-    homeSection.classList.remove("blur");
-  });
 })();
