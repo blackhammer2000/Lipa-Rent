@@ -193,7 +193,7 @@ class UserInterface extends UserinterfaceUtilities {
     formGroup1.append(label);
 
     const input = document.createElement("input");
-    input.className = "form-group";
+    input.className = "form-control";
     input.type = "text";
     input.id = "reset";
     formGroup1.append(input);
@@ -207,8 +207,9 @@ class UserInterface extends UserinterfaceUtilities {
     verifyButton.innerText = "Verify";
 
     const sendCodeAgainButton = document.createElement("button");
-    sendCodeAgainButton.className = "btn btn-info";
+    sendCodeAgainButton.className = "ml-2 btn btn-info";
     sendCodeAgainButton.innerText = "Send code again";
+
     formGroup2.append(verifyButton);
     formGroup2.append(sendCodeAgainButton);
     form.append(formGroup2);
