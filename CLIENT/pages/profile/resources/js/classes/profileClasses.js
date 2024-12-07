@@ -120,7 +120,12 @@ class Store extends StoreUtilities {
     if (message) return { message };
   }
 
-  static async editPassword(newPassword, confirmNewPassword, accessToken) {
+  static async editPassword(
+    newPassword,
+    confirmNewPassword,
+    accessToken,
+    resetCode
+  ) {
     if (!newPassword || !confirmNewPassword || !accessToken) return;
 
     UserInterface.openLoader("changing password", "changingPassword");
@@ -132,6 +137,7 @@ class Store extends StoreUtilities {
         "Content-Type": "application/json",
         user: true,
         token: accessToken,
+        resettoken: resetCode,
       },
       body: JSON.stringify({ newPassword, confirmNewPassword }),
     };
@@ -285,7 +291,7 @@ class UserInterface extends UserinterfaceUtilities {
 
       this.alertMessage(message, "success");
       document.querySelector(".resetModal").remove();
-      this.createChangePasswordModal(accessToken);
+      this.createChangePasswordModal(accessToken, resetCode);
     });
 
     const sendCodeAgainButton = document.createElement("button");
@@ -332,7 +338,7 @@ class UserInterface extends UserinterfaceUtilities {
       UserInterface.createPasswordResetVerificationModal(accessToken);
   }
 
-  static async createChangePasswordModal(accessToken) {
+  static async createChangePasswordModal(accessToken, resetCode) {
     if (!accessToken) return;
 
     const modal = document.createElement("div");
@@ -413,7 +419,8 @@ class UserInterface extends UserinterfaceUtilities {
       const { message } = await Store.editPassword(
         newPassword,
         confirmNewPassword,
-        accessToken
+        accessToken,
+        resetCode
       );
 
       if (!message) return;
