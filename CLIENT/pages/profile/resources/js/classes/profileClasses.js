@@ -285,6 +285,7 @@ class UserInterface extends UserinterfaceUtilities {
 
       this.alertMessage(message, "success");
       document.querySelector(".resetModal").remove();
+      this.createChangePasswordModal(accessToken);
     });
 
     const sendCodeAgainButton = document.createElement("button");

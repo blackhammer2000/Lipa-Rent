@@ -41,6 +41,4 @@
     UserInterface.generateResetCodeAndOpenResetModal(accessToken);
     homeSection.classList.add("blur");
   });
-
-  UserInterface.createChangePasswordModal(accessToken);
 })();
