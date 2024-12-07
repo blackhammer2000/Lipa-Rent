@@ -32,3 +32,13 @@
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 10px, 10px, 10px, 10px, #000;
 }
+
+.changePasswordModal {
+  position: absolute;
+  content: "";
+  top: 30%;
+  left: 39%;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 10px, 10px, 10px, 10px, #000;
+}
