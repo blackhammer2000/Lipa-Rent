@@ -369,11 +369,7 @@ class UserInterface extends UserinterfaceUtilities {
     const toggleShowAndHide1 = document.createElement("i");
     toggleShowAndHide1.className = "fa fa-eye ml-3";
     toggleShowAndHide1.addEventListener("click", (e) => {
-      e.target.previousElementSibling.type = "password"
-        ? (e.target.previousElementSibling.type = "text")
-        : (e.target.previousElementSibling.type = "text"
-            ? (e.target.previousElementSibling.type = "password")
-            : null);
+      this.toggleShowAndHide(e);
     });
     formGroup1.append(newPasswordInput);
     formGroup1.append(toggleShowAndHide1);
@@ -389,6 +385,9 @@ class UserInterface extends UserinterfaceUtilities {
 
     const toggleShowAndHide2 = document.createElement("i");
     toggleShowAndHide2.className = "fa fa-eye ml-3";
+    toggleShowAndHide2.addEventListener("click", (e) => {
+      this.toggleShowAndHide(e);
+    });
     formGroup2.append(confirmNewPasswordInput);
     formGroup2.append(toggleShowAndHide2);
     form.append(formGroup2);
@@ -401,5 +400,19 @@ class UserInterface extends UserinterfaceUtilities {
     fieldset.append(form);
     modal.append(fieldset);
     document.querySelector("body").append(modal);
+  }
+
+  static toggleShowAndHidePassword(e) {
+    e.target.previousElementSibling.type = "password"
+      ? (e.target.previousElementSibling.type = "text")
+      : (e.target.previousElementSibling.type = "password");
+
+    if (e.target.classList.contains("fa-eye")) {
+      e.target.classList.remove("fa-eye");
+      e.target.classList.add("fa-eye-slash");
+    } else {
+      e.target.classList.remove("fa-eye-slash");
+      e.target.classList.add("fa-eye");
+    }
   }
 }
