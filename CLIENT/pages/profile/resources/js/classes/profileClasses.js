@@ -339,7 +339,7 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static async createChangePasswordModal(accessToken, resetCode) {
-    if (!accessToken) return;
+    if (!accessToken || !resetCode) return;
 
     const modal = document.createElement("div");
     modal.className = "changePasswordModal border border-dark px-4 pb-4 pt-2";
@@ -371,6 +371,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const newPasswordInput = document.createElement("input");
     newPasswordInput.type = "password";
+    newPasswordInput.required = true;
     newPasswordInput.placeholder = "New password";
     newPasswordInput.className = "form-control w-100";
 
@@ -388,6 +389,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const confirmNewPasswordInput = document.createElement("input");
     confirmNewPasswordInput.type = "password";
+    confirmNewPasswordInput.required = true;
     confirmNewPasswordInput.placeholder = "Confirm new password";
     confirmNewPasswordInput.className = "form-control w-100";
 
@@ -407,33 +409,38 @@ class UserInterface extends UserinterfaceUtilities {
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
-      if (!confirm("Proceed to change password?")) return;
-
-      const newPassword = form.querySelectorAll("input")[0].value;
-      const confirmNewPassword = form.querySelectorAll("input")[1].value;
-
-      if (newPassword !== confirmNewPassword)
-        this.handleErrors("Passwords do not match");
-
-      const { message } = await Store.editPassword(
-        newPassword,
-        confirmNewPassword,
-        accessToken,
-        resetCode
-      );
-
-      if (!message) return;
-
-      this.alertMessage(message, "success");
-      document.querySelector(".changePasswordModal")?.remove();
-      document.querySelector(".home")?.classList.remove("blur");
-      this.handleLogout();
+      this.changePassword(accessToken, resetCode, form);
     });
 
     fieldset.append(form);
     modal.append(fieldset);
     document.querySelector("body").append(modal);
+  }
+
+  static async changePassword(accessToken, resetCode, form) {
+    if (!accessToken || !resetCode || !form) return;
+
+    if (!confirm("Proceed to change password?")) return;
+
+    const newPassword = form.querySelectorAll("input")[0].value;
+    const confirmNewPassword = form.querySelectorAll("input")[1].value;
+
+    if (newPassword !== confirmNewPassword)
+      this.handleErrors("Passwords do not match");
+
+    const { message } = await Store.editPassword(
+      newPassword,
+      confirmNewPassword,
+      accessToken,
+      resetCode
+    );
+
+    if (!message) return;
+
+    this.alertMessage(message, "success");
+    document.querySelector(".changePasswordModal")?.remove();
+    document.querySelector(".home")?.classList.remove("blur");
+    this.handleLogout();
   }
 
   static toggleShowAndHidePassword(e) {
