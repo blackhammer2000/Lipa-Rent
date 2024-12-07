@@ -435,7 +435,7 @@ const patchControllers = {
 
       if (
         !isResetPasswordTokenVerified ||
-        isResetPasswordTokenVerified !== false
+        isResetPasswordTokenVerified !== true
       )
         throw new Error("Invalid Token, generate a new one.");
 
@@ -450,11 +450,10 @@ const patchControllers = {
             password: hashedNewPassword,
             resetToken: null,
             resetTokenExpiry: null,
-            resetTokenVerified: false,
+            resetTokenVerified: null,
             lastReset: Date.now(),
           },
-        },
-        { new: true }
+        }
       );
 
       if (!updatePassword.acknowledged && !updatePassword.modifiedCount)
