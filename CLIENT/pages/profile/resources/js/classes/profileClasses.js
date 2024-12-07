@@ -428,6 +428,7 @@ class UserInterface extends UserinterfaceUtilities {
       this.alertMessage(message, "success");
       document.querySelector(".changePasswordModal")?.remove();
       document.querySelector(".home")?.classList.remove("blur");
+      this.handleLogout();
     });
 
     fieldset.append(form);
