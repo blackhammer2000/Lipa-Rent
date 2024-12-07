@@ -344,6 +344,9 @@ class UserInterface extends UserinterfaceUtilities {
     closeModalButton.draggable = "true";
     closeModalButton.innerText = "X";
     closeModal.append(closeModalButton);
+    closeModal.addEventListener("click", () => {
+      document.querySelector(".changePasswordModal")?.remove();
+    });
     modal.append(closeModal);
 
     const fieldset = document.createElement("fieldset");
@@ -365,6 +368,13 @@ class UserInterface extends UserinterfaceUtilities {
 
     const toggleShowAndHide1 = document.createElement("i");
     toggleShowAndHide1.className = "fa fa-eye ml-3";
+    toggleShowAndHide1.addEventListener("click", (e) => {
+      e.target.previousElementSibling.type = "password"
+        ? (e.target.previousElementSibling.type = "text")
+        : (e.target.previousElementSibling.type = "text"
+            ? (e.target.previousElementSibling.type = "password")
+            : null);
+    });
     formGroup1.append(newPasswordInput);
     formGroup1.append(toggleShowAndHide1);
     form.append(formGroup1);
