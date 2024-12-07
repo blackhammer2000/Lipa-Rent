@@ -333,5 +333,63 @@ class UserInterface extends UserinterfaceUtilities {
 
   static async createChangePasswordModal(accessToken) {
     if (!accessToken) return;
+
+    const modal = document.createElement("div");
+    modal.className = "changePasswordModal border border-dark px-4 pb-4 pt-2";
+
+    const closeModal = document.createElement("div");
+    closeModal.className = "closeModal w-100 d-flex justify-content-end";
+    const closeModalButton = document.createElement("button");
+    closeModalButton.className = "btn btn-danger";
+    closeModalButton.draggable = "true";
+    closeModalButton.innerText = "X";
+    closeModal.append(closeModalButton);
+    modal.append(closeModal);
+
+    const fieldset = document.createElement("fieldset");
+    const legend = document.createElement("legend");
+    legend.className = "text-center";
+    legend.innerText = "Password Reset";
+    fieldset.append(legend);
+
+    const form = document.createElement("form");
+    form.className = "container text-center";
+
+    const formGroup1 = document.createElement("div");
+    formGroup1.className = "form-group d-flex align-items-center w-100";
+
+    const newPasswordInput = document.createElement("input");
+    newPasswordInput.type = "password";
+    newPasswordInput.placeholder = "New password";
+    newPasswordInput.className = "form-control w-100";
+
+    const toggleShowAndHide1 = document.createElement("i");
+    toggleShowAndHide1.className = "fa fa-eye ml-3";
+    formGroup1.append(newPasswordInput);
+    formGroup1.append(toggleShowAndHide1);
+    form.append(formGroup1);
+
+    const formGroup2 = document.createElement("div");
+    formGroup2.className = "form-group d-flex align-items-center w-100";
+
+    const confirmNewPasswordInput = document.createElement("input");
+    confirmNewPasswordInput.type = "password";
+    confirmNewPasswordInput.placeholder = "Confirm new password";
+    confirmNewPasswordInput.className = "form-control w-100";
+
+    const toggleShowAndHide2 = document.createElement("i");
+    toggleShowAndHide2.className = "fa fa-eye ml-3";
+    formGroup2.append(confirmNewPasswordInput);
+    formGroup2.append(toggleShowAndHide2);
+    form.append(formGroup2);
+
+    const submitButton = document.createElement("button");
+    submitButton.className = "btn btn-success w-50";
+    submitButton.innerText = "Submit";
+    form.append(submitButton);
+
+    fieldset.append(form);
+    modal.append(fieldset);
+    document.querySelector("body").append(modal);
   }
 }
