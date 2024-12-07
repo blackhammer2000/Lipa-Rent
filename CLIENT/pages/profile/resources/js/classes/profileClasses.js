@@ -346,6 +346,7 @@ class UserInterface extends UserinterfaceUtilities {
     closeModal.append(closeModalButton);
     closeModal.addEventListener("click", () => {
       document.querySelector(".changePasswordModal")?.remove();
+      document.querySelector(".home")?.classList.remove("blur");
     });
     modal.append(closeModal);
 
@@ -369,7 +370,7 @@ class UserInterface extends UserinterfaceUtilities {
     const toggleShowAndHide1 = document.createElement("i");
     toggleShowAndHide1.className = "fa fa-eye ml-3";
     toggleShowAndHide1.addEventListener("click", (e) => {
-      this.toggleShowAndHide(e);
+      //   this.toggleShowAndHidePassword(e);
     });
     formGroup1.append(newPasswordInput);
     formGroup1.append(toggleShowAndHide1);
@@ -386,7 +387,7 @@ class UserInterface extends UserinterfaceUtilities {
     const toggleShowAndHide2 = document.createElement("i");
     toggleShowAndHide2.className = "fa fa-eye ml-3";
     toggleShowAndHide2.addEventListener("click", (e) => {
-      this.toggleShowAndHide(e);
+      //   this.toggleShowAndHidePassword(e);
     });
     formGroup2.append(confirmNewPasswordInput);
     formGroup2.append(toggleShowAndHide2);
@@ -396,6 +397,30 @@ class UserInterface extends UserinterfaceUtilities {
     submitButton.className = "btn btn-success w-50";
     submitButton.innerText = "Submit";
     form.append(submitButton);
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!confirm("Proceed to change password?")) return;
+
+      const newPassword = form.querySelectorAll("input")[0].value;
+      const confirmNewPassword = form.querySelectorAll("input")[1].value;
+
+      if (newPassword !== confirmNewPassword)
+        this.handleErrors("Passwords do not match");
+
+      const { message } = await Store.editPassword(
+        newPassword,
+        confirmNewPassword,
+        accessToken
+      );
+
+      if (!message) return;
+
+      this.alertMessage(message, "success");
+      document.querySelector(".changePasswordModal")?.remove();
+      document.querySelector(".home")?.classList.remove("blur");
+    });
 
     fieldset.append(form);
     modal.append(fieldset);
