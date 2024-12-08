@@ -333,11 +333,14 @@ class UserInterface extends UserinterfaceUtilities {
     const { message, resetPasswordToken } =
       await Store.genaratePasswordResetCode(accessToken);
 
+    if (!message && !resetPasswordToken) return;
+
     this.alertMessage(message, "success");
     alert(resetPasswordToken);
 
-    if (message && resetPasswordToken)
-      UserInterface.createPasswordResetVerificationModal(accessToken);
+    document.querySelector(".home").classList.add("blur");
+
+    UserInterface.createPasswordResetVerificationModal(accessToken);
   }
 
   static async createChangePasswordModal(accessToken, resetCode) {
