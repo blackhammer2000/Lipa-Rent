@@ -165,9 +165,9 @@ class UserInterface extends UserinterfaceUtilities {
 
     const form = document.querySelector("[data-edit-account-form]");
 
-    // const isFormPopulated = form
-    //   .querySelectorAll("input")
-    //   .every((input) => input.value);
+    // const formInputs = form.querySelectorAll("input");
+
+    // const isFormPopulated = formInputs.every((input) => input.value);
 
     // if (isFormPopulated) {
     //   form.parentElement.parentElement.classList.remove("hide");
