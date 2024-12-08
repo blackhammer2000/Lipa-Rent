@@ -161,6 +161,8 @@ class UserInterface extends UserinterfaceUtilities {
   static async populateEditOwnerDetailsForm(accessToken) {
     if (!accessToken) return;
 
+    if (!confirm("Do you want to change your account details?")) return;
+
     const form = document.querySelector("[data-edit-account-form]");
 
     // const isFormPopulated = form
