@@ -328,6 +328,8 @@ class UserInterface extends UserinterfaceUtilities {
   static async generateResetCodeAndOpenResetModal(accessToken) {
     if (!accessToken) return;
 
+    if (!confirm("Do you want to change your password?")) return;
+
     const { message, resetPasswordToken } =
       await Store.genaratePasswordResetCode(accessToken);
 
