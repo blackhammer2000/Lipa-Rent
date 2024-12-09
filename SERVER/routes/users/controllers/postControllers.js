@@ -20,6 +20,9 @@ const { Otp } = require("../../../middleware/models/Otp");
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 // const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
+const {
+  signLoginAccessToken,
+} = require("../../../middleware/tokens/loginAccessToken");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -312,21 +315,17 @@ const post_controllers = {
         if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
       }
 
-      const userData = {
-        _id,
-        currentSubscription,
-        disabled,
-        user: true,
-      };
+      const userData = { id: _id };
 
-      const token = await signAccessToken(userData);
+      // currentSubscription,
+      // disabled,
+      // user: true,
+      const loginToken = await signLoginAccessToken(userData);
 
-      if (!token) throw new Error(token);
+      if (!loginToken) throw new Error(loginToken);
 
       res.status(200).json({
-        message: "login successful",
-        response_status: "success",
-        token,
+        loginToken,
       });
     } catch (err) {
       if (err?.message)
@@ -336,6 +335,137 @@ const post_controllers = {
     }
   },
 
+  generateLoginOtp: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unauthorized action.");
+
+      const { id } = req.body;
+
+      const userOtpDoc = await Otp.findOne({ ownerID: id });
+
+      const loginOtp = userOtpDoc.loginOtp || null;
+      const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
+      const loginOtpExpiry = userOtpDoc.loginOtpExpiry || null;
+
+      if (
+        (loginOtp && loginOtp !== null) ||
+        (isLoginOtpVerified && isLoginOtpVerified !== null) ||
+        (loginOtpExpiry && loginOtpExpiry !== null)
+      ) {
+        const resetLoginOtpDetails = await Otp.updateMany(
+          { ownerID: _id },
+          {
+            $set: {
+              loginOtp: null,
+              isLoginOtpVerified: null,
+              loginOtpExpiry: null,
+            },
+          },
+          { new: true }
+        );
+
+        if (
+          !resetLoginOtpDetails.acknowledged ||
+          !resetLoginOtpDetails.modified
+        )
+          throw new Error("An error has occurred");
+      }
+
+      const newLoginOtp = crypto.randomUUID().slice(-12);
+      const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
+
+      const loginOtpDetailsToDB = await Otp.updateMany(
+        { ownerID: _id },
+        {
+          $set: {
+            loginOtp: newLoginOtp,
+            isLoginOtpVerified: false,
+            loginOtpExpiry: newLoginOtpExpiry,
+          },
+        },
+        { new: true }
+      );
+
+      if (
+        !loginOtpDetailsToDB.acknowledged &&
+        !loginOtpDetailsToDB.modifiedCount
+      )
+        throw new Error("Error adding login otp details to database");
+
+      const loginToken = await signLoginAccessToken({ id });
+
+      if (!loginToken) throw new Error(loginToken);
+
+      res.status(200).json({
+        message: "Login Otp has been sent",
+        newLoginOtp,
+        loginToken,
+      });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  verifyLoginOtp: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unauthorized action.");
+      if (!req.headers.newLoginOtp) throw new Error("No otp detected");
+
+      const { id } = req.body;
+      const { newLoginOtp } = req.headers;
+
+      const userOtpDoc = await Otp.findOne({ ownerID: id });
+
+      const loginOtp = userOtpDoc.loginOtp || null;
+      const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
+      const loginOtpExpiry = userOtpDoc.loginOtpExpiry || null;
+
+      if (loginOtp && newLoginOtp !== loginOtp) throw new Error("Invalid Otp");
+      if (isLoginOtpVerified && isLoginOtpVerified !== false)
+        throw new Error("Invalid Otp");
+      if (logoutExpiry && Date.now() > loginOtpExpiry)
+        throw new Error("Otp expired, generate another one. ");
+
+      const loginOtpDetailsToDB = await Otp.updateMany(
+        { ownerID: _id },
+        {
+          $set: {
+            loginOtp: null,
+            isLoginOtpVerified: true,
+            loginOtpExpiry: null,
+          },
+        },
+        { new: true }
+      );
+
+      if (
+        !loginOtpDetailsToDB.acknowledged &&
+        !loginOtpDetailsToDB.modifiedCount
+      )
+        throw new Error("Error adding login otp details to database");
+
+      const user = await Owner?.findOne({
+        _id: id,
+      });
+
+      if (!user) throw new Error("Incorrect Email,NationalID or Password.");
+
+      const { _id, paid, disabled } = user;
+
+      const userData = { _id, currentSubscription, disabled, user: true };
+
+      const loginToken = await signLoginAccessToken(userData);
+
+      if (!loginToken) throw new Error(loginToken);
+
+      res.status(200).json({
+        message: "Login successful",
+        token: loginToken,
+      });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
   //! READING OWNER DETAILS
   readOwnerDetails: async (req, res) => {
     try {

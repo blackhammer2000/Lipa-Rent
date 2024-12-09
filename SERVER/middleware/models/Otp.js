@@ -12,7 +12,7 @@ const OtpSchema = new Schema({
   isSignUpOtpVerified: {
     type: Boolean,
   },
-  isSignUpOtpExpired: {
+  signUpOtpExpiry: {
     type: Number,
   },
   loginOtp: {
@@ -22,7 +22,7 @@ const OtpSchema = new Schema({
   isLoginOtpVerified: {
     type: Boolean,
   },
-  isLoginOtpExpired: {
+  loginOtpExpiry: {
     type: Number,
   },
 });
