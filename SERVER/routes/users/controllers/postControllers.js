@@ -15,17 +15,102 @@ const { Property } = require("../../../middleware/models/Property");
 const { Room } = require("../../../middleware/models/Room");
 const { Tenant } = require("../../../middleware/models/Tenant");
 const { Rent } = require("../../../middleware/models/Rent");
+const { Otp } = require("../../../middleware/models/Otp");
 
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 // const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
-const {
-  signResetPasswordToken,
-} = require("../../../middleware/tokens/resetPasswordToken");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
 const post_controllers = {
+  //! GENARATE SIGN UP USER OTP
+  genarateSignUpToken: async (req, res) => {
+    try {
+      if (
+        !req.body.nationalID ||
+        !req.body.email ||
+        !req.body.password ||
+        !req.body.confirmPassword
+      )
+        throw new Error("No valid details provided");
+
+      const { nationalID, email, password, confirmPassword } = req.body;
+
+      if (encrypt(password) !== encrypt(confirmPassword))
+        throw new Error("passwords do not match.");
+
+      const accountExists = await Owner?.findOne({
+        email: email,
+        nationalID: nationalID,
+      });
+
+      if (!accountExists) {
+        const newOwner = await Owner?.create({});
+      }
+
+      const { id } = req.body;
+
+      const userOtpDoc = await Otp.findOne({ ownerID: id });
+
+      const signUpOtp = userOtpDoc.signUpOtp || null;
+      const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
+      const isSignUpOtpExpired = userOtpDoc.isSignUpOtpExpired || null;
+
+      if (signUpOtp || isSignUpOtpVerified || isSignUpOtpExpired) {
+        const resetSignUpOtpDetails = await Otp.updateMany(
+          { ownerID: id },
+          {
+            $set: {
+              signUpOtp: null,
+              isSignUpOtpVerified: null,
+              isSignUpOtpExpired: null,
+            },
+          },
+          { new: true }
+        );
+
+        if (
+          !resetSignUpOtpDetails.acknowledged ||
+          !resetSignUpOtpDetails.modified
+        )
+          throw new Error("An error has occurred");
+      }
+
+      const twentyFourHours = 24 * 60 * 60 * 1000;
+
+      if (lastResetTime && Date.now() < lastResetTime + twentyFourHours)
+        throw new Error(
+          "Password can only be reset 24hrs after the last reset"
+        );
+
+      const resetPasswordToken = crypto.randomUUID().slice(-12);
+      const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
+
+      const addResetTokenToDB = await Password.updateMany(
+        { ownerID: id },
+        {
+          $set: {
+            resetToken: resetPasswordToken,
+            resetTokenExpiry: resetPasswordTokenExpiry,
+            resetTokenVerified: false,
+          },
+        },
+        { new: true }
+      );
+
+      if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
+        throw new Error("Error adding reset token to database");
+
+      res.status(200).json({
+        message: "Password reset token sent",
+        resetPasswordToken,
+      });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
+
   //! SIGN UP NEW USER.
   signUp: async (req, res) => {
     try {

@@ -1,21 +1,29 @@
 const { Schema, model } = require("mongoose");
 
 const OtpSchema = new Schema({
-  signUpOtp: {
+  ownerID: {
     type: String,
     required: true,
+  },
+  signUpOtp: {
+    type: String,
+    unique: true,
   },
   isSignUpOtpVerified: {
     type: Boolean,
-    required: true,
+  },
+  isSignUpOtpExpired: {
+    type: Number,
   },
   loginOtp: {
     type: String,
-    required: true,
+    unique: true,
   },
   isLoginOtpVerified: {
     type: Boolean,
-    required: true,
+  },
+  isLoginOtpExpired: {
+    type: Number,
   },
 });
 
