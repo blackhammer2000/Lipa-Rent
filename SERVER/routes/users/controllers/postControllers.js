@@ -317,9 +317,6 @@ const post_controllers = {
 
       const userData = { id: _id };
 
-      // currentSubscription,
-      // disabled,
-      // user: true,
       const loginToken = await signLoginAccessToken(userData);
 
       if (!loginToken) throw new Error(loginToken);

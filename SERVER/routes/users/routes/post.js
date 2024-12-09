@@ -17,7 +17,10 @@ const { isUser } = require("../helpers/isUser");
 
 const {
   signUp,
+
   login,
+  generateLoginOtp,
+  verifyLoginOtp,
 
   readOwnerDetails,
 
@@ -42,11 +45,27 @@ const {
   verifyResetPasswordToken,
   genarateResetPasswordToken,
 } = require("../controllers/postControllers");
+const {
+  verifyLoginToken,
+} = require("../../../middleware/tokens/verifyLoginAccessToken");
 
-// USER SIGN UP AND LOGIN
-
+// SIGN UP
 router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
+
+// LOGIN
 router.post("/api/user/owner/login", isUser, loginValidator, login);
+router.post(
+  "/api/user/owner/generateLoginOtp",
+  isUser,
+  verifyLoginToken,
+  generateLoginOtp
+);
+router.post(
+  "/api/user/owner/verifyLoginOtp",
+  isUser,
+  verifyLoginToken,
+  verifyLoginOtp
+);
 
 // OWNERS DB ROUTES
 router.post(
