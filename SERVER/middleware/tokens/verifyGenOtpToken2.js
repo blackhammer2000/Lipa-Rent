@@ -2,17 +2,26 @@ const { verify } = require("jsonwebtoken");
 
 require("dotenv").config();
 
-const verifyLoginToken = (req, res, next) => {
+const verifyGenOtpToken = (req, res, next) => {
   try {
     if (!req.headers.logintoken) throw new Error("Unauthorized action.");
 
     const { logintoken } = req.headers;
 
-    const { id } = verify(logintoken, process.env.LOGIN_SECRET_KEY);
+    const { id, currentSubscription, disabled } = verify(
+      logintoken,
+      process.env.LOGIN_SECRET_KEY2
+    );
 
-    if (!id) throw new Error("Invalid Token");
+    if (!id || !currentSubscription || !disabled)
+      throw new Error("Invalid Token");
 
-    req.body.id;
+    req.body.id = id;
+    req.body.currentSubscription = currentSubscription;
+    req.body.disabled = disabled;
+
+    delete req.headers.logintoken;
+
     next();
   } catch (err) {
     if (
@@ -25,4 +34,4 @@ const verifyLoginToken = (req, res, next) => {
   }
 };
 
-module.exports = { verifyLoginToken };
+module.exports = { verifyGenOtpToken };

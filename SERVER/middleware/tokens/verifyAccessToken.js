@@ -21,7 +21,7 @@ const verifyUserAccessToken = (req, res, next) => {
 
     if (!user) throw new Error("Unauthorized action, unknown role.");
 
-    if (user && disabled === true) throw new Error("session expired");
+    if (user && disabled === true) throw new Error("Account has been disabled");
 
     if (!_id || (!currentSubscription && user))
       throw new Error("Please Log in again...");

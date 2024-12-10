@@ -1,12 +1,14 @@
 const { sign } = require("jsonwebtoken");
 require("dotenv").config();
 
-const signLoginAccessToken = (userData) => {
+const signLoginToken = (userData) => {
   return new Promise((resolve, reject) => {
-    const token = sign(userData, process.env.LOGIN_SECRET_KEY, {
+    console.log(userData);
+
+    const token = sign(userData, process.env.LOGIN_SECRET_KEY1, {
       expiresIn: "5min",
       issuer: "liparent inc.",
-      audience: `${userData}`,
+      audience: `${userData.id}`,
     });
 
     if (!token) reject(token);
@@ -15,4 +17,4 @@ const signLoginAccessToken = (userData) => {
   });
 };
 
-module.exports = { signLoginAccessToken };
+module.exports = { signLoginToken };
