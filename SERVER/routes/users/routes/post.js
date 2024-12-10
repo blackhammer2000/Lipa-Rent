@@ -45,21 +45,26 @@ const {
   verifyResetPasswordToken,
   genarateResetPasswordToken,
 } = require("../controllers/postControllers");
-const { verifyOTPToken } = require("../../../middleware/tokens/verifyOTPToken");
+
 const {
-  verifyGenOtpToken,
-} = require("../../../middleware/tokens/verifyGenOtpToken2");
+  verifyLoginToken,
+} = require("../../../middleware/tokens/verifyLoginToken");
 
 // SIGN UP
 router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
 
 // LOGIN
 router.post("/api/user/owner/login", isUser, loginValidator, login);
-router.post("/api/user/owner/getOtp", isUser, verifyOTPToken, generateLoginOtp);
+router.post(
+  "/api/user/owner/getOtp",
+  isUser,
+  verifyLoginToken,
+  generateLoginOtp
+);
 router.post(
   "/api/user/owner/verifyOtp",
   isUser,
-  verifyOTPToken,
+  verifyLoginToken,
   verifyLoginOtp
 );
 

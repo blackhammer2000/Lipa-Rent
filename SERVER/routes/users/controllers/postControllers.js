@@ -20,9 +20,7 @@ const { Otp } = require("../../../middleware/models/Otp");
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 // const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
-const {
-  signLoginToken,
-} = require("../../../middleware/tokens/loginAccessToken");
+const { signLoginToken } = require("../../../middleware/tokens/loginToken");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -309,7 +307,7 @@ const post_controllers = {
       if (isSubscriptionExpired && isSubscriptionExpired.error) {
         const updatePaidStatus = await Owner.findOneAndUpdate(
           { _id: _id },
-          { $set: { paid: false } }
+          { $set: { paid: false, disabled: true } }
         );
 
         if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
@@ -337,14 +335,14 @@ const post_controllers = {
       if (
         !req.body.id ||
         !req.body.currentSubscription ||
-        !req.body.disabled ||
+        req.body.disabled !== false ||
         req.body.otp !== false
       )
         throw new Error("Unauthorized action.");
 
       const { id, currentSubscription, disabled } = req.body;
 
-      const userOtpDoc = await Otp.findOne({ ownerID: id }, { new: true });
+      const userOtpDoc = await Otp.findOne({ ownerID: id });
 
       const loginOtp = userOtpDoc.loginOtp || null;
       const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
@@ -399,7 +397,7 @@ const post_controllers = {
         id,
         currentSubscription,
         disabled,
-        otp: true,
+        otp: newLoginOtp,
       });
 
       if (!loginToken) throw new Error(loginToken);
@@ -419,15 +417,12 @@ const post_controllers = {
       if (
         !req.body.id ||
         !req.body.currentSubscription ||
-        !req.body.disabled ||
-        req.body.otp !== true
+        req.body.disabled !== false ||
+        !req.body.otp
       )
         throw new Error("Unauthorized action");
 
-      if (!req.headers.newloginotp) throw new Error("Invalid OTP");
-
-      const { id, currentSubscription, disabled } = req.body;
-      const { newloginotp } = req.headers;
+      const { id, currentSubscription, disabled, otp } = req.body;
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
@@ -435,9 +430,9 @@ const post_controllers = {
       const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
       const loginOtpExpiry = userOtpDoc.loginOtpExpiry || null;
 
-      if (loginOtp && newloginotp !== loginOtp) throw new Error("Invalid Otp");
+      if (loginOtp && otp !== loginOtp) throw new Error("Invalid Otp");
       if (isLoginOtpVerified && isLoginOtpVerified !== false)
-        throw new Error("Invalid Otp");
+        throw new Error("Invalid Otp...");
       if (loginOtpExpiry && Date.now() > loginOtpExpiry)
         throw new Error("Otp expired, generate another one. ");
 
@@ -459,15 +454,7 @@ const post_controllers = {
       )
         throw new Error("Error adding login otp details to database");
 
-      // const user = await Owner?.findOne({
-      //   _id: id,
-      // });
-
-      // if (!user) throw new Error("Incorrect Email,NationalID or Password.");
-
-      // const { _id, disabled } = user;
-
-      const userData = { _id, currentSubscription, disabled, user: true };
+      const userData = { id, currentSubscription, disabled, user: true };
 
       const loginToken = await signAccessToken(userData);
 

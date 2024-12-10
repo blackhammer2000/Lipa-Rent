@@ -14,7 +14,7 @@ const verifyUserAccessToken = (req, res, next) => {
       headers: { token },
     } = req;
 
-    const { _id, currentSubscription, user, disabled } = verify(
+    const { id, currentSubscription, user, disabled } = verify(
       token,
       process.env.MY_SECRET_KEY
     );
@@ -23,7 +23,7 @@ const verifyUserAccessToken = (req, res, next) => {
 
     if (user && disabled === true) throw new Error("Account has been disabled");
 
-    if (!_id || (!currentSubscription && user))
+    if (!id || (!currentSubscription && user))
       throw new Error("Please Log in again...");
 
     const isSubscriptionExpired = user
@@ -33,7 +33,7 @@ const verifyUserAccessToken = (req, res, next) => {
     if (user && isSubscriptionExpired)
       throw new Error(isSubscriptionExpired?.error);
 
-    req.body.id = _id;
+    req.body.id = id;
 
     user ? (req.body.user = user) : null;
 
