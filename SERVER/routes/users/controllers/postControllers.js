@@ -366,7 +366,7 @@ const post_controllers = {
         );
 
         if (
-          !resetLoginOtpDetails.acknowledged ||
+          !resetLoginOtpDetails.acknowledged &&
           !resetLoginOtpDetails.modified
         )
           throw new Error("An error has occurred");
@@ -404,7 +404,6 @@ const post_controllers = {
 
       res.status(200).json({
         message: "Login Otp has been sent",
-        newLoginOtp,
         loginToken,
       });
     } catch (err) {
