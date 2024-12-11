@@ -65,10 +65,7 @@ class UserinterfaceUtilities {
   static openLoader(message, loaderType) {
     if (!message) return;
 
-    const hero = document.querySelector(".hero");
-    const first = hero.querySelector(".first");
-
-    const loaderContainerActive = hero.querySelector(".loaderContainer");
+    const loaderContainerActive = document.querySelector(".loaderContainer");
     const loaderBox = this.createLoaderBox(message, loaderType);
 
     if (loaderContainerActive) {
@@ -78,11 +75,11 @@ class UserinterfaceUtilities {
 
     const loaderContainer = document.createElement("div");
     loaderContainer.className =
-      "loaderContainer d-flex justify-content-center align-items-center container";
+      "loaderContainer d-flex justify-content-center align-items-center container bg-transparent";
 
     loaderContainer.append(loaderBox);
 
-    hero.insertBefore(loaderContainer, first);
+    document.querySelector("body").append(loaderContainer);
   }
 
   static closeLoader(loaderType) {
@@ -95,9 +92,7 @@ class UserinterfaceUtilities {
   static alertMessage(message, className) {
     if (!message) return;
 
-    const alertBoxActive = document.querySelector(".alert");
-    const hero = document.querySelector(".hero");
-    const first = hero.querySelector(".first");
+    const alertBoxActive = document.querySelector(".alertModal");
 
     if (alertBoxActive) {
       alertBoxActive.remove();
@@ -106,7 +101,7 @@ class UserinterfaceUtilities {
 
     const alert = document.createElement("div");
     alert.className =
-      "d-flex justify-content-center align-items-center container";
+      "alertModal d-flex justify-content-center align-items-center container bg-transparent";
     const alertBox = document.createElement("div");
     alertBox.className = `alertBox text-center alert w-50 text-white alert-${className} bg-${className}`;
 
@@ -118,7 +113,7 @@ class UserinterfaceUtilities {
       alertBox.remove();
     }, 1500);
 
-    hero.insertBefore(alert, first);
+    document.querySelector("body").append(alert);
   }
 
   static handleErrors(error) {
