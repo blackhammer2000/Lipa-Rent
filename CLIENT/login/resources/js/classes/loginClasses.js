@@ -108,6 +108,8 @@ class UserInterface extends UserinterfaceUtilities {
   static createVerifyOtpModal(loginToken, loginForm) {
     if (!loginToken) return;
 
+    document.querySelector(".enterOtpModal")?.remove();
+
     const modal = document.createElement("div");
     modal.className =
       "enterOtpModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
@@ -181,7 +183,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const newResetCodeTimer = document.createElement("span");
     let counter = 10;
-    newResetCodeTimer.innerText = `(${counter})`;
+    newResetCodeTimer.innerText = counter;
 
     var interval = setInterval(() => {
       if (counter < 1) {
@@ -196,6 +198,7 @@ class UserInterface extends UserinterfaceUtilities {
     sendCodeAgainButton.append(newResetCodeTimer);
     sendCodeAgainButton.addEventListener("click", () => {
       this.loginAndGetOtp(loginToken, loginForm);
+      sendCodeAgainButton.disabled = "true";
       setInterval(interval);
     });
 
