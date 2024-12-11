@@ -379,7 +379,7 @@ const post_controllers = {
         { ownerID: id },
         {
           $set: {
-            loginOtp: newLoginOtp,
+            loginOtp: encrypt(newLoginOtp),
             isLoginOtpVerified: false,
             loginOtpExpiry: newLoginOtpExpiry,
           },
@@ -424,17 +424,22 @@ const post_controllers = {
 
       const { id, currentSubscription, disabled, otp } = req.body;
 
+      if (otp !== req.headers.otp) throw new Error("Unauthorized action");
+
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
       const loginOtp = userOtpDoc.loginOtp || null;
       const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
       const loginOtpExpiry = userOtpDoc.loginOtpExpiry || null;
 
-      if (loginOtp && otp !== loginOtp) throw new Error("Invalid Otp");
+      const isOtpValid = await compare(encrypt(otp), loginOtp);
+
+      if (!isOtpValid) throw new Error("Invalid Otp");
+
       if (isLoginOtpVerified && isLoginOtpVerified !== false)
-        throw new Error("Invalid Otp...");
+        throw new Error("Invalid Otp");
       if (loginOtpExpiry && Date.now() > loginOtpExpiry)
-        throw new Error("Otp expired, generate another one. ");
+        throw new Error("Invalid Otp");
 
       const loginOtpDetailsToDB = await Otp.updateMany(
         { ownerID: id },
