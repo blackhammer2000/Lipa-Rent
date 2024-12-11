@@ -200,7 +200,7 @@ class UserinterfaceUtilities {
 }
 
 const dropdownMenuButton = document.querySelector(".profile");
-dropdownMenuButton.addEventListener("click", () => {
+dropdownMenuButton?.addEventListener("click", () => {
   document.querySelector(".userDropdown")
     ? UserinterfaceUtilities.deleteDropdownMenu()
     : UserinterfaceUtilities.createDropdownMenu();

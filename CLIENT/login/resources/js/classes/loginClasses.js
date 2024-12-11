@@ -57,8 +57,8 @@ class Store extends StoreUtilities {
     return { loginToken: loginRequestData2.loginToken };
   }
 
-  static async verifyOtp(loginToken) {
-    if (!loginToken) return;
+  static async verifyOtp(loginToken, otp) {
+    if (!loginToken || !otp) return;
 
     UserInterface.openLoader("verifying otp", "verifyingOtp");
 
@@ -69,6 +69,7 @@ class Store extends StoreUtilities {
         user: true,
         "Content-Type": "application/json",
         loginToken,
+        otp,
       },
     };
 
@@ -101,21 +102,111 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (!loginToken) return;
 
-    UserInterface.createVerifyOtpModal(loginToken);
+    this.createVerifyOtpModal(loginToken, form);
   }
 
-  static async verifyOtp(loginToken) {
+  static createVerifyOtpModal(loginToken, loginForm) {
     if (!loginToken) return;
 
-    const { message, token } = await Store.verifyOtp(loginToken);
+    const modal = document.createElement("div");
+    modal.className =
+      "enterOtpModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
 
-    if (!message && !token) return;
+    const fieldset = document.createElement("fieldset");
+    fieldset.className =
+      "container-fluid d-flex flex-column justify-content-center align-items-center";
 
-    UserInterface.alertMessage(message, "success");
-    localStorage.setItem("liparentAccessToken", token);
-    location.assign("/CLIENT/dashboard/dashboard.html");
-    return;
+    const legend = document.createElement("legend");
+    legend.className = "container-fluid d-flex justify-content-end";
+
+    const closeModalButton = document.createElement("button");
+    closeModalButton.draggable = "true";
+    closeModalButton.className = "closeResetModal btn btn-danger";
+    closeModalButton.innerText = "X";
+    closeModalButton.addEventListener("click", () => {
+      document.querySelector(".home").classList.remove("blur");
+      document.querySelector(".enterOtpModal").remove();
+    });
+    legend.append(closeModalButton);
+    fieldset.append(legend);
+
+    const form = document.createElement("form");
+
+    const formGroup1 = document.createElement("div");
+    formGroup1.className = "form-group";
+
+    const label = document.createElement("label");
+    label.className = "text-center";
+
+    const labelText = document.createElement("h5");
+    labelText.innerText = "Enter login OTP";
+    label.append(labelText);
+    formGroup1.append(label);
+
+    const input = document.createElement("input");
+    input.className = "form-control";
+    input.type = "text";
+    formGroup1.append(input);
+    form.append(formGroup1);
+
+    const formGroup2 = document.createElement("div");
+    formGroup2.className = "form-group";
+
+    const verifyButton = document.createElement("button");
+    verifyButton.className = "btn btn-success";
+    verifyButton.innerText = "Verify";
+    verifyButton.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const otp =
+        e.target.parentElement.previousElementSibling.querySelector(
+          "form input"
+        ).value;
+
+      const { message, token } = await Store.verifyOtp(loginToken, otp);
+
+      if (!message && !token) return;
+
+      this.alertMessage(message, "success");
+      localStorage.setItem("liparentAccessToken", token);
+      document.querySelector(".enterOtpModal").remove();
+      document.querySelector(".home").classList.remove("blur");
+      location.assign("/CLIENT/dashboard/dashboard.html");
+      return;
+    });
+
+    const sendCodeAgainButton = document.createElement("button");
+    sendCodeAgainButton.className = "ml-2 btn btn-dark";
+    sendCodeAgainButton.innerText = "Send code again";
+    sendCodeAgainButton.disabled = "true";
+
+    const newResetCodeTimer = document.createElement("span");
+    let counter = 10;
+    newResetCodeTimer.innerText = `(${counter})`;
+
+    var interval = setInterval(() => {
+      if (counter < 1) {
+        clearInterval(interval);
+        sendCodeAgainButton.disabled = "false";
+      }
+
+      counter--;
+      newResetCodeTimer.innerText = `(${counter})`;
+    }, 1000);
+
+    sendCodeAgainButton.append(newResetCodeTimer);
+    sendCodeAgainButton.addEventListener("click", () => {
+      this.loginAndGetOtp(loginToken, loginForm);
+      setInterval(interval);
+    });
+
+    formGroup2.append(verifyButton);
+    formGroup2.append(sendCodeAgainButton);
+    form.append(formGroup2);
+
+    fieldset.append(form);
+    modal.append(fieldset);
+
+    document.querySelector("body").append(modal);
+    document.querySelector(".home").classList.add("blur");
   }
-
-  static createVerifyOtpModal(loginToken) {}
 }
