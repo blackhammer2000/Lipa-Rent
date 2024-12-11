@@ -2,7 +2,7 @@ const {
   ObjectId: { isValid },
 } = require("mongodb");
 
-const { hash } = require("bcrypt");
+const { hash, compare } = require("bcrypt");
 
 const { Owner } = require("../../../middleware/models/Owner");
 const { Property } = require("../../../middleware/models/Property");
@@ -427,7 +427,15 @@ const patchControllers = {
 
       const resetPasswordToken = passwordDoc.resetToken || null;
 
-      if (!resetPasswordToken || resetPasswordToken !== resettoken)
+      if (!resetPasswordToken)
+        throw new Error("Invalid Token, generate a new one.");
+
+      const resetPasswordTokenMatch = await compare(
+        encrypt(resettoken),
+        resetPasswordToken
+      );
+
+      if (!resetPasswordTokenMatch)
         throw new Error("Invalid Token, generate a new one.");
 
       const isResetPasswordTokenVerified =

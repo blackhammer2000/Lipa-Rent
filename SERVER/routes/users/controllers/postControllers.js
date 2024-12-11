@@ -1742,7 +1742,8 @@ const post_controllers = {
         resetPasswordToken
       );
 
-      if (!resetPasswordTokenMatch) throw new Error("Tokens do not match.");
+      if (!resetPasswordTokenMatch)
+        throw new Error("Invalid Token, generate a new one.");
 
       const resetPasswordTokenExpiry = passwordDoc.resetTokenExpiry || null;
 
