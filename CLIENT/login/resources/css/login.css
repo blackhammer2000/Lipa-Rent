@@ -19,8 +19,8 @@ body {
 .enterOtpModal {
   position: absolute;
   content: "";
-  top: 30%;
-  left: 39%;
+  top: 33%;
+  left: 37.5%;
   height: fit-content;
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 10px, 10px, 10px, 10px, #000;

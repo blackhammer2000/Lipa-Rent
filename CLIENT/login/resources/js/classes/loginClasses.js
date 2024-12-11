@@ -66,8 +66,8 @@ class Store extends StoreUtilities {
       mode: "cors",
       method: "POST",
       headers: {
-        user: true,
         "Content-Type": "application/json",
+        user: true,
         loginToken,
         otp,
       },
@@ -162,12 +162,12 @@ class UserInterface extends UserinterfaceUtilities {
           "form input"
         ).value;
 
-      const { message, token } = await Store.verifyOtp(loginToken, otp);
+      const verifyOtp = await Store.verifyOtp(loginToken, otp);
 
-      if (!message && !token) return;
+      if (!verifyOtp.message && !verifyOtp.token) return;
 
-      this.alertMessage(message, "success");
-      localStorage.setItem("liparentAccessToken", token);
+      this.alertMessage(verifyOtp.JSONmessage, "success");
+      localStorage.setItem("liparentAccessToken", verifyOtp.token);
       document.querySelector(".enterOtpModal").remove();
       document.querySelector(".home").classList.remove("blur");
       location.assign("/CLIENT/dashboard/dashboard.html");

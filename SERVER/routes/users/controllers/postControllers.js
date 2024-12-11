@@ -1,4 +1,4 @@
-const { compare } = require("bcrypt");
+const { compare, hash } = require("bcrypt");
 
 const crypto = require("node:crypto");
 
@@ -375,11 +375,15 @@ const post_controllers = {
       const newLoginOtp = crypto.randomUUID().slice(-12);
       const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
 
+      const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
+
+      if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
+
       const loginOtpDetailsToDB = await Otp.updateMany(
         { ownerID: id },
         {
           $set: {
-            loginOtp: encrypt(newLoginOtp),
+            loginOtp: hashedLoginOtp,
             isLoginOtpVerified: false,
             loginOtpExpiry: newLoginOtpExpiry,
           },
@@ -438,6 +442,7 @@ const post_controllers = {
 
       if (isLoginOtpVerified && isLoginOtpVerified !== false)
         throw new Error("Invalid Otp");
+
       if (loginOtpExpiry && Date.now() > loginOtpExpiry)
         throw new Error("Invalid Otp");
 
