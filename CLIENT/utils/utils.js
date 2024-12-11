@@ -146,6 +146,7 @@ class UserinterfaceUtilities {
   }
 
   static clearLocalStorage() {
+    localStorage.removeItem("liparentLoginToken");
     localStorage.removeItem("liparentAccessToken");
     localStorage.removeItem("liparentSelectedPropertyId");
     localStorage.removeItem("liparentSelectedPropertyName");

@@ -404,6 +404,7 @@ const post_controllers = {
 
       res.status(200).json({
         message: "Login Otp has been sent",
+        newLoginOtp,
         loginToken,
       });
     } catch (err) {
