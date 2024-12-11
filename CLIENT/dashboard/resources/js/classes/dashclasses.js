@@ -265,9 +265,7 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-edit-property-number]"
     );
 
-    const homeSection =
-      e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.parentElement.parentElement;
+    const homeSection = document.querySelector(".home");
 
     editPropertyModal.classList.remove("hide");
     homeSection.classList.add("blur");
@@ -341,10 +339,10 @@ class UserInterface extends UserinterfaceUtilities {
     );
 
     if (editedProperties && message) {
-      homeSection.classList.remove("blur");
       this.alertMessage(message, "success");
-      this.renderProperties(editedProperties, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
+      homeSection.classList.remove("blur");
+      this.renderProperties(editedProperties, accessToken, tableBody);
       return;
     }
   }
