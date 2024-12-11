@@ -52,6 +52,8 @@ class Store extends StoreUtilities {
       return;
     }
 
+    alert(loginRequestData2.newLoginOtp);
+
     return { loginToken: loginRequestData2.loginToken };
   }
 

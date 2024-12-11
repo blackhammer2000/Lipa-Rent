@@ -56,13 +56,13 @@ router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
 // LOGIN
 router.post("/api/user/owner/login", isUser, loginValidator, login);
 router.post(
-  "/api/user/owner/getOtp",
+  "/api/user/owner/get/otp",
   isUser,
   verifyLoginToken,
   generateLoginOtp
 );
 router.post(
-  "/api/user/owner/verifyOtp",
+  "/api/user/owner/verify/otp",
   isUser,
   verifyLoginToken,
   verifyLoginOtp
