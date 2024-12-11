@@ -257,6 +257,13 @@ const post_controllers = {
   },
 
   //! LOGIN USER.
+
+  //?  below is the expected requestBody from the user when creating a property.
+  //* {
+  //*   email: "ELKO APARTMENTS",
+  //*   nationalID: "NGONG/NGONG/12058",
+  //*   password: "NGONG",
+  //* },
   login: async (req, res) => {
     try {
       if (!req.body.email || !req.body.nationalID || !req.body.password)
@@ -478,6 +485,7 @@ const post_controllers = {
       if (err.message) res.status(400).json({ error: err.message });
     }
   },
+
   //! READING OWNER DETAILS
   readOwnerDetails: async (req, res) => {
     try {
@@ -1281,7 +1289,7 @@ const post_controllers = {
   //* {
   //*   "propertyNo": "NGONG/NGONG/12058",
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //*  "roomId": "PK3",
+  //*   "roomId": "PK3",
   //*   "tenantId": "43261521",
   //*   "payment": {
   //*     "amount": "2000",
@@ -1574,7 +1582,7 @@ const post_controllers = {
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //*   "roomId": "PK3",
   //*   "tenantId": "43261521",
-  //*   "paymentId": "ae1eb7d1-a490-4607-bd73-74e168a4a95y",
+  //*   "paymentId": "74e168a4a95y",
   //* }
 
   readRentPaymentForRoomInPropertyByTenant: async (req, res) => {
@@ -1680,11 +1688,18 @@ const post_controllers = {
       const resetPasswordToken = crypto.randomUUID().slice(-12);
       const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
 
+      const hashedresetPasswordToken = await hash(
+        encrypt(resetPasswordToken),
+        10
+      );
+
+      if (!hashedresetPasswordToken) throw new Error(hashedresetPasswordToken);
+
       const addResetTokenToDB = await Password.updateMany(
         { ownerID: id },
         {
           $set: {
-            resetToken: resetPasswordToken,
+            resetToken: hashedresetPasswordToken,
             resetTokenExpiry: resetPasswordTokenExpiry,
             resetTokenVerified: false,
           },
@@ -1719,8 +1734,15 @@ const post_controllers = {
 
       const resetPasswordToken = passwordDoc.resetToken || null;
 
-      if (!resetPasswordToken || resetPasswordToken !== resettoken)
+      if (!resetPasswordToken)
         throw new Error("Invalid Token, generate a new one.");
+
+      const resetPasswordTokenMatch = await compare(
+        encrypt(resettoken),
+        resetPasswordToken
+      );
+
+      if (!resetPasswordTokenMatch) throw new Error("Tokens do not match.");
 
       const resetPasswordTokenExpiry = passwordDoc.resetTokenExpiry || null;
 
