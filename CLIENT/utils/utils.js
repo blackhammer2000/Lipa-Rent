@@ -42,11 +42,11 @@ class UserinterfaceUtilities {
     if (!message || !loaderType) return;
 
     const loaderBox = document.createElement("div");
-    loaderBox.className = `loaderBox alert text-white ${loaderType} }`;
+    loaderBox.className = `loaderBox  bg-secondary text-white alert text-white ${loaderType} }`;
 
     const loader = document.createElement("div");
     loader.className =
-      "loader bg-white text-dark d-flex justify-content-around align-items-center p-2 font-weight-bold";
+      "loader d-flex justify-content-around align-items-center p-2 font-weight-bold";
 
     const loaderText = document.createElement("div");
     const text = document.createTextNode(`Please wait, ${message}...`);
