@@ -66,7 +66,7 @@ class Store extends StoreUtilities {
       await readRoomTenantsRequest.json();
 
     if (selectedTenantPayments || message || error)
-      UserInterface.closeLoader("readTenants");
+      UserInterface.closeLoader("readPayments");
 
     if (error) UserInterface.handleErrors(error);
 
