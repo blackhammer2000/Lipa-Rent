@@ -225,6 +225,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     tableBody.append(fragment);
+    this.updatePropertyRoomStats(rooms);
   }
 
   static createRoomRow(room, index, accessToken, tableBody) {
@@ -597,6 +598,29 @@ class UserInterface extends UserinterfaceUtilities {
     document.querySelector(
       "[data-table-description]"
     ).innerText = `ROOMS FOR ${propertyName.toUpperCase()}`;
+  }
+
+  static updatePropertyRoomStats(rooms) {
+    if (!rooms) return;
+
+    const total = document.querySelector("[data-total]");
+    const occupied = document.querySelector("[data-occupied]");
+    const vacant = document.querySelector("[data-vacant]");
+
+    const roomStats = { totalRooms: 0, occupiedRooms: 0 };
+
+    for (const key in rooms) {
+      if (rooms[key].roomNumber) roomStats.totalRooms++;
+
+      if (rooms[key].isOccupied && rooms[key].currentTenantID)
+        roomStats.occupiedRooms++;
+    }
+
+    total.innerText = `TOTAL: ${roomStats.totalRooms}`;
+    occupied.innerText = `OCCUPIED: ${roomStats.occupiedRooms}`;
+    vacant.innerText = `VACANT: ${
+      roomStats.totalRooms - roomStats.occupiedRooms
+    }`;
   }
 
   static setSelectedPropertyNameInLocalStorage(propertyName) {

@@ -106,8 +106,18 @@
               CREATE ROOM
             </button>
           </div>
-          <div class="text-center w-75">
+          <div class="d-flex justify-content-around w-75">
             <u><h2 class="" data-table-description></h2></u>
+            <div
+              class="d-flex justify-content-center align-items-center border border-dark px-2"
+              data-room-stats
+            >
+              <ul class="d-flex list-unstyled mt-2">
+                <li class="mr-2" data-total></li>
+                <li class="text-success ml-2 mr-2" data-occupied></li>
+                <li class="text-danger ml-2" data-vacant></li>
+              </ul>
+            </div>
           </div>
         </div>
         <div class="overflow-auto pt-0">
