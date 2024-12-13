@@ -451,7 +451,7 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static toggleShowAndHidePassword(e) {
-    e.target.previousElementSibling.type = "password"
+    e?.target.previousElementSibling.type = "password"
       ? (e.target.previousElementSibling.type = "text")
       : (e.target.previousElementSibling.type = "password");
 
