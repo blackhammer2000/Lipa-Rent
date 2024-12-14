@@ -607,20 +607,17 @@ class UserInterface extends UserinterfaceUtilities {
     const occupied = document.querySelector("[data-occupied]");
     const vacant = document.querySelector("[data-vacant]");
 
-    const roomStats = { totalRooms: 0, occupiedRooms: 0 };
+    let totalRooms = 0;
+    let occupiedRooms = 0;
 
     for (const key in rooms) {
-      if (rooms[key].roomNumber) roomStats.totalRooms++;
-
-      if (rooms[key].isOccupied && rooms[key].currentTenantID)
-        roomStats.occupiedRooms++;
+      if (rooms[key].roomID) totalRooms++;
+      if (rooms[key].isOccupied && rooms[key].currentTenantID) occupiedRooms++;
     }
 
-    total.innerText = `TOTAL: ${roomStats.totalRooms}`;
-    occupied.innerText = `OCCUPIED: ${roomStats.occupiedRooms}`;
-    vacant.innerText = `VACANT: ${
-      roomStats.totalRooms - roomStats.occupiedRooms
-    }`;
+    total.innerText = `TOTAL: ${totalRooms}`;
+    occupied.innerText = `OCCUPIED: ${occupiedRooms}`;
+    vacant.innerText = `VACANT: ${totalRooms - occupiedRooms}`;
   }
 
   static setSelectedPropertyNameInLocalStorage(propertyName) {
