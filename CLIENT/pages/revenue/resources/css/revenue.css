@@ -1,0 +1,31 @@
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow-y: hidden;
+}
+
+.roomModal {
+  z-index: 1;
+  position: absolute;
+  content: "";
+  top: 15%;
+  left: 12.5%;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.95);
+  /* box-shadow: 5px, 10px, #000; */
+}
+
+.hide {
+  display: none;
+}
+
+.hero {
+  /* display: grid;
+    place-items: center; */
+  height: 60vh;
+  overflow: hidden;
+}
+
+thead {
+  top: 0;
+}
