@@ -213,7 +213,14 @@ class UserInterface extends UserinterfaceUtilities {
     //   }
     // );
 
+    const roomStats = { totalRooms: 0, occupiedRooms: 0 };
+
     for (const key in rooms) {
+      if (rooms[key].roomID) roomStats.totalRooms++;
+
+      if (rooms[key].isOccupied && rooms[key].currentTenantID)
+        roomStats.occupiedRooms++;
+
       const roomRow = this.createRoomRow(
         rooms[key],
         tableNumber,
@@ -225,7 +232,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     tableBody.append(fragment);
-    this?.updatePropertyRoomStats(rooms);
+    this?.updatePropertyRoomStats(roomStats);
   }
 
   static createRoomRow(room, index, accessToken, tableBody) {
@@ -600,20 +607,14 @@ class UserInterface extends UserinterfaceUtilities {
     ).innerText = `ROOMS FOR ${propertyName.toUpperCase()}`;
   }
 
-  static updatePropertyRoomStats(rooms) {
-    if (!rooms) return;
+  static updatePropertyRoomStats(roomStats) {
+    if (!roomStats) return;
 
     const total = document.querySelector("[data-total]");
     const occupied = document.querySelector("[data-occupied]");
     const vacant = document.querySelector("[data-vacant]");
 
-    let totalRooms = 0;
-    let occupiedRooms = 0;
-
-    for (const key in rooms) {
-      if (rooms[key].roomID) totalRooms++;
-      if (rooms[key].isOccupied && rooms[key].currentTenantID) occupiedRooms++;
-    }
+    const { totalRooms, occupiedRooms } = roomStats;
 
     total.innerText = `TOTAL: ${totalRooms}`;
     occupied.innerText = `OCCUPIED: ${occupiedRooms}`;
