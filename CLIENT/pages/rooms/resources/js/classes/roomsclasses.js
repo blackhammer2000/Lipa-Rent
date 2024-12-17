@@ -205,14 +205,6 @@ class UserInterface extends UserinterfaceUtilities {
       return;
     }
 
-    // const sortedRoomsByRoomNumber = Object.keys(rooms).sort(
-    //   (roomId1, roomId2) => {
-    //     if (rooms[roomId1].roomNumber > rooms[roomId2].roomNumber) return 1;
-    //     if (rooms[roomId1].roomNumber < rooms[roomId2].roomNumber) return -1;
-    //     if (rooms[roomId1].roomNumber === rooms[roomId2].roomNumber) return 0;
-    //   }
-    // );
-
     const roomStats = { totalRooms: 0, occupiedRooms: 0 };
 
     for (const key in rooms) {
