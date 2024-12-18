@@ -1840,7 +1840,7 @@ const post_controllers = {
 
   verifyDeleteAccountToken: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unknown user.");
+      if (!req.body.id) throw new Error("Unauthorized action.");
       if (!req.headers.deletetoken) throw new Error("Unauthorized action.");
 
       const { id } = req.body;
@@ -1907,6 +1907,30 @@ const post_controllers = {
 
       res.status(200).json({
         message: "Verification successful",
+      });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  verifyPassword: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unauthorized action.");
+
+      const { id, password } = req.body;
+
+      const passwordDoc = await Password.findOne({ ownerID: id });
+
+      const userPassword = passwordDoc.password || null;
+
+      if (!userPassword) throw new Error("Invalid password");
+
+      const passwordMatch = await compare(encrypt(password), userPassword);
+
+      if (!passwordMatch) throw new Error("Invalid password");
+
+      res.status(200).json({
+        message: "Password verification successful",
       });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
