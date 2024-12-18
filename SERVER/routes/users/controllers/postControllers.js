@@ -56,7 +56,7 @@ const post_controllers = {
 
       const signUpOtp = userOtpDoc.signUpOtp || null;
       const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
-      const isSignUpOtpExpired = userOtpDoc.isSignUpOtpExpired || null;
+      const isSignUpOtpExpired = userOtpDoc.signUpOtpExpiry || null;
 
       if (signUpOtp || isSignUpOtpVerified || isSignUpOtpExpired) {
         const resetSignUpOtpDetails = await Otp.updateMany(
@@ -1797,26 +1797,25 @@ const post_controllers = {
 
   genarateDeleteAccountToken: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unauthorized action");
 
       const { id } = req.body;
 
       const deleteAccountToken = crypto.randomUUID().slice(-12);
       const deleteAccountTokenExpiry = Date.now() + 10 * 60 * 1000;
 
-      const hashedDeleteAccountTokenToken = await hash(
+      const hashedDeleteAccountToken = await hash(
         encrypt(deleteAccountToken),
         10
       );
 
-      if (!hashedDeleteAccountTokenToken)
-        throw new Error(hashedDeleteAccountTokenToken);
+      if (!hashedDeleteAccountToken) throw new Error(hashedDeleteAccountToken);
 
       const addDeleteAccountTokenToDB = await Otp.updateMany(
         { ownerID: id },
         {
           $set: {
-            deleteAccountOtp: hashedresetPasswordToken,
+            deleteAccountOtp: hashedDeleteAccountToken,
             deleteAccountTokenExpiry: deleteAccountTokenExpiry,
             isDeleteAccountOtpVerified: false,
           },
