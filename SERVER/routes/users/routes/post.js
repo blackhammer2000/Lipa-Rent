@@ -44,11 +44,16 @@ const {
 
   verifyResetPasswordToken,
   genarateResetPasswordToken,
+
+  verifyDeleteAccountToken,
+  genarateDeleteAccountToken,
 } = require("../controllers/postControllers");
 
 const {
   verifyLoginToken,
 } = require("../../../middleware/tokens/verifyLoginToken");
+
+// ////////////////////////  ROUTES   ///////////////////////////////
 
 // SIGN UP
 router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
@@ -183,6 +188,20 @@ router.post(
   isUser,
   verifyUserAccessToken,
   genarateResetPasswordToken
+);
+
+// DELETE ACCOUNT ROUTES
+router.post(
+  "/api/user/owner/verify/deleteToken",
+  isUser,
+  verifyUserAccessToken,
+  verifyDeleteAccountToken
+);
+router.post(
+  "/api/user/owner/generate/deleteToken",
+  isUser,
+  verifyUserAccessToken,
+  genarateDeleteAccountToken
 );
 
 module.exports = router;
