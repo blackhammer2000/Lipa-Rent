@@ -25,6 +25,16 @@ const OtpSchema = new Schema({
   loginOtpExpiry: {
     type: Number,
   },
+  deleteAccountOtp: {
+    type: String,
+    unique: true,
+  },
+  isDeleteAccountOtpVerified: {
+    type: Boolean,
+  },
+  deleteAccountOtpExpiry: {
+    type: Number,
+  },
 });
 
 const Otp = model("otp", OtpSchema);

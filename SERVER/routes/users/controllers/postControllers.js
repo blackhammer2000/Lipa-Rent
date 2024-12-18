@@ -1792,6 +1792,52 @@ const post_controllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //? Delete account tokens
+
+  genarateDeleteAccountToken: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unknown user...");
+
+      const { id } = req.body;
+
+      const deleteAccountToken = crypto.randomUUID().slice(-12);
+      const deleteAccountTokenExpiry = Date.now() + 10 * 60 * 1000;
+
+      const hashedDeleteAccountTokenToken = await hash(
+        encrypt(deleteAccountToken),
+        10
+      );
+
+      if (!hashedDeleteAccountTokenToken)
+        throw new Error(hashedDeleteAccountTokenToken);
+
+      const addDeleteAccountTokenToDB = await Otp.updateMany(
+        { ownerID: id },
+        {
+          $set: {
+            deleteAccountOtp: hashedresetPasswordToken,
+            deleteAccountTokenExpiry: deleteAccountTokenExpiry,
+            isDeleteAccountOtpVerified: false,
+          },
+        },
+        { new: true }
+      );
+
+      if (
+        !addDeleteAccountTokenToDB.acknowledged &&
+        !addDeleteAccountTokenToDB.modifiedCount
+      )
+        throw new Error("Error adding reset token to database");
+
+      res.status(200).json({
+        message: "Delete account token sent",
+        deleteAccountToken,
+      });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
 };
 
 module.exports = post_controllers;
