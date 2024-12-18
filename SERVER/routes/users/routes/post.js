@@ -42,11 +42,11 @@ const {
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
 
-  verifyResetPasswordToken,
   genarateResetPasswordToken,
+  verifyResetPasswordToken,
 
-  verifyDeleteAccountToken,
   genarateDeleteAccountToken,
+  verifyDeleteAccountToken,
 } = require("../controllers/postControllers");
 
 const {
@@ -178,30 +178,30 @@ router.post(
 
 // PASSWORD RESET ROUTES
 router.post(
-  "/api/user/owner/verify/resetToken",
-  isUser,
-  verifyUserAccessToken,
-  verifyResetPasswordToken
-);
-router.post(
   "/api/user/owner/generate/resetToken",
   isUser,
   verifyUserAccessToken,
   genarateResetPasswordToken
 );
-
-// DELETE ACCOUNT ROUTES
 router.post(
-  "/api/user/owner/verify/deleteToken",
+  "/api/user/owner/verify/resetToken",
   isUser,
   verifyUserAccessToken,
-  verifyDeleteAccountToken
+  verifyResetPasswordToken
 );
+
+// DELETE ACCOUNT ROUTES
 router.post(
   "/api/user/owner/generate/deleteToken",
   isUser,
   verifyUserAccessToken,
   genarateDeleteAccountToken
+);
+router.post(
+  "/api/user/owner/verify/deleteToken",
+  isUser,
+  verifyUserAccessToken,
+  verifyDeleteAccountToken
 );
 
 module.exports = router;
