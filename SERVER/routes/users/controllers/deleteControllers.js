@@ -7,6 +7,7 @@ const { Tenant } = require("../../../middleware/models/Tenant");
 const { Owner } = require("../../../middleware/models/Owner");
 const { Room } = require("../../../middleware/models/Room");
 const { Rent } = require("../../../middleware/models/Rent");
+const { Otp } = require("../../../middleware/models/Otp");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
@@ -44,7 +45,7 @@ const patchControllers = {
         !updateDeleteTokensDetails.acknowledged &&
         !updateDeleteTokensDetails.modifiedCount
       )
-        throw new Error("Error verifying reset token.");
+        throw new Error("Error updating delete token details.");
 
       const ownerUpdate = await Owner.findOneAndDelete({ _id: id.toString() });
 
