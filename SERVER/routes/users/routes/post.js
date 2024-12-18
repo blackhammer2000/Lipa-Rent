@@ -45,6 +45,8 @@ const {
   genarateResetPasswordToken,
   verifyResetPasswordToken,
 
+  verifyPassword,
+
   genarateDeleteAccountToken,
   verifyDeleteAccountToken,
 } = require("../controllers/postControllers");
@@ -174,6 +176,14 @@ router.post(
   isUser,
   verifyUserAccessToken,
   readRentPaymentForRoomInPropertyByTenant
+);
+
+// VERIFY PASSWORD
+router.post(
+  "/api/user/owner/verify/password",
+  isUser,
+  verifyUserAccessToken,
+  verifyPassword
 );
 
 // PASSWORD RESET ROUTES
