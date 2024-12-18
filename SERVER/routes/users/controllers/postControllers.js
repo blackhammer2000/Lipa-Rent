@@ -1666,7 +1666,7 @@ const post_controllers = {
     }
   },
 
-  //?  the request below only requires you to send the accessToken
+  //? Reset password tokens
 
   genarateResetPasswordToken: async (req, res) => {
     try {

@@ -21,6 +21,31 @@ const patchControllers = {
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
 
+      const otpDoc = await Otp.findOne({ ownerID: id.toString() });
+
+      const isDeleteAccountOtpVerified =
+        otpDoc.isDeleteAccountOtpVerified || null;
+
+      if (!isDeleteAccountOtpVerified)
+        throw new Error("Invalid Token, generate a new one.");
+
+      const updateDeleteTokensDetails = await Otp.updateMany(
+        { ownerID: id },
+        {
+          $set: {
+            deleteAccountOtp: null,
+            deleteAccountOtpExpiry: null,
+            isDeleteAccountOtpVerified: null,
+          },
+        }
+      );
+
+      if (
+        !updateDeleteTokensDetails.acknowledged &&
+        !updateDeleteTokensDetails.modifiedCount
+      )
+        throw new Error("Error verifying reset token.");
+
       const ownerUpdate = await Owner.findOneAndDelete({ _id: id.toString() });
 
       if (!ownerUpdate.acknowledged && !ownerUpdate.modifiedCount)
