@@ -15,19 +15,19 @@ const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
 const {
-  //   deleteOwnerDetails,
+  deleteOwnerDetails,
   deletePropertyDetails,
   deleteRoomDetails,
   deleteTenantDetails,
   deleteRentPaymentDetails,
 } = require("../controllers/deleteControllers");
 
-// router.patch(
-//   "/api/user/owner/edit/owner",
-//   isUser,
-//   verifyAccessToken,
-//   deleteOwnerDetails
-// );
+router.delete(
+  "/api/user/owner/delete/owner",
+  isUser,
+  verifyUserAccessToken,
+  deleteOwnerDetails
+);
 router.delete(
   "/api/user/owner/delete/property",
   isUser,
