@@ -27,20 +27,42 @@ const patchControllers = {
 
       if (!ownerPropertiesDocument) throw new Error(ownerPropertiesDocument);
 
-      const ownerUpdate = await Owner.updateOne(
-        { _id: id },
-        {
-          $set: { name, nationalID },
-        },
-        { new: true }
-      );
+      const ownerUpdate = await Owner.findOneAndDelete({ _id: id });
 
-      if (!ownerUpdate.acknowledged)
+      if (!ownerUpdate.acknowledged && !ownerUpdate.modifiedCount)
         throw new Error(
-          "Error when updating the owner details in the database."
+          "Error when deleting the owner details in the database."
         );
 
-      res.status(203).json({ editedOwner });
+      const propertyUpdate = await Property.findOneAndDelete({ ownerID: id });
+
+      if (!propertyUpdate.acknowledged && !propertyUpdate.modifiedCount)
+        throw new Error(
+          "Error when deleting the property details in the database."
+        );
+
+      const roomsUpdate = await Room.findOneAndDelete({ ownerID: id });
+
+      if (!roomsUpdate.acknowledged && !roomsUpdate.modifiedCount)
+        throw new Error(
+          "Error when deleting the rooms details in the database."
+        );
+
+      const tenantsUpdate = await Tenant.findOneAndDelete({ ownerID: id });
+
+      if (!tenantsUpdate.acknowledged && !tenantsUpdate.modifiedCount)
+        throw new Error(
+          "Error when deleting the tenants details in the database."
+        );
+
+      const rentsUpdate = await Rent.findOneAndDelete({ ownerID: id });
+
+      if (!rentsUpdate.acknowledged && !rentsUpdate.modifiedCount)
+        throw new Error(
+          "Error when deleting the tenants details in the database."
+        );
+
+      res.status(203).json({ message: "Account deleted successfully" });
     } catch (err) {
       if (err?.message)
         res
