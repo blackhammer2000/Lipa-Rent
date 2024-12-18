@@ -1838,6 +1838,81 @@ const post_controllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  verifyDeleteAccountToken: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unknown user.");
+      if (!req.headers.deletetoken) throw new Error("Unauthorized action.");
+
+      const { id } = req.body;
+
+      const {
+        headers: { deletetoken },
+      } = req;
+
+      const passwordDoc = await Otp.findOne({ ownerID: id });
+
+      const deleteAccountToken = passwordDoc.deleteAccountOtp || null;
+
+      if (!deleteAccountToken)
+        throw new Error("Invalid Token, generate a new one.");
+
+      const deleteAccountTokenMatch = await compare(
+        encrypt(deletetoken),
+        deleteAccountToken
+      );
+
+      if (!deleteAccountTokenMatch)
+        throw new Error("Invalid Token, generate a new one.");
+
+      const deleteAccountTokenExpiry =
+        passwordDoc.deleteAccountOtpExpiry || null;
+
+      if (!deleteAccountTokenExpiry)
+        throw new Error("Invalid Token, generate a new one.");
+
+      const isTokenValid = Date.now() < deleteAccountOtpExpiry ? true : false;
+
+      if (!isTokenValid) {
+        const removeInvalidToken = await Otp.updateMany(
+          { ownerID: id },
+          {
+            $set: {
+              deleteAccountOtp: null,
+              deleteAccountOtpExpiry: null,
+              isDeleteAccountOtpVerified: null,
+            },
+          }
+        );
+
+        if (
+          !removeInvalidToken.acknowledged &&
+          !removeInvalidToken.modifiedCount
+        )
+          throw new Error("Error removing invalid reset token.");
+
+        throw new Error("Invalid Token, generate a new one.");
+      }
+
+      const verifyToken = await Otp.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            isDeleteAccountOtpVerified: true,
+          },
+        }
+      );
+
+      if (!verifyToken.acknowledged && !verifyToken.modifiedCount)
+        throw new Error("Error verifying reset token.");
+
+      res.status(200).json({
+        message: "Verification successful",
+      });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
 };
 
 module.exports = post_controllers;
