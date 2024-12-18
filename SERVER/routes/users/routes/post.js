@@ -45,10 +45,9 @@ const {
   genarateResetPasswordToken,
   verifyResetPasswordToken,
 
-  verifyPassword,
-
   genarateDeleteAccountToken,
   verifyDeleteAccountToken,
+  verifyPassword,
 } = require("../controllers/postControllers");
 
 const {
