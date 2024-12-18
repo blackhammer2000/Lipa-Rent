@@ -346,7 +346,6 @@ const patchControllers = {
   //?  below is the expected requestBody from the user when deleting a tenant for a room in property
   //*  {
   //*   propertyId: "HDFBSUEHDUIFHW783YRWUHF84YF3",
-  //*   propertyNo: "NGONG/NGONG/12058",
   //*   roomId: "PK1",
   //*   tenantId: "35501094",
   //*  }
@@ -484,7 +483,6 @@ const patchControllers = {
 
   //?  below is the expected requestBody from the user when deleting a rent payment for a room by a tenant.
   //* {
-  //*   "propertyNo": "NGONG/NGONG/12058",
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //*   "roomId": "PK3",
   //*   "tenantId": "43261521",
