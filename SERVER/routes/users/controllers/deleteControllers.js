@@ -10,7 +10,7 @@ const { Rent } = require("../../../middleware/models/Rent");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
-  //! the method below has not been implemented and does not work
+  //! the method below deletes all user's details and erases their account.
   deleteOwnerDetails: async (req, res) => {
     try {
       if (!req.body.id)
@@ -21,13 +21,7 @@ const patchControllers = {
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
 
-      const ownerPropertiesDocument = await Owner.findOneAndDelete({
-        _id: id.toString(),
-      });
-
-      if (!ownerPropertiesDocument) throw new Error(ownerPropertiesDocument);
-
-      const ownerUpdate = await Owner.findOneAndDelete({ _id: id });
+      const ownerUpdate = await Owner.findOneAndDelete({ _id: id.toString() });
 
       if (!ownerUpdate.acknowledged && !ownerUpdate.modifiedCount)
         throw new Error(
