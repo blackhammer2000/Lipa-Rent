@@ -53,7 +53,7 @@ const patchControllers = {
       if (!deleteAccountTokenExpiry)
         throw new Error("Invalid Token, generate a new one.");
 
-      const isTokenValid = Date.now() < deleteAccountOtpExpiry ? true : false;
+      const isTokenValid = Date.now() < deleteAccountTokenExpiry ? true : false;
 
       if (!isTokenValid || !isDeleteAccountOtpVerified) {
         const removeInvalidToken = await Otp.updateMany(

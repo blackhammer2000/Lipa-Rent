@@ -661,6 +661,8 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static createDeleteAccountCodeVerificationModal(accessToken) {
+    if (!accessToken) return;
+
     const modal = document.createElement("div");
     modal.className =
       "deleteAccountModal d-flex justify-content-center align-items-center border border-success py-2 w-25";

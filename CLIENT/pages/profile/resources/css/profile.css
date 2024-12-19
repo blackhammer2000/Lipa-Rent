@@ -24,7 +24,8 @@
 }
 
 .resetModal,
-.verifyModal {
+.verifyModal,
+.deleteAccountModal {
   position: absolute;
   content: "";
   top: 30%;

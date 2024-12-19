@@ -1811,6 +1811,7 @@ const post_controllers = {
       const { id } = req.body;
 
       const deleteAccountToken = crypto.randomUUID().slice(-12);
+
       const deleteAccountTokenExpiry = Date.now() + 10 * 60 * 1000;
 
       const hashedDeleteAccountToken = await hash(
@@ -1825,7 +1826,7 @@ const post_controllers = {
         {
           $set: {
             deleteAccountOtp: hashedDeleteAccountToken,
-            deleteAccountTokenExpiry: deleteAccountTokenExpiry,
+            deleteAccountOtpExpiry: deleteAccountTokenExpiry,
             isDeleteAccountOtpVerified: false,
           },
         },
@@ -1878,7 +1879,7 @@ const post_controllers = {
       if (!deleteAccountTokenExpiry)
         throw new Error("Invalid Token, generate a new one.");
 
-      const isTokenValid = Date.now() < deleteAccountOtpExpiry ? true : false;
+      const isTokenValid = Date.now() < deleteAccountTokenExpiry ? true : false;
 
       if (!isTokenValid) {
         const removeInvalidToken = await Otp.updateMany(
