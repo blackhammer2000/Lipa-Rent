@@ -155,6 +155,36 @@ class Store extends StoreUtilities {
 
     if (message) return { message };
   }
+
+  static async verifyPasswordWhenDeleteAccount(accessToken, password) {
+    if (!accessToken || !password) return;
+
+    UserInterface.openLoader("verifying password", "verifyingPassword");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({ password }),
+    };
+
+    const verifyPasswordRequest = await fetch(
+      "http://localhost:4000/api/user/owner/verify/password",
+      requestOptions
+    );
+
+    const { message, error } = await verifyPasswordRequest.json();
+
+    if (message || error) UserInterface.closeLoader("verifyingPassword");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message) return { message };
+  }
 }
 
 class UserInterface extends UserinterfaceUtilities {
@@ -494,7 +524,7 @@ class UserInterface extends UserinterfaceUtilities {
     const input = document.createElement("input");
     input.className = "form-control";
     input.placeholder = "Enter password";
-    input.type = "text";
+    input.type = "password";
     input.id = "reset";
     formGroup1.append(input);
     form.append(formGroup1);
@@ -512,13 +542,16 @@ class UserInterface extends UserinterfaceUtilities {
           "form input"
         ).value;
 
-      const { message } = await Store.verifyPassword(accessToken, password);
+      const { message } = await Store.verifyPasswordWhenDeleteAccount(
+        accessToken,
+        password
+      );
 
       if (!message) return;
 
       this.alertMessage(message, "success");
       document.querySelector(".verifyModal").remove();
-      // this.createChangePasswordModal(accessToken, resetCode);
+      this.createChangePasswordModal(accessToken, resetCode);
     });
 
     formGroup2.append(verifyButton);
