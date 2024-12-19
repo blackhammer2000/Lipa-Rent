@@ -423,7 +423,7 @@ const post_controllers = {
       if (!loginToken) throw new Error(loginToken);
 
       res.status(200).json({
-        message: "Login Otp has been sent",
+        message: "Login Otp has been sent to your email",
         newLoginOtp,
         loginToken,
       });
@@ -1720,7 +1720,7 @@ const post_controllers = {
         throw new Error("Error adding reset token to database");
 
       res.status(200).json({
-        message: "Password reset token sent",
+        message: "Password reset token sent to your email",
         resetPasswordToken,
       });
     } catch (err) {
@@ -1840,7 +1840,7 @@ const post_controllers = {
         throw new Error("Error adding reset token to database");
 
       res.status(200).json({
-        message: "Delete account token sent",
+        message: "Delete account token sent to your email",
         deleteAccountToken,
       });
     } catch (err) {
