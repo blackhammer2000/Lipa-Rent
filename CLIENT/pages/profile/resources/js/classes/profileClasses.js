@@ -216,6 +216,36 @@ class Store extends StoreUtilities {
 
     if (message && deleteAccountToken) return { message, deleteAccountToken };
   }
+
+  static async verifyDeleteAccountCode(accessToken, deleteCode) {
+    if (!accessToken) return;
+
+    UserInterface.openLoader("verifying code", "verifyingCode");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+        deletetoken: deleteCode,
+      },
+    };
+
+    const getDeleteAccountCodeRequest = await fetch(
+      "http://localhost:4000/api/user/owner/verify/deleteToken",
+      requestOptions
+    );
+
+    const { message, error } = await getDeleteAccountCodeRequest.json();
+
+    if (message || error) UserInterface.closeLoader("verifyingCode");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message) return { message };
+  }
 }
 
 class UserInterface extends UserinterfaceUtilities {
@@ -657,12 +687,22 @@ class UserInterface extends UserinterfaceUtilities {
         deleteCode
       );
 
-      if (!message) return;
+      if (!message) {
+        document.querySelector(".home").classList.remove("blur");
+        document.querySelector(".deleteAccountModal").remove();
+        return;
+      }
 
       this.alertMessage(message, "success");
+
+      const deleteAccount = await Store.deleteAccount(accessToken, deleteCode);
+
+      if (!deleteAccount.message) return;
+
       document.querySelector(".home").classList.remove("blur");
       document.querySelector(".deleteAccountModal").remove();
-      this.createChangePasswordModal(accessToken, resetCode);
+      this.alertMessage(deleteAccount.message, "success");
+      this.handleLogout();
     });
 
     const sendCodeAgainButton = document.createElement("button");

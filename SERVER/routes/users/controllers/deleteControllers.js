@@ -2,6 +2,7 @@ const {
   ObjectId: { isValid },
 } = require("mongodb");
 
+const { Subscription } = require("../../../middleware/models/Subscription");
 const { Property } = require("../../../middleware/models/Property");
 const { Tenant } = require("../../../middleware/models/Tenant");
 const { Owner } = require("../../../middleware/models/Owner");
@@ -9,15 +10,21 @@ const { Room } = require("../../../middleware/models/Room");
 const { Rent } = require("../../../middleware/models/Rent");
 const { Otp } = require("../../../middleware/models/Otp");
 
+const { compare } = require("bcrypt");
+
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
   //! the method below deletes all user's details and erases their account.
   deleteOwnerDetails: async (req, res) => {
     try {
-      if (!req.body.id)
-        throw new Error("Unauthorized action, not a user or not logged in.");
+      if (!req.body.id) throw new Error("Unauthorized action");
+      if (!req.headers.deletetoken) throw new Error("Unauthorized action");
 
       const { id } = req.body;
+
+      const {
+        headers: { deletetoken },
+      } = req;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -27,25 +34,63 @@ const patchControllers = {
       const isDeleteAccountOtpVerified =
         otpDoc.isDeleteAccountOtpVerified || null;
 
-      if (!isDeleteAccountOtpVerified)
+      const deleteAccountToken = otpDoc.deleteAccountOtp || null;
+
+      if (!deleteAccountToken)
         throw new Error("Invalid Token, generate a new one.");
 
-      const updateDeleteTokensDetails = await Otp.updateMany(
-        { ownerID: id },
-        {
-          $set: {
-            deleteAccountOtp: null,
-            deleteAccountOtpExpiry: null,
-            isDeleteAccountOtpVerified: null,
-          },
-        }
+      const deleteAccountTokenMatch = await compare(
+        encrypt(deletetoken),
+        deleteAccountToken
       );
 
-      if (
-        !updateDeleteTokensDetails.acknowledged &&
-        !updateDeleteTokensDetails.modifiedCount
-      )
-        throw new Error("Error updating delete token details.");
+      if (!deleteAccountTokenMatch)
+        throw new Error("Invalid Token, generate a new one.");
+
+      const deleteAccountTokenExpiry = otpDoc.deleteAccountOtpExpiry || null;
+
+      if (!deleteAccountTokenExpiry)
+        throw new Error("Invalid Token, generate a new one.");
+
+      const isTokenValid = Date.now() < deleteAccountOtpExpiry ? true : false;
+
+      if (!isTokenValid || !isDeleteAccountOtpVerified) {
+        const removeInvalidToken = await Otp.updateMany(
+          { ownerID: id },
+          {
+            $set: {
+              deleteAccountOtp: null,
+              deleteAccountOtpExpiry: null,
+              isDeleteAccountOtpVerified: null,
+            },
+          }
+        );
+
+        if (
+          !removeInvalidToken.acknowledged &&
+          !removeInvalidToken.modifiedCount
+        )
+          throw new Error("Error removing invalid reset token.");
+
+        throw new Error("Invalid Token, generate a new one.");
+      }
+
+      // const updateDeleteTokensDetails = await Otp.updateMany(
+      //   { ownerID: id },
+      //   {
+      //     $set: {
+      //       deleteAccountOtp: null,
+      //       deleteAccountOtpExpiry: null,
+      //       isDeleteAccountOtpVerified: null,
+      //     },
+      //   }
+      // );
+
+      // if (
+      //   !updateDeleteTokensDetails.acknowledged &&
+      //   !updateDeleteTokensDetails.modifiedCount
+      // )
+      //   throw new Error("Error updating delete token details.");
 
       const ownerUpdate = await Owner.findOneAndDelete({ _id: id.toString() });
 
@@ -81,6 +126,23 @@ const patchControllers = {
         throw new Error(
           "Error when deleting the tenants details in the database."
         );
+
+      const subscriptionsUpdate = await Subscription.findOneAndDelete({
+        ownerID: id,
+      });
+
+      if (
+        !subscriptionsUpdate.acknowledged &&
+        !subscriptionsUpdate.modifiedCount
+      )
+        throw new Error(
+          "Error when deleting the subscription details in the database."
+        );
+
+      const otpUpdate = await Otp.findOneAndDelete({ ownerID: id });
+
+      if (!otpUpdate.acknowledged && !otpUpdate.modifiedCount)
+        throw new Error("Error when deleting the otp details in the database.");
 
       res.status(203).json({ message: "Account deleted successfully" });
     } catch (err) {

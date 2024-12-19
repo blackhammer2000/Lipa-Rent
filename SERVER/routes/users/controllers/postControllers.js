@@ -1849,9 +1849,9 @@ const post_controllers = {
         headers: { deletetoken },
       } = req;
 
-      const passwordDoc = await Otp.findOne({ ownerID: id });
+      const otpDoc = await Otp.findOne({ ownerID: id });
 
-      const deleteAccountToken = passwordDoc.deleteAccountOtp || null;
+      const deleteAccountToken = otpDoc.deleteAccountOtp || null;
 
       if (!deleteAccountToken)
         throw new Error("Invalid Token, generate a new one.");
@@ -1864,8 +1864,7 @@ const post_controllers = {
       if (!deleteAccountTokenMatch)
         throw new Error("Invalid Token, generate a new one.");
 
-      const deleteAccountTokenExpiry =
-        passwordDoc.deleteAccountOtpExpiry || null;
+      const deleteAccountTokenExpiry = otpDoc.deleteAccountOtpExpiry || null;
 
       if (!deleteAccountTokenExpiry)
         throw new Error("Invalid Token, generate a new one.");
