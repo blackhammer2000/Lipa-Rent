@@ -149,7 +149,16 @@ const post_controllers = {
           "Failed to create a new instance of the owner document."
         );
 
-      const newOwnerPasswordDB = await Password?.create({
+      const newOwnerOtpDB = await Otp.create({
+        ownerID: newOwner?._id?.toString(),
+      });
+
+      if (!newOwnerOtpDB)
+        throw new Error(
+          "Failed to create a new instance of the otp DB document."
+        );
+
+      const newOwnerPasswordDB = await Password.create({
         ownerID: newOwner?._id?.toString(),
         password: encrypt(password),
       });

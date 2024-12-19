@@ -23,7 +23,7 @@ class Store extends StoreUtilities {
 
     if (loginRequestData.error && !loginRequestData.loginToken) {
       UserInterface.closeLoader("login");
-      UserInterface.handleErrors(loginRequestData2.error);
+      UserInterface.handleErrors(loginRequestData.error);
       return;
     }
 
