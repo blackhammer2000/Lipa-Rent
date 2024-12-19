@@ -4,6 +4,7 @@ const {
 
 const { Subscription } = require("../../../middleware/models/Subscription");
 const { Property } = require("../../../middleware/models/Property");
+const { Password } = require("../../../middleware/models/Password");
 const { Tenant } = require("../../../middleware/models/Tenant");
 const { Owner } = require("../../../middleware/models/Owner");
 const { Room } = require("../../../middleware/models/Room");
@@ -31,9 +32,6 @@ const patchControllers = {
 
       const otpDoc = await Otp.findOne({ ownerID: id.toString() });
 
-      const isDeleteAccountOtpVerified =
-        otpDoc.isDeleteAccountOtpVerified || null;
-
       const deleteAccountToken = otpDoc.deleteAccountOtp || null;
 
       if (!deleteAccountToken)
@@ -46,6 +44,9 @@ const patchControllers = {
 
       if (!deleteAccountTokenMatch)
         throw new Error("Invalid Token, generate a new one.");
+
+      const isDeleteAccountOtpVerified =
+        otpDoc.isDeleteAccountOtpVerified || null;
 
       const deleteAccountTokenExpiry = otpDoc.deleteAccountOtpExpiry || null;
 
@@ -75,28 +76,18 @@ const patchControllers = {
         throw new Error("Invalid Token, generate a new one.");
       }
 
-      // const updateDeleteTokensDetails = await Otp.updateMany(
-      //   { ownerID: id },
-      //   {
-      //     $set: {
-      //       deleteAccountOtp: null,
-      //       deleteAccountOtpExpiry: null,
-      //       isDeleteAccountOtpVerified: null,
-      //     },
-      //   }
-      // );
-
-      // if (
-      //   !updateDeleteTokensDetails.acknowledged &&
-      //   !updateDeleteTokensDetails.modifiedCount
-      // )
-      //   throw new Error("Error updating delete token details.");
-
       const ownerUpdate = await Owner.findOneAndDelete({ _id: id.toString() });
 
       if (!ownerUpdate.acknowledged && !ownerUpdate.modifiedCount)
         throw new Error(
           "Error when deleting the owner details in the database."
+        );
+
+      const passwordUpdate = await Password.findOneAndDelete({ ownerID: id });
+
+      if (!passwordUpdate.acknowledged && !passwordUpdate.modifiedCount)
+        throw new Error(
+          "Error when deleting the password details in the database."
         );
 
       const propertyUpdate = await Property.findOneAndDelete({ ownerID: id });

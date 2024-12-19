@@ -246,6 +246,36 @@ class Store extends StoreUtilities {
 
     if (message) return { message };
   }
+
+  static async deleteAccount(accessToken, deleteCode) {
+    if (!accessToken) return;
+
+    UserInterface.openLoader("deleting account", "deletingAccount");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+        deletetoken: deleteCode,
+      },
+    };
+
+    const deleteAccountRequest = await fetch(
+      "http://localhost:4000/api/user/owner/delete/owner",
+      requestOptions
+    );
+
+    const { message, error } = await deleteAccountRequest.json();
+
+    if (message || error) UserInterface.closeLoader("deletingAccount");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message) return { message };
+  }
 }
 
 class UserInterface extends UserinterfaceUtilities {
@@ -603,16 +633,21 @@ class UserInterface extends UserinterfaceUtilities {
           "form input"
         ).value;
 
-      const { message } = await Store.verifyPasswordWhenDeleteAccount(
+      const verifyPassword = await Store.verifyPasswordWhenDeleteAccount(
         accessToken,
         password
       );
 
-      if (!message) return;
+      if (!verifyPassword.message) return;
+      this.alertMessage(verifyPassword.message, "success");
+
+      const { message, deleteAccountToken } =
+        await Store.generateDeleteAccountCode(accessToken);
 
       this.alertMessage(message, "success");
+      alert(deleteAccountToken);
       document.querySelector(".verifyModal").remove();
-      this.generateDeleteCodeAndOpenVerifyCodeModal(accessToken);
+      this.createDeleteAccountCodeVerificationModal(accessToken);
     });
 
     formGroup2.append(verifyButton);
@@ -699,9 +734,9 @@ class UserInterface extends UserinterfaceUtilities {
 
       if (!deleteAccount.message) return;
 
+      this.alertMessage(deleteAccount.message, "success");
       document.querySelector(".home").classList.remove("blur");
       document.querySelector(".deleteAccountModal").remove();
-      this.alertMessage(deleteAccount.message, "success");
       this.handleLogout();
     });
 

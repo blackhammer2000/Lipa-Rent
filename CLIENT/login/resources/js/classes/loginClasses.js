@@ -27,7 +27,7 @@ class Store extends StoreUtilities {
       return;
     }
 
-    const loginRequestOptions2 = {
+    const getOtpRequestOptions = {
       mode: "cors",
       method: "POST",
       headers: {
@@ -37,24 +37,24 @@ class Store extends StoreUtilities {
       },
     };
 
-    const loginRequest2 = await fetch(
+    const getOtpRequest = await fetch(
       "http://localhost:4000/api/user/owner/get/otp",
-      loginRequestOptions2
+      getOtpRequestOptions
     );
 
-    const loginRequestData2 = await loginRequest2.json();
+    const getOtpRequestData = await getOtpRequest.json();
 
-    if (loginRequestData2.error || loginRequestData2.loginToken)
+    if (getOtpRequestData.error || getOtpRequestData.loginToken)
       UserInterface.closeLoader("login");
 
-    if (loginRequestData2.error || !loginRequestData2.loginToken) {
-      UserInterface.handleErrors(loginRequestData2.error);
+    if (getOtpRequestData.error || !getOtpRequestData.loginToken) {
+      UserInterface.handleErrors(getOtpRequestData.error);
       return;
     }
 
-    alert(loginRequestData2.newLoginOtp);
+    alert(getOtpRequestData.newLoginOtp);
 
-    return { loginToken: loginRequestData2.loginToken };
+    return { loginToken: getOtpRequestData.loginToken };
   }
 
   static async verifyOtp(loginToken, otp) {
