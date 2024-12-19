@@ -23,7 +23,7 @@ const {
 } = require("../controllers/deleteControllers");
 
 router.delete(
-  "/api/user/owner/delete/owner",
+  "/api/user/owner/delete",
   isUser,
   verifyUserAccessToken,
   deleteOwnerDetails

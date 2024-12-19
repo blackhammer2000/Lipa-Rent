@@ -254,7 +254,7 @@ class Store extends StoreUtilities {
 
     const requestOptions = {
       mode: "cors",
-      method: "POST",
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         user: true,
@@ -264,7 +264,7 @@ class Store extends StoreUtilities {
     };
 
     const deleteAccountRequest = await fetch(
-      "http://localhost:4000/api/user/owner/delete/owner",
+      "http://localhost:4000/api/user/owner/delete",
       requestOptions
     );
 
@@ -724,11 +724,7 @@ class UserInterface extends UserinterfaceUtilities {
         deleteCode
       );
 
-      if (!message) {
-        document.querySelector(".home").classList.remove("blur");
-        document.querySelector(".deleteAccountModal").remove();
-        return;
-      }
+      if (!message) return;
 
       this.alertMessage(message, "success");
 

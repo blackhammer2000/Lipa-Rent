@@ -12,6 +12,7 @@ const { Rent } = require("../../../middleware/models/Rent");
 const { Otp } = require("../../../middleware/models/Otp");
 
 const { compare } = require("bcrypt");
+const { encrypt } = require("../../helpers/cipher");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
@@ -76,44 +77,61 @@ const patchControllers = {
         throw new Error("Invalid Token, generate a new one.");
       }
 
+      const updateDeleteTokenDetails = await Otp.updateMany(
+        { ownerID: id },
+        {
+          $set: {
+            deleteAccountOtp: null,
+            deleteAccountOtpExpiry: null,
+            isDeleteAccountOtpVerified: null,
+          },
+        }
+      );
+
+      if (
+        !updateDeleteTokenDetails.acknowledged &&
+        !updateDeleteTokenDetails.modifiedCount
+      )
+        throw new Error("Error updating token details.");
+
       const ownerUpdate = await Owner.findOneAndDelete({ _id: id.toString() });
 
-      if (!ownerUpdate.acknowledged && !ownerUpdate.modifiedCount)
+      if (ownerUpdate === (null || undefined))
         throw new Error(
           "Error when deleting the owner details in the database."
         );
 
       const passwordUpdate = await Password.findOneAndDelete({ ownerID: id });
 
-      if (!passwordUpdate.acknowledged && !passwordUpdate.modifiedCount)
+      if (passwordUpdate === (null || undefined))
         throw new Error(
           "Error when deleting the password details in the database."
         );
 
       const propertyUpdate = await Property.findOneAndDelete({ ownerID: id });
 
-      if (!propertyUpdate.acknowledged && !propertyUpdate.modifiedCount)
+      if (propertyUpdate === (null || undefined))
         throw new Error(
           "Error when deleting the property details in the database."
         );
 
       const roomsUpdate = await Room.findOneAndDelete({ ownerID: id });
 
-      if (!roomsUpdate.acknowledged && !roomsUpdate.modifiedCount)
+      if (roomsUpdate === (null || undefined))
         throw new Error(
           "Error when deleting the rooms details in the database."
         );
 
       const tenantsUpdate = await Tenant.findOneAndDelete({ ownerID: id });
 
-      if (!tenantsUpdate.acknowledged && !tenantsUpdate.modifiedCount)
+      if (tenantsUpdate === (null || undefined))
         throw new Error(
           "Error when deleting the tenants details in the database."
         );
 
       const rentsUpdate = await Rent.findOneAndDelete({ ownerID: id });
 
-      if (!rentsUpdate.acknowledged && !rentsUpdate.modifiedCount)
+      if (rentsUpdate === (null || undefined))
         throw new Error(
           "Error when deleting the tenants details in the database."
         );
@@ -122,17 +140,14 @@ const patchControllers = {
         ownerID: id,
       });
 
-      if (
-        !subscriptionsUpdate.acknowledged &&
-        !subscriptionsUpdate.modifiedCount
-      )
+      if (subscriptionsUpdate === (null || undefined))
         throw new Error(
           "Error when deleting the subscription details in the database."
         );
 
       const otpUpdate = await Otp.findOneAndDelete({ ownerID: id });
 
-      if (!otpUpdate.acknowledged && !otpUpdate.modifiedCount)
+      if (otpUpdate === (null || undefined))
         throw new Error("Error when deleting the otp details in the database.");
 
       res.status(203).json({ message: "Account deleted successfully" });
