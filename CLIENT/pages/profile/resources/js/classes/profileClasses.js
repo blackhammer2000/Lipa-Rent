@@ -185,6 +185,37 @@ class Store extends StoreUtilities {
 
     if (message) return { message };
   }
+
+  static async generateDeleteAccountCode(accessToken) {
+    if (!accessToken) return;
+
+    UserInterface.openLoader("changing password", "changingPassword");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+    };
+
+    const getDeleteAccountCodeRequest = await fetch(
+      "http://localhost:4000/api/user/owner/generate/deleteToken",
+      requestOptions
+    );
+
+    const { message, deleteAccountToken, error } =
+      await getDeleteAccountCodeRequest.json();
+
+    if (message || deleteAccountToken || error)
+      UserInterface.closeLoader("changingPassword");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message && deleteAccountToken) return { message, deleteAccountToken };
+  }
 }
 
 class UserInterface extends UserinterfaceUtilities {
@@ -480,7 +511,7 @@ class UserInterface extends UserinterfaceUtilities {
     this.handleLogout();
   }
 
-  static createVerifyPasswordModal(accessToken) {
+  static createDeleteAccountVerifyPasswordModal(accessToken) {
     if (!accessToken) return;
 
     if (!confirm("Do you want to delete your account?")) return;
@@ -551,7 +582,7 @@ class UserInterface extends UserinterfaceUtilities {
 
       this.alertMessage(message, "success");
       document.querySelector(".verifyModal").remove();
-      this.createChangePasswordModal(accessToken, resetCode);
+      this.generateDeleteCodeAndOpenVerifyCodeModal(accessToken);
     });
 
     formGroup2.append(verifyButton);
@@ -561,6 +592,107 @@ class UserInterface extends UserinterfaceUtilities {
     modal.append(fieldset);
 
     document.querySelector(".home").classList.add("blur");
+    document.querySelector("body").append(modal);
+  }
+
+  static createDeleteAccountCodeVerificationModal(accessToken) {
+    const modal = document.createElement("div");
+    modal.className =
+      "deleteAccountModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
+
+    const fieldset = document.createElement("fieldset");
+    fieldset.className =
+      "container-fluid d-flex flex-column justify-content-center align-items-center";
+
+    const legend = document.createElement("legend");
+    legend.className = "container-fluid d-flex justify-content-end";
+
+    const closeModalButton = document.createElement("button");
+    closeModalButton.draggable = "true";
+    closeModalButton.className = "closeResetModal btn btn-danger";
+    closeModalButton.innerText = "X";
+    closeModalButton.addEventListener("click", () => {
+      document.querySelector(".home").classList.remove("blur");
+      document.querySelector(".deleteAccountModal").remove();
+    });
+    legend.append(closeModalButton);
+    fieldset.append(legend);
+
+    const form = document.createElement("form");
+
+    const formGroup1 = document.createElement("div");
+    formGroup1.className = "form-group";
+
+    const label = document.createElement("label");
+    label.htmlFor = "delete";
+    label.className = "text-center";
+
+    const labelText = document.createElement("h5");
+    labelText.innerText = "Enter account deletion code:";
+    label.append(labelText);
+    formGroup1.append(label);
+
+    const input = document.createElement("input");
+    input.className = "form-control";
+    input.type = "text";
+    input.id = "delete";
+    formGroup1.append(input);
+    form.append(formGroup1);
+
+    const formGroup2 = document.createElement("div");
+    formGroup2.className = "form-group";
+
+    const verifyButton = document.createElement("button");
+    verifyButton.className = "btn btn-success";
+    verifyButton.innerText = "Verify";
+    verifyButton.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const deleteCode =
+        e.target.parentElement.previousElementSibling.querySelector(
+          "form input"
+        ).value;
+
+      const { message } = await Store.verifyDeleteAccountCode(
+        accessToken,
+        deleteCode
+      );
+
+      if (!message) return;
+
+      this.alertMessage(message, "success");
+      document.querySelector(".home").classList.remove("blur");
+      document.querySelector(".deleteAccountModal").remove();
+      this.createChangePasswordModal(accessToken, resetCode);
+    });
+
+    const sendCodeAgainButton = document.createElement("button");
+    sendCodeAgainButton.className = "ml-2 btn btn-dark";
+    sendCodeAgainButton.innerText = "Send code again";
+    sendCodeAgainButton.disabled = "true";
+
+    // const newResetCodeTimer = document.createElement("span");
+    // let counter = 10;
+    // newResetCodeTimer.innerText = `(${counter})`;
+
+    // var interval = setInterval(() => {
+    //   if (counter < 1) {
+    //     clearInterval(interval);
+    //     sendCodeAgainButton.disabled = "false";
+    //   }
+
+    //   counter--;
+    //   newResetCodeTimer.innerText = `(${counter})`;
+    // }, 1000);
+
+    // sendCodeAgainButton.append(newResetCodeTimer);
+
+    formGroup2.append(verifyButton);
+    formGroup2.append(sendCodeAgainButton);
+    form.append(formGroup2);
+
+    fieldset.append(form);
+    modal.append(fieldset);
+
     document.querySelector("body").append(modal);
   }
 

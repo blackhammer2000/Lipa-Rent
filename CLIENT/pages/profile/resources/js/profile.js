@@ -43,6 +43,6 @@
 
   const deleteAccount = document.querySelector("[data-delete-account]");
   deleteAccount.addEventListener("click", () => {
-    UserInterface.createVerifyPasswordModal(accessToken);
+    UserInterface.createDeleteAccountVerifyPasswordModal(accessToken);
   });
 })();
