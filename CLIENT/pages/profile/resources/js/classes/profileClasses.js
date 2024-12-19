@@ -450,6 +450,87 @@ class UserInterface extends UserinterfaceUtilities {
     this.handleLogout();
   }
 
+  static createVerifyPasswordModal(accessToken) {
+    if (!accessToken) return;
+
+    if (!confirm("Do you want to delete your account?")) return;
+
+    const modal = document.createElement("div");
+    modal.className =
+      "verifyModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
+
+    const fieldset = document.createElement("fieldset");
+    fieldset.className =
+      "container-fluid d-flex flex-column justify-content-center align-items-center";
+
+    const legend = document.createElement("legend");
+    legend.className = "container-fluid d-flex justify-content-end";
+
+    const closeModalButton = document.createElement("button");
+    closeModalButton.draggable = "true";
+    closeModalButton.className = "closeResetModal btn btn-danger";
+    closeModalButton.innerText = "X";
+    closeModalButton.addEventListener("click", () => {
+      document.querySelector(".home").classList.remove("blur");
+      document.querySelector(".verifyModal").remove();
+    });
+    legend.append(closeModalButton);
+    fieldset.append(legend);
+
+    const form = document.createElement("form");
+
+    const formGroup1 = document.createElement("div");
+    formGroup1.className = "form-group";
+
+    const label = document.createElement("label");
+    label.htmlFor = "reset";
+    label.className = "text-center";
+
+    const labelText = document.createElement("h5");
+    labelText.innerText = "Verify password";
+    label.append(labelText);
+    formGroup1.append(label);
+
+    const input = document.createElement("input");
+    input.className = "form-control";
+    input.placeholder = "Enter password";
+    input.type = "text";
+    input.id = "reset";
+    formGroup1.append(input);
+    form.append(formGroup1);
+
+    const formGroup2 = document.createElement("div");
+    formGroup2.className = "form-group";
+
+    const verifyButton = document.createElement("button");
+    verifyButton.className = "btn btn-success w-100";
+    verifyButton.innerText = "Verify";
+    verifyButton.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const password =
+        e.target.parentElement.previousElementSibling.querySelector(
+          "form input"
+        ).value;
+
+      const { message } = await Store.verifyPassword(accessToken, password);
+
+      if (!message) return;
+
+      this.alertMessage(message, "success");
+      document.querySelector(".verifyModal").remove();
+      // this.createChangePasswordModal(accessToken, resetCode);
+    });
+
+    formGroup2.append(verifyButton);
+    form.append(formGroup2);
+
+    fieldset.append(form);
+    modal.append(fieldset);
+
+    document.querySelector(".home").classList.add("blur");
+    document.querySelector("body").append(modal);
+  }
+
   static toggleShowAndHidePassword(e) {
     e.target.previousElementSibling.type = "password"
       ? (e.target.previousElementSibling.type = "text")

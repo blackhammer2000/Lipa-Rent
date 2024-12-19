@@ -23,7 +23,8 @@
   box-shadow: 10px, 10px, 10px, 10px, #000;
 }
 
-.resetModal {
+.resetModal,
+.verifyModal {
   position: absolute;
   content: "";
   top: 30%;

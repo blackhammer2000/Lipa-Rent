@@ -40,4 +40,9 @@
   changePassword.addEventListener("click", () => {
     UserInterface.generateResetCodeAndOpenResetModal(accessToken);
   });
+
+  const deleteAccount = document.querySelector("[data-delete-account]");
+  deleteAccount.addEventListener("click", () => {
+    UserInterface.createVerifyPasswordModal(accessToken);
+  });
 })();
