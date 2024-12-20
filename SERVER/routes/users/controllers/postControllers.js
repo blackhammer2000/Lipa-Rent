@@ -18,7 +18,6 @@ const { Rent } = require("../../../middleware/models/Rent");
 const { Otp } = require("../../../middleware/models/Otp");
 
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
-// const { createModel } = require("../helpers/createModels");
 const { encrypt } = require("../../helpers/cipher");
 const { signLoginToken } = require("../../../middleware/tokens/loginToken");
 
@@ -494,6 +493,8 @@ const post_controllers = {
       if (err.message) res.status(400).json({ error: err.message });
     }
   },
+
+  //! ADDING A SUBSCRIPTION
 
   //! READING OWNER DETAILS
   readOwnerDetails: async (req, res) => {
@@ -1946,7 +1947,7 @@ const post_controllers = {
     }
   },
 
-  //? Forgot password
+  //? Forgot password, utilises the reset tokens methods for otp issuing and verification
   verifyNationalID: async (req, res) => {
     if (!req.body.id) throw new Error("Unauthorized action.");
     if (!req.body.nationalId) throw new Error("Unauthorized action.");
