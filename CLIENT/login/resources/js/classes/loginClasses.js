@@ -201,24 +201,15 @@ class UserInterface extends UserinterfaceUtilities {
     sendCodeAgainButton.disabled = "true";
 
     const newResetCodeTimer = document.createElement("span");
-    let counter = 10;
-    newResetCodeTimer.innerText = counter;
 
-    var interval = setInterval(() => {
-      if (counter < 1) {
-        clearInterval(interval);
-        sendCodeAgainButton.disabled = "false";
-      }
-
-      counter--;
-      newResetCodeTimer.innerText = `(${counter})`;
-    }, 1000);
+    this.handleSendCodeAgainTimer(newResetCodeTimer, sendCodeAgainButton);
 
     sendCodeAgainButton.append(newResetCodeTimer);
+
     sendCodeAgainButton.addEventListener("click", () => {
       this.loginAndGetOtp(loginToken, loginForm);
       sendCodeAgainButton.disabled = "true";
-      setInterval(interval);
+      this.handleSendCodeAgainTimer(newResetCodeTimer, sendCodeAgainButton);
     });
 
     formGroup2.append(verifyButton);
@@ -230,5 +221,20 @@ class UserInterface extends UserinterfaceUtilities {
 
     document.querySelector("body").append(modal);
     document.querySelector(".home").classList.add("blur");
+  }
+
+  static handleSendCodeAgainTimer(newResetCodeTimer, sendCodeAgainButton) {
+    var counter = 10;
+    newResetCodeTimer.innerText = `(${counter})`;
+
+    var interval = setInterval(function () {
+      if (counter === 0) {
+        clearInterval(interval);
+        sendCodeAgainButton.disabled = "false";
+      }
+
+      counter--;
+      newResetCodeTimer.innerText = `(${counter})`;
+    }, 1000);
   }
 }
