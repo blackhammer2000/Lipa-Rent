@@ -178,21 +178,7 @@ class UserInterface extends UserinterfaceUtilities {
     verifyButton.innerText = "Verify";
     verifyButton.addEventListener("click", async (e) => {
       e.preventDefault();
-      const otp =
-        e.target.parentElement.previousElementSibling.querySelector(
-          "form input"
-        ).value;
-
-      const { message, token } = await Store.verifyOtp(loginToken, otp);
-
-      if (!message && !token) return;
-
-      this.alertMessage(message, "success");
-      localStorage.setItem("liparentAccessToken", token);
-      document.querySelector(".enterOtpModal").remove();
-      document.querySelector(".home").classList.remove("blur");
-      location.assign("/CLIENT/dashboard/dashboard.html");
-      return;
+      this.handleVerifyOtp(e, loginToken);
     });
 
     const sendCodeAgainButton = document.createElement("button");
@@ -236,5 +222,25 @@ class UserInterface extends UserinterfaceUtilities {
       counter--;
       newResetCodeTimer.innerText = `(${counter})`;
     }, 1000);
+  }
+
+  static async handleVerifyOtp(e, loginToken) {
+    if (!e || !loginToken) return;
+
+    const otp =
+      e.target.parentElement.previousElementSibling.querySelector(
+        "form input"
+      ).value;
+
+    const { message, token } = await Store.verifyOtp(loginToken, otp);
+
+    if (!message && !token) return;
+
+    this.alertMessage(message, "success");
+    localStorage.setItem("liparentAccessToken", token);
+    document.querySelector(".enterOtpModal").remove();
+    document.querySelector(".home").classList.remove("blur");
+    location.assign("/CLIENT/dashboard/dashboard.html");
+    return;
   }
 }
