@@ -1768,7 +1768,7 @@ const post_controllers = {
             $set: {
               resetToken: null,
               resetTokenExpiry: null,
-              resetTokenVerified: false,
+              resetTokenVerified: null,
             },
           }
         );
@@ -1962,127 +1962,6 @@ const post_controllers = {
     if (nationalID !== nationalId) throw new Error("Invalid national ID");
 
     res.status(200).json({ message: "National ID verification successful" });
-  },
-
-  genarateForgotPasswordToken: async (req, res) => {
-    try {
-      if (!req.body.id) throw new Error("Unauthorized action");
-
-      const { id } = req.body;
-
-      const forgotPasswordToken = crypto.randomUUID().slice(-12);
-
-      const forgotPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
-
-      const hashedForgotPasswordToken = await hash(
-        encrypt(forgotPasswordToken),
-        10
-      );
-
-      if (!hashedForgotPasswordToken)
-        throw new Error(hashedForgotPasswordToken);
-
-      const addForgotPasswordTokenToDB = await Password.updateMany(
-        { ownerID: id },
-        {
-          $set: {
-            forgotPasswordToken: hashedForgotPasswordToken,
-            forgotPasswordTokenExpiry: forgotPasswordTokenExpiry,
-            forgotPasswordTokenVerified: false,
-          },
-        },
-        { new: true }
-      );
-
-      if (
-        !addForgotPasswordTokenToDB.acknowledged &&
-        !addForgotPasswordTokenToDB.modifiedCount
-      )
-        throw new Error("Error adding reset token to database");
-
-      res.status(200).json({
-        message: "Forgot password reset token sent to your email",
-        forgotPasswordToken,
-      });
-    } catch (err) {
-      if (err?.message) res.status(400).json({ error: err.message });
-    }
-  },
-
-  verifyForgotPasswordToken: async (req, res) => {
-    try {
-      if (!req.body.id) throw new Error("Unauthorized action.");
-      if (!req.headers.forgottoken) throw new Error("Unauthorized action.");
-
-      const { id } = req.body;
-
-      const {
-        headers: { forgottoken },
-      } = req;
-
-      const passwordDoc = await Password.findOne({ ownerID: id });
-
-      const forgotPasswordToken = passwordDoc.forgotPasswordToken || null;
-
-      if (!forgotPasswordToken)
-        throw new Error("Invalid Token, generate a new one.");
-
-      const forgotPasswordTokenMatch = await compare(
-        encrypt(forgottoken),
-        forgotPasswordToken
-      );
-
-      if (!forgotPasswordTokenMatch)
-        throw new Error("Invalid Token, generate a new one.");
-
-      const forgotPasswordTokenExpiry =
-        otpDoc.forgotPasswordTokenExpiry || null;
-
-      if (!forgotPasswordTokenExpiry)
-        throw new Error("Invalid Token, generate a new one.");
-
-      const isTokenValid =
-        Date.now() < forgotPasswordTokenExpiry ? true : false;
-
-      if (!isTokenValid) {
-        const removeInvalidToken = await Password.updateMany(
-          { ownerID: id },
-          {
-            $set: {
-              forgotPasswordToken: null,
-              forgotPasswordTokenExpiry: null,
-              forgotPasswordTokenVerified: null,
-            },
-          }
-        );
-
-        if (
-          !removeInvalidToken.acknowledged &&
-          !removeInvalidToken.modifiedCount
-        )
-          throw new Error("Error removing invalid reset token.");
-
-        throw new Error("Invalid Token, generate a new one.");
-      }
-
-      const verifyToken = await Password.updateOne(
-        { ownerID: id },
-        {
-          $set: {
-            forgotPasswordTokenVerified: true,
-          },
-        }
-      );
-
-      if (!verifyToken.acknowledged && !verifyToken.modifiedCount)
-        throw new Error("Error verifying reset token.");
-
-      res.status(200).json({
-        message: "Verification successful",
-      });
-    } catch (err) {
-      if (err?.message) res.status(400).json({ error: err.message });
-    }
   },
 };
 

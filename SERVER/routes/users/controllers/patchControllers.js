@@ -466,7 +466,7 @@ const patchControllers = {
         throw new Error("Error in reset password in the database");
 
       res.status(200).json({
-        message: "password has been reset successfully",
+        message: "Password has been reset successfully",
       });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
