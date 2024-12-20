@@ -181,7 +181,7 @@ router.post(
   readRentPaymentForRoomInPropertyByTenant
 );
 
-// VERIFY PASSWORD
+// VERIFY CREDETIALS
 router.post(
   "/api/user/owner/verify/password",
   isUser,
@@ -221,20 +221,6 @@ router.post(
   isUser,
   verifyUserAccessToken,
   verifyDeleteAccountToken
-);
-
-// FORGOT PASSWORD ROUTES
-router.post(
-  "/api/user/owner/generate/forgot",
-  isUser,
-  verifyUserAccessToken,
-  genarateForgotPasswordToken
-);
-router.post(
-  "/api/user/owner/verify/forgot",
-  isUser,
-  verifyUserAccessToken,
-  verifyForgotPasswordToken
 );
 
 module.exports = router;
