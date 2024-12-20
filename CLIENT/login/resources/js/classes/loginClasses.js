@@ -2,7 +2,7 @@ class Store extends StoreUtilities {
   static async login(loginInfo) {
     if (!loginInfo) return;
 
-    UserInterface.openLoader("Logging in", "login");
+    UserInterface.openLoader("logging in", "login");
 
     const loginRequestOptions = {
       mode: "cors",
@@ -19,13 +19,19 @@ class Store extends StoreUtilities {
       loginRequestOptions
     );
 
-    const loginRequestData = await loginRequest.json();
+    const { loginToken, error } = await loginRequest.json();
 
-    if (loginRequestData.error && !loginRequestData.loginToken) {
-      UserInterface.closeLoader("login");
-      UserInterface.handleErrors(loginRequestData.error);
-      return;
-    }
+    if (error || loginToken) UserInterface.closeLoader("login");
+
+    if (error) UserInterface.handleErrors(error);
+
+    return { loginToken1: loginToken };
+  }
+
+  static async sendOtp(loginToken1) {
+    if (!loginToken1) return;
+
+    UserInterface.openLoader("sending OTP", "sendOtp");
 
     const getOtpRequestOptions = {
       mode: "cors",
@@ -33,7 +39,7 @@ class Store extends StoreUtilities {
       headers: {
         user: true,
         "Content-Type": "application/json",
-        logintoken: loginRequestData.loginToken,
+        logintoken: loginToken1,
       },
     };
 
@@ -42,19 +48,28 @@ class Store extends StoreUtilities {
       getOtpRequestOptions
     );
 
-    const getOtpRequestData = await getOtpRequest.json();
+    const { loginToken, error, newLoginOtp } = await getOtpRequest.json();
 
-    if (getOtpRequestData.error || getOtpRequestData.loginToken)
-      UserInterface.closeLoader("login");
+    if (error || (loginToken && newLoginOtp))
+      UserInterface.closeLoader("sendOtp");
 
-    if (getOtpRequestData.error || !getOtpRequestData.loginToken) {
-      UserInterface.handleErrors(getOtpRequestData.error);
-      return;
-    }
+    if (error) UserInterface.handleErrors(error);
 
-    alert(getOtpRequestData.newLoginOtp);
+    alert(newLoginOtp);
 
-    return { loginToken: getOtpRequestData.loginToken };
+    return { loginToken2: loginToken };
+  }
+
+  static async loginAndSendOtp(loginInfo) {
+    if (!loginInfo) return;
+
+    const { loginToken1 } = await this.login(loginInfo);
+
+    if (!loginToken1) return;
+
+    const { loginToken2 } = await this.sendOtp(loginToken1);
+
+    return { loginToken: loginToken2 };
   }
 
   static async verifyOtp(loginToken, otp) {
@@ -98,7 +113,11 @@ class UserInterface extends UserinterfaceUtilities {
     const nationalID = form.querySelector("[data-national-id]").value;
     const password = form.querySelector("[data-password]").value;
 
-    const { loginToken } = await Store.login({ email, nationalID, password });
+    const { loginToken } = await Store.loginAndSendOtp({
+      email,
+      nationalID,
+      password,
+    });
 
     if (!loginToken) return;
 
@@ -164,12 +183,12 @@ class UserInterface extends UserinterfaceUtilities {
           "form input"
         ).value;
 
-      const verifyOtp = await Store.verifyOtp(loginToken, otp);
+      const { message, token } = await Store.verifyOtp(loginToken, otp);
 
-      if (!verifyOtp.message && !verifyOtp.token) return;
+      if (!message && !token) return;
 
-      this.alertMessage(verifyOtp.JSONmessage, "success");
-      localStorage.setItem("liparentAccessToken", verifyOtp.token);
+      this.alertMessage(message, "success");
+      localStorage.setItem("liparentAccessToken", token);
       document.querySelector(".enterOtpModal").remove();
       document.querySelector(".home").classList.remove("blur");
       location.assign("/CLIENT/dashboard/dashboard.html");

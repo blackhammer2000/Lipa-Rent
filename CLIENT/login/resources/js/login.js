@@ -7,3 +7,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   UserInterface.loginAndGetOtp(loginForm);
 });
+
+const forgotPassword = document.querySelector("[data-forgot-password]");
+
+forgotPassword.addEventListener("click", async (e) => {});
