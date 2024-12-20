@@ -2009,7 +2009,7 @@ const post_controllers = {
     }
   },
 
-  verifyDeleteAccountToken: async (req, res) => {
+  verifyForgotPasswordToken: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unauthorized action.");
       if (!req.headers.forgottoken) throw new Error("Unauthorized action.");

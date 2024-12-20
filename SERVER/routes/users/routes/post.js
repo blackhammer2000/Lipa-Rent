@@ -45,9 +45,13 @@ const {
   genarateResetPasswordToken,
   verifyResetPasswordToken,
 
+  verifyPassword,
   genarateDeleteAccountToken,
   verifyDeleteAccountToken,
-  verifyPassword,
+
+  verifyNationalID,
+  genarateForgotPasswordToken,
+  verifyForgotPasswordToken,
 } = require("../controllers/postControllers");
 
 const {
@@ -184,6 +188,12 @@ router.post(
   verifyUserAccessToken,
   verifyPassword
 );
+router.post(
+  "/api/user/owner/verify/nationalid",
+  isUser,
+  verifyUserAccessToken,
+  verifyNationalID
+);
 
 // PASSWORD RESET ROUTES
 router.post(
@@ -211,6 +221,20 @@ router.post(
   isUser,
   verifyUserAccessToken,
   verifyDeleteAccountToken
+);
+
+// FORGOT PASSWORD ROUTES
+router.post(
+  "/api/user/owner/generate/forgot",
+  isUser,
+  verifyUserAccessToken,
+  genarateForgotPasswordToken
+);
+router.post(
+  "/api/user/owner/verify/forgot",
+  isUser,
+  verifyUserAccessToken,
+  verifyForgotPasswordToken
 );
 
 module.exports = router;
