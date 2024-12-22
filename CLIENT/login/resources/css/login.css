@@ -16,7 +16,10 @@ body {
   width: 100%;
 }
 
-.enterOtpModal {
+.enterOtpModal,
+.changePasswordModal,
+.verifyForgotOtpModal,
+.verifyIdModal {
   position: absolute;
   content: "";
   top: 33%;
