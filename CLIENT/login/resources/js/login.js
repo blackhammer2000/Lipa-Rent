@@ -10,4 +10,6 @@ loginForm.addEventListener("submit", async (e) => {
 
 const forgotPassword = document.querySelector("[data-forgot-password]");
 
-forgotPassword.addEventListener("click", async (e) => {});
+forgotPassword.addEventListener("click", async (e) => {
+  UserInterface.createForgotPasswordVerifyNationalIdModal();
+});

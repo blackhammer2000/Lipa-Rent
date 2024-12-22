@@ -15,6 +15,10 @@ const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
 const {
+  verifyForgotPasswordToken,
+} = require("../../../middleware/tokens/verifyForgotPasswordToken");
+
+const {
   editOwnerDetails,
   editPropertyDetails,
   editRoomDetails,
@@ -58,6 +62,13 @@ router.patch(
   "/api/user/owner/edit/password",
   isUser,
   verifyUserAccessToken,
+  editPassword
+);
+
+router.patch(
+  "/api/user/owner/edit/forgotPassword",
+  isUser,
+  verifyForgotPasswordToken,
   editPassword
 );
 

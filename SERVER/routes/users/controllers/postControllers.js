@@ -20,6 +20,9 @@ const { Otp } = require("../../../middleware/models/Otp");
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 const { encrypt } = require("../../helpers/cipher");
 const { signLoginToken } = require("../../../middleware/tokens/loginToken");
+const {
+  signForgotPasswordToken,
+} = require("../../../middleware/tokens/forgotPasswordToken");
 
 ///////*************************POST CONTROLLERS************************////////////////
 
@@ -1949,20 +1952,25 @@ const post_controllers = {
 
   //? Forgot password, utilises the reset tokens methods for otp issuing and verification
   verifyNationalID: async (req, res) => {
-    if (!req.body.id) throw new Error("Unauthorized action.");
     if (!req.body.nationalId) throw new Error("Unauthorized action.");
 
-    const { id, nationalId } = req.body;
+    const { nationalId } = req.body;
 
-    const ownerDoc = await Owner.findOne({ _id: id });
+    const ownerDoc = await Owner.findOne({ nationalID: nationalId });
+
+    const id = ownerDoc._id || null;
 
     const nationalID = ownerDoc.nationalID || null;
 
-    if (!nationalID) throw new Error("Invalid national ID");
+    if (!nationalID || !id) throw new Error("Invalid credentials");
 
-    if (nationalID !== nationalId) throw new Error("Invalid national ID");
+    if (nationalID !== nationalId) throw new Error("Invalid credentials");
 
-    res.status(200).json({ message: "National ID verification successful" });
+    const token = signForgotPasswordToken({ id });
+
+    res
+      .status(200)
+      .json({ message: "National ID verification successful", token });
   },
 };
 

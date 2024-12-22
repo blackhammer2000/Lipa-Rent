@@ -3,6 +3,9 @@ const router = require("express").Router();
 const {
   verifyUserAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
+const {
+  verifyForgotPasswordToken,
+} = require("../../../middleware/tokens/verifyForgotPasswordToken");
 
 const {
   landlordValidator,
@@ -50,8 +53,6 @@ const {
   verifyDeleteAccountToken,
 
   verifyNationalID,
-  genarateForgotPasswordToken,
-  verifyForgotPasswordToken,
 } = require("../controllers/postControllers");
 
 const {
@@ -188,12 +189,7 @@ router.post(
   verifyUserAccessToken,
   verifyPassword
 );
-router.post(
-  "/api/user/owner/verify/nationalid",
-  isUser,
-  verifyUserAccessToken,
-  verifyNationalID
-);
+router.post("/api/user/owner/verify/nationalid", isUser, verifyNationalID);
 
 // PASSWORD RESET ROUTES
 router.post(
@@ -221,6 +217,20 @@ router.post(
   isUser,
   verifyUserAccessToken,
   verifyDeleteAccountToken
+);
+
+// FORGOT PASSWORD ROUTES
+router.post(
+  "/api/user/owner/generate/forgotToken",
+  isUser,
+  verifyForgotPasswordToken,
+  genarateResetPasswordToken
+);
+router.post(
+  "/api/user/owner/verify/forgotToken",
+  isUser,
+  verifyForgotPasswordToken,
+  verifyResetPasswordToken
 );
 
 module.exports = router;
