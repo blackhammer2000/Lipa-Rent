@@ -42,8 +42,6 @@ class UserInterface extends UserinterfaceUtilities {
       currentSubscription: { start, expires },
     } = subscription;
 
-    console.log(new Date(expires));
-
     const row = document.createElement("tr");
 
     const tablenumberCell = document.createElement("td");
