@@ -170,7 +170,7 @@ class Store extends StoreUtilities {
   }
 
   static async verifyForgotPasswordCode(token, resetCode) {
-    if (!accessToken) return;
+    if (!token || !resetCode) return;
 
     UserInterface.openLoader("verifying OTP", "verifyingCode");
 
@@ -443,7 +443,7 @@ class UserInterface extends UserinterfaceUtilities {
     const verifyNationalId = await Store.verifyNationalId(nationalId);
 
     if (!verifyNationalId.message || !verifyNationalId.token) return;
-    console.log(verifyNationalId.token);
+
     this.alertMessage(verifyNationalId.message, "success");
 
     const { message, resetPasswordToken } =
@@ -551,13 +551,13 @@ class UserInterface extends UserinterfaceUtilities {
         "form input"
       ).value;
 
-    const { message } = await Store.verifyForgotPasswordOtp(otp, token);
+    const { message } = await Store.verifyForgotPasswordCode(token, otp);
 
     if (!message) return;
 
     this.alertMessage(message, "success");
     document.querySelector(".verifyForgotOtpModal").remove();
-    this.createChangePasswordModaL(token, otp);
+    this.createChangePasswordModal(token, otp);
     return;
   }
 
