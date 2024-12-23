@@ -1951,13 +1951,14 @@ const post_controllers = {
   },
 
   //? Forgot password, utilises the reset tokens methods for otp issuing and verification
-  verifyNationalID: async (req, res) => {
+  verifyUserInfo: async (req, res) => {
     try {
+      if (!req.body.email) throw new Error("Unauthorized action.");
       if (!req.body.nationalId) throw new Error("Unauthorized action.");
 
-      const { nationalId } = req.body;
+      const { email, nationalId } = req.body;
 
-      const ownerDoc = await Owner.findOne({ nationalID: nationalId });
+      const ownerDoc = await Owner.findOne({ email, nationalID: nationalId });
 
       const id = ownerDoc?._id || null;
 
@@ -1971,7 +1972,7 @@ const post_controllers = {
 
       res
         .status(200)
-        .json({ message: "National ID verification successful", token });
+        .json({ message: "User info verification successful", token });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }

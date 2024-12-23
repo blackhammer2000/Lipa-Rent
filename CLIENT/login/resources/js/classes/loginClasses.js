@@ -105,30 +105,30 @@ class Store extends StoreUtilities {
     return { message, token };
   }
 
-  static async verifyNationalId(nationalId) {
-    if (!nationalId) return;
+  static async verifyUserInfo(email, nationalId) {
+    if (!email || !nationalId) return;
 
-    UserInterface.openLoader("verifying national ID", "verifyingNationalId");
+    UserInterface.openLoader("verifying user info", "verifyingUserInfo");
 
-    const verifyNationalIdRequestOptions = {
+    const verifyUserInfoRequestOptions = {
       mode: "cors",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         user: true,
       },
-      body: JSON.stringify({ nationalId }),
+      body: JSON.stringify({ email, nationalId }),
     };
 
-    const verifyNationalIdRequest = await fetch(
+    const verifyUserInfoRequest = await fetch(
       "http://localhost:4000/api/user/owner/verify/nationalid",
-      verifyNationalIdRequestOptions
+      verifyUserInfoRequestOptions
     );
 
-    const { error, token, message } = await verifyNationalIdRequest.json();
+    const { error, token, message } = await verifyUserInfoRequest.json();
 
     if (error || (token && message))
-      UserInterface.closeLoader("verifyingNationalId");
+      UserInterface.closeLoader("verifyingUserInfo");
 
     if (error || (!token && !message)) {
       UserInterface.handleErrors(error);
@@ -369,7 +369,7 @@ class UserInterface extends UserinterfaceUtilities {
     return;
   }
 
-  static createForgotPasswordVerifyNationalIdModal() {
+  static createForgotPasswordVerifyUserInfoModal() {
     document.querySelector(".verifyIdModal")?.remove();
 
     const modal = document.createElement("div");
@@ -403,25 +403,34 @@ class UserInterface extends UserinterfaceUtilities {
     label.className = "text-center";
 
     const labelText = document.createElement("h5");
-    labelText.innerText = "Verify National ID";
+    labelText.innerText = "Verify Details";
     label.append(labelText);
     formGroup1.append(label);
 
     const input = document.createElement("input");
     input.className = "form-control";
-    input.type = "text";
+    input.type = "email";
+    input.required = true;
+    input.placeholder = "Email";
     formGroup1.append(input);
+
+    const input2 = document.createElement("input");
+    input2.className = "form-control mt-3";
+    input2.type = "text";
+    input2.required = true;
+    input2.placeholder = "National ID";
+    formGroup1.append(input2);
     form.append(formGroup1);
 
     const formGroup2 = document.createElement("div");
     formGroup2.className = "form-group";
 
     const verifyButton = document.createElement("button");
-    verifyButton.className = "btn btn-success";
+    verifyButton.className = "btn btn-success container";
     verifyButton.innerText = "Verify";
     verifyButton.addEventListener("click", async (e) => {
       e.preventDefault();
-      this.handleVerifyNationalId(e);
+      this.handleVerifyUserInfo(e);
     });
 
     formGroup2.append(verifyButton);
@@ -434,20 +443,25 @@ class UserInterface extends UserinterfaceUtilities {
     document.querySelector(".home").classList.add("blur");
   }
 
-  static async handleVerifyNationalId(e) {
-    const nationalId =
-      e.target.parentElement.previousElementSibling.querySelector(
+  static async handleVerifyUserInfo(e) {
+    const formInputs =
+      e.target.parentElement.previousElementSibling.querySelectorAll(
         "form input"
-      ).value;
+      );
 
-    const verifyNationalId = await Store.verifyNationalId(nationalId);
+    const email = formInputs[0].value;
+    const nationalId = formInputs[1].value;
 
-    if (!verifyNationalId.message || !verifyNationalId.token) return;
+    if (!email || !nationalId) this.handleErrors("Provide all details");
 
-    this.alertMessage(verifyNationalId.message, "success");
+    const verifyUserInfo = await Store.verifyUserInfo(email, nationalId);
+
+    if (!verifyUserInfo.message || !verifyUserInfo.token) return;
+
+    this.alertMessage(verifyUserInfo.message, "success");
 
     const { message, resetPasswordToken } =
-      await Store.generateForgotPasswordCode(verifyNationalId.token);
+      await Store.generateForgotPasswordCode(verifyUserInfo.token);
 
     if (!message) return;
 
@@ -456,7 +470,7 @@ class UserInterface extends UserinterfaceUtilities {
     this.alertMessage(message, "success");
 
     document.querySelector(".verifyIdModal").remove();
-    this.createForgotPasswordVerifyOtpModal(verifyNationalId.token);
+    this.createForgotPasswordVerifyOtpModal(verifyUserInfo.token);
     return;
   }
 
@@ -496,13 +510,14 @@ class UserInterface extends UserinterfaceUtilities {
     label.className = "text-center";
 
     const labelText = document.createElement("h5");
-    labelText.innerText = "Enter login OTP";
+    labelText.innerText = "Enter password reset OTP";
     label.append(labelText);
     formGroup1.append(label);
 
     const input = document.createElement("input");
     input.className = "form-control";
     input.type = "text";
+    input.required = true;
     formGroup1.append(input);
     form.append(formGroup1);
 

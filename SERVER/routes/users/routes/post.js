@@ -52,7 +52,7 @@ const {
   genarateDeleteAccountToken,
   verifyDeleteAccountToken,
 
-  verifyNationalID,
+  verifyUserInfo,
 } = require("../controllers/postControllers");
 
 const {
@@ -189,7 +189,7 @@ router.post(
   verifyUserAccessToken,
   verifyPassword
 );
-router.post("/api/user/owner/verify/nationalid", isUser, verifyNationalID);
+router.post("/api/user/owner/verify/nationalid", isUser, verifyUserInfo);
 
 // PASSWORD RESET ROUTES
 router.post(

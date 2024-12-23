@@ -12,5 +12,5 @@ const forgotPassword = document.querySelector("[data-forgot-password]");
 
 forgotPassword.addEventListener("click", async (e) => {
   if (!confirm("Proceed to reset password?")) return;
-  UserInterface.createForgotPasswordVerifyNationalIdModal();
+  UserInterface.createForgotPasswordVerifyUserInfoModal();
 });
