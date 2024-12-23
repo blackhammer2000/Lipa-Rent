@@ -1967,7 +1967,7 @@ const post_controllers = {
 
       if (nationalID !== nationalId) throw new Error("Invalid credentials");
 
-      const token = signForgotPasswordToken({ id });
+      const token = await signForgotPasswordToken({ id });
 
       res
         .status(200)

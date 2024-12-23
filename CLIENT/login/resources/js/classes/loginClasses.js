@@ -443,7 +443,7 @@ class UserInterface extends UserinterfaceUtilities {
     const verifyNationalId = await Store.verifyNationalId(nationalId);
 
     if (!verifyNationalId.message || !verifyNationalId.token) return;
-
+    console.log(verifyNationalId.token);
     this.alertMessage(verifyNationalId.message, "success");
 
     const { message, resetPasswordToken } =
