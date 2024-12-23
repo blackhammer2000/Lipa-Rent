@@ -121,7 +121,7 @@ class Store extends StoreUtilities {
     };
 
     const verifyNationalIdRequest = await fetch(
-      "http://localhost:4000/api/user/owner/verify/nationalID",
+      "http://localhost:4000/api/user/owner/verify/nationalid",
       verifyNationalIdRequestOptions
     );
 

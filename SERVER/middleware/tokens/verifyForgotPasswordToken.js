@@ -10,7 +10,7 @@ const verifyForgotPasswordToken = (req, res, next) => {
 
     const { id } = verify(token, process.env.FORGOT_SECRET_KEY);
 
-    if (!id) throw new Error("jwt expired");
+    if (!id) throw new Error("Unauthorized action.");
 
     req.body.id = id;
 

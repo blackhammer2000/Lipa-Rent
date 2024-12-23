@@ -1952,25 +1952,29 @@ const post_controllers = {
 
   //? Forgot password, utilises the reset tokens methods for otp issuing and verification
   verifyNationalID: async (req, res) => {
-    if (!req.body.nationalId) throw new Error("Unauthorized action.");
+    try {
+      if (!req.body.nationalId) throw new Error("Unauthorized action.");
 
-    const { nationalId } = req.body;
+      const { nationalId } = req.body;
 
-    const ownerDoc = await Owner.findOne({ nationalID: nationalId });
+      const ownerDoc = await Owner.findOne({ nationalID: nationalId });
 
-    const id = ownerDoc._id || null;
+      const id = ownerDoc?._id || null;
 
-    const nationalID = ownerDoc.nationalID || null;
+      const nationalID = ownerDoc?.nationalID || null;
 
-    if (!nationalID || !id) throw new Error("Invalid credentials");
+      if (!nationalID || !id) throw new Error("Invalid credentials");
 
-    if (nationalID !== nationalId) throw new Error("Invalid credentials");
+      if (nationalID !== nationalId) throw new Error("Invalid credentials");
 
-    const token = signForgotPasswordToken({ id });
+      const token = signForgotPasswordToken({ id });
 
-    res
-      .status(200)
-      .json({ message: "National ID verification successful", token });
+      res
+        .status(200)
+        .json({ message: "National ID verification successful", token });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
   },
 };
 
