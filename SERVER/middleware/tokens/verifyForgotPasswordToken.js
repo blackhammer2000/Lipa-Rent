@@ -21,7 +21,7 @@ const verifyForgotPasswordToken = (req, res, next) => {
     if (
       err?.message === ("jwt expired" || "invalid token" || "jwt malformed")
     ) {
-      res.status(403).json({ error: "session expired" });
+      res.status(403).json({ error: "Unauthorized action." });
     } else {
       res.status(500).json({ error: err?.message });
     }

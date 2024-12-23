@@ -153,13 +153,13 @@ class Store extends StoreUtilities {
       },
     };
 
-    const getDeleteAccountCodeRequest = await fetch(
+    const getForgotPasswordCodeRequest = await fetch(
       "http://localhost:4000/api/user/owner/generate/forgotToken",
       requestOptions
     );
 
     const { message, resetPasswordToken, error } =
-      await getDeleteAccountCodeRequest.json();
+      await getForgotPasswordCodeRequest.json();
 
     if (message || resetPasswordToken || error)
       UserInterface.closeLoader("sendingOtp");
@@ -449,9 +449,9 @@ class UserInterface extends UserinterfaceUtilities {
     const { message, resetPasswordToken } =
       await Store.generateForgotPasswordCode(verifyNationalId.token);
 
-    alert(resetPasswordToken);
-
     if (!message) return;
+
+    alert(resetPasswordToken);
 
     this.alertMessage(message, "success");
 
