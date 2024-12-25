@@ -76,7 +76,7 @@ class UserInterface extends UserinterfaceUtilities {
       Date.now() < expires ? "Active" : "Expired"
     );
     subscriptionStatusCell.append(subscriptionStatusCellText);
-    row?.append(subscriptionStatusCell);
+    row.append(subscriptionStatusCell);
 
     return row;
   }
