@@ -29,7 +29,7 @@ class Store extends StoreUtilities {
     if (propertiesOwned) return propertiesOwned;
   }
 
-  static async readAllRoomPayments(accessToken, propertyId) {
+  static async readAllPayments(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
     UserInterface.openLoader("reading payments", "readPayments");
@@ -51,13 +51,15 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { propertyRents, error } = await getAllPropertyPaymentData.json();
+    const { propertyRents, propertyExpectedRevenueMonthly, error } =
+      await getAllPropertyPaymentData.json();
 
     if (propertyRents || error) UserInterface.closeLoader("readPayments");
 
     if (error) UserInterface.handleErrors(error);
 
-    if (propertyRents) return { propertyRents };
+    if (propertyRents && propertyExpectedRevenueMonthly)
+      return { propertyRents, propertyExpectedRevenueMonthly };
   }
 }
 
@@ -88,5 +90,42 @@ class UserInterface extends UserinterfaceUtilities {
     optionsBody.append(fragment);
   }
 
-  static renderStats(propertyRents) {}
+  static renderStats(
+    propertyRents,
+    propertyExpectedRevenueMonthly,
+    selectedMonth
+  ) {
+    if (!propertyRents || !selectedMonth) return;
+
+    let allPayments = [];
+
+    for (const roomId in propertyRents) {
+      for (const tenantId in propertyRents[roomId]) {
+        allPayments = [...allPayments, ...propertyRents[roomId][tenantId]];
+      }
+    }
+
+    const selectedMonthPayments = allPayments.filter((payment) => {
+      payment.month === selectedMonth;
+    });
+
+    const selectedMonthTotalRevenue = selectedMonthPayments.reduce(
+      (a, b) => +a.amountPaid + +b.amountPaid
+    );
+
+    const selectedMonthDeficitRevenue =
+      propertyExpectedRevenueMonthly - selectedMonthTotalRevenue;
+
+    const totalRevenueAmount = document.querySelector("[data-total-revenue]");
+    const projectedRevenueAmount = document.querySelector(
+      "[data-projected-revenue]"
+    );
+    const deficitRevenueAmount = document.querySelector(
+      "[data-deficit-revenue]"
+    );
+
+    totalRevenueAmount.innerText = `KES. ${selectedMonthTotalRevenue}`;
+    projectedRevenueAmount.innerText = `KES. ${projectedRevenueAmount}`;
+    deficitRevenueAmount.innerText = `KES. ${selectedMonthDeficitRevenue}`;
+  }
 }

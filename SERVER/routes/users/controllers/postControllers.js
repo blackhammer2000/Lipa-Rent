@@ -1460,6 +1460,26 @@ const post_controllers = {
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
 
+      const roomsDocument = await Room.findOne({ ownerID: id });
+
+      if (!roomsDocument) throw new Error(roomsDocument);
+
+      const { rooms } = roomsDocument;
+
+      const checkIfPropertyIdIsRegisteredInRooms = rooms[0][propertyId];
+
+      if (!checkIfPropertyIdIsRegisteredInRooms)
+        throw new Error(
+          "Property with the given property Id has not been registered in the rooms database."
+        );
+
+      let propertyExpectedRevenueMonthly = 0;
+
+      for (const roomId in checkIfPropertyIdIsRegisteredInRooms) {
+        propertyExpectedRevenueMonthly +=
+          +checkIfPropertyIdIsRegisteredInRooms[roomId].roomRatePerMonth;
+      }
+
       const rentsDocument = await Rent.findOne({ ownerID: id });
 
       if (!rentsDocument) throw new Error(rentsDocument);
@@ -1481,7 +1501,7 @@ const post_controllers = {
       if (!Object.keys(propertyRents))
         throw new Error("No payment reports for the property room.");
 
-      res.status(200).json({ propertyRents });
+      res.status(200).json({ propertyRents, propertyExpectedRevenueMonthly });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
