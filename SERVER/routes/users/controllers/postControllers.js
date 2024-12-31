@@ -1447,6 +1447,47 @@ const post_controllers = {
 
   //?  below is the expected requestBody from the user when reading all rent payments for a room
   //* {
+  //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
+  //* }
+
+  readAllRentPaymentsForAllRoomsInProperty: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unauthorized action");
+      if (!req.body.propertyId) throw new Error("provide a valid property ID.");
+
+      const { id, propertyId } = req.body;
+
+      if (!isValid(id))
+        throw new Error("ID provided is not a valid document Id.");
+
+      const rentsDocument = await Rent.findOne({ ownerID: id });
+
+      if (!rentsDocument) throw new Error(rentsDocument);
+
+      const { rents } = rentsDocument;
+
+      const checkIfPropertyIdIsRegistered = rents[0][propertyId];
+
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the rents database."
+        );
+
+      const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
+
+      if (!propertyRents)
+        throw new Error("No tenants have been added to this property.");
+
+      if (!Object.keys(propertyRents))
+        throw new Error("No payment reports for the property room.");
+
+      res.status(200).json({ propertyRents });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
+  //?  below is the expected requestBody from the user when reading all rent payments for a room
+  //* {
   //*   "propertyNo": "NGONG/NGONG/12058",
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //*   "roomId": "PK3",
