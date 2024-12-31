@@ -51,15 +51,17 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { propertyRents, propertyExpectedRevenueMonthly, error } =
+    const { message, propertyRents, propertyExpectedRevenueMonthly, error } =
       await getAllPropertyPaymentData.json();
 
     if (propertyRents || error) UserInterface.closeLoader("readPayments");
 
     if (error) UserInterface.handleErrors(error);
 
+    // console.log(message, propertyRents, propertyExpectedRevenueMonthly);
+
     if (propertyRents && propertyExpectedRevenueMonthly)
-      return { propertyRents, propertyExpectedRevenueMonthly };
+      return { message, propertyRents, propertyExpectedRevenueMonthly };
   }
 }
 
@@ -90,7 +92,7 @@ class UserInterface extends UserinterfaceUtilities {
     optionsBody.append(fragment);
   }
 
-  static renderStats(
+  static renderRevenueStats(
     propertyRents,
     propertyExpectedRevenueMonthly,
     selectedMonth
@@ -106,12 +108,14 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     const selectedMonthPayments = allPayments.filter((payment) => {
-      payment.month === selectedMonth;
+      if (payment.month === selectedMonth) return payment;
     });
 
-    const selectedMonthTotalRevenue = selectedMonthPayments.reduce(
-      (a, b) => +a.amountPaid + +b.amountPaid
-    );
+    let selectedMonthTotalRevenue = 0;
+
+    selectedMonthPayments.forEach((payment) => {
+      selectedMonthTotalRevenue += +payment.amountPaid;
+    });
 
     const selectedMonthDeficitRevenue =
       propertyExpectedRevenueMonthly - selectedMonthTotalRevenue;
@@ -125,7 +129,25 @@ class UserInterface extends UserinterfaceUtilities {
     );
 
     totalRevenueAmount.innerText = `KES. ${selectedMonthTotalRevenue}`;
-    projectedRevenueAmount.innerText = `KES. ${projectedRevenueAmount}`;
+    projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueMonthly}`;
     deficitRevenueAmount.innerText = `KES. ${selectedMonthDeficitRevenue}`;
+  }
+
+  static async readAndRenderRevenueStats(
+    accessToken,
+    propertyId,
+    selectedMonth
+  ) {
+    if (!accessToken || !propertyId || !selectedMonth) return;
+
+    const { message, propertyRents, propertyExpectedRevenueMonthly } =
+      await Store.readAllPayments(accessToken, propertyId);
+
+    this.alertMessage(message, "success");
+    this.renderRevenueStats(
+      propertyRents,
+      propertyExpectedRevenueMonthly,
+      selectedMonth
+    );
   }
 }

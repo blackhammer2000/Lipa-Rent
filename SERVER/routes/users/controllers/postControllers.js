@@ -1445,7 +1445,7 @@ const post_controllers = {
     }
   },
 
-  //?  below is the expected requestBody from the user when reading all rent payments for a room
+  //?  below is the expected requestBody from the user when reading all rent payments for all rooms
   //* {
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //* }
@@ -1475,9 +1475,9 @@ const post_controllers = {
 
       let propertyExpectedRevenueMonthly = 0;
 
-      for (const roomId in checkIfPropertyIdIsRegisteredInRooms) {
+      for (const roomId in checkIfPropertyIdIsRegisteredInRooms.rooms) {
         propertyExpectedRevenueMonthly +=
-          +checkIfPropertyIdIsRegisteredInRooms[roomId].roomRatePerMonth;
+          +checkIfPropertyIdIsRegisteredInRooms.rooms[roomId].roomRatePerMonth;
       }
 
       const rentsDocument = await Rent.findOne({ ownerID: id });
@@ -1501,7 +1501,11 @@ const post_controllers = {
       if (!Object.keys(propertyRents))
         throw new Error("No payment reports for the property room.");
 
-      res.status(200).json({ propertyRents, propertyExpectedRevenueMonthly });
+      res.status(200).json({
+        message: "Revenue details fetched successfully",
+        propertyRents,
+        propertyExpectedRevenueMonthly,
+      });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
