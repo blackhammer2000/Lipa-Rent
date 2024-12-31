@@ -28,6 +28,37 @@ class Store extends StoreUtilities {
 
     if (propertiesOwned) return propertiesOwned;
   }
+
+  static async readAllRoomPayments(accessToken, propertyId) {
+    if (!accessToken || !propertyId) return;
+
+    UserInterface.openLoader("reading payments", "readPayments");
+
+    const requestOptions = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: accessToken,
+        user: true,
+      },
+      body: JSON.stringify({ propertyId }),
+    };
+
+    const getAllPropertyPaymentData = await fetch(
+      "http://localhost:4000/api/user/owner/read/property/rooms/tenants/payments",
+
+      requestOptions
+    );
+
+    const { propertyRents, error } = await getAllPropertyPaymentData.json();
+
+    if (propertyRents || error) UserInterface.closeLoader("readPayments");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (propertyRents) return { propertyRents };
+  }
 }
 
 class UserInterface extends UserinterfaceUtilities {
@@ -57,5 +88,5 @@ class UserInterface extends UserinterfaceUtilities {
     optionsBody.append(fragment);
   }
 
-  static renderStats() {}
+  static renderStats(propertyRents) {}
 }

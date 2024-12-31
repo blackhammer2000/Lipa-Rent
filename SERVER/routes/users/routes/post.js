@@ -41,6 +41,7 @@ const {
   readSingleTenantInRoomOnProperty,
 
   createRentPaymentForRoomInPropertyByTenant,
+  readAllRentPaymentsForAllRoomsInProperty,
   readAllRentPaymentsForRoomInProperty,
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
@@ -162,6 +163,12 @@ router.post(
   isUser,
   verifyUserAccessToken,
   createRentPaymentForRoomInPropertyByTenant
+);
+router.post(
+  "/api/user/owner/read/property/rooms/tenants/payments",
+  isUser,
+  verifyUserAccessToken,
+  readAllRentPaymentsForAllRoomsInProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenants/payments",
