@@ -22,10 +22,19 @@ body {
 .hero {
   /* display: grid;
     place-items: center; */
-  height: 70vh;
-  overflow: hidden;
+  height: 72vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 thead {
   top: 0;
+}
+
+.duration li {
+  cursor: pointer;
+}
+
+.active {
+  text-decoration: underline 2.5px;
 }
