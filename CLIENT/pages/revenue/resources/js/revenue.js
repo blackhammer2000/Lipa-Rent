@@ -6,6 +6,9 @@
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
 
+  UserInterface.toggleTenantsNavButtonsStatus();
+  UserInterface.toggleRentsNavButtonsStatus();
+
   UserInterface.renderPropertySelectionOptions(accessToken);
 
   const form = document.querySelector("[data-select-property]");

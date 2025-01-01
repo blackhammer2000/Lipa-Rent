@@ -153,6 +153,8 @@ class UserInterface extends UserinterfaceUtilities {
       propertyExpectedRevenueMonthly,
       selectedMonth
     );
+
+    // localStorage.setItem("liparentRevenueSelectedProperty", propertyId);
   }
 
   static updatePageHeader(propertyName) {
