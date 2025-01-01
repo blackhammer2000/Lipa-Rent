@@ -127,27 +127,39 @@ class UserInterface extends UserinterfaceUtilities {
     const deficitRevenueAmount = document.querySelector(
       "[data-deficit-revenue]"
     );
+    selectedMonthTotalRevenue < propertyExpectedRevenueMonthly
+      ? totalRevenueAmount.classList.add("text-danger")
+      : totalRevenueAmount.classList.add("text-success");
 
     totalRevenueAmount.innerText = `KES. ${selectedMonthTotalRevenue}`;
     projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueMonthly}`;
     deficitRevenueAmount.innerText = `KES. ${selectedMonthDeficitRevenue}`;
   }
 
-  static async readAndRenderRevenueStats(
-    accessToken,
-    propertyId,
-    selectedMonth
-  ) {
-    if (!accessToken || !propertyId || !selectedMonth) return;
+  static async readAndRenderRevenueStats(accessToken, form, selectedMonth) {
+    if (!accessToken || !form || !selectedMonth) return;
+
+    const propertyId = form.querySelector("select")?.value;
+    const propertyName =
+      form.querySelector("select")?.children[propertyId].innerText;
 
     const { message, propertyRents, propertyExpectedRevenueMonthly } =
       await Store.readAllPayments(accessToken, propertyId);
 
     this.alertMessage(message, "success");
+    this.updatePageHeader(propertyName);
     this.renderRevenueStats(
       propertyRents,
       propertyExpectedRevenueMonthly,
       selectedMonth
     );
+  }
+
+  static updatePageHeader(propertyName) {
+    if (!propertyName) return;
+
+    document.querySelector(
+      "[data-header]"
+    ).innerText = `REVENUE REPORT FOR ${propertyName}`;
   }
 }

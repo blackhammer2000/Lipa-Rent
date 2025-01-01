@@ -13,8 +13,6 @@
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const propertyId = form.querySelector("select")?.value;
-
-    UserInterface.readAndRenderRevenueStats(accessToken, propertyId, "JANUARY");
+    UserInterface.readAndRenderRevenueStats(accessToken, form, "JANUARY");
   });
 })();
