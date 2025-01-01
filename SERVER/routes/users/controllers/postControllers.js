@@ -1476,8 +1476,14 @@ const post_controllers = {
       let propertyExpectedRevenueMonthly = 0;
 
       for (const roomId in checkIfPropertyIdIsRegisteredInRooms.rooms) {
-        propertyExpectedRevenueMonthly +=
-          +checkIfPropertyIdIsRegisteredInRooms.rooms[roomId].roomRatePerMonth;
+        if (
+          checkIfPropertyIdIsRegisteredInRooms.rooms[roomId].isOccupied &&
+          checkIfPropertyIdIsRegisteredInRooms.rooms[roomId].currentTenantID
+        ) {
+          propertyExpectedRevenueMonthly +=
+            +checkIfPropertyIdIsRegisteredInRooms.rooms[roomId]
+              .roomRatePerMonth;
+        }
       }
 
       const rentsDocument = await Rent.findOne({ ownerID: id });
