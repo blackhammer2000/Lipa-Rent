@@ -16,6 +16,6 @@
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    UserInterface?.readAndRenderRevenueStats(accessToken, form, "JANUARY");
+    UserInterface.readAndRenderRevenueStats(accessToken, form, "JANUARY");
   });
 })();
