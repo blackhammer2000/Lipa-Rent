@@ -133,7 +133,14 @@ class UserInterface extends UserinterfaceUtilities {
 
     totalRevenueAmount.innerText = `KES. ${selectedMonthTotalRevenue}`;
     projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueMonthly}`;
-    deficitRevenueAmount.innerText = `KES. ${selectedMonthDeficitRevenue}`;
+    selectedMonthDeficitRevenue < 0
+      ? deficitRevenueAmount.classList.add("text-success")
+      : deficitRevenueAmount.classList.add("text-danger");
+
+    deficitRevenueAmount.innerText =
+      selectedMonthDeficitRevenue < 0
+        ? `KES. +${selectedMonthDeficitRevenue.toString().slice(1)}`
+        : `KES. -${selectedMonthDeficitRevenue}`;
   }
 
   static async readAndRenderRevenueStats(accessToken, form, selectedMonth) {
