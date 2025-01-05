@@ -130,13 +130,13 @@ class UserInterface extends UserinterfaceUtilities {
     selectedMonthTotalRevenue < propertyExpectedRevenueMonthly
       ? totalRevenueAmount.classList.add("text-danger")
       : totalRevenueAmount.classList.add("text-success");
-
     totalRevenueAmount.innerText = `KES. ${selectedMonthTotalRevenue}`;
+
     projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueMonthly}`;
+
     selectedMonthDeficitRevenue < 0
       ? deficitRevenueAmount.classList.add("text-success")
       : deficitRevenueAmount.classList.add("text-danger");
-
     deficitRevenueAmount.innerText =
       selectedMonthDeficitRevenue < 0
         ? `KES. +${selectedMonthDeficitRevenue.toString().slice(1)}`
