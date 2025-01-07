@@ -113,7 +113,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     let selectedMonthTotalRevenue = 0;
 
-    selectedMonthPayments.forEach((payment) => {
+    selectedMonthPayments?.forEach((payment) => {
       selectedMonthTotalRevenue += +payment.amountPaid;
     });
 
