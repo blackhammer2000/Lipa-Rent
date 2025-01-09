@@ -224,7 +224,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     tableBody.append(fragment);
-    this?.updatePropertyRoomStats(roomStats);
+    this.updatePropertyRoomStats(roomStats);
   }
 
   static createRoomRow(room, index, accessToken, tableBody) {
