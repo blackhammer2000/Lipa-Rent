@@ -193,17 +193,17 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static renderRooms(rooms, accessToken, tableBody) {
-    if (!rooms || !accessToken || !tableBody) return;
+    if (!accessToken || !tableBody) return;
 
     this.clearTable(tableBody);
 
-    const fragment = document.createDocumentFragment();
-    let tableNumber = 1;
-
     if (!rooms) {
+      this.clearTable(tableBody);
       this.handleErrors("No rooms to show, please add rooms to the property.");
       return;
     }
+    const fragment = document.createDocumentFragment();
+    let tableNumber = 1;
 
     const roomStats = { totalRooms: 0, occupiedRooms: 0 };
 
