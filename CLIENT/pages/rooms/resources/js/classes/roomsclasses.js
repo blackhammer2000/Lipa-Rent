@@ -201,7 +201,7 @@ class UserInterface extends UserinterfaceUtilities {
     let tableNumber = 1;
 
     if (!rooms) {
-      alert("No rooms to show, please add rooms to the property.");
+      this.handleErrors("No rooms to show, please add rooms to the property.");
       return;
     }
 
