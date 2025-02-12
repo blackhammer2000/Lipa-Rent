@@ -1,7 +1,13 @@
 const adminPostControllers = {
   login: async (req, res) => {
     try {
-    } catch (err) {}
+      if (!req.body.email || !req.body.password)
+        throw new Error("Unauthorized action");
+
+      const { email, password } = req.body;
+    } catch (err) {
+      if (err.message) res.status(401).json({ error: err.message });
+    }
   },
 };
 
