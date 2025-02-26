@@ -6,7 +6,7 @@ const adminPostControllers = {
 
       const { email, password } = req.body;
     } catch (err) {
-      if (err.message) res.status(401).json({ error: err.message });
+      if (err.message) res.status(500).json({ error: err.message });
     }
   },
 };
