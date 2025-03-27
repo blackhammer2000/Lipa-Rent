@@ -148,7 +148,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const propertyId = form.querySelector("select")?.value;
     const propertyName =
-      form.querySelector("select").children[propertyId].innerText;
+      form.querySelector("select")?.children[propertyId].innerText;
 
     const { message, propertyRents, propertyExpectedRevenueMonthly } =
       await Store.readAllPayments(accessToken, propertyId);
