@@ -399,9 +399,9 @@ class UserInterface extends UserinterfaceUtilities {
     )?.value;
     const paymentMonth = form.querySelector("[data-new-payment-month]")?.value;
     const paymentMode = form.querySelector("[data-new-payment-mode]")?.value;
-    const paymentReceiptNumber = form.querySelector(
-      "[data-new-payment-receiptNumber]"
-    )?.value;
+    const paymentReceiptNumber = form
+      .querySelector("[data-new-payment-receiptNumber]")
+      ?.value.toUpperCase();
 
     if (
       !confirm(
