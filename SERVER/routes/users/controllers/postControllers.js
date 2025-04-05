@@ -1321,6 +1321,8 @@ const post_controllers = {
       if (!req?.body.tenantId) throw new Error("provide a valid tenant ID.");
       if (!req.body.newPayment) throw new Error("provide a valid amount.");
 
+      console.log(req.body);
+
       const { id, propertyId, roomId, tenantId, newPayment } = req?.body;
 
       if (!isValid(id))
