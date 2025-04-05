@@ -112,7 +112,7 @@ const post_controllers = {
       if (signUpToken) throw new Error(signUpToken);
 
       res.status(200).json({
-        message: "Login Otp has been sent to your email",
+        message: "Sign up Otp has been sent to your email",
         signUpOtp,
         signUpToken,
       });
