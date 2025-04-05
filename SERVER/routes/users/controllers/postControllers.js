@@ -28,7 +28,7 @@ const {
 
 const post_controllers = {
   //! GENARATE SIGN UP USER OTP
-  genarateSignUpToken: async (req, res) => {
+  generateSignUpOtpAndToken: async (req, res) => {
     try {
       if (
         !req.body.nationalID ||
@@ -36,7 +36,7 @@ const post_controllers = {
         !req.body.password ||
         !req.body.confirmPassword
       )
-        throw new Error("No valid details provided");
+        throw new Error("provide all valid details provided");
 
       const { nationalID, email, password, confirmPassword } = req.body;
 
@@ -48,71 +48,164 @@ const post_controllers = {
         nationalID: nationalID,
       });
 
-      if (!accountExists) {
-        const newOwner = await Owner?.create({});
-      }
+      if (accountExists)
+        throw new Error(
+          "an account with the given credentials already exists."
+        );
 
       const { id } = req.body;
 
-      const userOtpDoc = await Otp.findOne({ ownerID: id });
+      // const signUpOtp = userOtpDoc.signUpOtp || null;
+      // const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
+      // const isSignUpOtpExpired = userOtpDoc.signUpOtpExpiry || null;
 
-      const signUpOtp = userOtpDoc.signUpOtp || null;
-      const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
-      const isSignUpOtpExpired = userOtpDoc.signUpOtpExpiry || null;
+      // if (signUpOtp || isSignUpOtpVerified || isSignUpOtpExpired) {
+      //   const resetSignUpOtpDetails = await Otp.updateMany(
+      //     { ownerID: id },
+      //     {
+      //       $set: {
+      //         signUpOtp: null,
+      //         isSignUpOtpVerified: null,
+      //         isSignUpOtpExpired: null,
+      //       },
+      //     },
+      //     { new: true }
+      //   );
 
-      if (signUpOtp || isSignUpOtpVerified || isSignUpOtpExpired) {
-        const resetSignUpOtpDetails = await Otp.updateMany(
-          { ownerID: id },
-          {
-            $set: {
-              signUpOtp: null,
-              isSignUpOtpVerified: null,
-              isSignUpOtpExpired: null,
-            },
-          },
-          { new: true }
-        );
+      //   if (
+      //     !resetSignUpOtpDetails.acknowledged ||
+      //     !resetSignUpOtpDetails.modified
+      //   )
+      //     throw new Error("An error has occurred");
+      // }
 
-        if (
-          !resetSignUpOtpDetails.acknowledged ||
-          !resetSignUpOtpDetails.modified
-        )
-          throw new Error("An error has occurred");
-      }
+      const newSignUpOtp = crypto.randomUUID().slice(-12);
+      const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
 
-      const twentyFourHours = 24 * 60 * 60 * 1000;
+      const hashedSignUpOtp = await hash(encrypt(newSignUpOtp), 10);
 
-      if (lastResetTime && Date.now() < lastResetTime + twentyFourHours)
-        throw new Error(
-          "Password can only be reset 24hrs after the last reset"
-        );
+      if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
-      const resetPasswordToken = crypto.randomUUID().slice(-12);
-      const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
-
-      const addResetTokenToDB = await Password.updateMany(
+      const signUpOtpDetailsToDB = await Otp.updateMany(
         { ownerID: id },
         {
           $set: {
-            resetToken: resetPasswordToken,
-            resetTokenExpiry: resetPasswordTokenExpiry,
-            resetTokenVerified: false,
+            signUpOtp: hashedSignUpOtp,
+            signUpOtpVerified: false,
+            signUpExpiry: signUpOtpExpiry,
           },
         },
         { new: true }
       );
 
-      if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
-        throw new Error("Error adding reset token to database");
+      if (
+        !signUpOtpDetailsToDB.acknowledged &&
+        !signUpOtpDetailsToDB.modifiedCount
+      )
+        throw new Error("Error adding login otp details to database");
+
+      const signUpToken = await signSignUpToken({
+        id,
+        otp: signUpOtp,
+      });
+
+      if (signUpToken) throw new Error(signUpToken);
 
       res.status(200).json({
-        message: "Password reset token sent",
-        resetPasswordToken,
+        message: "Login Otp has been sent to your email",
+        signUpOtp,
+        signUpToken,
       });
     } catch (err) {
-      if (err?.message) res.status(400).json({ error: err.message });
+      if (err.message) res.status(400).json({ error: err.message });
     }
   },
+
+  // genarateSignUpToken: async (req, res) => {
+  //   try {
+  //     if (
+  //       !req.body.nationalID ||
+  //       !req.body.email ||
+  //       !req.body.password ||
+  //       !req.body.confirmPassword
+  //     )
+  //       throw new Error("No valid details provided");
+
+  //     const { nationalID, email, password, confirmPassword } = req.body;
+
+  //     if (encrypt(password) !== encrypt(confirmPassword))
+  //       throw new Error("passwords do not match.");
+
+  //     const accountExists = await Owner?.findOne({
+  //       email: email,
+  //       nationalID: nationalID,
+  //     });
+
+  //     if (!accountExists) {
+  //       const newOwner = await Owner?.create({});
+  //     }
+
+  //     const { id } = req.body;
+
+  //     const userOtpDoc = await Otp.findOne({ ownerID: id });
+
+  //     const signUpOtp = userOtpDoc.signUpOtp || null;
+  //     const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
+  //     const isSignUpOtpExpired = userOtpDoc.signUpOtpExpiry || null;
+
+  //     if (signUpOtp || isSignUpOtpVerified || isSignUpOtpExpired) {
+  //       const resetSignUpOtpDetails = await Otp.updateMany(
+  //         { ownerID: id },
+  //         {
+  //           $set: {
+  //             signUpOtp: null,
+  //             isSignUpOtpVerified: null,
+  //             isSignUpOtpExpired: null,
+  //           },
+  //         },
+  //         { new: true }
+  //       );
+
+  //       if (
+  //         !resetSignUpOtpDetails.acknowledged ||
+  //         !resetSignUpOtpDetails.modified
+  //       )
+  //         throw new Error("An error has occurred");
+  //     }
+
+  //     const twentyFourHours = 24 * 60 * 60 * 1000;
+
+  //     if (lastResetTime && Date.now() < lastResetTime + twentyFourHours)
+  //       throw new Error(
+  //         "Password can only be reset 24hrs after the last reset"
+  //       );
+
+  //     const resetPasswordToken = crypto.randomUUID().slice(-12);
+  //     const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
+
+  //     const addResetTokenToDB = await Password.updateMany(
+  //       { ownerID: id },
+  //       {
+  //         $set: {
+  //           resetToken: resetPasswordToken,
+  //           resetTokenExpiry: resetPasswordTokenExpiry,
+  //           resetTokenVerified: false,
+  //         },
+  //       },
+  //       { new: true }
+  //     );
+
+  //     if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
+  //       throw new Error("Error adding reset token to database");
+
+  //     res.status(200).json({
+  //       message: "Password reset token sent",
+  //       resetPasswordToken,
+  //     });
+  //   } catch (err) {
+  //     if (err?.message) res.status(400).json({ error: err.message });
+  //   }
+  // },
 
   //! SIGN UP NEW USER.
   signUp: async (req, res) => {
