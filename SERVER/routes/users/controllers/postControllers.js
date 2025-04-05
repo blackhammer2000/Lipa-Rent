@@ -28,7 +28,7 @@ const {
 
 const post_controllers = {
   //! GENARATE SIGN UP USER OTP
-  generateSignUpOtpAndToken: async (req, res) => {
+  generateSignUpOtp: async (req, res) => {
     try {
       if (
         !req.body.nationalID ||
@@ -115,6 +115,53 @@ const post_controllers = {
         message: "Sign up Otp has been sent to your email",
         signUpOtp,
         signUpToken,
+      });
+    } catch (err) {
+      if (err.message) res.status(400).json({ error: err.message });
+    }
+  },
+
+  verifySignUpOtp: async (req, res) => {
+    try {
+      if (!req.body.id || !req.body.otp) throw new Error("Unauthorized action");
+
+      const { id, otp } = req.body;
+
+      if (otp !== req.headers.otp) throw new Error("Unauthorized action");
+
+      const userOtpDoc = await Otp.findOne({ ownerID: id });
+
+      const signUpOtp = userOtpDoc.signUpOtp || null;
+      const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
+      const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
+
+      const isOtpValid = await compare(encrypt(otp), signUpOtp);
+
+      if (!isOtpValid) throw new Error("Invalid Otp");
+
+      if (signUpOtpExpiry && Date.now() > signUpOtpExpiry)
+        throw new Error("Invalid Otp");
+
+      const signUpOtpDetailsToDB = await Otp.updateMany(
+        { ownerID: id },
+        {
+          $set: {
+            signUpOtp: null,
+            isSignUpOtpVerified: true,
+            signUpOtpExpiry: null,
+          },
+        },
+        { new: true }
+      );
+
+      if (
+        !signUpOtpDetailsToDB.acknowledged &&
+        !signUpOtpDetailsToDB.modifiedCount
+      )
+        throw new Error("Error adding login otp details to database");
+
+      res.status(200).json({
+        message: "Email verified successful",
       });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
