@@ -2,7 +2,7 @@ const { verify } = require("jsonwebtoken");
 
 require("dotenv").config();
 
-const verifySignUpTokenAndOtp = (req, res, next) => {
+const verifySignUpToken = (req, res, next) => {
   try {
     if (!req.headers.signUpToken) throw new Error("Unauthorized action.");
 
@@ -29,4 +29,4 @@ const verifySignUpTokenAndOtp = (req, res, next) => {
   }
 };
 
-module.exports = { verifySignUpTokenAndOtp };
+module.exports = { verifySignUpToken };

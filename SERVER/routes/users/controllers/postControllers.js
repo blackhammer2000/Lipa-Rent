@@ -7,6 +7,7 @@ const { signAccessToken } = require("../../../middleware/tokens/accessToken");
 const {
   ObjectId: { isValid },
 } = require("mongodb");
+console.log(require("mongodb").ObjectId.createFromHexString());
 
 const { Owner } = require("../../../middleware/models/Owner");
 const { Password } = require("../../../middleware/models/Password");
@@ -158,10 +159,17 @@ const post_controllers = {
         !signUpOtpDetailsToDB.acknowledged &&
         !signUpOtpDetailsToDB.modifiedCount
       )
-        throw new Error("Error adding login otp details to database");
+        throw new Error("Error adding sign up otp details to database");
+
+      const loginToken = await signLoginToken({
+        id,
+      });
+
+      if (!loginToken) throw new Error(loginToken);
 
       res.status(200).json({
         message: "Email verified successful",
+        signUpToken,
       });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
@@ -196,7 +204,7 @@ const post_controllers = {
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
-      if (!userOtpDoc.isLoginOtpVerified)
+      if (!userOtpDoc.isSignUpOtpVerified)
         throw new Error("Please complete email verification");
 
       if (

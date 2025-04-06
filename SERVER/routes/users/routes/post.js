@@ -19,6 +19,8 @@ const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
 const {
+  generateSignUpOtp,
+  verifySignUpOtp,
   signUp,
 
   login,
@@ -59,11 +61,21 @@ const {
 const {
   verifyLoginToken,
 } = require("../../../middleware/tokens/verifyLoginToken");
+const {
+  verifySignUpToken,
+} = require("../../../middleware/tokens/verifySignUpToken");
 
 // ////////////////////////  ROUTES   ///////////////////////////////
 
 // SIGN UP
-router.post("/api/user/owner/signup", isUser, landlordValidator, signUp);
+router.post("/api/user/owner/signup/generate/otp", isUser, generateSignUpOtp);
+router.post(
+  "/api/user/ownersignup/verify/otp",
+  isUser,
+  verifySignUpToken,
+  verifySignUpOtp
+);
+router.post("/api/user/owner/signup", isUser, signUp);
 
 // LOGIN
 router.post("/api/user/owner/login", isUser, loginValidator, login);
