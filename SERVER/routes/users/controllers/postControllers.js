@@ -5,9 +5,8 @@ const crypto = require("node:crypto");
 const { signAccessToken } = require("../../../middleware/tokens/accessToken");
 
 const {
-  ObjectId: { isValid },
+  ObjectId: { isValid, createFromHexString },
 } = require("mongodb");
-console.log(require("mongodb").ObjectId.createFromHexString());
 
 const { Owner } = require("../../../middleware/models/Owner");
 const { Password } = require("../../../middleware/models/Password");
@@ -54,7 +53,7 @@ const post_controllers = {
           "an account with the given credentials already exists."
         );
 
-      const { id } = req.body;
+      const id = createFromHexString();
 
       // const signUpOtp = userOtpDoc.signUpOtp || null;
       // const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
