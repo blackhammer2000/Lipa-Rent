@@ -19,6 +19,7 @@ const { Otp } = require("../../../middleware/models/Otp");
 
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 const { encrypt } = require("../../helpers/cipher");
+const { signSignUpToken } = require("../../../middleware/tokens/signUpToken");
 const { signLoginToken } = require("../../../middleware/tokens/loginToken");
 const {
   signForgotPasswordToken,
@@ -134,6 +135,8 @@ const post_controllers = {
       const signUpOtp = userOtpDoc.signUpOtp || null;
       const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
       const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
+
+      if (!signUpOtp || !signUpOtpExpiry) throw new Error("Invalid Otp");
 
       const isOtpValid = await compare(encrypt(otp), signUpOtp);
 
