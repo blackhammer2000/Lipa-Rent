@@ -54,31 +54,13 @@ const post_controllers = {
           "an account with the given credentials already exists."
         );
 
-      const id = createFromHexString();
+      const hex = [...crypto.getRandomValues(new Uint32Array(16))]
+        .map((randomValue) => randomValue.toString(16))
+        .slice(-4)
+        .join("")
+        .slice(-24);
 
-      // const signUpOtp = userOtpDoc.signUpOtp || null;
-      // const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
-      // const isSignUpOtpExpired = userOtpDoc.signUpOtpExpiry || null;
-
-      // if (signUpOtp || isSignUpOtpVerified || isSignUpOtpExpired) {
-      //   const resetSignUpOtpDetails = await Otp.updateMany(
-      //     { ownerID: id },
-      //     {
-      //       $set: {
-      //         signUpOtp: null,
-      //         isSignUpOtpVerified: null,
-      //         isSignUpOtpExpired: null,
-      //       },
-      //     },
-      //     { new: true }
-      //   );
-
-      //   if (
-      //     !resetSignUpOtpDetails.acknowledged ||
-      //     !resetSignUpOtpDetails.modified
-      //   )
-      //     throw new Error("An error has occurred");
-      // }
+      const id = createFromHexString(hex);
 
       const newSignUpOtp = crypto.randomUUID().slice(-12);
       const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
@@ -113,7 +95,7 @@ const post_controllers = {
       if (signUpToken) throw new Error(signUpToken);
 
       res.status(200).json({
-        message: "Sign up Otp has been sent to your email",
+        message: "Verify your email, check your email for code.",
         signUpOtp,
         signUpToken,
       });
