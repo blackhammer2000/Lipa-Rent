@@ -13,8 +13,16 @@ const OwnerSchema = new Schema({
     type: String,
     required: true,
   },
+  emailVerified: {
+    type: Boolean,
+    required: true,
+  },
   phone: {
     type: String,
+    required: true,
+  },
+  phoneVerified: {
+    type: Boolean,
     required: true,
   },
   dateRegistered: {

@@ -61,7 +61,9 @@ const post_controllers = {
         name: name.toUpperCase(),
         nationalID,
         email,
+        emailVerified: false,
         phone,
+        phoneVerified: false,
         dateRegistered: new Date().toLocaleDateString(),
       };
 
@@ -144,7 +146,7 @@ const post_controllers = {
       if (signUpOtpExpiry && Date.now() > signUpOtpExpiry)
         throw new Error("Invalid Otp");
 
-      const signUpOtpDetailsToDB = await Otp.updateMany(
+      const signUpOtpDetailsToDB = await Otp.updateOne(
         { ownerID: id },
         {
           $set: {
@@ -218,6 +220,18 @@ const post_controllers = {
         userOtpDoc.isSignUpOtpVerified === false
       )
         throw new Error("Please complete email verification");
+
+      const ownerDetailsToDB = await Owner.updateOne(
+        { _id: id.toString() },
+        {
+          $set: {
+            emailVerified: true,
+          },
+        }
+      );
+
+      if (!ownerDetailsToDB.acknowledged && !ownerDetailsToDB.modifiedCount)
+        throw new Error("Error adding email verification details to database");
 
       const newOwnerPasswordDB = await Password.create({
         ownerID: id,
@@ -430,7 +444,7 @@ const post_controllers = {
         (isLoginOtpVerified && isLoginOtpVerified !== null) ||
         (loginOtpExpiry && loginOtpExpiry !== null)
       ) {
-        const resetLoginOtpDetails = await Otp.updateMany(
+        const resetLoginOtpDetails = await Otp.updateOne(
           { ownerID: id },
           {
             $set: {
@@ -523,7 +537,7 @@ const post_controllers = {
       if (loginOtpExpiry && Date.now() > loginOtpExpiry)
         throw new Error("Invalid Otp");
 
-      const loginOtpDetailsToDB = await Otp.updateMany(
+      const loginOtpDetailsToDB = await Otp.updateOne(
         { ownerID: id },
         {
           $set: {

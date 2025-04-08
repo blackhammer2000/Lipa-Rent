@@ -7,7 +7,6 @@ const OtpSchema = new Schema({
   },
   signUpOtp: {
     type: String,
-    unique: true,
   },
   isSignUpOtpVerified: {
     type: Boolean,
@@ -17,7 +16,6 @@ const OtpSchema = new Schema({
   },
   loginOtp: {
     type: String,
-    unique: true,
   },
   isLoginOtpVerified: {
     type: Boolean,
@@ -27,7 +25,6 @@ const OtpSchema = new Schema({
   },
   deleteAccountOtp: {
     type: String,
-    unique: true,
   },
   isDeleteAccountOtpVerified: {
     type: Boolean,
