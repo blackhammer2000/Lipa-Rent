@@ -8,12 +8,26 @@ const verifySignUpToken = (req, res, next) => {
 
     const { signUpToken } = req.headers;
 
-    const { id, otp } = verify(signUpToken, process.env.SIGNUP_SECRET_KEY);
+    const { id, otp, otpVerified } = verify(
+      signUpToken,
+      process.env.SIGNUP_SECRET_KEY
+    );
 
-    if (id !== (null || undefined) && otp !== (null || undefined)) {
+    if (
+      id !== (null || undefined) &&
+      otp !== (null || undefined) &&
+      otpVerified === (null || undefined)
+    ) {
       req.body.id = id;
       req.body.otp = otp;
     }
+
+    if (
+      id !== (null || undefined) &&
+      otp === (null || undefined) &&
+      otpVerified !== (null || undefined)
+    )
+      req.body.id = id;
 
     delete req.headers.signUpToken;
 

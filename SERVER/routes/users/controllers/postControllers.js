@@ -32,14 +32,17 @@ const post_controllers = {
   generateSignUpOtp: async (req, res) => {
     try {
       if (
+        !req.body.name ||
         !req.body.nationalID ||
         !req.body.email ||
+        !req.body.phone ||
         !req.body.password ||
         !req.body.confirmPassword
       )
         throw new Error("provide all valid details provided");
 
-      const { nationalID, email, password, confirmPassword } = req.body;
+      const { name, nationalID, email, phone, password, confirmPassword } =
+        req.body;
 
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
@@ -52,6 +55,24 @@ const post_controllers = {
       if (accountExists)
         throw new Error(
           "an account with the given credentials already exists."
+        );
+
+      const owner = {
+        name: name.toUpperCase(),
+        nationalID,
+        email,
+        phone,
+        dateRegistered: new Date().toLocaleDateString(),
+      };
+
+      owner.disabled = false;
+      owner.paid = true;
+
+      const newOwner = await Owner?.create(owner);
+
+      if (!newOwner)
+        throw new Error(
+          "Failed to create a new instance of the owner document."
         );
 
       // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
@@ -70,6 +91,7 @@ const post_controllers = {
       if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
       const signUpOtpDetailsToDB = await Otp.create({
+        ownerID: newOwner?._id?.toString(),
         signUpOtp: hashedSignUpOtp,
         signUpOtpVerified: false,
         signUpExpiry: signUpOtpExpiry,
@@ -82,7 +104,7 @@ const post_controllers = {
         throw new Error("Error adding login otp details to database");
 
       const signUpToken = await signSignUpToken({
-        id,
+        id: newOwner?._id?.toString(),
         otp: signUpOtp,
       });
 
@@ -112,7 +134,7 @@ const post_controllers = {
       const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
       const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
 
-      if (!signUpOtp || !signUpOtpExpiry || !isSignUpOtpVerified)
+      if (!signUpOtp || !signUpOtpExpiry || isSignUpOtpVerified !== null)
         throw new Error("Invalid Otp");
 
       const isOtpValid = await compare(encrypt(otp), signUpOtp);
@@ -142,6 +164,7 @@ const post_controllers = {
 
       const signUpToken = await signSignUpToken({
         id,
+        otpVerified: true,
       });
 
       if (!signUpToken) throw new Error(signUpToken);
@@ -168,20 +191,21 @@ const post_controllers = {
       )
         throw new Error("Unauthorized action.");
 
-      const { name, nationalID, email, phone, password, confirmPassword } =
+      const { id, name, nationalID, email, password, confirmPassword } =
         req.body;
 
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
 
       const accountExists = await Owner?.findOne({
+        _id: id.toString(),
         email: email,
         nationalID: nationalID,
       });
 
-      if (accountExists)
+      if (!accountExists)
         throw new Error(
-          "an account with the given credentials already exists."
+          "Error occured, please repeat the sign up process form the beginning"
         );
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
@@ -195,28 +219,8 @@ const post_controllers = {
       )
         throw new Error("Please complete email verification");
 
-      owner._id = id;
-      owner.disabled = false;
-      owner.paid = true;
-
-      const newOwner = await Owner?.create(owner);
-
-      if (!newOwner)
-        throw new Error(
-          "Failed to create a new instance of the owner document."
-        );
-
-      const newOwnerOtpDB = await Otp.create({
-        ownerID: newOwner?._id?.toString(),
-      });
-
-      if (!newOwnerOtpDB)
-        throw new Error(
-          "Failed to create a new instance of the otp DB document."
-        );
-
       const newOwnerPasswordDB = await Password.create({
-        ownerID: newOwner?._id?.toString(),
+        ownerID: id,
         password: encrypt(password),
       });
 
@@ -240,7 +244,7 @@ const post_controllers = {
       };
 
       let newInstitutionSubscriptionBody = {
-        ownerID: newOwner?._id?.toString(),
+        ownerID: id,
         currentSubscription,
         subscription_reports: [],
       };
@@ -261,7 +265,7 @@ const post_controllers = {
         );
 
       const newOwnerPropertyBody = {
-        ownerID: newOwner?._id?.toString(),
+        ownerID: id,
         propertiesOwned: [{}],
       };
 
@@ -275,7 +279,7 @@ const post_controllers = {
         );
 
       const newOwnerTenantBody = {
-        ownerID: newOwner?._id?.toString(),
+        ownerID: id,
         tenants: [{}],
       };
 
@@ -287,7 +291,7 @@ const post_controllers = {
         );
 
       const newOwnerRoomsBody = {
-        ownerID: newOwner?._id?.toString(),
+        ownerID: id,
         rooms: [{}],
       };
 
@@ -299,7 +303,7 @@ const post_controllers = {
         );
 
       const newOwnerRentBody = {
-        ownerID: newOwner?._id?.toString(),
+        ownerID: id,
         rents: [{}],
       };
 

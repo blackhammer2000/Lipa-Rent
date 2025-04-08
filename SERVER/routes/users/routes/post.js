@@ -75,7 +75,7 @@ router.post(
   verifySignUpToken,
   verifySignUpOtp
 );
-router.post("/api/user/owner/signup", isUser, signUp);
+router.post("/api/user/owner/signup", isUser, verifySignUpToken, signUp);
 
 // LOGIN
 router.post("/api/user/owner/login", isUser, loginValidator, login);
