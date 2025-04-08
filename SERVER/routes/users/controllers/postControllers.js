@@ -54,23 +54,22 @@ const post_controllers = {
           "an account with the given credentials already exists."
         );
 
-      const hex = [...crypto.getRandomValues(new Uint32Array(16))]
-        .map((randomValue) => randomValue.toString(16))
-        .slice(-4)
-        .join("")
-        .slice(-24);
+      // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
+      //   .map((randomValue) => randomValue.toString(16))
+      //   .slice(-4)
+      //   .join("")
+      //   .slice(-24);
 
-      const id = createFromHexString(hex);
+      // const id = createFromHexString(hex);
 
-      const newSignUpOtp = crypto.randomUUID().slice(-12);
+      const signUpOtp = crypto.randomUUID().slice(-12);
       const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
 
-      const hashedSignUpOtp = await hash(encrypt(newSignUpOtp), 10);
+      const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
 
       if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
-      const signUpOtpDetailsToDB = await Otp.updateMany(
-        { ownerID: id },
+      const signUpOtpDetailsToDB = await Otp.create(
         {
           $set: {
             signUpOtp: hashedSignUpOtp,
@@ -115,10 +114,11 @@ const post_controllers = {
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
       const signUpOtp = userOtpDoc.signUpOtp || null;
-      const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
+      const signUpOtpVerified = userOtpDoc.signUpOtpVerified || null;
       const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
 
-      if (!signUpOtp || !signUpOtpExpiry) throw new Error("Invalid Otp");
+      if (!signUpOtp || !signUpOtpExpiry || !signUpOtpVerified)
+        throw new Error("Invalid Otp");
 
       const isOtpValid = await compare(encrypt(otp), signUpOtp);
 
@@ -132,11 +132,10 @@ const post_controllers = {
         {
           $set: {
             signUpOtp: null,
-            isSignUpOtpVerified: true,
+            signUpOtpVerified: true,
             signUpOtpExpiry: null,
           },
-        },
-        { new: true }
+        }
       );
 
       if (
@@ -145,11 +144,11 @@ const post_controllers = {
       )
         throw new Error("Error adding sign up otp details to database");
 
-      const loginToken = await signLoginToken({
+      const signUpToken = await signSignUpToken({
         id,
       });
 
-      if (!loginToken) throw new Error(loginToken);
+      if (!signUpToken) throw new Error(signUpToken);
 
       res.status(200).json({
         message: "Email verified successful",
@@ -162,6 +161,17 @@ const post_controllers = {
 
   signUp: async (req, res) => {
     try {
+      if (
+        !req.body.id ||
+        !req.body.name ||
+        !req.body.nationalID ||
+        !req.body.email ||
+        !req.body.phone ||
+        !req.body.password ||
+        !req.body.confirmPassword
+      )
+        throw new Error("Unauthorized action.");
+
       const { name, nationalID, email, phone, password, confirmPassword } =
         req.body;
 
@@ -197,6 +207,7 @@ const post_controllers = {
       )
         throw new Error("Please complete email verification");
 
+      owner._id = id;
       owner.disabled = false;
       owner.paid = true;
 
