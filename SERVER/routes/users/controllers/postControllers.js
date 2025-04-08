@@ -69,16 +69,11 @@ const post_controllers = {
 
       if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
-      const signUpOtpDetailsToDB = await Otp.create(
-        {
-          $set: {
-            signUpOtp: hashedSignUpOtp,
-            signUpOtpVerified: false,
-            signUpExpiry: signUpOtpExpiry,
-          },
-        },
-        { new: true }
-      );
+      const signUpOtpDetailsToDB = await Otp.create({
+        signUpOtp: hashedSignUpOtp,
+        signUpOtpVerified: false,
+        signUpExpiry: signUpOtpExpiry,
+      });
 
       if (
         !signUpOtpDetailsToDB.acknowledged &&
@@ -114,10 +109,10 @@ const post_controllers = {
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
       const signUpOtp = userOtpDoc.signUpOtp || null;
-      const signUpOtpVerified = userOtpDoc.signUpOtpVerified || null;
+      const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
       const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
 
-      if (!signUpOtp || !signUpOtpExpiry || !signUpOtpVerified)
+      if (!signUpOtp || !signUpOtpExpiry || !isSignUpOtpVerified)
         throw new Error("Invalid Otp");
 
       const isOtpValid = await compare(encrypt(otp), signUpOtp);
@@ -132,10 +127,11 @@ const post_controllers = {
         {
           $set: {
             signUpOtp: null,
-            signUpOtpVerified: true,
+            isSignUpOtpVerified: true,
             signUpOtpExpiry: null,
           },
-        }
+        },
+        { new: true }
       );
 
       if (
@@ -177,14 +173,6 @@ const post_controllers = {
 
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
-
-      const owner = {
-        name: name.toUpperCase(),
-        nationalID,
-        email,
-        phone,
-        dateRegistered: new Date().toLocaleDateString(),
-      };
 
       const accountExists = await Owner?.findOne({
         email: email,
