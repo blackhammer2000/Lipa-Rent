@@ -112,8 +112,6 @@ const post_controllers = {
               signUpOtpExpiry: signUpOtpExpiry,
             });
 
-      console.log(signUpOtpDetailsToDB);
-
       if (
         accountExists?._id &&
         !newOwnerId &&
