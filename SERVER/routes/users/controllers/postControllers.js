@@ -159,15 +159,18 @@ const post_controllers = {
       const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
       const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
 
+      if (signUpOtpExpiry && Date.now() > signUpOtpExpiry)
+        throw new Error("Invalid Otp");
+
+      // if (!signUpOtp && otp && isSignUpOtpVerified && !signUpOtpExpiry)
+      //   throw new Error("OTP verified, please proceed the next step");
+
       if (!signUpOtp || !signUpOtpExpiry || isSignUpOtpVerified !== null)
         throw new Error("Invalid Otp");
 
       const isOtpValid = await compare(encrypt(otp), signUpOtp);
 
       if (!isOtpValid) throw new Error("Invalid Otp");
-
-      if (signUpOtpExpiry && Date.now() > signUpOtpExpiry)
-        throw new Error("Invalid Otp");
 
       const signUpOtpDetailsToDB = await Otp.updateOne(
         { ownerID: id },
@@ -177,15 +180,26 @@ const post_controllers = {
             isSignUpOtpVerified: true,
             signUpOtpExpiry: null,
           },
-        },
-        { new: true }
+        }
       );
 
       if (
         !signUpOtpDetailsToDB.acknowledged &&
         !signUpOtpDetailsToDB.modifiedCount
       )
-        throw new Error("Error adding sign up otp details to database");
+        throw new Error("Error adding sign up otp details");
+
+      const ownerDetailsToDB = await Owner.updateOne(
+        { _id: id },
+        {
+          $set: {
+            emailVerified: true,
+          },
+        }
+      );
+
+      if (!ownerDetailsToDB.acknowledged && !ownerDetailsToDB.modifiedCount)
+        throw new Error("Something went wrong when updating owner details");
 
       const signUpToken = await signSignUpToken({
         id,
