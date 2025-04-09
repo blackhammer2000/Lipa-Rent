@@ -39,7 +39,7 @@ const post_controllers = {
         !req.body.password ||
         !req.body.confirmPassword
       )
-        throw new Error("provide all valid details provided");
+        throw new Error("provide all valid details");
 
       const { name, nationalID, email, phone, password, confirmPassword } =
         req.body;
@@ -52,30 +52,24 @@ const post_controllers = {
         nationalID: nationalID,
       });
 
-      if (accountExists)
-        throw new Error(
-          "an account with the given credentials already exists."
-        );
+      if (!accountExists) {
+        const owner = {
+          name: name.toUpperCase(),
+          nationalID,
+          email,
+          emailVerified: false,
+          phone,
+          phoneVerified: false,
+          dateRegistered: new Date().toLocaleDateString(),
+          disabled: false,
+          paid: true,
+        };
 
-      const owner = {
-        name: name.toUpperCase(),
-        nationalID,
-        email,
-        emailVerified: false,
-        phone,
-        phoneVerified: false,
-        dateRegistered: new Date().toLocaleDateString(),
-      };
+        const newOwner = await Owner?.create(owner);
 
-      owner.disabled = false;
-      owner.paid = true;
-
-      const newOwner = await Owner?.create(owner);
-
-      if (!newOwner)
-        throw new Error(
-          "Failed to create a new instance of the owner document."
-        );
+        if (!newOwner)
+          throw new Error("Something went wrong, please try again later.");
+      }
 
       // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
       //   .map((randomValue) => randomValue.toString(16))
@@ -83,7 +77,9 @@ const post_controllers = {
       //   .join("")
       //   .slice(-24);
 
-      // const id = createFromHexString(hex);
+      const id = accountExists?._id
+        ? accountExists?._id?.toString()
+        : newOwner?._id?.toString();
 
       const signUpOtp = crypto.randomUUID().slice(-12);
       const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
@@ -92,21 +88,32 @@ const post_controllers = {
 
       if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
-      const signUpOtpDetailsToDB = await Otp.create({
-        ownerID: newOwner?._id?.toString(),
-        signUpOtp: hashedSignUpOtp,
-        signUpOtpVerified: false,
-        signUpExpiry: signUpOtpExpiry,
-      });
+      const signUpOtpDetailsToDB = accountExists?._id
+        ? await Otp.updateOne(
+            { ownerID: id },
+            {
+              $set: {
+                signUpOtp: hashedSignUpOtp,
+                signUpOtpVerified: false,
+                signUpExpiry: signUpOtpExpiry,
+              },
+            }
+          )
+        : await Otp.create({
+            ownerID: id,
+            signUpOtp: hashedSignUpOtp,
+            signUpOtpVerified: false,
+            signUpExpiry: signUpOtpExpiry,
+          });
 
       if (
         !signUpOtpDetailsToDB.acknowledged &&
         !signUpOtpDetailsToDB.modifiedCount
       )
-        throw new Error("Error adding login otp details to database");
+        throw new Error("Error adding sign up otp details to database");
 
       const signUpToken = await signSignUpToken({
-        id: newOwner?._id?.toString(),
+        id,
         otp: signUpOtp,
       });
 
