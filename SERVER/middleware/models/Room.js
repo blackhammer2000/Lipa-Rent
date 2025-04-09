@@ -4,6 +4,8 @@ const RoomsSchema = new Schema({
   ownerID: {
     type: String,
     required: true,
+    unique: true,
+
   },
   rooms: {
     type: Array,

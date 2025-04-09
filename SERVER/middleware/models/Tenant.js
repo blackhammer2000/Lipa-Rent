@@ -4,6 +4,7 @@ const TenantSchema = new Schema({
   ownerID: {
     type: String,
     required: true,
+    unique: true,
   },
   tenants: {
     type: Array,

@@ -5,6 +5,8 @@ const PasswordSchema = new Schema({
   ownerID: {
     type: String,
     required: true,
+    unique: true,
+
   },
   password: {
     type: String,

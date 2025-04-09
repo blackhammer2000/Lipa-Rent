@@ -4,6 +4,8 @@ const PropertySchema = new Schema({
   ownerID: {
     type: String,
     required: true,
+    unique: true,
+
   },
 
   propertiesOwned: {

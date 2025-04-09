@@ -4,6 +4,8 @@ const SubscriptionSchema = new Schema({
   ownerID: {
     type: String,
     required: true,
+    unique: true,
+
   },
   currentSubscription: {
     type: Object,
