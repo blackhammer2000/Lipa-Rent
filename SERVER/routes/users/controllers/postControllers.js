@@ -1885,7 +1885,7 @@ const post_controllers = {
 
       if (!hashedresetPasswordToken) throw new Error(hashedresetPasswordToken);
 
-      const addResetTokenToDB = await Password.updateMany(
+      const addResetTokenToDB = await Password.updateOne(
         { ownerID: id },
         {
           $set: {
@@ -1943,7 +1943,7 @@ const post_controllers = {
       const isTokenValid = Date.now() < resetPasswordTokenExpiry ? true : false;
 
       if (!isTokenValid) {
-        const removeInvalidToken = await Password.updateMany(
+        const removeInvalidToken = await Password.updateOne(
           { ownerID: id },
           {
             $set: {
