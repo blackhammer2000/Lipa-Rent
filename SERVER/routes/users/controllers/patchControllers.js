@@ -449,7 +449,7 @@ const patchControllers = {
 
       if (!hashedNewPassword) throw new Error(hashedNewPassword);
 
-      const updatePassword = await Password.updateMany(
+      const updatePassword = await Password.updateOne(
         { ownerID: id },
         {
           $set: {

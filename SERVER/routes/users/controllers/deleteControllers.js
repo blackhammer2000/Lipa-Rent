@@ -57,7 +57,7 @@ const patchControllers = {
       const isTokenValid = Date.now() < deleteAccountTokenExpiry ? true : false;
 
       if (!isTokenValid || !isDeleteAccountOtpVerified) {
-        const removeInvalidToken = await Otp.updateMany(
+        const removeInvalidToken = await Otp.updateOne(
           { ownerID: id },
           {
             $set: {
@@ -77,7 +77,7 @@ const patchControllers = {
         throw new Error("Invalid Token, generate a new one.");
       }
 
-      const updateDeleteTokenDetails = await Otp.updateMany(
+      const updateDeleteTokenDetails = await Otp.updateOne(
         { ownerID: id },
         {
           $set: {
