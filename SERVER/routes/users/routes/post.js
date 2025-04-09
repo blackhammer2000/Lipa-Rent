@@ -70,7 +70,7 @@ const {
 // SIGN UP
 router.post("/api/user/owner/signup/generate/otp", isUser, generateSignUpOtp);
 router.post(
-  "/api/user/ownersignup/verify/otp",
+  "/api/user/owner/signup/verify/otp",
   isUser,
   verifySignUpToken,
   verifySignUpOtp

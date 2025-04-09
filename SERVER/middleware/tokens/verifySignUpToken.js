@@ -4,12 +4,12 @@ require("dotenv").config();
 
 const verifySignUpToken = (req, res, next) => {
   try {
-    if (!req.headers.signUpToken) throw new Error("Unauthorized action.");
+    if (!req.headers.signuptoken) throw new Error("Unauthorized action.");
 
-    const { signUpToken } = req.headers;
+    const { signuptoken } = req.headers;
 
     const { id, otp, otpVerified } = verify(
-      signUpToken,
+      signuptoken,
       process.env.SIGNUP_SECRET_KEY
     );
 
@@ -29,17 +29,11 @@ const verifySignUpToken = (req, res, next) => {
     )
       req.body.id = id;
 
-    delete req.headers.signUpToken;
+    delete req.headers.signuptoken;
 
     next();
   } catch (err) {
-    if (
-      err?.message === ("jwt expired" || "invalid token" || "jwt malformed")
-    ) {
-      res.status(403).json({ error: "session expired" });
-    } else {
-      res.status(500).json({ error: err?.message });
-    }
+    res.status(500).json({ error: err?.message });
   }
 };
 
