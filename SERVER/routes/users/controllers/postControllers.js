@@ -357,7 +357,7 @@ const post_controllers = {
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
 
       if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
-        throw new Error("Error adding email verification details to database");
+        throw new Error("something went wrong, 'otp'");
 
       res.status(201).json({
         message: `An account has been succesfully created, proceed to log in to your account.`,
