@@ -395,7 +395,9 @@ const post_controllers = {
 
       if (!user) throw new Error("Incorrect Email,NationalID or Password.");
 
-      const { _id, paid, disabled } = user;
+      const { _id, paid, disabled, emailVerified } = user;
+
+      if (emailVerified === false) throw new Error("Unverified email.");
 
       if (paid === false)
         throw new Error("Renew subscription to regain access.");
@@ -501,7 +503,7 @@ const post_controllers = {
 
       if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
-      const loginOtpDetailsToDB = await Otp.updateMany(
+      const loginOtpDetailsToDB = await Otp.updateOne(
         { ownerID: id },
         {
           $set: {
