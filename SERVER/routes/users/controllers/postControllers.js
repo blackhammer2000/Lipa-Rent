@@ -219,32 +219,21 @@ const post_controllers = {
 
   signUp: async (req, res) => {
     try {
-      if (
-        !req.body.id ||
-        !req.body.name ||
-        !req.body.nationalID ||
-        !req.body.email ||
-        !req.body.phone ||
-        !req.body.password ||
-        !req.body.confirmPassword
-      )
+      if (!req.body.id || !req.body.password || !req.body.confirmPassword)
         throw new Error("Unauthorized action.");
 
-      const { id, name, nationalID, email, password, confirmPassword } =
-        req.body;
+      const { id, password, confirmPassword } = req.body;
 
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
 
       const accountExists = await Owner?.findOne({
         _id: id.toString(),
-        email: email,
-        nationalID: nationalID,
       });
 
       if (!accountExists)
         throw new Error(
-          "Error occured, please repeat the sign up process form the beginning"
+          "Error occured, please repeat the sign up process from the beginning"
         );
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
@@ -253,22 +242,10 @@ const post_controllers = {
         throw new Error("Please complete email verification");
 
       if (
-        userOtpDoc.isSignUpOtpVerified &&
+        userOtpDoc.isSignUpOtpVerified !== (null || undefined) &&
         userOtpDoc.isSignUpOtpVerified === false
       )
         throw new Error("Please complete email verification");
-
-      const ownerDetailsToDB = await Owner.updateOne(
-        { _id: id.toString() },
-        {
-          $set: {
-            emailVerified: true,
-          },
-        }
-      );
-
-      if (!ownerDetailsToDB.acknowledged && !ownerDetailsToDB.modifiedCount)
-        throw new Error("Error adding email verification details to database");
 
       const newOwnerPasswordDB = await Password.create({
         ownerID: id,
@@ -365,8 +342,25 @@ const post_controllers = {
           "Failed to create a new instance of the property document in the database."
         );
 
+      const ownerDetailsToDB = await Owner.updateOne(
+        { _id: id.toString() },
+        {
+          $set: {
+            emailVerified: true,
+          },
+        }
+      );
+
+      if (!ownerDetailsToDB.acknowledged && !ownerDetailsToDB.modifiedCount)
+        throw new Error("Error adding email verification details to database");
+
+      const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
+
+      if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
+        throw new Error("Error adding email verification details to database");
+
       res.status(201).json({
-        message: `An account for ${name} has been succesfully created, proceed to log in to your account.`,
+        message: `An account has been succesfully created, proceed to log in to your account.`,
         response_status: "success",
       });
     } catch (err) {
