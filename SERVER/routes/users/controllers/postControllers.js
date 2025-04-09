@@ -5,7 +5,7 @@ const crypto = require("node:crypto");
 const { signAccessToken } = require("../../../middleware/tokens/accessToken");
 
 const {
-  ObjectId: { isValid, createFromHexString },
+  ObjectId: { isValid },
 } = require("mongodb");
 
 const { Owner } = require("../../../middleware/models/Owner");
