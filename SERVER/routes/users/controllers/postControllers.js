@@ -8,12 +8,12 @@ const {
   ObjectId: { isValid },
 } = require("mongodb");
 
-const { Owner } = require("../../../middleware/models/Owner");
-const { Password } = require("../../../middleware/models/Password");
 const { Subscription } = require("../../../middleware/models/Subscription");
+const { Password } = require("../../../middleware/models/Password");
 const { Property } = require("../../../middleware/models/Property");
-const { Room } = require("../../../middleware/models/Room");
 const { Tenant } = require("../../../middleware/models/Tenant");
+const { Owner } = require("../../../middleware/models/Owner");
+const { Room } = require("../../../middleware/models/Room");
 const { Rent } = require("../../../middleware/models/Rent");
 const { Otp } = require("../../../middleware/models/Otp");
 
