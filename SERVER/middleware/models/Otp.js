@@ -4,6 +4,7 @@ const OtpSchema = new Schema({
   ownerID: {
     type: String,
     required: true,
+    unique: true,
   },
   signUpOtp: {
     type: String,

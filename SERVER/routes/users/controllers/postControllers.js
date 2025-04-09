@@ -93,23 +93,24 @@ const post_controllers = {
 
       if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
-      const signUpOtpDetailsToDB = accountExists?._id
-        ? await Otp.updateOne(
-            { ownerID: id },
-            {
-              $set: {
-                signUpOtp: hashedSignUpOtp,
-                signUpOtpVerified: false,
-                signUpExpiry: signUpOtpExpiry,
-              },
-            }
-          )
-        : await Otp.create({
-            ownerID: id,
-            signUpOtp: hashedSignUpOtp,
-            signUpOtpVerified: false,
-            signUpExpiry: signUpOtpExpiry,
-          });
+      const signUpOtpDetailsToDB =
+        accountExists?._id && !newOwnerId
+          ? await Otp.updateOne(
+              { ownerID: id },
+              {
+                $set: {
+                  signUpOtp: hashedSignUpOtp,
+                  signUpOtpVerified: false,
+                  signUpExpiry: signUpOtpExpiry,
+                },
+              }
+            )
+          : await Otp.create({
+              ownerID: id,
+              signUpOtp: hashedSignUpOtp,
+              signUpOtpVerified: false,
+              signUpExpiry: signUpOtpExpiry,
+            });
 
       if (
         !signUpOtpDetailsToDB.acknowledged &&
