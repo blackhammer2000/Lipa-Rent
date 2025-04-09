@@ -52,6 +52,8 @@ const post_controllers = {
         nationalID: nationalID,
       });
 
+      let newOwnerId;
+
       if (!accountExists) {
         const owner = {
           name: name.toUpperCase(),
@@ -69,6 +71,8 @@ const post_controllers = {
 
         if (!newOwner)
           throw new Error("Something went wrong, please try again later.");
+
+        newOwnerId = newOwner?._id?.toString();
       }
 
       // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
@@ -77,9 +81,10 @@ const post_controllers = {
       //   .join("")
       //   .slice(-24);
 
-      const id = accountExists?._id
-        ? accountExists?._id?.toString()
-        : newOwner?._id?.toString();
+      const id =
+        accountExists?._id && !newOwnerId
+          ? accountExists?._id?.toString()
+          : newOwnerId;
 
       const signUpOtp = crypto.randomUUID().slice(-12);
       const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
@@ -117,7 +122,7 @@ const post_controllers = {
         otp: signUpOtp,
       });
 
-      if (signUpToken) throw new Error(signUpToken);
+      if (!signUpToken) throw new Error(signUpToken);
 
       res.status(200).json({
         message: "Verify your email, check your email for code.",
