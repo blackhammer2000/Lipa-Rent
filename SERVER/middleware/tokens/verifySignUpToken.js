@@ -4,12 +4,12 @@ require("dotenv").config();
 
 const verifySignUpToken = (req, res, next) => {
   try {
-    if (!req.headers.signuptoken) throw new Error("Unauthorized action.");
+    if (!req.headers.token) throw new Error("Unauthorized action.");
 
-    const { signuptoken } = req.headers;
+    const { token } = req.headers;
 
     const { id, otp, otpVerified } = verify(
-      signuptoken,
+      token,
       process.env.SIGNUP_SECRET_KEY
     );
 
@@ -29,7 +29,7 @@ const verifySignUpToken = (req, res, next) => {
     )
       req.body.id = id;
 
-    delete req.headers.signuptoken;
+    delete req.headers.token;
 
     next();
   } catch (err) {
