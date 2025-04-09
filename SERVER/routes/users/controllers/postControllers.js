@@ -100,21 +100,33 @@ const post_controllers = {
               {
                 $set: {
                   signUpOtp: hashedSignUpOtp,
-                  signUpOtpVerified: false,
-                  signUpExpiry: signUpOtpExpiry,
+                  isSignUpOtpVerified: false,
+                  signUpOtpExpiry: signUpOtpExpiry,
                 },
               }
             )
           : await Otp.create({
               ownerID: id,
               signUpOtp: hashedSignUpOtp,
-              signUpOtpVerified: false,
-              signUpExpiry: signUpOtpExpiry,
+              isSignUpOtpVerified: false,
+              signUpOtpExpiry: signUpOtpExpiry,
             });
 
+      console.log(signUpOtpDetailsToDB);
+
       if (
+        accountExists?._id &&
+        !newOwnerId &&
         !signUpOtpDetailsToDB.acknowledged &&
         !signUpOtpDetailsToDB.modifiedCount
+      )
+        throw new Error("Error adding sign up otp details to database");
+
+      if (
+        !accountExists?._id &&
+        newOwnerId &&
+        !signUpOtpDetailsToDB._id &&
+        !signUpOtpDetailsToDB.ownerID
       )
         throw new Error("Error adding sign up otp details to database");
 
