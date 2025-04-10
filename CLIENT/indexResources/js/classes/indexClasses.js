@@ -3,7 +3,7 @@ class Store extends StoreUtilities {
     if (!user) return;
 
     UserInterface.openLoader(
-      "Sending Email verification code",
+      "Please wait, sending verification code to your email...",
       "emailVerification"
     );
 
@@ -17,13 +17,13 @@ class Store extends StoreUtilities {
       body: JSON.stringify({ user }),
     };
 
-    const addNewTenantToRoomRequest = await fetch(
+    const getSignUpOtpRequest = await fetch(
       "http://localhost:4000/api/user/owner/signup/generate/otp",
       requestOptions
     );
 
     const { message, signUpOtp, signUpToken, error } =
-      await addNewTenantToRoomRequest.json();
+      await getSignUpOtpRequest.json();
 
     if (signUpToken || message || error)
       UserInterface.closeLoader("emailVerification");
@@ -39,7 +39,7 @@ class Store extends StoreUtilities {
     if (!user) return;
 
     UserInterface.openLoader(
-      "Sending Email verification code",
+      "Please wait, verifying your email...",
       "emailVerification"
     );
 
@@ -54,18 +54,15 @@ class Store extends StoreUtilities {
       },
     };
 
-    const addNewTenantToRoomRequest = await fetch(
+    const verifySignUpOtpRequest = await fetch(
       "http://localhost:4000/api/user/owner/signup/verify/otp",
       requestOptions
     );
 
-    const { message, signUpToken, error } =
-      await addNewTenantToRoomRequest.json();
+    const { message, signUpToken, error } = await verifySignUpOtpRequest.json();
 
     if (signUpToken || message || error)
       UserInterface.closeLoader("emailVerification");
-
-    // console.log(error, newTenantRoomRentPayments);
 
     if (error) UserInterface.handleErrors(error);
 
@@ -74,7 +71,7 @@ class Store extends StoreUtilities {
   static async signUp(token, { password, confirmPassword }) {
     if (!token || !password || !confirmPassword) return;
 
-    UserInterface.openLoader("Completing sign up, please wait...", "signup");
+    UserInterface.openLoader("Please wait, completing sign up...", "signup");
 
     const requestOptions = {
       mode: "cors",
@@ -87,16 +84,14 @@ class Store extends StoreUtilities {
       body: JSON.stringify({ password, confirmPassword }),
     };
 
-    const addNewTenantToRoomRequest = await fetch(
+    const signUpRequest = await fetch(
       "http://localhost:4000/api/user/owner/signup",
       requestOptions
     );
 
-    const { message, error } = await addNewTenantToRoomRequest.json();
+    const { message, error } = await signUpRequest.json();
 
     if (message || error) UserInterface.closeLoader("signup");
-
-    // console.log(error, newTenantRoomRentPayments);
 
     if (error && !message) UserInterface.handleErrors(error);
 
