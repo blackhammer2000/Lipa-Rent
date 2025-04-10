@@ -32,17 +32,18 @@ const post_controllers = {
   generateSignUpOtp: async (req, res) => {
     try {
       if (
-        !req.body.name ||
-        !req.body.nationalID ||
-        !req.body.email ||
-        !req.body.phone ||
-        !req.body.password ||
-        !req.body.confirmPassword
+        !req.body.user.name ||
+        !req.body.user.nationalID ||
+        !req.body.user.email ||
+        !req.body.user.phone ||
+        !req.body.user.confirmPassword ||
+        !req.body.user.password
       )
         throw new Error("provide all valid details");
 
-      const { name, nationalID, email, phone, password, confirmPassword } =
-        req.body;
+      const {
+        user: { name, nationalID, email, phone, password, confirmPassword },
+      } = req.body;
 
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
@@ -361,7 +362,6 @@ const post_controllers = {
 
       res.status(201).json({
         message: `An account has been succesfully created, proceed to log in to your account.`,
-        response_status: "success",
       });
     } catch (err) {
       if (err?.message)
