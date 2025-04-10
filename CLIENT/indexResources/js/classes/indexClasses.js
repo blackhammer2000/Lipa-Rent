@@ -98,6 +98,92 @@ class Store extends StoreUtilities {
 }
 
 class UserInterface extends UserinterfaceUtilities {
+  static createVerifyOtpForm(token, user) {
+    if (!loginToken) return;
+
+    document.querySelector(".enterOtpModal")?.remove();
+
+    const modal = document.createElement("div");
+    modal.className =
+      "enterOtpModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
+
+    const fieldset = document.createElement("fieldset");
+    fieldset.className =
+      "container-fluid d-flex flex-column justify-content-center align-items-center";
+
+    const legend = document.createElement("legend");
+    legend.className = "container-fluid d-flex justify-content-end";
+
+    const closeModalButton = document.createElement("button");
+    closeModalButton.draggable = "true";
+    closeModalButton.className = "closeResetModal btn btn-danger";
+    closeModalButton.innerText = "X";
+    closeModalButton.addEventListener("click", () => {
+      document.querySelector(".home").classList.remove("blur");
+      document.querySelector(".enterOtpModal").remove();
+    });
+    legend.append(closeModalButton);
+    fieldset.append(legend);
+
+    const form = document.createElement("form");
+
+    const formGroup1 = document.createElement("div");
+    formGroup1.className = "form-group";
+
+    const label = document.createElement("label");
+    label.className = "text-center";
+
+    const labelText = document.createElement("h5");
+    labelText.innerText = "Enter login OTP";
+    label.append(labelText);
+    formGroup1.append(label);
+
+    const input = document.createElement("input");
+    input.className = "form-control";
+    input.type = "text";
+    formGroup1.append(input);
+    form.append(formGroup1);
+
+    const formGroup2 = document.createElement("div");
+    formGroup2.className = "form-group";
+
+    const verifyButton = document.createElement("button");
+    verifyButton.className = "btn btn-success";
+    verifyButton.innerText = "Verify";
+    verifyButton.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!input.value) return;
+      this.verifySignUpOtpAndCompleteSignUp(input.value, token, user);
+    });
+
+    const sendCodeAgainButton = document.createElement("button");
+    sendCodeAgainButton.className = "ml-2 btn btn-dark";
+    sendCodeAgainButton.innerText = "Send code again";
+    sendCodeAgainButton.disabled = "true";
+
+    // const newResetCodeTimer = document.createElement("span");
+
+    // this.handleSendCodeAgainTimer(newResetCodeTimer, sendCodeAgainButton);
+
+    // sendCodeAgainButton.append(newResetCodeTimer);
+
+    // sendCodeAgainButton.addEventListener("click", () => {
+    //   this.loginAndGetOtp(loginToken, loginForm);
+    //   sendCodeAgainButton.disabled = "true";
+    //   this.handleSendCodeAgainTimer(newResetCodeTimer, sendCodeAgainButton);
+    // });
+
+    formGroup2.append(verifyButton);
+    formGroup2.append(sendCodeAgainButton);
+    form.append(formGroup2);
+
+    fieldset.append(form);
+    modal.append(fieldset);
+
+    document.querySelector("body").append(modal);
+    document.querySelector(".home").classList.add("blur");
+  }
+
   static async sendSignUpOtp(form) {
     if (!form) return;
 
@@ -114,18 +200,18 @@ class UserInterface extends UserinterfaceUtilities {
 
     const { message, signUpOtp, signUpToken } = await Store.sendSignUpOtp(user);
 
+    if (signUpOtp) alert(signUpOtp);
+
     if (message) {
       UserInterface.alertMessage(message, "success");
       return;
     }
 
-    alert(signUpOtp);
-    localStorage.setItem("signUpToken", signUpToken);
+    this.createVerifyOtpForm(signUpToken, { password, confirmPassword });
   }
 
-  static async verifySignUpOtpAndCompleteSignUp(otpForm, token, user) {
-    if (!otpForm || !token || !user) return;
-    const otp = otpForm.querySelector("[data-otp]").value;
+  static async verifySignUpOtpAndCompleteSignUp(otp, token, user) {
+    if (!otp || !token || !user) return;
 
     const { message, signUpToken } = await Store.verifySignUpOtp(otp, token);
 
