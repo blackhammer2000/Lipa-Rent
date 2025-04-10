@@ -28,8 +28,6 @@ class Store extends StoreUtilities {
     if (signUpToken || message || error)
       UserInterface.closeLoader("emailVerification");
 
-    // console.log(error, newTenantRoomRentPayments);
-
     if (error) UserInterface.handleErrors(error);
 
     if (message && signUpOtp && signUpToken)
