@@ -35,7 +35,7 @@ class Store extends StoreUtilities {
   }
 
   static async verifySignUpOtp(otp, token) {
-    if (!user) return;
+    if (!otp || !token) return;
 
     UserInterface.openLoader(
       "Please wait, verifying your email...",
@@ -229,5 +229,8 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     localStorage.removeItem("signUpToken");
+    document.querySelector(".enterOtpModal")?.remove();
+
+    location.assign("/CLIENT/login/login.html");
   }
 }

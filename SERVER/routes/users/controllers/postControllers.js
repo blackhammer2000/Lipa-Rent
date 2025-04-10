@@ -210,7 +210,7 @@ const post_controllers = {
       if (!signUpToken) throw new Error(signUpToken);
 
       res.status(200).json({
-        message: "Email verified successful",
+        message: "Email verified successfully",
         signUpToken,
       });
     } catch (err) {
