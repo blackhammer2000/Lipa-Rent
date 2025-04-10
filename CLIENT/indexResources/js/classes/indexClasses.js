@@ -1,5 +1,5 @@
 class Store extends StoreUtilities {
-  static async getSignUpOtp(user) {
+  static async sendSignUpOtp(user) {
     if (!user) return;
 
     UserInterface.openLoader(
@@ -93,8 +93,54 @@ class Store extends StoreUtilities {
 
     if (error && !message) UserInterface.handleErrors(error);
 
-    if (message && !error) return { message };
+    if (message && !error) return { message2: message };
   }
 }
 
-class IUserInterface extends UserinterfaceUtilities {}
+class UserInterface extends UserinterfaceUtilities {
+  static async sendSignUpOtp(form) {
+    if (!form) return;
+
+    const name = signUpForm.querySelector("[data-name]").value.toUppercase();
+    const nationalID = signUpForm.querySelector("[data-national-id]").value;
+    const email = signUpForm.querySelector("[data-email]").value;
+    const phone = signUpForm.querySelector("[data-phone]").value;
+    const password = signUpForm.querySelector("[data-password]").value;
+    const confirmPassword = signUpForm.querySelector(
+      "[data-confirm-password]"
+    ).value;
+
+    const user = { name, nationalID, email, phone, password, confirmPassword };
+
+    const { message, signUpOtp, signUpToken } = await Store.sendSignUpOtp(user);
+
+    if (message) {
+      UserInterface.alertMessage(message, "success");
+      return;
+    }
+
+    alert(signUpOtp);
+    localStorage.setItem("signUpToken", signUpToken);
+  }
+
+  static async verifySignUpOtpAndCompleteSignUp(otpForm, token, user) {
+    if (!otpForm || !token || !user) return;
+    const otp = otpForm.querySelector("[data-otp]").value;
+
+    const { message, signUpToken } = await Store.verifySignUpOtp(otp, token);
+
+    if (message) {
+      UserInterface.alertMessage(message, "success");
+      return;
+    }
+
+    const { message2 } = await Store.signUp(signUpToken, user);
+
+    if (message2) {
+      UserInterface.alertMessage(message2, "success");
+      return;
+    }
+
+    localStorage.removeItem("signUpToken");
+  }
+}
