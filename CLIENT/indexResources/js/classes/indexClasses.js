@@ -33,6 +33,7 @@ class Store extends StoreUtilities {
     if (message && signUpOtp && signUpToken)
       return { message, signUpOtp, signUpToken };
   }
+
   static async verifySignUpOtp(otp, token) {
     if (!user) return;
 
@@ -66,6 +67,7 @@ class Store extends StoreUtilities {
 
     if (message && signUpToken) return { message, signUpToken };
   }
+
   static async signUp(token, { password, confirmPassword }) {
     if (!token || !password || !confirmPassword) return;
 
@@ -99,7 +101,7 @@ class Store extends StoreUtilities {
 
 class UserInterface extends UserinterfaceUtilities {
   static createVerifyOtpForm(token, user) {
-    if (!loginToken) return;
+    if (!token || !user) return;
 
     document.querySelector(".enterOtpModal")?.remove();
 
@@ -134,7 +136,7 @@ class UserInterface extends UserinterfaceUtilities {
     label.className = "text-center";
 
     const labelText = document.createElement("h5");
-    labelText.innerText = "Enter login OTP";
+    labelText.innerText = "Enter Sign Up OTP";
     label.append(labelText);
     formGroup1.append(label);
 
@@ -153,7 +155,7 @@ class UserInterface extends UserinterfaceUtilities {
     verifyButton.addEventListener("click", async (e) => {
       e.preventDefault();
       if (!input.value) return;
-      this.verifySignUpOtpAndCompleteSignUp(input.value, token, user);
+      await this.verifySignUpOtpAndCompleteSignUp(input.value, token, user);
     });
 
     const sendCodeAgainButton = document.createElement("button");
@@ -187,7 +189,7 @@ class UserInterface extends UserinterfaceUtilities {
   static async sendSignUpOtp(form) {
     if (!form) return;
 
-    const name = signUpForm.querySelector("[data-name]").value.toUppercase();
+    const name = signUpForm.querySelector("[data-name]").value;
     const nationalID = signUpForm.querySelector("[data-national-id]").value;
     const email = signUpForm.querySelector("[data-email]").value;
     const phone = signUpForm.querySelector("[data-phone]").value;
@@ -204,7 +206,6 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (message) {
       UserInterface.alertMessage(message, "success");
-      return;
     }
 
     this.createVerifyOtpForm(signUpToken, { password, confirmPassword });
