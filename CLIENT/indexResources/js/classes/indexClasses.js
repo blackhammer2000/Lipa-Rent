@@ -152,10 +152,10 @@ class UserInterface extends UserinterfaceUtilities {
     const verifyButton = document.createElement("button");
     verifyButton.className = "btn btn-success";
     verifyButton.innerText = "Verify";
-    verifyButton.addEventListener("click", async (e) => {
+    verifyButton.addEventListener("click", (e) => {
       e.preventDefault();
       if (!input.value) return;
-      await this.verifySignUpOtpAndCompleteSignUp(input.value, token, user);
+      this.verifySignUpOtpAndCompleteSignUp(input.value, token, user);
     });
 
     const sendCodeAgainButton = document.createElement("button");
