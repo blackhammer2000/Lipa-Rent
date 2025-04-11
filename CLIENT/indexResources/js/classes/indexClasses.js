@@ -229,7 +229,7 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     localStorage.removeItem("signUpToken");
-    document.querySelector(".enterOtpModal")?.remove();
+    document.querySelector(".enterOtpModal").remove();
 
     location.assign("/CLIENT/login/login.html");
   }
