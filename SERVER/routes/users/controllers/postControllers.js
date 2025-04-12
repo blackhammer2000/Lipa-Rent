@@ -160,11 +160,13 @@ const post_controllers = {
       const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
       const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
 
+      if (!signUpOtp && otp && isSignUpOtpVerified === true && !signUpOtpExpiry)
+        throw new Error(
+          "Email has already been verified, please proceed the next step"
+        );
+
       if (signUpOtpExpiry && Date.now() > signUpOtpExpiry)
         throw new Error("Invalid Otp");
-
-      // if (!signUpOtp && otp && isSignUpOtpVerified && !signUpOtpExpiry)
-      //   throw new Error("OTP verified, please proceed the next step");
 
       if (!signUpOtp || !signUpOtpExpiry || isSignUpOtpVerified !== null)
         throw new Error("Invalid Otp");
@@ -236,6 +238,9 @@ const post_controllers = {
         throw new Error(
           "Error occured, please repeat the sign up process from the beginning"
         );
+
+      if (accountExists.emailVerified !== true)
+        throw new Error("Please complete email verification");
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
