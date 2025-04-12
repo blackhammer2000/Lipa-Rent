@@ -3,7 +3,7 @@ class Store extends StoreUtilities {
     if (!user) return;
 
     UserInterface.openLoader(
-      "Please wait, sending verification code to your email...",
+      "sending verification code to your email...",
       "emailVerification"
     );
 
@@ -37,10 +37,7 @@ class Store extends StoreUtilities {
   static async verifySignUpOtp(otp, token) {
     if (!otp || !token) return;
 
-    UserInterface.openLoader(
-      "Please wait, verifying your email...",
-      "emailVerification"
-    );
+    UserInterface.openLoader("verifying your email...", "emailVerification");
 
     const requestOptions = {
       mode: "cors",
@@ -71,7 +68,7 @@ class Store extends StoreUtilities {
   static async signUp(token, { password, confirmPassword }) {
     if (!token || !password || !confirmPassword) return;
 
-    UserInterface.openLoader("Please wait, completing sign up...", "signup");
+    UserInterface.openLoader("completing sign up...", "signup");
 
     const requestOptions = {
       mode: "cors",
@@ -214,7 +211,32 @@ class UserInterface extends UserinterfaceUtilities {
   static async verifySignUpOtpAndCompleteSignUp(otp, token, user) {
     if (!otp || !token || !user) return;
 
-    const { message, signUpToken } = await Store.verifySignUpOtp(otp, token);
+    // const { message, signUpToken } = await Store.verifySignUpOtp(otp, token);
+
+    UserInterface.openLoader("verifying your email...", "emailVerification");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token,
+        otp,
+      },
+    };
+
+    const verifySignUpOtpRequest = await fetch(
+      "http://localhost:4000/api/user/owner/signup/verify/otp",
+      requestOptions
+    );
+
+    const { message, signUpToken, error } = await verifySignUpOtpRequest.json();
+
+    if (signUpToken || message || error)
+      UserInterface.closeLoader("emailVerification");
+
+    if (error) UserInterface.handleErrors(error);
 
     if (message) {
       UserInterface.alertMessage(message, "success");
