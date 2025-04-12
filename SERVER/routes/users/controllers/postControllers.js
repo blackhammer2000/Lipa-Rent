@@ -53,29 +53,6 @@ const post_controllers = {
         nationalID: nationalID,
       });
 
-      let id;
-
-      if (!accountExists) {
-        const owner = {
-          name: name.toUpperCase(),
-          nationalID,
-          email,
-          emailVerified: false,
-          phone,
-          phoneVerified: false,
-          dateRegistered: new Date().toLocaleDateString(),
-          disabled: false,
-          paid: true,
-        };
-
-        const newOwner = await Owner?.create(owner);
-
-        if (!newOwner)
-          throw new Error("Something went wrong, please try again later.");
-
-        id = newOwner?._id?.toString();
-      }
-
       if (
         accountExists &&
         accountExists.emailVerified &&
@@ -93,6 +70,23 @@ const post_controllers = {
         });
       }
 
+      const owner = {
+        name: name.toUpperCase(),
+        nationalID,
+        email,
+        emailVerified: false,
+        phone,
+        phoneVerified: false,
+        dateRegistered: new Date().toLocaleDateString(),
+        disabled: false,
+        paid: true,
+      };
+
+      const newOwner = await Owner?.create(owner);
+
+      if (!newOwner)
+        throw new Error("Something went wrong, please try again later.");
+
       // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
       //   .map((randomValue) => randomValue.toString(16))
       //   .slice(-4)
@@ -107,7 +101,7 @@ const post_controllers = {
       if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
       const signUpOtpDetailsToDB = await Otp.create({
-        ownerID: id,
+        ownerID: newOwner?._id?.toString(),
         signUpOtp: hashedSignUpOtp,
         isSignUpOtpVerified: false,
         signUpOtpExpiry: signUpOtpExpiry,
@@ -121,7 +115,7 @@ const post_controllers = {
         throw new Error("Error adding sign up otp details to database");
 
       const signUpToken = await signSignUpToken({
-        id,
+        id: newOwner?._id?.toString(),
         otp: signUpOtp,
       });
 
