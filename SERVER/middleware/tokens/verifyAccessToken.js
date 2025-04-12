@@ -6,7 +6,7 @@ const {
 
 require("dotenv").config();
 
-const verifyUserAccessToken = (req, res, next) => {
+const verifyUserAccessToken = async (req, res, next) => {
   try {
     if (!req.headers.token) throw new Error("Access Denied.");
 
@@ -44,6 +44,11 @@ const verifyUserAccessToken = (req, res, next) => {
     if (
       err?.message === ("jwt expired" || "invalid token" || "jwt malformed")
     ) {
+      // const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
+
+      // if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
+      //   throw new Error("something went wrong, 'otp'");
+
       res.status(403).json({ error: "session expired" });
     } else {
       res.status(500).json({ error: err?.message });

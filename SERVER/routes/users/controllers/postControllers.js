@@ -332,18 +332,6 @@ const post_controllers = {
           "Failed to create a new instance of the property document in the database."
         );
 
-      const ownerDetailsToDB = await Owner.updateOne(
-        { _id: id.toString() },
-        {
-          $set: {
-            emailVerified: true,
-          },
-        }
-      );
-
-      if (!ownerDetailsToDB.acknowledged && !ownerDetailsToDB.modifiedCount)
-        throw new Error("Error adding email verification details to database");
-
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
 
       if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
