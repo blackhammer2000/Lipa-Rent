@@ -76,6 +76,13 @@ const post_controllers = {
         newOwnerId = newOwner?._id?.toString();
       }
 
+      if (
+        accountExists &&
+        accountExists.emailVerified &&
+        accountExists.emailVerified === true
+      )
+        throw new Error("Email has already been verified.");
+
       // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
       //   .map((randomValue) => randomValue.toString(16))
       //   .slice(-4)
@@ -160,11 +167,6 @@ const post_controllers = {
       const isSignUpOtpVerified = userOtpDoc.isSignUpOtpVerified || null;
       const signUpOtpExpiry = userOtpDoc.signUpOtpExpiry || null;
 
-      if (!signUpOtp && otp && isSignUpOtpVerified === true && !signUpOtpExpiry)
-        throw new Error(
-          "Email has already been verified, please proceed the next step"
-        );
-
       if (signUpOtpExpiry && Date.now() > signUpOtpExpiry)
         throw new Error("Invalid Otp");
 
@@ -244,12 +246,15 @@ const post_controllers = {
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
-      if (!userOtpDoc.isSignUpOtpVerified)
-        throw new Error("Please complete email verification");
+      if (!userOtpDoc)
+        throw new Error(
+          "Error occured, please repeat the sign up process from the beginning"
+        );
 
       if (
-        userOtpDoc.isSignUpOtpVerified !== (null || undefined) &&
-        userOtpDoc.isSignUpOtpVerified === false
+        !userOtpDoc.isSignUpOtpVerified ||
+        (userOtpDoc.isSignUpOtpVerified !== (null || undefined) &&
+          userOtpDoc.isSignUpOtpVerified === false)
       )
         throw new Error("Please complete email verification");
 
