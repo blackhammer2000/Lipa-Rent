@@ -186,14 +186,12 @@ class UserInterface extends UserinterfaceUtilities {
   static async sendSignUpOtp(form) {
     if (!form) return;
 
-    const name = signUpForm.querySelector("[data-name]").value;
-    const nationalID = signUpForm.querySelector("[data-national-id]").value;
-    const email = signUpForm.querySelector("[data-email]").value;
-    const phone = signUpForm.querySelector("[data-phone]").value;
-    const password = signUpForm.querySelector("[data-password]").value;
-    const confirmPassword = signUpForm.querySelector(
-      "[data-confirm-password]"
-    ).value;
+    const name = form.querySelector("[data-name]").value;
+    const nationalID = form.querySelector("[data-national-id]").value;
+    const email = form.querySelector("[data-email]").value;
+    const phone = form.querySelector("[data-phone]").value;
+    const password = form.querySelector("[data-password]").value;
+    const confirmPassword = form.querySelector("[data-confirm-password]").value;
 
     const user = { name, nationalID, email, phone, password, confirmPassword };
 
@@ -211,32 +209,7 @@ class UserInterface extends UserinterfaceUtilities {
   static async verifySignUpOtpAndCompleteSignUp(otp, token, user) {
     if (!otp || !token || !user) return;
 
-    // const { message, signUpToken } = await Store.verifySignUpOtp(otp, token);
-
-    UserInterface.openLoader("verifying your email...", "emailVerification");
-
-    const requestOptions = {
-      mode: "cors",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        user: true,
-        token,
-        otp,
-      },
-    };
-
-    const verifySignUpOtpRequest = await fetch(
-      "http://localhost:4000/api/user/owner/signup/verify/otp",
-      requestOptions
-    );
-
-    const { message, signUpToken, error } = await verifySignUpOtpRequest.json();
-
-    if (signUpToken || message || error)
-      UserInterface.closeLoader("emailVerification");
-
-    if (error) UserInterface.handleErrors(error);
+    const { message, signUpToken } = await Store.verifySignUpOtp(otp, token);
 
     if (message) {
       UserInterface.alertMessage(message, "success");
