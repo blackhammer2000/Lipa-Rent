@@ -30,8 +30,9 @@ class Store extends StoreUtilities {
 
     if (error) UserInterface.handleErrors(error);
 
-    if (message && signUpOtp && signUpToken)
-      return { message, signUpOtp, signUpToken };
+    if (signUpOtp) alert(signUpOtp);
+
+    if (message && signUpToken) return { message, signUpToken };
   }
 
   static async verifySignUpOtp(otp, token) {
@@ -195,12 +196,22 @@ class UserInterface extends UserinterfaceUtilities {
 
     const user = { name, nationalID, email, phone, password, confirmPassword };
 
-    const { message, signUpOtp, signUpToken } = await Store.sendSignUpOtp(user);
-
-    if (signUpOtp) alert(signUpOtp);
+    const { message, signUpToken } = await Store.sendSignUpOtp(user);
 
     if (message) {
       UserInterface.alertMessage(message, "success");
+    }
+
+    if (message && message.includes("verified")) {
+      const { message2 } = await Store.signUp(signUpToken, {
+        password,
+        confirmPassword,
+      });
+
+      if (message2) {
+        UserInterface.alertMessage(message2, "success");
+      }
+      return;
     }
 
     this.createVerifyOtpForm(signUpToken, { password, confirmPassword });
@@ -213,17 +224,14 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (message) {
       UserInterface.alertMessage(message, "success");
-      return;
     }
 
     const { message2 } = await Store.signUp(signUpToken, user);
 
     if (message2) {
       UserInterface.alertMessage(message2, "success");
-      return;
     }
 
-    localStorage.removeItem("signUpToken");
     document.querySelector(".enterOtpModal").remove();
 
     location.assign("/CLIENT/login/login.html");

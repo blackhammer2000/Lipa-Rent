@@ -80,8 +80,18 @@ const post_controllers = {
         accountExists &&
         accountExists.emailVerified &&
         accountExists.emailVerified === true
-      )
-        throw new Error("Email has already been verified.");
+      ) {
+        const signUpToken = await signSignUpToken({
+          id,
+        });
+
+        if (!signUpToken) throw new Error(signUpToken);
+
+        res.status(200).json({
+          message: "Email has already been verified.",
+          signUpToken,
+        });
+      }
 
       // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
       //   .map((randomValue) => randomValue.toString(16))
