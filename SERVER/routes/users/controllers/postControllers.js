@@ -60,6 +60,7 @@ const post_controllers = {
       ) {
         const signUpToken = await signSignUpToken({
           id: accountExists._id,
+          otpVerified: true,
         });
 
         if (!signUpToken) throw new Error(signUpToken);
