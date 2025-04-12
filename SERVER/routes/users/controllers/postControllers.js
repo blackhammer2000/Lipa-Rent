@@ -53,7 +53,7 @@ const post_controllers = {
         nationalID: nationalID,
       });
 
-      let newOwnerId;
+      let id;
 
       if (!accountExists) {
         const owner = {
@@ -73,7 +73,7 @@ const post_controllers = {
         if (!newOwner)
           throw new Error("Something went wrong, please try again later.");
 
-        newOwnerId = newOwner?._id?.toString();
+        id = newOwner?._id?.toString();
       }
 
       if (
@@ -82,7 +82,7 @@ const post_controllers = {
         accountExists.emailVerified === true
       ) {
         const signUpToken = await signSignUpToken({
-          id,
+          id: accountExists._id,
         });
 
         if (!signUpToken) throw new Error(signUpToken);
@@ -99,11 +99,6 @@ const post_controllers = {
       //   .join("")
       //   .slice(-24);
 
-      const id =
-        accountExists?._id && !newOwnerId
-          ? accountExists?._id?.toString()
-          : newOwnerId;
-
       const signUpOtp = crypto.randomUUID().slice(-12);
       const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
 
@@ -111,36 +106,15 @@ const post_controllers = {
 
       if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
-      const signUpOtpDetailsToDB =
-        accountExists?._id && !newOwnerId
-          ? await Otp.updateOne(
-              { ownerID: id },
-              {
-                $set: {
-                  signUpOtp: hashedSignUpOtp,
-                  isSignUpOtpVerified: false,
-                  signUpOtpExpiry: signUpOtpExpiry,
-                },
-              }
-            )
-          : await Otp.create({
-              ownerID: id,
-              signUpOtp: hashedSignUpOtp,
-              isSignUpOtpVerified: false,
-              signUpOtpExpiry: signUpOtpExpiry,
-            });
-
-      if (
-        accountExists?._id &&
-        !newOwnerId &&
-        !signUpOtpDetailsToDB.acknowledged &&
-        !signUpOtpDetailsToDB.modifiedCount
-      )
-        throw new Error("Error adding sign up otp details to database");
+      const signUpOtpDetailsToDB = await Otp.create({
+        ownerID: id,
+        signUpOtp: hashedSignUpOtp,
+        isSignUpOtpVerified: false,
+        signUpOtpExpiry: signUpOtpExpiry,
+      });
 
       if (
         !accountExists?._id &&
-        newOwnerId &&
         !signUpOtpDetailsToDB._id &&
         !signUpOtpDetailsToDB.ownerID
       )
