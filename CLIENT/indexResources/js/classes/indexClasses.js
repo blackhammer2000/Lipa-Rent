@@ -18,7 +18,7 @@ class Store extends StoreUtilities {
     };
 
     const getSignUpOtpRequest = await fetch(
-      "http://localhost:4000/api/user/owner/signup/generate/otp",
+      `${serverDomain}/api/user/owner/signup/generate/otp`,
       requestOptions
     );
 
@@ -52,7 +52,7 @@ class Store extends StoreUtilities {
     };
 
     const verifySignUpOtpRequest = await fetch(
-      "http://localhost:4000/api/user/owner/signup/verify/otp",
+      `${serverDomain}/api/user/owner/signup/verify/otp`,
       requestOptions
     );
 
@@ -83,7 +83,7 @@ class Store extends StoreUtilities {
     };
 
     const signUpRequest = await fetch(
-      "http://localhost:4000/api/user/owner/signup",
+      `${serverDomain}/api/user/owner/signup`,
       requestOptions
     );
 

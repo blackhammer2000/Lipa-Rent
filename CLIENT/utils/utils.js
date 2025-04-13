@@ -205,3 +205,5 @@ const logoutButton = document.querySelector("[data-logout]");
 logoutButton?.addEventListener("click", () =>
   UserinterfaceUtilities.handleLogout()
 );
+
+const serverDomain = "http://localhost:4000";
