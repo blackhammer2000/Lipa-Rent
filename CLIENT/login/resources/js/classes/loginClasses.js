@@ -15,7 +15,7 @@ class Store extends StoreUtilities {
     };
 
     const loginRequest = await fetch(
-      "http://localhost:4000/api/user/owner/login",
+      `${serverDomain}/api/user/owner/login`,
       loginRequestOptions
     );
 
@@ -44,7 +44,7 @@ class Store extends StoreUtilities {
     };
 
     const getOtpRequest = await fetch(
-      "http://localhost:4000/api/user/owner/get/otp",
+      `${serverDomain}/api/user/owner/get/otp`,
       getOtpRequestOptions
     );
 
@@ -89,7 +89,7 @@ class Store extends StoreUtilities {
     };
 
     const verifyOTPRequest = await fetch(
-      "http://localhost:4000/api/user/owner/verify/otp",
+      `${serverDomain}/api/user/owner/verify/otp`,
       verifyOTPRequestOptions
     );
 
@@ -121,7 +121,7 @@ class Store extends StoreUtilities {
     };
 
     const verifyUserInfoRequest = await fetch(
-      "http://localhost:4000/api/user/owner/verify/nationalid",
+      `${serverDomain}/api/user/owner/verify/nationalid`,
       verifyUserInfoRequestOptions
     );
 
@@ -154,7 +154,7 @@ class Store extends StoreUtilities {
     };
 
     const getForgotPasswordCodeRequest = await fetch(
-      "http://localhost:4000/api/user/owner/generate/forgotToken",
+      `${serverDomain}/api/user/owner/generate/forgotToken`,
       requestOptions
     );
 
@@ -186,7 +186,7 @@ class Store extends StoreUtilities {
     };
 
     const getDeleteAccountCodeRequest = await fetch(
-      "http://localhost:4000/api/user/owner/verify/forgotToken",
+      `${serverDomain}/api/user/owner/verify/forgotToken`,
       requestOptions
     );
 
@@ -217,7 +217,7 @@ class Store extends StoreUtilities {
     };
 
     const changePasswordRequest = await fetch(
-      "http://localhost:4000/api/user/owner/edit/forgotPassword",
+      `${serverDomain}/api/user/owner/edit/forgotPassword`,
       requestOptions
     );
 
