@@ -445,9 +445,9 @@ const post_controllers = {
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
-      const loginOtp = userOtpDoc.loginOtp || null;
-      const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
-      const loginOtpExpiry = userOtpDoc.loginOtpExpiry || null;
+      const loginOtp = userOtpDoc?.loginOtp || null;
+      const isLoginOtpVerified = userOtpDoc?.isLoginOtpVerified || null;
+      const loginOtpExpiry = userOtpDoc?.loginOtpExpiry || null;
 
       if (
         (loginOtp && loginOtp !== null) ||
@@ -462,8 +462,7 @@ const post_controllers = {
               isLoginOtpVerified: null,
               loginOtpExpiry: null,
             },
-          },
-          { new: true }
+          }
         );
 
         if (
@@ -480,17 +479,12 @@ const post_controllers = {
 
       if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
-      const loginOtpDetailsToDB = await Otp.updateOne(
-        { ownerID: id },
-        {
-          $set: {
-            loginOtp: hashedLoginOtp,
-            isLoginOtpVerified: false,
-            loginOtpExpiry: newLoginOtpExpiry,
-          },
-        },
-        { new: true }
-      );
+      const loginOtpDetailsToDB = await Otp.create({
+        ownerID: id,
+        loginOtp: hashedLoginOtp,
+        isLoginOtpVerified: false,
+        loginOtpExpiry: newLoginOtpExpiry,
+      });
 
       if (
         !loginOtpDetailsToDB.acknowledged &&
@@ -533,19 +527,25 @@ const post_controllers = {
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
-      const loginOtp = userOtpDoc.loginOtp || null;
-      const isLoginOtpVerified = userOtpDoc.isLoginOtpVerified || null;
-      const loginOtpExpiry = userOtpDoc.loginOtpExpiry || null;
+      const loginOtp = userOtpDoc?.loginOtp || null;
+      const isLoginOtpVerified = userOtpDoc?.isLoginOtpVerified || null;
+      const loginOtpExpiry = userOtpDoc?.loginOtpExpiry || null;
+
+      if (!loginOtp && loginOtp === (null || undefined))
+        throw new Error("Something went wrong");
+
+      if (
+        isLoginOtpVerified !== false ||
+        isLoginOtpVerified === (null || undefined)
+      )
+        throw new Error("Something went wrong");
+
+      if (loginOtpExpiry && Date.now() > loginOtpExpiry)
+        throw new Error("Invalid Otp");
 
       const isOtpValid = await compare(encrypt(otp), loginOtp);
 
       if (!isOtpValid) throw new Error("Invalid Otp");
-
-      if (isLoginOtpVerified && isLoginOtpVerified !== false)
-        throw new Error("Invalid Otp");
-
-      if (loginOtpExpiry && Date.now() > loginOtpExpiry)
-        throw new Error("Invalid Otp");
 
       const loginOtpDetailsToDB = await Otp.updateOne(
         { ownerID: id },
