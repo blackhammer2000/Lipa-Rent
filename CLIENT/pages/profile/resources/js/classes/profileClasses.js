@@ -15,7 +15,7 @@ class Store extends StoreUtilities {
     };
 
     const readRoomTenantsRequest = await fetch(
-      "http://localhost:4000/api/user/read/owner",
+      `${serverDomain}/api/user/read/owner`,
       requestOptions
     );
 
@@ -45,7 +45,7 @@ class Store extends StoreUtilities {
     };
 
     const editOwnerDetailsRequest = await fetch(
-      "http://localhost:4000/api/user/owner/edit/owner",
+      `${serverDomain}/api/user/owner/edit/owner`,
       requestOptions
     );
 
@@ -75,7 +75,7 @@ class Store extends StoreUtilities {
     };
 
     const generateResetCodeRequest = await fetch(
-      "http://localhost:4000/api/user/owner/generate/resetToken",
+      `${serverDomain}/api/user/owner/generate/resetToken`,
       requestOptions
     );
 
@@ -107,7 +107,7 @@ class Store extends StoreUtilities {
     };
 
     const generateResetCodeRequest = await fetch(
-      "http://localhost:4000/api/user/owner/verify/resetToken",
+      `${serverDomain}/api/user/owner/verify/resetToken`,
       requestOptions
     );
 
@@ -143,7 +143,7 @@ class Store extends StoreUtilities {
     };
 
     const changePasswordRequest = await fetch(
-      "http://localhost:4000/api/user/owner/edit/password",
+      `${serverDomain}/api/user/owner/edit/password`,
       requestOptions
     );
 
@@ -173,7 +173,7 @@ class Store extends StoreUtilities {
     };
 
     const verifyPasswordRequest = await fetch(
-      "http://localhost:4000/api/user/owner/verify/password",
+      `${serverDomain}/api/user/owner/verify/password`,
       requestOptions
     );
 
@@ -202,7 +202,7 @@ class Store extends StoreUtilities {
     };
 
     const getDeleteAccountCodeRequest = await fetch(
-      "http://localhost:4000/api/user/owner/generate/deleteToken",
+      `${serverDomain}/api/user/owner/generate/deleteToken`,
       requestOptions
     );
 
@@ -234,7 +234,7 @@ class Store extends StoreUtilities {
     };
 
     const getDeleteAccountCodeRequest = await fetch(
-      "http://localhost:4000/api/user/owner/verify/deleteToken",
+      `${serverDomain}/api/user/owner/verify/deleteToken`,
       requestOptions
     );
 
@@ -264,7 +264,7 @@ class Store extends StoreUtilities {
     };
 
     const deleteAccountRequest = await fetch(
-      "http://localhost:4000/api/user/owner/delete",
+      `${serverDomain}/api/user/owner/delete`,
       requestOptions
     );
 
