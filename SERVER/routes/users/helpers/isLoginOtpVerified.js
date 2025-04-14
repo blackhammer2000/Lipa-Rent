@@ -1,3 +1,5 @@
+const { Otp } = require("../../../middleware/models/Otp");
+
 async function isLoginOtpVerified(req, res, next) {
   try {
     if (!req.body.id) throw new Error("Unauthorized action.");
