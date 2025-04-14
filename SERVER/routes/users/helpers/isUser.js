@@ -7,7 +7,7 @@ function isUser(req, res, next) {
     } = req;
 
     if (!user) throw new Error("Unauthorized action, Not a user.");
- 
+
     next();
   } catch (err) {
     if (err?.message) res.status(500).json({ error: err?.message });
