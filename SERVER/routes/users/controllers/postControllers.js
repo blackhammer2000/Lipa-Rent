@@ -450,17 +450,35 @@ const post_controllers = {
       const loginOtpExpiry = userOtpDoc?.loginOtpExpiry || null;
 
       if (
-        (loginOtp && loginOtp !== null) ||
-        (isLoginOtpVerified && isLoginOtpVerified !== null) ||
-        (loginOtpExpiry && loginOtpExpiry !== null)
+        loginOtpExpiry &&
+        loginOtpExpiry !== null &&
+        Date.now() < loginOtpExpiry
+      )
+        throw new Error("Please try again after a few minutes");
+
+      if (
+        loginOtp &&
+        loginOtp !== null &&
+        isLoginOtpVerified === false &&
+        isLoginOtpVerified !== null &&
+        loginOtpExpiry &&
+        loginOtpExpiry !== null &&
+        Date.now() > loginOtpExpiry
       ) {
+        const newLoginOtp = crypto.randomUUID().slice(-12);
+        const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
+
+        const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
+
+        if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
+
         const resetLoginOtpDetails = await Otp.updateOne(
           { ownerID: id },
           {
             $set: {
-              loginOtp: null,
-              isLoginOtpVerified: null,
-              loginOtpExpiry: null,
+              loginOtp: hashedLoginOtp,
+              isLoginOtpVerified: false,
+              loginOtpExpiry: newLoginOtpExpiry,
             },
           }
         );
@@ -470,6 +488,27 @@ const post_controllers = {
           !resetLoginOtpDetails.modified
         )
           throw new Error("An error has occurred");
+
+        if (
+          !loginOtpDetailsToDB.acknowledged &&
+          !loginOtpDetailsToDB.modifiedCount
+        )
+          throw new Error("Error adding login otp details to database");
+
+        const loginToken = await signLoginToken({
+          id,
+          currentSubscription,
+          disabled,
+          otp: newLoginOtp,
+        });
+
+        if (!loginToken) throw new Error(loginToken);
+
+        res.status(200).json({
+          message: "Login Otp has been sent to your email",
+          newLoginOtp,
+          loginToken,
+        });
       }
 
       const newLoginOtp = crypto.randomUUID().slice(-12);
