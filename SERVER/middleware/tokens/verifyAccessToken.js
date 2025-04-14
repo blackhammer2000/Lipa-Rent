@@ -44,10 +44,10 @@ const verifyUserAccessToken = async (req, res, next) => {
     if (
       err?.message === ("jwt expired" || "invalid token" || "jwt malformed")
     ) {
-      // const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
+      const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
 
-      // if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
-      //   throw new Error("something went wrong, 'otp'");
+      if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
+        throw new Error("something went wrong, 'otp'");
 
       res.status(403).json({ error: "session expired" });
     } else {
