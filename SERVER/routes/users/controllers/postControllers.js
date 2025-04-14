@@ -454,7 +454,9 @@ const post_controllers = {
         loginOtpExpiry !== null &&
         Date.now() < loginOtpExpiry
       )
-        throw new Error("Please try again after a few minutes");
+        throw new Error(
+          "OTP has already been sent, please try again after a few minutes"
+        );
 
       if (
         loginOtp &&
