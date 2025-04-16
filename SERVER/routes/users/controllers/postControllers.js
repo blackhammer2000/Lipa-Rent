@@ -548,7 +548,9 @@ const post_controllers = {
         });
       }
     } catch (err) {
-      if (err.message) res.status(400).json({ error: err.message });
+      if (err.message.includes("OTP has already been sent"))
+        res.status(400).json({ message: err.message, loginToken: 1 });
+      else res.status(400).json({ error: err.message });
     }
   },
 
@@ -572,13 +574,10 @@ const post_controllers = {
       const isLoginOtpVerified = userOtpDoc?.isLoginOtpVerified || null;
       const loginOtpExpiry = userOtpDoc?.loginOtpExpiry || null;
 
-      if (!loginOtp && loginOtp === (null || undefined))
+      if (!loginOtp || loginOtp === null)
         throw new Error("Something went wrong");
 
-      if (
-        isLoginOtpVerified !== false ||
-        isLoginOtpVerified === (null || undefined)
-      )
+      if (isLoginOtpVerified !== false || isLoginOtpVerified === null)
         throw new Error("Something went wrong");
 
       if (loginOtpExpiry && Date.now() > loginOtpExpiry)
@@ -596,8 +595,7 @@ const post_controllers = {
             isLoginOtpVerified: true,
             loginOtpExpiry: null,
           },
-        },
-        { new: true }
+        }
       );
 
       if (

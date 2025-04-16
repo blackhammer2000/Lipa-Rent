@@ -51,12 +51,12 @@ class Store extends StoreUtilities {
     const { message, loginToken, error, newLoginOtp } =
       await getOtpRequest.json();
 
-    if (error || (loginToken && newLoginOtp))
+    if (message || error || (loginToken && newLoginOtp))
       UserInterface.closeLoader("sendOtp");
 
     if (error) UserInterface.handleErrors(error);
 
-    alert(newLoginOtp);
+    if (newLoginOtp) alert(newLoginOtp);
 
     if (message && loginToken) return { message, loginToken2: loginToken };
   }
