@@ -48,16 +48,17 @@ class Store extends StoreUtilities {
       getOtpRequestOptions
     );
 
-    const { loginToken, error, newLoginOtp } = await getOtpRequest.json();
+    const { message, loginToken, error, newLoginOtp } =
+      await getOtpRequest.json();
 
     if (error || (loginToken && newLoginOtp))
       UserInterface.closeLoader("sendOtp");
 
     if (error) UserInterface.handleErrors(error);
 
-    // alert(newLoginOtp);
+    alert(newLoginOtp);
 
-    return { loginToken2: loginToken };
+    if (message && loginToken) return { message, loginToken2: loginToken };
   }
 
   static async loginAndSendOtp(loginInfo) {
@@ -67,9 +68,9 @@ class Store extends StoreUtilities {
 
     if (!loginToken1) return;
 
-    const { loginToken2 } = await this.sendOtp(loginToken1);
+    const { message, loginToken2 } = await this.sendOtp(loginToken1);
 
-    return { loginToken: loginToken2 };
+    if (message && loginToken2) return { message, loginToken: loginToken2 };
   }
 
   static async verifyOtp(loginToken, otp) {
@@ -102,7 +103,7 @@ class Store extends StoreUtilities {
       return;
     }
 
-    return { message, token };
+    if (message && token) return { message, token };
   }
 
   static async verifyUserInfo(email, nationalId) {
@@ -238,13 +239,15 @@ class UserInterface extends UserinterfaceUtilities {
     const nationalID = form.querySelector("[data-national-id]").value;
     const password = form.querySelector("[data-password]").value;
 
-    const { loginToken } = await Store.loginAndSendOtp({
+    const { message, loginToken } = await Store.loginAndSendOtp({
       email,
       nationalID,
       password,
     });
 
     if (!loginToken) return;
+
+    if (message && loginToken) UserInterface.alertMessage(message, "success");
 
     this.createVerifyOtpModal(loginToken, form);
   }
