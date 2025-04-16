@@ -55,7 +55,7 @@ class Store extends StoreUtilities {
 
     if (error) UserInterface.handleErrors(error);
 
-    // alert(newLoginOtp);
+    alert(newLoginOtp);
 
     return { loginToken2: loginToken };
   }
