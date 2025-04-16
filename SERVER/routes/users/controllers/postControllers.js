@@ -446,10 +446,17 @@ const post_controllers = {
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
       const loginOtp = userOtpDoc?.loginOtp || null;
-      const isLoginOtpVerified = userOtpDoc?.isLoginOtpVerified || null;
+      const isLoginOtpVerified =
+        userOtpDoc?.isLoginOtpVerified !== (null || undefined)
+          ? userOtpDoc.isLoginOtpVerified
+          : null;
       const loginOtpExpiry = userOtpDoc?.loginOtpExpiry || null;
 
       if (
+        loginOtp !== null &&
+        loginOtp &&
+        isLoginOtpVerified !== null &&
+        isLoginOtpVerified === false &&
         loginOtpExpiry &&
         loginOtpExpiry !== null &&
         Date.now() < loginOtpExpiry
@@ -459,12 +466,12 @@ const post_controllers = {
         );
 
       if (
-        loginOtp &&
         loginOtp !== null &&
-        isLoginOtpVerified === false &&
+        loginOtp &&
         isLoginOtpVerified !== null &&
-        loginOtpExpiry &&
+        isLoginOtpVerified === false &&
         loginOtpExpiry !== null &&
+        loginOtpExpiry &&
         Date.now() > loginOtpExpiry
       ) {
         const newLoginOtp = crypto.randomUUID().slice(-12);
@@ -487,9 +494,40 @@ const post_controllers = {
 
         if (
           !resetLoginOtpDetails.acknowledged &&
-          !resetLoginOtpDetails.modified
+          !resetLoginOtpDetails.modifiedCount
         )
           throw new Error("An error has occurred");
+
+        const loginToken = await signLoginToken({
+          id,
+          currentSubscription,
+          disabled,
+          otp: newLoginOtp,
+        });
+
+        if (!loginToken) throw new Error(loginToken);
+
+        res.status(200).json({
+          message: "Login Otp has been sent to your email",
+          newLoginOtp,
+          loginToken,
+        });
+      }
+
+      if (userOtpDoc === (null || undefined) && !userOtpDoc) {
+        const newLoginOtp = crypto.randomUUID().slice(-12);
+        const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
+
+        const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
+
+        if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
+
+        const loginOtpDetailsToDB = await Otp.create({
+          ownerID: id,
+          loginOtp: hashedLoginOtp,
+          isLoginOtpVerified: false,
+          loginOtpExpiry: newLoginOtpExpiry,
+        });
 
         if (
           !loginOtpDetailsToDB.acknowledged &&
@@ -512,41 +550,6 @@ const post_controllers = {
           loginToken,
         });
       }
-
-      const newLoginOtp = crypto.randomUUID().slice(-12);
-      const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
-
-      const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
-
-      if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
-
-      const loginOtpDetailsToDB = await Otp.create({
-        ownerID: id,
-        loginOtp: hashedLoginOtp,
-        isLoginOtpVerified: false,
-        loginOtpExpiry: newLoginOtpExpiry,
-      });
-
-      if (
-        !loginOtpDetailsToDB.acknowledged &&
-        !loginOtpDetailsToDB.modifiedCount
-      )
-        throw new Error("Error adding login otp details to database");
-
-      const loginToken = await signLoginToken({
-        id,
-        currentSubscription,
-        disabled,
-        otp: newLoginOtp,
-      });
-
-      if (!loginToken) throw new Error(loginToken);
-
-      res.status(200).json({
-        message: "Login Otp has been sent to your email",
-        newLoginOtp,
-        loginToken,
-      });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
