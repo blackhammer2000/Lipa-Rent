@@ -16,7 +16,7 @@ class Store extends StoreUtilities {
     };
 
     const getAllPropertiesData = await fetch(
-      "http://localhost:4000/api/user/owner/read/properties",
+      `${serverDomain}/api/user/owner/read/properties`,
       requestOptions
     );
 
@@ -46,7 +46,7 @@ class Store extends StoreUtilities {
     };
 
     const getAllPropertyPaymentData = await fetch(
-      "http://localhost:4000/api/user/owner/read/property/rooms/tenants/payments",
+      `${serverDomain}/api/user/owner/read/property/rooms/tenants/payments`,
 
       requestOptions
     );
