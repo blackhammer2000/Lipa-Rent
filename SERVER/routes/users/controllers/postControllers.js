@@ -443,7 +443,7 @@ const post_controllers = {
 
       const { id, currentSubscription, disabled } = req.body;
 
-      const userOtpDoc = await Otp.findOne({ ownerID: id });
+      const userOtpDoc = (await Otp.findOne({ ownerID: id })) || null;
 
       const loginOtp = userOtpDoc?.loginOtp || null;
       const isLoginOtpVerified =
@@ -514,7 +514,7 @@ const post_controllers = {
         });
       }
 
-      if (userOtpDoc === (null || undefined) && !userOtpDoc) {
+      if (!userOtpDoc) {
         const newLoginOtp = crypto.randomUUID().slice(-12);
         const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
 
@@ -529,10 +529,7 @@ const post_controllers = {
           loginOtpExpiry: newLoginOtpExpiry,
         });
 
-        if (
-          !loginOtpDetailsToDB.acknowledged &&
-          !loginOtpDetailsToDB.modifiedCount
-        )
+        if (!loginOtpDetailsToDB._id)
           throw new Error("Error adding login otp details to database");
 
         const loginToken = await signLoginToken({
