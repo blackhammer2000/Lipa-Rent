@@ -8,7 +8,7 @@ const verifyLoginToken = (req, res, next) => {
 
     const { logintoken } = req.headers;
 
-    const { id, currentSubscription, disabled, otp } = verify(
+    const { id, currentSubscription, disabled, otp, repeat } = verify(
       logintoken,
       process.env.LOGIN_SECRET_KEY
     );
@@ -22,7 +22,7 @@ const verifyLoginToken = (req, res, next) => {
       req.body.id = id;
       req.body.currentSubscription = currentSubscription;
       req.body.disabled = disabled;
-      req.body.otp = otp;
+      req.body.otp = repeat ? req.headers.otp : otp;
     }
 
     delete req.headers.logintoken;

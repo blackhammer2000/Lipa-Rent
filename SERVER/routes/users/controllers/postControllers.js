@@ -460,10 +460,23 @@ const post_controllers = {
         loginOtpExpiry &&
         loginOtpExpiry !== null &&
         Date.now() < loginOtpExpiry
-      )
-        throw new Error(
-          "OTP has already been sent, please try again after a few minutes"
-        );
+      ) {
+        const loginToken = await signLoginToken({
+          id,
+          currentSubscription,
+          disabled,
+          otp: 1,
+          repeat: 1,
+        });
+
+        if (!loginToken) throw new Error(loginToken);
+
+        res.status(200).json({
+          message:
+            "OTP has already been sent, please try again after a few minutes",
+          loginToken,
+        });
+      }
 
       if (
         loginOtp !== null &&
@@ -548,9 +561,7 @@ const post_controllers = {
         });
       }
     } catch (err) {
-      if (err.message.includes("OTP has already been sent"))
-        res.status(400).json({ message: err.message, loginToken: 1 });
-      else res.status(400).json({ error: err.message });
+      if (err.message) res.status(400).json({ error: err.message });
     }
   },
 
