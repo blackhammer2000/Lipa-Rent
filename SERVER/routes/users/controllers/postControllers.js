@@ -582,7 +582,10 @@ const post_controllers = {
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
       const loginOtp = userOtpDoc?.loginOtp || null;
-      const isLoginOtpVerified = userOtpDoc?.isLoginOtpVerified || null;
+      const isLoginOtpVerified =
+        userOtpDoc?.isLoginOtpVerified === false
+          ? userOtpDoc?.isLoginOtpVerified
+          : null;
       const loginOtpExpiry = userOtpDoc?.loginOtpExpiry || null;
 
       if (!loginOtp || loginOtp === null)
