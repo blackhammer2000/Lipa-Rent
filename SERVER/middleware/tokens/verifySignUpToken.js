@@ -8,7 +8,7 @@ const verifySignUpToken = (req, res, next) => {
 
     const { token } = req.headers;
 
-    const { id, otp, otpVerified } = verify(
+    const { id, otp, otpVerified, repeat } = verify(
       token,
       process.env.SIGNUP_SECRET_KEY
     );
@@ -19,7 +19,7 @@ const verifySignUpToken = (req, res, next) => {
       otpVerified === (null || undefined)
     ) {
       req.body.id = id;
-      req.body.otp = otp;
+      req.body.otp =  repeat ? req.headers.otp : otp;
     }
 
     if (

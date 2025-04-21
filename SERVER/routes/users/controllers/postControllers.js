@@ -71,6 +71,36 @@ const post_controllers = {
         });
       }
 
+      const otpExists = accountExists
+        ? (await Otp?.findOne({
+            ownerID: accountExists._id,
+          })) || null
+        : null;
+
+      if (
+        accountExists &&
+        accountExists._id &&
+        otpExists &&
+        otpExists.isSignUpOtpVerified === false &&
+        otpExists.signUpOtpExpiry &&
+        otpExists.signUpOtpExpiry !== null &&
+        Date.now() < otpExists.signUpOtpExpiry
+      ) {
+        const signUpToken = await signSignUpToken({
+          id: accountExists._id,
+          otp: 1,
+          repeat: 1,
+        });
+
+        if (!signUpToken) throw new Error(signUpToken);
+
+        res.status(200).json({
+          message:
+            "OTP has already been sent, please try again after a few minutes",
+          signUpToken,
+        });
+      }
+
       const owner = {
         name: name.toUpperCase(),
         nationalID,
@@ -819,7 +849,7 @@ const post_controllers = {
 
   //?  below is the expected requestBody from the user when reading all properties.
   //* {
-  // ...
+  // ....
   //* }
 
   readAllPropertiesOwned: async (req, res) => {
