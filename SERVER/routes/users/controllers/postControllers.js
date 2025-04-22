@@ -72,9 +72,9 @@ const post_controllers = {
       }
 
       const otpExists = accountExists
-        ? (await Otp?.findOne({
+        ? await Otp?.findOne({
             ownerID: accountExists._id,
-          })) || null
+          })
         : null;
 
       if (
@@ -97,6 +97,54 @@ const post_controllers = {
         res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
+          signUpToken,
+        });
+      }
+
+      if (
+        accountExists &&
+        accountExists._id &&
+        otpExists &&
+        otpExists.isSignUpOtpVerified === false &&
+        otpExists.signUpOtpExpiry &&
+        otpExists.signUpOtpExpiry !== null &&
+        Date.now() > otpExists.signUpOtpExpiry
+      ) {
+        const signUpOtp = crypto.randomUUID().slice(-12);
+        const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
+
+        const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
+
+        if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
+
+        const signUpOtpDetailsToDB = await Otp.updateOne(
+          { ownerID: accountExists._id },
+          {
+            $set: {
+              signUpOtp: hashedSignUpOtp,
+              isSignUpOtpVerified: false,
+              signUpOtpExpiry: signUpOtpExpiry,
+            },
+          }
+        );
+
+        if (
+          !accountExists?._id &&
+          !signUpOtpDetailsToDB.acknowledged &&
+          !signUpOtpDetailsToDB.modifiedCount
+        )
+          throw new Error("Error adding sign up otp details to database");
+
+        const signUpToken = await signSignUpToken({
+          id: accountExists._id,
+          otp: signUpOtp,
+        });
+
+        if (!signUpToken) throw new Error(signUpToken);
+
+        res.status(200).json({
+          message: "Verify your email, check your email for code.",
+          signUpOtp,
           signUpToken,
         });
       }
