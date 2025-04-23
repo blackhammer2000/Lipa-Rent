@@ -55,7 +55,7 @@ const post_controllers = {
 
       if (
         accountExists &&
-        accountExists.emailVerified &&
+        accountExists.emailVerified !== (null || undefined) &&
         accountExists.emailVerified === true
       ) {
         const signUpToken = await signSignUpToken({
