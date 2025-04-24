@@ -18,7 +18,7 @@ class Store extends StoreUtilities {
     };
 
     const readSubscriptionsRequest = await fetch(
-      "http://localhost:4000/api/user/owner/read/subscriptions",
+      `${serverDomain}/api/user/owner/read/subscriptions`,
       requestOptions
     );
 
