@@ -4,7 +4,7 @@ class Store extends StoreUtilities {
 
     UserInterface.openLoader(
       "reading subscription reports",
-      "readSubscrptions"
+      "readSubscriptions"
     );
 
     const requestOptions = {
@@ -26,7 +26,7 @@ class Store extends StoreUtilities {
       await readSubscriptionsRequest.json();
 
     if (subscriptions || message || error)
-      UserInterface.closeLoader("readSubscrptions");
+      UserInterface.closeLoader("readSubscriptions");
 
     if (error) UserInterface.handleErrors(error);
 
