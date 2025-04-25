@@ -16,7 +16,7 @@ class Store extends StoreUtilities {
     };
 
     const readRoomTenantsRequest = await fetch(
-      "http://localhost:4000/api/user/owner/read/property/rooms",
+      `${serverDomain}/api/user/owner/read/property/rooms`,
       requestOptions
     );
 
@@ -50,7 +50,7 @@ class Store extends StoreUtilities {
     };
 
     const readRoomTenantsRequest = await fetch(
-      "http://localhost:4000/api/user/owner/read/property/room/tenants",
+      `${serverDomain}/api/user/owner/read/property/room/tenants`,
       requestOptions
     );
 
@@ -88,7 +88,7 @@ class Store extends StoreUtilities {
     };
 
     const addNewTenantToRoomRequest = await fetch(
-      "http://localhost:4000/api/user/owner/create/property/room/tenant",
+      `${serverDomain}/api/user/owner/create/property/room/tenant`,
       requestOptions
     );
 
@@ -132,7 +132,7 @@ class Store extends StoreUtilities {
     };
 
     const readAllRoomsOnSinglePropertyRequest = await fetch(
-      "http://localhost:4000/api/user/owner/edit/property/room/tenant",
+      `${serverDomain}/api/user/owner/edit/property/room/tenant`,
       requestOptions
     );
 
