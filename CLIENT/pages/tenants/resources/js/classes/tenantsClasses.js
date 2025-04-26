@@ -602,7 +602,7 @@ class UserInterface extends UserinterfaceUtilities {
     if (!propertyId || !roomId) return;
 
     const rentsButton = document.querySelector("[data-nav-rents]");
-    rentsButton.removeAttribute("disabled");
+    rentsButton?.removeAttribute("disabled");
   }
 
   static setSelectedRoomIdInLocalStorage(selectedRoomId) {
