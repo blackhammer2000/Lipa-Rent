@@ -6,6 +6,8 @@ const {
 
 require("dotenv").config();
 
+const { Otp } = require("../models/Otp");
+
 const verifyUserAccessToken = async (req, res, next) => {
   try {
     if (!req.headers.token) throw new Error("Access Denied.");
@@ -14,7 +16,7 @@ const verifyUserAccessToken = async (req, res, next) => {
       headers: { token },
     } = req;
 
-    const { id, currentSubscription, user, disabled } = verify(
+    var { id, currentSubscription, user, disabled } = verify(
       token,
       process.env.MY_SECRET_KEY
     );
