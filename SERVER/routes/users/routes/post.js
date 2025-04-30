@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const {
   verifyUserAccessToken,
+  isLoginVerified,
 } = require("../../../middleware/tokens/verifyAccessToken");
 const {
   verifyForgotPasswordToken,
@@ -66,6 +67,9 @@ const {
 const {
   verifySignUpToken,
 } = require("../../../middleware/tokens/verifySignUpToken");
+const {
+  isLoginVerified,
+} = require("../../../middleware/validators/isLoginVerified");
 
 // ////////////////////////  ROUTES   ///////////////////////////////
 
@@ -99,6 +103,7 @@ router.post(
   "/api/user/read/owner",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readOwnerDetails
 );
 
@@ -107,6 +112,7 @@ router.post(
   "/api/user/owner/create/property",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   propertyValidator,
   createNewProperty
 );
@@ -114,12 +120,14 @@ router.post(
   "/api/user/owner/read/property",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readSinglePropertyOwned
 );
 router.post(
   "/api/user/owner/read/properties",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readAllPropertiesOwned
 );
 
@@ -128,6 +136,7 @@ router.post(
   "/api/user/owner/create/property/room",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   roomValidator,
   createSingleRoomOnProperty
 );
@@ -135,12 +144,14 @@ router.post(
   "/api/user/owner/read/property/rooms",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readAllRoomsOnProperty
 );
 router.post(
   "/api/user/owner/read/property/room",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readSingleRoomOnProperty
 );
 
@@ -149,6 +160,7 @@ router.post(
   "/api/user/owner/create/property/room/tenant",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   tenantValidator,
   createTenantForRoomOnProperty
 );
@@ -156,18 +168,21 @@ router.post(
   "/api/user/owner/read/property/rooms/tenants",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readAllTenantsForAllRoomsOnProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenants",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readAllTenantsInRoomOnProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenant",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readSingleTenantInRoomOnProperty
 );
 
@@ -176,30 +191,35 @@ router.post(
   "/api/user/owner/create/property/room/tenant/payment",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   createRentPaymentForRoomInPropertyByTenant
 );
 router.post(
   "/api/user/owner/read/property/rooms/tenants/payments",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readAllRentPaymentsForAllRoomsInProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenants/payments",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readAllRentPaymentsForRoomInProperty
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payments",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readAllRentPaymentsForRoomInPropertyByTenant
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payment",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   readRentPaymentForRoomInPropertyByTenant
 );
 
@@ -208,6 +228,7 @@ router.post(
   "/api/user/owner/verify/password",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   verifyPassword
 );
 router.post("/api/user/owner/verify/nationalid", isUser, verifyUserInfo);
@@ -217,12 +238,15 @@ router.post(
   "/api/user/owner/generate/resetToken",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
+
   genarateResetPasswordToken
 );
 router.post(
   "/api/user/owner/verify/resetToken",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   verifyResetPasswordToken
 );
 
@@ -231,12 +255,14 @@ router.post(
   "/api/user/owner/generate/deleteToken",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   genarateDeleteAccountToken
 );
 router.post(
   "/api/user/owner/verify/deleteToken",
   isUser,
   verifyUserAccessToken,
+  isLoginVerified,
   verifyDeleteAccountToken
 );
 
