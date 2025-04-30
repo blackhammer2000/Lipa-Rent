@@ -2262,6 +2262,28 @@ const post_controllers = {
       if (err?.message) res.status(400).json({ error: err.message });
     }
   },
+
+  logout: async (req, res) => {
+    try {
+      if (!req.body.id) throw new Error("Unauthorized action");
+
+      const { id } = req.body;
+
+      const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
+
+      if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
+        throw new Error("something went wrong, 'otp'");
+
+      if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
+        throw new Error("something went wrong, 'otp'");
+
+      res.status(200).json({
+        message: "Logged out sucessfully",
+      });
+    } catch (err) {
+      if (err?.message) res.status(400).json({ error: err.message });
+    }
+  },
 };
 
 module.exports = post_controllers;

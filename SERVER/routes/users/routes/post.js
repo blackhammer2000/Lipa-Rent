@@ -56,6 +56,8 @@ const {
   verifyDeleteAccountToken,
 
   verifyUserInfo,
+
+  logout,
 } = require("../controllers/postControllers");
 
 const {
@@ -251,5 +253,7 @@ router.post(
   verifyForgotPasswordToken,
   verifyResetPasswordToken
 );
+
+router.post("/api/user/owner/logout", verifyUserAccessToken, logout);
 
 module.exports = router;

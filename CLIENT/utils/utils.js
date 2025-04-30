@@ -80,6 +80,7 @@ class UserinterfaceUtilities {
     loaderContainer.append(loaderBox);
 
     document.querySelector("body").append(loaderContainer);
+    document.querySelector(".home").classList.add("removePointerEvents");
   }
 
   static closeLoader(loaderType) {
@@ -87,6 +88,7 @@ class UserinterfaceUtilities {
     loaderContainer.querySelector(`.${loaderType}`)?.remove();
 
     if (!loaderContainer.children) loaderContainer.remove();
+    document.querySelector(".home").classList.remove("removePointerEvents");
   }
 
   static alertMessage(message, className) {
@@ -127,9 +129,42 @@ class UserinterfaceUtilities {
     return;
   }
 
-  static handleLogout() {
-    this.clearLocalStorage();
-    location.assign("/CLIENT/login/login.html");
+  static async handleLogout() {
+    const accessToken = localStorage.getItem("liparentAccessToken")
+      ? localStorage.getItem("liparentAccessToken")
+      : null;
+
+    if (accessToken === (null || undefined))
+      location.assign("/CLIENT/login/login.html");
+
+    this.openLoader("logging out", "logout");
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+    };
+
+    const logoutRequest = await fetch(
+      `${serverDomain}/api/user/owner/logout`,
+      requestOptions
+    );
+
+    const { message, error } = await logoutRequest.json();
+
+    if (message || error) this.closeLoader("logout");
+
+    if (!message && error) this.handleErrors(error);
+
+    if (message && !error) {
+      this.alertMessage(message, "success");
+      this.clearLocalStorage();
+      location.assign("/CLIENT/login/login.html");
+    }
   }
 
   static clearTable(tableBody) {
