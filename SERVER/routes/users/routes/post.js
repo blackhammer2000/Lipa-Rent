@@ -2,7 +2,6 @@ const router = require("express").Router();
 
 const {
   verifyUserAccessToken,
-  isLoginVerified,
 } = require("../../../middleware/tokens/verifyAccessToken");
 const {
   verifyForgotPasswordToken,
