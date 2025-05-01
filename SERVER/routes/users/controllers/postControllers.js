@@ -216,7 +216,7 @@ const post_controllers = {
 
       const { id, otp } = req.body;
 
-      if (otp !== req.headers.otp) throw new Error("Unauthorized action");
+      if (otp !== req.headers.otp) throw new Error("Invalid otp");
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
