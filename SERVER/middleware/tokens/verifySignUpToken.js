@@ -6,6 +6,8 @@ const verifySignUpToken = (req, res, next) => {
   try {
     if (!req.headers.token) throw new Error("Unauthorized action.");
 
+    console.log(req);
+
     const { token } = req.headers;
 
     const { id, otp, otpVerified, repeat } = verify(
@@ -19,7 +21,7 @@ const verifySignUpToken = (req, res, next) => {
       otpVerified === (null || undefined)
     ) {
       req.body.id = id;
-      req.body.otp =  repeat ? req.headers.otp : otp;
+      req.body.otp = repeat ? req.headers.otp : otp;
     }
 
     if (

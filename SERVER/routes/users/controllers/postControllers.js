@@ -79,15 +79,15 @@ const post_controllers = {
 
       if (
         accountExists &&
-        accountExists._id &&
+        accountExists?._id &&
         otpExists &&
-        otpExists.isSignUpOtpVerified === false &&
-        otpExists.signUpOtpExpiry &&
-        otpExists.signUpOtpExpiry !== null &&
+        otpExists?.isSignUpOtpVerified === false &&
+        otpExists?.signUpOtpExpiry &&
+        otpExists?.signUpOtpExpiry !== null &&
         Date.now() < otpExists.signUpOtpExpiry
       ) {
         const signUpToken = await signSignUpToken({
-          id: accountExists._id,
+          id: accountExists._id.toString(),
           otp: 1,
           repeat: 1,
         });
@@ -103,11 +103,11 @@ const post_controllers = {
 
       if (
         accountExists &&
-        accountExists._id &&
+        accountExists?._id &&
         otpExists &&
-        otpExists.isSignUpOtpVerified === false &&
-        otpExists.signUpOtpExpiry &&
-        otpExists.signUpOtpExpiry !== null &&
+        otpExists?.isSignUpOtpVerified === false &&
+        otpExists?.signUpOtpExpiry &&
+        otpExists?.signUpOtpExpiry !== null &&
         Date.now() > otpExists.signUpOtpExpiry
       ) {
         const signUpOtp = crypto.randomUUID().slice(-12);
@@ -118,7 +118,7 @@ const post_controllers = {
         if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
         const signUpOtpDetailsToDB = await Otp.updateOne(
-          { ownerID: accountExists._id },
+          { ownerID: accountExists._id.toString() },
           {
             $set: {
               signUpOtp: hashedSignUpOtp,
@@ -136,7 +136,7 @@ const post_controllers = {
           throw new Error("Error adding sign up otp details to database");
 
         const signUpToken = await signSignUpToken({
-          id: accountExists._id,
+          id: accountExists._id.toString(),
           otp: signUpOtp,
         });
 
@@ -149,62 +149,64 @@ const post_controllers = {
         });
       }
 
-      const owner = {
-        name: name.toUpperCase(),
-        nationalID,
-        email,
-        emailVerified: false,
-        phone,
-        phoneVerified: false,
-        dateRegistered: new Date().toLocaleDateString(),
-        disabled: false,
-        paid: true,
-      };
+      if (!accountExists && !otpExists) {
+        const owner = {
+          name: name.toUpperCase(),
+          nationalID,
+          email,
+          emailVerified: false,
+          phone,
+          phoneVerified: false,
+          dateRegistered: new Date().toLocaleDateString(),
+          disabled: false,
+          paid: true,
+        };
 
-      const newOwner = await Owner?.create(owner);
+        const newOwner = await Owner?.create(owner);
 
-      if (!newOwner)
-        throw new Error("Something went wrong, please try again later.");
+        if (!newOwner)
+          throw new Error("Something went wrong, please try again later.");
 
-      // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
-      //   .map((randomValue) => randomValue.toString(16))
-      //   .slice(-4)
-      //   .join("")
-      //   .slice(-24);
+        // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
+        //   .map((randomValue) => randomValue.toString(16))
+        //   .slice(-4)
+        //   .join("")
+        //   .slice(-24);
 
-      const signUpOtp = crypto.randomUUID().slice(-12);
-      const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
+        const signUpOtp = crypto.randomUUID().slice(-12);
+        const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
 
-      const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
+        const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
 
-      if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
+        if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
-      const signUpOtpDetailsToDB = await Otp.create({
-        ownerID: newOwner?._id?.toString(),
-        signUpOtp: hashedSignUpOtp,
-        isSignUpOtpVerified: false,
-        signUpOtpExpiry: signUpOtpExpiry,
-      });
+        const signUpOtpDetailsToDB = await Otp.create({
+          ownerID: newOwner?._id?.toString(),
+          signUpOtp: hashedSignUpOtp,
+          isSignUpOtpVerified: false,
+          signUpOtpExpiry: signUpOtpExpiry,
+        });
 
-      if (
-        !accountExists?._id &&
-        !signUpOtpDetailsToDB._id &&
-        !signUpOtpDetailsToDB.ownerID
-      )
-        throw new Error("Error adding sign up otp details to database");
+        if (
+          !accountExists?._id &&
+          !signUpOtpDetailsToDB._id &&
+          !signUpOtpDetailsToDB.ownerID
+        )
+          throw new Error("Error adding sign up otp details to database");
 
-      const signUpToken = await signSignUpToken({
-        id: newOwner?._id?.toString(),
-        otp: signUpOtp,
-      });
+        const signUpToken = await signSignUpToken({
+          id: newOwner?._id?.toString(),
+          otp: signUpOtp,
+        });
 
-      if (!signUpToken) throw new Error(signUpToken);
+        if (!signUpToken) throw new Error(signUpToken);
 
-      res.status(200).json({
-        message: "Verify your email, check your email for code.",
-        signUpOtp,
-        signUpToken,
-      });
+        res.status(200).json({
+          message: "Verify your email, check your email for code.",
+          signUpOtp,
+          signUpToken,
+        });
+      }
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
     }
