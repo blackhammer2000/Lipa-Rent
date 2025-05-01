@@ -110,7 +110,7 @@ const post_controllers = {
         otpExists?.signUpOtpExpiry !== null &&
         Date.now() > otpExists.signUpOtpExpiry
       ) {
-        const signUpOtp = crypto.randomUUID().slice(-12);
+        const signUpOtp = crypto.randomUUID().slice(-6);
         const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
 
         const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
@@ -173,7 +173,7 @@ const post_controllers = {
         //   .join("")
         //   .slice(-24);
 
-        const signUpOtp = crypto.randomUUID().slice(-12);
+        const signUpOtp = crypto.randomUUID().slice(-6);
         const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
 
         const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
@@ -567,7 +567,7 @@ const post_controllers = {
         loginOtpExpiry &&
         Date.now() > loginOtpExpiry
       ) {
-        const newLoginOtp = crypto.randomUUID().slice(-12);
+        const newLoginOtp = crypto.randomUUID().slice(-6);
         const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
 
         const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
@@ -608,7 +608,7 @@ const post_controllers = {
       }
 
       if (!userOtpDoc) {
-        const newLoginOtp = crypto.randomUUID().slice(-12);
+        const newLoginOtp = crypto.randomUUID().slice(-6);
         const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
 
         const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
@@ -766,7 +766,7 @@ const post_controllers = {
 
       const { propertiesOwned } = ownerPropertiesDocument;
 
-      newProperty.propertyID = crypto.randomUUID().slice(-12);
+      newProperty.propertyID = crypto.randomUUID().slice(-6);
 
       let checkIfPropertyNumberIsRegistered = false;
 
@@ -1277,7 +1277,7 @@ const post_controllers = {
           "Tenant with the given National ID has already been registered in this room."
         );
 
-      newTenant.tenantID = crypto.randomUUID().slice(-12);
+      newTenant.tenantID = crypto.randomUUID().slice(-6);
       newTenant.moveInDate = new Date().toLocaleDateString();
       newTenant.moveOutDate = null;
 
@@ -1622,7 +1622,7 @@ const post_controllers = {
           : roomRate;
 
       const newRentPaymentEntry = {
-        paymentID: crypto.randomUUID().slice(-12),
+        paymentID: crypto.randomUUID().slice(-6),
         date: new Date().toLocaleDateString(),
         month: newPayment?.month,
         previousPaymentBalance: unpaidRentBalanceFromLastPayment,
@@ -1985,7 +1985,7 @@ const post_controllers = {
           "Password can only be reset 24hrs after the last reset"
         );
 
-      const resetPasswordToken = crypto.randomUUID().slice(-12);
+      const resetPasswordToken = crypto.randomUUID().slice(-6);
       const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
 
       const hashedresetPasswordToken = await hash(
@@ -2101,7 +2101,7 @@ const post_controllers = {
 
       const { id } = req.body;
 
-      const deleteAccountToken = crypto.randomUUID().slice(-12);
+      const deleteAccountToken = crypto.randomUUID().slice(-6);
 
       const deleteAccountTokenExpiry = Date.now() + 10 * 60 * 1000;
 
