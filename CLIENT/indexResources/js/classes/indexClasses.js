@@ -3,7 +3,7 @@ class Store extends StoreUtilities {
     if (!user) return;
 
     UserInterface.openLoader(
-      "sending verification code to your email...",
+      "sending verification code to your email",
       "emailVerification"
     );
 
@@ -69,7 +69,7 @@ class Store extends StoreUtilities {
   static async signUp(token, { password, confirmPassword }) {
     if (!token || !password || !confirmPassword) return;
 
-    UserInterface.openLoader("completing sign up...", "signup");
+    UserInterface.openLoader("completing sign up", "signup");
 
     const requestOptions = {
       mode: "cors",
