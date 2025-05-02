@@ -1,5 +1,5 @@
-function genarateOTP() {
+function generateOTP() {
   return crypto.randomUUID().slice(-6);
 }
 
-module.exports = { genarateOTP };
+module.exports = { generateOTP };
