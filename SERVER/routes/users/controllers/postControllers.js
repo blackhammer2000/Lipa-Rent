@@ -17,7 +17,10 @@ const { Room } = require("../../../middleware/models/Room");
 const { Rent } = require("../../../middleware/models/Rent");
 const { Otp } = require("../../../middleware/models/Otp");
 
-const { generateOTP } = require("../helpers/generateOtp");
+const {
+  generateOTP,
+  generateOTPExpiryTime,
+} = require("../helpers/generateOtp");
 const { checkSubscriptionExpiry } = require("../helpers/checkSubscription");
 const { encrypt } = require("../../helpers/cipher");
 const { signSignUpToken } = require("../../../middleware/tokens/signUpToken");
@@ -112,7 +115,7 @@ const post_controllers = {
         Date.now() > otpExists.signUpOtpExpiry
       ) {
         const signUpOtp = generateOTP();
-        const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
+        const signUpOtpExpiry = generateOTPExpiryTime();
 
         const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
 
@@ -168,14 +171,8 @@ const post_controllers = {
         if (!newOwner)
           throw new Error("Something went wrong, please try again later.");
 
-        // const hex = [...crypto.getRandomValues(new Uint32Array(16))]
-        //   .map((randomValue) => randomValue.toString(16))
-        //   .slice(-4)
-        //   .join("")
-        //   .slice(-24);
-
         const signUpOtp = generateOTP();
-        const signUpOtpExpiry = Date.now() + 10 * 60 * 1000;
+        const signUpOtpExpiry = generateOTPExpiryTime();
 
         const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
 
@@ -569,7 +566,7 @@ const post_controllers = {
         Date.now() > loginOtpExpiry
       ) {
         const newLoginOtp = generateOTP();
-        const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
+        const newLoginOtpExpiry = generateOTPExpiryTime();
 
         const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
 
@@ -610,7 +607,7 @@ const post_controllers = {
 
       if (!userOtpDoc) {
         const newLoginOtp = generateOTP();
-        const newLoginOtpExpiry = Date.now() + 10 * 60 * 1000;
+        const newLoginOtpExpiry = generateOTPExpiryTime();
 
         const hashedLoginOtp = await hash(encrypt(newLoginOtp), 10);
 
@@ -1987,7 +1984,7 @@ const post_controllers = {
         );
 
       const resetPasswordToken = generateOTP();
-      const resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
+      const resetPasswordTokenExpiry = generateOTPExpiryTime();
 
       const hashedresetPasswordToken = await hash(
         encrypt(resetPasswordToken),
@@ -2104,7 +2101,7 @@ const post_controllers = {
 
       const deleteAccountToken = generateOTP();
 
-      const deleteAccountTokenExpiry = Date.now() + 10 * 60 * 1000;
+      const deleteAccountTokenExpiry = generateOTPExpiryTime();
 
       const hashedDeleteAccountToken = await hash(
         encrypt(deleteAccountToken),

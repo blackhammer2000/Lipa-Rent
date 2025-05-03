@@ -2,4 +2,8 @@ function generateOTP() {
   return crypto.randomUUID().slice(-6);
 }
 
-module.exports = { generateOTP };
+function generateOTPExpiryTime() {
+  return Date.now() + 10 * 60 * 1000;
+}
+
+module.exports = { generateOTP, generateOTPExpiryTime };
