@@ -2274,9 +2274,6 @@ const post_controllers = {
       if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
         throw new Error("something went wrong, 'otp'");
 
-      if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
-        throw new Error("something went wrong, 'otp'");
-
       res.status(200).json({
         message: "Logged out sucessfully",
       });
