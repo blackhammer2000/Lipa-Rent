@@ -2126,39 +2126,68 @@ const post_controllers = {
 
       const { id } = req.body;
 
-      const deleteAccountToken = generateOTP();
-
-      const deleteAccountTokenExpiry = generateOTPExpiryTime();
-
-      const hashedDeleteAccountToken = await hash(
-        encrypt(deleteAccountToken),
-        10
-      );
-
-      if (!hashedDeleteAccountToken) throw new Error(hashedDeleteAccountToken);
-
-      const addDeleteAccountTokenToDB = await Otp.updateMany(
-        { ownerID: id },
-        {
-          $set: {
-            deleteAccountOtp: hashedDeleteAccountToken,
-            deleteAccountOtpExpiry: deleteAccountTokenExpiry,
-            isDeleteAccountOtpVerified: false,
-          },
-        },
-        { new: true }
-      );
+      const otpDoc = await Otp.findOne({ ownerID: id });
 
       if (
-        !addDeleteAccountTokenToDB.acknowledged &&
-        !addDeleteAccountTokenToDB.modifiedCount
-      )
-        throw new Error("Error adding reset token to database");
+        otpDoc?.deleteAccountOtp !== (null || undefined) &&
+        otpDoc?.isDeleteAccountOtpVerified !== (null || undefined) &&
+        otpDoc?.deleteAccountOtpExpiry !== (null || undefined) &&
+        Date.now() < otpDoc?.deleteAccountOtpExpiry
+      ) {
+        res.status(200).json({
+          message:
+            "OTP has already been sent, please try again after a few minutes",
+          deleteAccountToken: "null",
+        });
+      }
 
-      res.status(200).json({
-        message: "Delete account token sent to your email",
-        deleteAccountToken,
-      });
+      const tokenHasExpired =
+        otpDoc?.deleteAccountOtp !== (null || undefined) &&
+        otpDoc?.isDeleteAccountOtpVerified !== (null || undefined) &&
+        otpDoc?.isDeleteAccountOtpVerified === false &&
+        otpDoc?.deleteAccountOtpExpiry !== (null || undefined) &&
+        Date.now() > otpDoc?.deleteAccountOtpExpiry;
+
+      const noExistingToken =
+        otpDoc?.resetToken === (null || undefined) &&
+        otpDoc?.isDeleteAccountOtpVerified === (null || undefined) &&
+        otpDoc?.deleteAccountOtpExpiry === (null || undefined);
+
+      if (tokenHasExpired || noExistingToken) {
+        const deleteAccountToken = generateOTP();
+        const deleteAccountTokenExpiry = generateOTPExpiryTime();
+
+        const hashedDeleteAccountToken = await hash(
+          encrypt(deleteAccountToken),
+          10
+        );
+
+        if (!hashedDeleteAccountToken)
+          throw new Error(hashedDeleteAccountToken);
+
+        const addDeleteAccountTokenToDB = await Otp.updateOne(
+          { ownerID: id },
+          {
+            $set: {
+              deleteAccountOtp: hashedDeleteAccountToken,
+              deleteAccountOtpExpiry: deleteAccountTokenExpiry,
+              isDeleteAccountOtpVerified: false,
+            },
+          },
+          { new: true }
+        );
+
+        if (
+          !addDeleteAccountTokenToDB.acknowledged &&
+          !addDeleteAccountTokenToDB.modifiedCount
+        )
+          throw new Error("Error adding reset token to database");
+
+        res.status(200).json({
+          message: "Delete account token sent to your email",
+          deleteAccountToken,
+        });
+      }
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }

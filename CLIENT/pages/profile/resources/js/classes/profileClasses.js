@@ -584,6 +584,8 @@ class UserInterface extends UserinterfaceUtilities {
   static createDeleteAccountVerifyPasswordModal(accessToken) {
     if (!accessToken) return;
 
+    document.querySelector(".verifyModal")?.remove();
+
     if (!confirm("Do you want to delete your account?")) return;
 
     const modal = document.createElement("div");
@@ -655,9 +657,20 @@ class UserInterface extends UserinterfaceUtilities {
         await Store.generateDeleteAccountCode(accessToken);
 
       this.alertMessage(message, "success");
+
+      if (
+        message.includes("has already been sent") &&
+        deleteAccountToken === "null"
+      ) {
+        document.querySelector(".verifyModal").remove();
+        this.createDeleteAccountCodeVerificationModal(accessToken);
+        return;
+      }
+
       alert(deleteAccountToken);
       document.querySelector(".verifyModal").remove();
       this.createDeleteAccountCodeVerificationModal(accessToken);
+      return;
     });
 
     formGroup2.append(verifyButton);
