@@ -1992,6 +1992,7 @@ const post_controllers = {
         res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
+          resetPasswordToken: "null",
         });
       }
 
