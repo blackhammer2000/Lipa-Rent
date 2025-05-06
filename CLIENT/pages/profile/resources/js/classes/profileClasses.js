@@ -459,11 +459,21 @@ class UserInterface extends UserinterfaceUtilities {
     if (!message && !resetPasswordToken) return;
 
     this.alertMessage(message, "success");
+
+    if (
+      message.includes("has already been sent") &&
+      resetPasswordToken === "null"
+    ) {
+      document.querySelector(".home").classList.add("blur");
+      this.createPasswordResetVerificationModal(accessToken);
+      return;
+    }
+
     alert(resetPasswordToken);
 
     document.querySelector(".home").classList.add("blur");
 
-    UserInterface.createPasswordResetVerificationModal(accessToken);
+    this.createPasswordResetVerificationModal(accessToken);
   }
 
   static async createChangePasswordModal(accessToken, resetCode) {

@@ -468,17 +468,18 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (!message) return;
 
+    this.alertMessage(message, "success");
+
     if (
       message.includes("has already been sent") &&
       resetPasswordToken === "null"
     ) {
       document.querySelector(".verifyIdModal").remove();
       this.createForgotPasswordVerifyOtpModal(verifyUserInfo.token);
+      return;
     }
 
     alert(resetPasswordToken);
-
-    this.alertMessage(message, "success");
 
     document.querySelector(".verifyIdModal").remove();
     this.createForgotPasswordVerifyOtpModal(verifyUserInfo.token);
