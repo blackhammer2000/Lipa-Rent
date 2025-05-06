@@ -123,8 +123,8 @@ class UserinterfaceUtilities {
 
     this.alertMessage(error, "danger");
 
-    if (error?.toLowerCase() === ("session expired" || "jwt malformed"))
-      this.handleLogout();
+    if (error?.toLowerCase() === "session expired")
+      location.assign("/CLIENT/login/login.html");
 
     return;
   }
