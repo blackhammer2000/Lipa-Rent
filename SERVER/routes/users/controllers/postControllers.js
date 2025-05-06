@@ -1968,7 +1968,7 @@ const post_controllers = {
 
   genarateResetPasswordToken: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unknown user...");
+      if (!req.body.id) throw new Error("Unauthorized action");
 
       const { id } = req.body;
 
@@ -1983,35 +1983,61 @@ const post_controllers = {
           "Password can only be reset 24hrs after the last reset"
         );
 
-      const resetPasswordToken = generateOTP();
-      const resetPasswordTokenExpiry = generateOTPExpiryTime();
+      if (
+        passwordDoc?.resetToken !== (null || undefined) &&
+        passwordDoc?.resetTokenVerified !== (null || undefined) &&
+        passwordDoc?.resetTokenExpiry !== (null || undefined) &&
+        Date.now() < passwordDoc?.resetTokenExpiry
+      ) {
+        res.status(200).json({
+          message:
+            "OTP has already been sent, please try again after a few minutes",
+        });
+      }
 
-      const hashedresetPasswordToken = await hash(
-        encrypt(resetPasswordToken),
-        10
-      );
+      const tokenHasExpired =
+        passwordDoc?.resetToken !== (null || undefined) &&
+        passwordDoc?.resetTokenVerified !== (null || undefined) &&
+        passwordDoc?.resetTokenVerified === false &&
+        passwordDoc?.resetTokenExpiry !== (null || undefined) &&
+        Date.now() > passwordDoc?.resetTokenExpiry;
 
-      if (!hashedresetPasswordToken) throw new Error(hashedresetPasswordToken);
+      const noExistingToken =
+        passwordDoc?.resetToken === (null || undefined) &&
+        passwordDoc?.resetTokenVerified === (null || undefined) &&
+        passwordDoc?.resetTokenExpiry === (null || undefined);
 
-      const addResetTokenToDB = await Password.updateOne(
-        { ownerID: id },
-        {
-          $set: {
-            resetToken: hashedresetPasswordToken,
-            resetTokenExpiry: resetPasswordTokenExpiry,
-            resetTokenVerified: false,
-          },
-        },
-        { new: true }
-      );
+      if (tokenHasExpired || noExistingToken) {
+        const resetPasswordToken = generateOTP();
+        const resetPasswordTokenExpiry = generateOTPExpiryTime();
 
-      if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
-        throw new Error("Error adding reset token to database");
+        const hashedresetPasswordToken = await hash(
+          encrypt(resetPasswordToken),
+          10
+        );
 
-      res.status(200).json({
-        message: "Password reset token sent to your email",
-        resetPasswordToken,
-      });
+        if (!hashedresetPasswordToken)
+          throw new Error(hashedresetPasswordToken);
+
+        const addResetTokenToDB = await Password.updateOne(
+          { ownerID: id },
+          {
+            $set: {
+              resetToken: hashedresetPasswordToken,
+              resetTokenExpiry: resetPasswordTokenExpiry,
+              resetTokenVerified: false,
+            },
+          }
+        );
+
+        if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
+          throw new Error("Error adding reset token to database");
+
+        res.status(200).json({
+          message: "Password reset token sent to your email",
+          resetPasswordToken,
+        });
+      }
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
     }
