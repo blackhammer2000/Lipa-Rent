@@ -285,23 +285,15 @@ const patchControllers = {
       if (!req.body.id) throw new Error("Unknown user...");
       if (!req?.body.propertyId)
         throw new Error("provide a valid property Id.");
-      if (!req?.body.propertyNo)
-        throw new Error("provide a valid property NO.");
+
       if (!req?.body.roomId) throw new Error("provide a valid room Id.");
       if (!req?.body.tenantId) throw new Error("provide a valid tenant Id.");
       if (!req.body.paymentId) throw new Error("provide a valid payment Id.");
       if (!req.body.editedRent)
         throw new Error("provide a valid edited Rent doc.");
 
-      const {
-        id,
-        propertyId,
-        propertyNo,
-        roomId,
-        tenantId,
-        paymentId,
-        editedRent,
-      } = req?.body;
+      const { id, propertyId, roomId, tenantId, paymentId, editedRent } =
+        req?.body;
 
       if (!isValid(id))
         throw new Error("ID provided is not a valid document Id.");
@@ -314,24 +306,10 @@ const patchControllers = {
 
       const checkIfPropertyIdIsRegistered = rents[0][propertyId];
 
-      if (
-        !checkIfPropertyIdIsRegistered ||
-        (!checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo)
-      ) {
-        if (
-          !checkIfPropertyIdIsRegistered &&
-          checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
-        )
-          throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
-          );
-
-        if (!checkIfPropertyIdIsRegistered)
-          throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
-          );
-      }
+      if (!checkIfPropertyIdIsRegistered)
+        throw new Error(
+          "Property with the given property Id has not been registered in the tenants database."
+        );
 
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
 
