@@ -2059,21 +2059,18 @@ const post_controllers = {
 
       const resetPasswordToken = passwordDoc.resetToken || null;
 
-      if (!resetPasswordToken)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!resetPasswordToken) throw new Error("Invalid otp.");
 
       const resetPasswordTokenMatch = await compare(
         encrypt(resettoken),
         resetPasswordToken
       );
 
-      if (!resetPasswordTokenMatch)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!resetPasswordTokenMatch) throw new Error("Invalid otp");
 
       const resetPasswordTokenExpiry = passwordDoc.resetTokenExpiry || null;
 
-      if (!resetPasswordTokenExpiry)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!resetPasswordTokenExpiry) throw new Error("Invalid otp.");
 
       const isTokenValid = Date.now() < resetPasswordTokenExpiry ? true : false;
 
@@ -2095,7 +2092,7 @@ const post_controllers = {
         )
           throw new Error("Error removing invalid reset token.");
 
-        throw new Error("Invalid Token, generate a new one.");
+        throw new Error("Invalid otp");
       }
 
       const verifyToken = await Password.updateOne(
@@ -2111,7 +2108,7 @@ const post_controllers = {
         throw new Error("Error verifying reset token.");
 
       res.status(200).json({
-        message: "Verification successful",
+        message: "Otp verification successful",
       });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
