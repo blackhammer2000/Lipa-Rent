@@ -1974,6 +1974,8 @@ const post_controllers = {
 
       const passwordDoc = await Password.findOne({ ownerID: id });
 
+      if (!passwordDoc) throw new Error("Something went wrong");
+
       const lastResetTime = passwordDoc.lastReset || null;
 
       const twentyFourHours = 24 * 60 * 60 * 1000;
