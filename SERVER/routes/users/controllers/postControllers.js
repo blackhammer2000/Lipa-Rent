@@ -1986,10 +1986,10 @@ const post_controllers = {
         );
 
       if (
-        passwordDoc?.resetToken !== (null || undefined) &&
-        passwordDoc?.resetTokenVerified !== (null || undefined) &&
-        passwordDoc?.resetTokenExpiry !== (null || undefined) &&
-        Date.now() < passwordDoc?.resetTokenExpiry
+        passwordDoc.resetToken !== (null || undefined) &&
+        passwordDoc.resetTokenVerified !== (null || undefined) &&
+        passwordDoc.resetTokenExpiry !== (null || undefined) &&
+        Date.now() < passwordDoc.resetTokenExpiry
       ) {
         res.status(200).json({
           message:
@@ -1999,16 +1999,16 @@ const post_controllers = {
       }
 
       const tokenHasExpired =
-        passwordDoc?.resetToken !== (null || undefined) &&
-        passwordDoc?.resetTokenVerified !== (null || undefined) &&
-        passwordDoc?.resetTokenVerified === false &&
-        passwordDoc?.resetTokenExpiry !== (null || undefined) &&
-        Date.now() > passwordDoc?.resetTokenExpiry;
+        passwordDoc.resetToken !== (null || undefined) &&
+        passwordDoc.resetTokenVerified !== (null || undefined) &&
+        passwordDoc.resetTokenVerified === false &&
+        passwordDoc.resetTokenExpiry !== (null || undefined) &&
+        Date.now() > passwordDoc.resetTokenExpiry;
 
       const noExistingToken =
-        passwordDoc?.resetToken === (null || undefined) &&
-        passwordDoc?.resetTokenVerified === (null || undefined) &&
-        passwordDoc?.resetTokenExpiry === (null || undefined);
+        passwordDoc.resetToken === (null || undefined) &&
+        passwordDoc.resetTokenVerified === (null || undefined) &&
+        passwordDoc.resetTokenExpiry === (null || undefined);
 
       if (tokenHasExpired || noExistingToken) {
         const resetPasswordToken = generateOTP();
