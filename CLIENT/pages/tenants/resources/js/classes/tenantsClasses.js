@@ -472,11 +472,8 @@ class UserInterface extends UserinterfaceUtilities {
     e.preventDefault();
     if (!accessToken || !tableBody) return;
 
-    const selectedPropertyId = localStorage.getItem(
-      "liparentSelectedPropertyId"
-    )
-      ? localStorage.getItem("liparentSelectedPropertyId")
-      : null;
+    const selectedPropertyId =
+      localStorage.getItem("liparentSelectedPropertyId") || null;
 
     if (!selectedPropertyId) {
       this.handleErrors("please select a property in the room section");
