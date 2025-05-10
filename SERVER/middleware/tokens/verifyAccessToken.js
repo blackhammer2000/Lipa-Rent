@@ -47,7 +47,7 @@ const verifyUserAccessToken = async (req, res, next) => {
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
 
       if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
-        throw new Error("something went wrong, 'otp'");
+        res.status(403).json({ error: "something went wrong, 'otp'" });
 
       res.status(403).json({ error: "session expired" });
     } else {
