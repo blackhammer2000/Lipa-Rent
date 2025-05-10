@@ -1,12 +1,10 @@
+require("dotenv").config();
 const { verify } = require("jsonwebtoken");
+const { Otp } = require("../models/Otp");
 
 const {
   checkSubscriptionExpiry,
 } = require("../../routes/users/helpers/checkSubscription");
-
-require("dotenv").config();
-
-const { Otp } = require("../models/Otp");
 
 const verifyUserAccessToken = async (req, res, next) => {
   try {
