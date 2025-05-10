@@ -43,9 +43,7 @@ const verifyUserAccessToken = async (req, res, next) => {
 
     next();
   } catch (err) {
-    if (
-      err?.message === ("jwt expired" || "invalid token" || "jwt malformed")
-    ) {
+    if (err.message === ("jwt expired" || "invalid token" || "jwt malformed")) {
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
 
       if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
