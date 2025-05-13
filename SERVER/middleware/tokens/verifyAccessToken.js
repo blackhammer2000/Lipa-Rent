@@ -37,7 +37,7 @@ const verifyUserAccessToken = async (req, res, next) => {
 
     user ? (req.body.user = user) : null;
 
-    delete req.headers.token;
+    delete req?.headers.token;
 
     next();
   } catch (err) {
