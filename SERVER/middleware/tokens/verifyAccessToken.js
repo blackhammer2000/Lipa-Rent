@@ -14,7 +14,7 @@ const verifyUserAccessToken = async (req, res, next) => {
       headers: { token },
     } = req;
 
-    var { id, currentSubscription, user, disabled } = verify(
+    const { id, currentSubscription, user, disabled } = verify(
       token,
       process.env.MY_SECRET_KEY
     );
@@ -43,9 +43,6 @@ const verifyUserAccessToken = async (req, res, next) => {
   } catch (err) {
     if (err.message === ("jwt expired" || "invalid token" || "jwt malformed")) {
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
-
-      console.log(id);
-      console.log(otpDocDeletion);
 
       if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
         res.status(403).json({ error: "something went wrong" });
