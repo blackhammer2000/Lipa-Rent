@@ -6,7 +6,7 @@ const signLogoutToken = (userData) => {
     const token = sign(userData, process.env.LOGOUT_SECRET_KEY, {
       expiresIn: "2min",
       issuer: "liparent inc.",
-      audience: `${userData.id}`,
+      audience: `${userData}`,
     });
 
     if (!token) reject(token);
