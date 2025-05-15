@@ -605,7 +605,7 @@ const post_controllers = {
         });
       }
 
-      if (!userOtpDoc) {
+      if (!userOtpDoc || (!loginOtp && isLoginOtpVerified && !loginOtpExpiry)) {
         const newLoginOtp = generateOTP();
         const newLoginOtpExpiry = generateOTPExpiryTime();
 
@@ -613,15 +613,23 @@ const post_controllers = {
 
         if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
-        const loginOtpDetailsToDB = await Otp.create({
-          ownerID: id,
-          loginOtp: hashedLoginOtp,
-          isLoginOtpVerified: false,
-          loginOtpExpiry: newLoginOtpExpiry,
-        });
+        const loginOtpDetailsToDB = !userOtpDoc
+          ? await Otp.create({
+              ownerID: id,
+              loginOtp: hashedLoginOtp,
+              isLoginOtpVerified: false,
+              loginOtpExpiry: newLoginOtpExpiry,
+            })
+          : await Otp.updateOne(
+              { ownerID: id },
+              {
+                loginOtp: hashedLoginOtp,
+                isLoginOtpVerified: false,
+                loginOtpExpiry: newLoginOtpExpiry,
+              }
+            );
 
-        if (!loginOtpDetailsToDB._id)
-          throw new Error("Error adding login otp details to database");
+        if (!loginOtpDetailsToDB) throw new Error("Error getting login otp");
 
         const loginToken = await signLoginToken({
           id,
