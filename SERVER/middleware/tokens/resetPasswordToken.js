@@ -5,7 +5,7 @@ const signResetPasswordToken = (userData) => {
   return new Promise((resolve, reject) => {
     const token = sign(userData, process.env.RESET_SECRET_KEY, {
       expiresIn: "10min",
-      issuer: "liparent inc.",
+      issuer: "LipaRent Inc.",
       audience: `${userData}`,
     });
 

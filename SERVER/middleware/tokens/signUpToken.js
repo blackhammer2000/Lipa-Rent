@@ -5,7 +5,7 @@ const signSignUpToken = (userData) => {
   return new Promise((resolve, reject) => {
     const token = sign(userData, process.env.SIGNUP_SECRET_KEY, {
       expiresIn: "15min",
-      issuer: "liparent inc.",
+      issuer: "LipaRent Inc.",
       audience: `${userData.id}`,
     });
 
