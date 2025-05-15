@@ -4,8 +4,8 @@ require("dotenv").config();
 const signAccessToken = (userData) => {
   return new Promise((resolve, reject) => {
     const token = sign(userData, process.env.MY_SECRET_KEY, {
-      expiresIn: "1m",
-      issuer: "liparent inc.",
+      expiresIn: "2h",
+      issuer: "LipaRent Inc.",
       audience: `${userData.id}`,
     });
 
