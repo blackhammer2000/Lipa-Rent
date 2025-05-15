@@ -1996,6 +1996,7 @@ const post_controllers = {
       if (
         passwordDoc.resetToken !== (null || undefined) &&
         passwordDoc.resetTokenVerified !== (null || undefined) &&
+        passwordDoc.resetTokenVerified === false &&
         passwordDoc.resetTokenExpiry !== (null || undefined) &&
         Date.now() < passwordDoc.resetTokenExpiry
       ) {
