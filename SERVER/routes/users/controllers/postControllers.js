@@ -1993,13 +1993,14 @@ const post_controllers = {
           "Password can only be reset 24hrs after the last reset"
         );
 
-      if (
+      const tokenHasNotExpired =
         passwordDoc.resetToken !== (null || undefined) &&
         passwordDoc.resetTokenVerified !== (null || undefined) &&
         passwordDoc.resetTokenVerified === false &&
         passwordDoc.resetTokenExpiry !== (null || undefined) &&
-        Date.now() < passwordDoc.resetTokenExpiry
-      ) {
+        Date.now() < passwordDoc.resetTokenExpiry;
+
+      if (tokenHasNotExpired) {
         res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
