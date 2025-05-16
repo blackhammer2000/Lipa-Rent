@@ -1988,19 +1988,22 @@ const post_controllers = {
 
       const twentyFourHours = 24 * 60 * 60 * 1000;
 
-      if (lastResetTime && Date.now() < lastResetTime + twentyFourHours)
+      if (
+        lastResetTime !== null &&
+        Date.now() < lastResetTime + twentyFourHours
+      )
         throw new Error(
           "Password can only be reset 24hrs after the last reset"
         );
 
-      const tokenHasNotExpired =
+      const tokenIsNotVerifiedAndHasNotExpired =
         passwordDoc.resetToken !== (null || undefined) &&
         passwordDoc.resetTokenVerified !== (null || undefined) &&
         passwordDoc.resetTokenVerified === false &&
         passwordDoc.resetTokenExpiry !== (null || undefined) &&
         Date.now() < passwordDoc.resetTokenExpiry;
 
-      if (tokenHasNotExpired) {
+      if (tokenIsNotVerifiedAndHasNotExpired) {
         res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
@@ -2008,7 +2011,7 @@ const post_controllers = {
         });
       }
 
-      const tokenHasExpired =
+      const tokenIsNotVerifiedAndHasExpired =
         passwordDoc.resetToken !== (null || undefined) &&
         passwordDoc.resetTokenVerified !== (null || undefined) &&
         passwordDoc.resetTokenVerified === false &&
@@ -2020,7 +2023,7 @@ const post_controllers = {
         passwordDoc.resetTokenVerified === (null || undefined) &&
         passwordDoc.resetTokenExpiry === (null || undefined);
 
-      if (tokenHasExpired || noExistingToken) {
+      if (tokenIsNotVerifiedAndHasExpired || noExistingToken) {
         const resetPasswordToken = generateOTP();
         const resetPasswordTokenExpiry = generateOTPExpiryTime();
 
