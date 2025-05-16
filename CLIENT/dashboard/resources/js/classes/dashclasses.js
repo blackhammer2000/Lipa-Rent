@@ -3,7 +3,10 @@ class Store extends StoreUtilities {
     if (accessToken === (null || undefined))
       location.assign("/CLIENT/login/login.html");
 
-    UserInterface.openLoader("reading properties", "readProperties");
+    const openLoader = UserInterface.openLoader(
+      "reading properties",
+      "readProperties"
+    );
 
     const requestOptions = {
       method: "POST",
@@ -38,7 +41,10 @@ class Store extends StoreUtilities {
     if (!propertyId || !previousPropertyNo || !editedProperty || !accessToken)
       return;
 
-    UserInterface.openLoader("editing property", "editProperty");
+    const openLoader = UserInterface.openLoader(
+      "editing property",
+      "editProperty"
+    );
 
     const editPropertyRequestOptions = {
       mode: "cors",
@@ -73,7 +79,10 @@ class Store extends StoreUtilities {
   static async deleteProperty(accessToken, propertyId, propertyNo) {
     if (!accessToken || !propertyId || propertyNo) return;
 
-    UserInterface.openLoader("deleting property", "deleteProperty");
+    const openLoader = UserInterface.openLoader(
+      "deleting property",
+      "deleteProperty"
+    );
 
     const deletePropertyRequestOptions = {
       mode: "cors",
@@ -106,7 +115,10 @@ class Store extends StoreUtilities {
   static async createProperty(accessToken, newProperty) {
     if (!accessToken || !newProperty) return;
 
-    UserInterface.openLoader("adding new property", "newProperty");
+    const openLoader = UserInterface.openLoader(
+      "adding new property",
+      "newProperty"
+    );
 
     const createNewPropertyRequestOptions = {
       mode: "cors",

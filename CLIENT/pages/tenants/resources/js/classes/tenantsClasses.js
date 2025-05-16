@@ -2,7 +2,10 @@ class Store extends StoreUtilities {
   static async preFetchRoomNumbersForSelectedProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
-    UserInterface.openLoader("fetching room numbers", "roomNumbers");
+    const openLoader = UserInterface.openLoader(
+      "fetching room numbers",
+      "roomNumbers"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -36,7 +39,10 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !roomId || !accessToken) return;
 
-    UserInterface.openLoader("fetching room tenants", "readTenants");
+    const openLoader = UserInterface.openLoader(
+      "fetching room tenants",
+      "readTenants"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -74,7 +80,10 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !roomId || !accessToken || !newTenant) return;
 
-    UserInterface.openLoader("adding new tenant", "addTenant");
+    const openLoader = UserInterface.openLoader(
+      "adding new tenant",
+      "addTenant"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -113,7 +122,10 @@ class Store extends StoreUtilities {
     if (!accessToken || !propertyId || !roomId || !tenantId || !editedTenant)
       return;
 
-    UserInterface.openLoader("editing tenant", "editingTenant");
+    const openLoader = UserInterface.openLoader(
+      "editing tenant",
+      "editingTenant"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -502,7 +514,10 @@ class UserInterface extends UserinterfaceUtilities {
     //   roomId
     // );
 
-    UserInterface.openLoader("deleting tenant", "deletingTenant");
+    const openLoader = UserInterface.openLoader(
+      "deleting tenant",
+      "deletingTenant"
+    );
 
     const requestOptions = {
       mode: "cors",

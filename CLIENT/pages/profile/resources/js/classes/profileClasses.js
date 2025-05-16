@@ -2,7 +2,10 @@ class Store extends StoreUtilities {
   static async readOwnerDetails(accessToken) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("reading owner details", "readOwner");
+    const openLoader = UserInterface.openLoader(
+      "reading owner details",
+      "readOwner"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -31,7 +34,10 @@ class Store extends StoreUtilities {
   static async editOwner(accessToken, editedOwner) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("editing owner details", "editOwner");
+    const openLoader = UserInterface.openLoader(
+      "editing owner details",
+      "editOwner"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -62,7 +68,10 @@ class Store extends StoreUtilities {
   static async genaratePasswordResetCode(accessToken) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("sending reset code", "sendingCode");
+    const openLoader = UserInterface.openLoader(
+      "sending reset code",
+      "sendingCode"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -93,7 +102,10 @@ class Store extends StoreUtilities {
   static async verifyPasswordResetCode(accessToken, resetToken) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("verifying reset code", "verifyingCode");
+    const openLoader = UserInterface.openLoader(
+      "verifying reset code",
+      "verifyingCode"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -128,7 +140,10 @@ class Store extends StoreUtilities {
   ) {
     if (!newPassword || !confirmNewPassword || !accessToken) return;
 
-    UserInterface.openLoader("changing password", "changingPassword");
+    const openLoader = UserInterface.openLoader(
+      "changing password",
+      "changingPassword"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -159,7 +174,10 @@ class Store extends StoreUtilities {
   static async verifyPasswordWhenDeleteAccount(accessToken, password) {
     if (!accessToken || !password) return;
 
-    UserInterface.openLoader("verifying password", "verifyingPassword");
+    const openLoader = UserInterface.openLoader(
+      "verifying password",
+      "verifyingPassword"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -189,7 +207,10 @@ class Store extends StoreUtilities {
   static async generateDeleteAccountCode(accessToken) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("changing password", "changingPassword");
+    const openLoader = UserInterface.openLoader(
+      "changing password",
+      "changingPassword"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -220,7 +241,10 @@ class Store extends StoreUtilities {
   static async verifyDeleteAccountCode(accessToken, deleteCode) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("verifying code", "verifyingCode");
+    const openLoader = UserInterface.openLoader(
+      "verifying code",
+      "verifyingCode"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -250,7 +274,10 @@ class Store extends StoreUtilities {
   static async deleteAccount(accessToken, deleteCode) {
     if (!accessToken) return;
 
-    UserInterface.openLoader("deleting account", "deletingAccount");
+    const openLoader = UserInterface.openLoader(
+      "deleting account",
+      "deletingAccount"
+    );
 
     const requestOptions = {
       mode: "cors",

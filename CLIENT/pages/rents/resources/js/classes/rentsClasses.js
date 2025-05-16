@@ -6,7 +6,10 @@ class Store extends StoreUtilities {
   ) {
     if (!accessToken || !propertyId || !roomId) return;
 
-    UserInterface.openLoader("fetching tenant names", "tenantNames");
+    const openLoader = UserInterface.openLoader(
+      "fetching tenant names",
+      "tenantNames"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -44,7 +47,10 @@ class Store extends StoreUtilities {
   ) {
     if (!propertyId || !roomId || !tenantId || !accessToken) return;
 
-    UserInterface.openLoader("fetching room tenant payments", "readPayments");
+    const openLoader = UserInterface.openLoader(
+      "fetching room tenant payments",
+      "readPayments"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -84,7 +90,10 @@ class Store extends StoreUtilities {
     if (!propertyId || !roomId || !tenantId || !accessToken || !newPayment)
       return;
 
-    UserInterface.openLoader("adding new tenant payment", "addTenantPayment");
+    const openLoader = UserInterface.openLoader(
+      "adding new tenant payment",
+      "addTenantPayment"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -126,7 +135,10 @@ class Store extends StoreUtilities {
     if (!accessToken || !propertyId || !roomId || !tenantId || !editedPayment)
       return;
 
-    UserInterface.openLoader("editing tenant payment", "editingPayment");
+    const openLoader = UserInterface.openLoader(
+      "editing tenant payment",
+      "editingPayment"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -590,7 +602,7 @@ class UserInterface extends UserinterfaceUtilities {
     //   roomId
     // );
 
-    UserInterface.openLoader(
+    const openLoader = UserInterface.openLoader(
       "deleting tenant payment",
       "deletingTenantPayment"
     );

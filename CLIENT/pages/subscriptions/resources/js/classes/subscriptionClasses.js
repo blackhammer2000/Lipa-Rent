@@ -2,7 +2,7 @@ class Store extends StoreUtilities {
   static async readUserSubscriptions(accessToken) {
     if (!accessToken) return;
 
-    UserInterface.openLoader(
+    const openLoader = UserInterface.openLoader(
       "reading subscription reports",
       "readSubscriptions"
     );

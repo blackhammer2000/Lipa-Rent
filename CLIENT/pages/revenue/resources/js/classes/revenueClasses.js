@@ -3,7 +3,10 @@ class Store extends StoreUtilities {
     if (accessToken === (null || undefined))
       location.assign("/CLIENT/login/login.html");
 
-    UserInterface.openLoader("reading properties names", "readProperties");
+    const openLoader = UserInterface.openLoader(
+      "reading properties names",
+      "readProperties"
+    );
 
     const requestOptions = {
       method: "POST",
@@ -32,7 +35,10 @@ class Store extends StoreUtilities {
   static async readAllPayments(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
-    UserInterface.openLoader("reading payments", "readPayments");
+    const openLoader = UserInterface.openLoader(
+      "reading payments",
+      "readPayments"
+    );
 
     const requestOptions = {
       method: "POST",

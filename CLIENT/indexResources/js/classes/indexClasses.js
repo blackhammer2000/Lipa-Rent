@@ -2,10 +2,12 @@ class Store extends StoreUtilities {
   static async sendSignUpOtp(user) {
     if (!user) return;
 
-    UserInterface.openLoader(
+    const openLoader = UserInterface.openLoader(
       "sending verification code to your email",
       "emailVerification"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -38,7 +40,10 @@ class Store extends StoreUtilities {
   static async verifySignUpOtp(otp, token) {
     if (!otp || !token) return;
 
-    UserInterface.openLoader("verifying your email...", "emailVerification");
+    const openLoader = UserInterface.openLoader(
+      "verifying your email...",
+      "emailVerification"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -69,7 +74,7 @@ class Store extends StoreUtilities {
   static async signUp(token, { password, confirmPassword }) {
     if (!token || !password || !confirmPassword) return;
 
-    UserInterface.openLoader("completing sign up", "signup");
+    const openLoader = UserInterface.openLoader("completing sign up", "signup");
 
     const requestOptions = {
       mode: "cors",

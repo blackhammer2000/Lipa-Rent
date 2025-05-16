@@ -2,7 +2,7 @@ class Store extends StoreUtilities {
   static async login(loginInfo) {
     if (!loginInfo) return;
 
-    UserInterface.openLoader("logging in", "login");
+    const openLoader = UserInterface.openLoader("logging in", "login");
 
     const loginRequestOptions = {
       mode: "cors",
@@ -31,7 +31,7 @@ class Store extends StoreUtilities {
   static async sendOtp(loginToken1) {
     if (!loginToken1) return;
 
-    UserInterface.openLoader("sending OTP", "sendOtp");
+    const openLoader = UserInterface.openLoader("sending OTP", "sendOtp");
 
     const getOtpRequestOptions = {
       mode: "cors",
@@ -76,7 +76,10 @@ class Store extends StoreUtilities {
   static async verifyOtp(loginToken, otp) {
     if (!loginToken || !otp) return;
 
-    UserInterface.openLoader("verifying otp", "verifyingOtp");
+    const openLoader = UserInterface.openLoader(
+      "verifying otp",
+      "verifyingOtp"
+    );
 
     const verifyOTPRequestOptions = {
       mode: "cors",
@@ -109,7 +112,10 @@ class Store extends StoreUtilities {
   static async verifyUserInfo(email, nationalId) {
     if (!email || !nationalId) return;
 
-    UserInterface.openLoader("verifying user info", "verifyingUserInfo");
+    const openLoader = UserInterface.openLoader(
+      "verifying user info",
+      "verifyingUserInfo"
+    );
 
     const verifyUserInfoRequestOptions = {
       mode: "cors",
@@ -142,7 +148,7 @@ class Store extends StoreUtilities {
   static async generateForgotPasswordCode(token) {
     if (!token) return;
 
-    UserInterface.openLoader("sending OTP", "sendingOtp");
+    const openLoader = UserInterface.openLoader("sending OTP", "sendingOtp");
 
     const requestOptions = {
       mode: "cors",
@@ -173,7 +179,10 @@ class Store extends StoreUtilities {
   static async verifyForgotPasswordCode(token, resetCode) {
     if (!token || !resetCode) return;
 
-    UserInterface.openLoader("verifying OTP", "verifyingCode");
+    const openLoader = UserInterface.openLoader(
+      "verifying OTP",
+      "verifyingCode"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -203,7 +212,10 @@ class Store extends StoreUtilities {
   static async editPassword(newPassword, confirmNewPassword, token, resetCode) {
     if (!newPassword || !confirmNewPassword || !token || !resetCode) return;
 
-    UserInterface.openLoader("changing password", "changingPassword");
+    const openLoader = UserInterface.openLoader(
+      "changing password",
+      "changingPassword"
+    );
 
     const requestOptions = {
       mode: "cors",

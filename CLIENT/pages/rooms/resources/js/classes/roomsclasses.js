@@ -3,7 +3,10 @@ class Store extends StoreUtilities {
     if (accessToken === (null || undefined))
       location.assign("/CLIENT/login/login.html");
 
-    UserInterface.openLoader("reading properties names", "readProperties");
+    const openLoader = UserInterface.openLoader(
+      "reading properties names",
+      "readProperties"
+    );
 
     const requestOptions = {
       method: "POST",
@@ -16,7 +19,7 @@ class Store extends StoreUtilities {
     };
 
     const getAllPropertiesData = await fetch(
-     `${serverDomain}/api/user/owner/read/properties`,
+      `${serverDomain}/api/user/owner/read/properties`,
       requestOptions
     );
 
@@ -32,7 +35,10 @@ class Store extends StoreUtilities {
   static async readAllRoomsOnSingleProperty(accessToken, propertyId) {
     if (!accessToken || !propertyId) return;
 
-    UserInterface.openLoader("reading property rooms", "readingRooms");
+    const openLoader = UserInterface.openLoader(
+      "reading property rooms",
+      "readingRooms"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -65,7 +71,7 @@ class Store extends StoreUtilities {
   static async addRoomToProperty(accessToken, propertyId, newRoom) {
     if (!accessToken || !propertyId || !newRoom) return;
 
-    UserInterface.openLoader("adding room", "addingRoom");
+    const openLoader = UserInterface.openLoader("adding room", "addingRoom");
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -98,7 +104,7 @@ class Store extends StoreUtilities {
   static async editRoomOnProperty(accessToken, propertyId, roomId, editedRoom) {
     if (!accessToken || !propertyId || !roomId || !editedRoom) return;
 
-    UserInterface.openLoader("editing room", "editingRoom");
+    const openLoader = UserInterface.openLoader("editing room", "editingRoom");
 
     const requestOptions = {
       mode: "cors",
@@ -133,7 +139,10 @@ class Store extends StoreUtilities {
   static async deleteRoomOnPorperty(accessToken, propertyId, roomId) {
     if (!accessToken || !propertyId || !roomId) return;
 
-    UserInterface.openLoader("deleting room", "deletingRoom");
+    const openLoader = UserInterface.openLoader(
+      "deleting room",
+      "deletingRoom"
+    );
 
     const requestOptions = {
       mode: "cors",
@@ -540,7 +549,10 @@ class UserInterface extends UserinterfaceUtilities {
     //   roomId
     // );
 
-    UserInterface.openLoader("deleting room", "deletingRoom");
+    const openLoader = UserInterface.openLoader(
+      "deleting room",
+      "deletingRoom"
+    );
 
     const requestOptions = {
       mode: "cors",
