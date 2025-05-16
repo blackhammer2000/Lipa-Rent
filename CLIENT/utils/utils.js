@@ -69,18 +69,27 @@ class UserinterfaceUtilities {
     const loaderBox = this.createLoaderBox(message, loaderType);
 
     if (loaderContainerActive) {
+      const isIdenticalRequestPending = loaderContainerActive.querySelector(
+        `.${loaderType}`
+      );
+
+      if (isIdenticalRequestPending) return false;
+
       loaderContainerActive.append(loaderBox);
-      return;
+      return true;
     }
 
-    const loaderContainer = document.createElement("div");
-    loaderContainer.className =
-      "loaderContainer d-flex justify-content-center align-items-center container bg-transparent";
+    if (!loaderContainerActive) {
+      const loaderContainer = document.createElement("div");
+      loaderContainer.className =
+        "loaderContainer d-flex justify-content-center align-items-center container bg-transparent";
 
-    loaderContainer.append(loaderBox);
+      loaderContainer.append(loaderBox);
 
-    document.querySelector("body").append(loaderContainer);
-    document.querySelector(".home").classList.add("removePointerEvents");
+      document.querySelector("body").append(loaderContainer);
+      document.querySelector(".home").classList.add("removePointerEvents");
+      return true;
+    }
   }
 
   static closeLoader(loaderType) {
@@ -113,7 +122,7 @@ class UserinterfaceUtilities {
 
     var alertTimeOut = setTimeout(() => {
       alertBox.remove();
-    }, 1500);
+    }, 2000);
 
     document.querySelector("body").append(alert);
   }
