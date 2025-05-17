@@ -45,6 +45,8 @@ class Store extends StoreUtilities {
       "emailVerification"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -75,6 +77,8 @@ class Store extends StoreUtilities {
     if (!token || !password || !confirmPassword) return;
 
     const openLoader = UserInterface.openLoader("completing sign up", "signup");
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
