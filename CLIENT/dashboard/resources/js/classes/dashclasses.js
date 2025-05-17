@@ -8,6 +8,8 @@ class Store extends StoreUtilities {
       "readProperties"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       method: "POST",
       mode: "cors",
@@ -45,6 +47,8 @@ class Store extends StoreUtilities {
       "editing property",
       "editProperty"
     );
+
+    if (!openLoader) return;
 
     const editPropertyRequestOptions = {
       mode: "cors",
@@ -84,6 +88,8 @@ class Store extends StoreUtilities {
       "deleteProperty"
     );
 
+    if (!openLoader) return;
+
     const deletePropertyRequestOptions = {
       mode: "cors",
       method: "DELETE",
@@ -119,6 +125,8 @@ class Store extends StoreUtilities {
       "adding new property",
       "newProperty"
     );
+
+    if (!openLoader) return;
 
     const createNewPropertyRequestOptions = {
       mode: "cors",
