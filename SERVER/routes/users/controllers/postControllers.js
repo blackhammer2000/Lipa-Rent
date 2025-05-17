@@ -2093,11 +2093,7 @@ const post_controllers = {
         const removeInvalidToken = await Password.updateOne(
           { ownerID: id },
           {
-            $set: {
-              resetToken: null,
-              resetTokenExpiry: null,
-              resetTokenVerified: null,
-            },
+            $unset: ["resetToken", "resetTokenExpiry", "resetTokenVerified"],
           }
         );
 
@@ -2239,14 +2235,14 @@ const post_controllers = {
       const isTokenValid = Date.now() < deleteAccountTokenExpiry ? true : false;
 
       if (!isTokenValid) {
-        const removeInvalidToken = await Otp.updateMany(
+        const removeInvalidToken = await Otp.updateOne(
           { ownerID: id },
           {
-            $set: {
-              deleteAccountOtp: null,
-              deleteAccountOtpExpiry: null,
-              isDeleteAccountOtpVerified: null,
-            },
+            $unset: [
+              "deleteAccountOtp",
+              "deleteAccountOtpExpiry",
+              "isDeleteAccountOtpVerified",
+            ],
           }
         );
 
