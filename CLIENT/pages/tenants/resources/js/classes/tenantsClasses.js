@@ -519,6 +519,8 @@ class UserInterface extends UserinterfaceUtilities {
       "deletingTenant"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "DELETE",
