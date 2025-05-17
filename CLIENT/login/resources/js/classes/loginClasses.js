@@ -4,6 +4,8 @@ class Store extends StoreUtilities {
 
     const openLoader = UserInterface.openLoader("logging in", "login");
 
+    if (!openLoader) return;
+
     const loginRequestOptions = {
       mode: "cors",
       method: "POST",
@@ -32,6 +34,8 @@ class Store extends StoreUtilities {
     if (!loginToken1) return;
 
     const openLoader = UserInterface.openLoader("sending OTP", "sendOtp");
+
+    if (!openLoader) return;
 
     const getOtpRequestOptions = {
       mode: "cors",
@@ -81,6 +85,8 @@ class Store extends StoreUtilities {
       "verifyingOtp"
     );
 
+    if (!openLoader) return;
+
     const verifyOTPRequestOptions = {
       mode: "cors",
       method: "POST",
@@ -117,6 +123,8 @@ class Store extends StoreUtilities {
       "verifyingUserInfo"
     );
 
+    if (!openLoader) return;
+
     const verifyUserInfoRequestOptions = {
       mode: "cors",
       method: "POST",
@@ -149,6 +157,8 @@ class Store extends StoreUtilities {
     if (!token) return;
 
     const openLoader = UserInterface.openLoader("sending OTP", "sendingOtp");
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -184,6 +194,8 @@ class Store extends StoreUtilities {
       "verifyingCode"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -216,6 +228,8 @@ class Store extends StoreUtilities {
       "changing password",
       "changingPassword"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
