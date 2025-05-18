@@ -7,6 +7,8 @@ class Store extends StoreUtilities {
       "roomNumbers"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -43,6 +45,8 @@ class Store extends StoreUtilities {
       "fetching room tenants",
       "readTenants"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -85,6 +89,8 @@ class Store extends StoreUtilities {
       "addTenant"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -126,6 +132,8 @@ class Store extends StoreUtilities {
       "editing tenant",
       "editingTenant"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
