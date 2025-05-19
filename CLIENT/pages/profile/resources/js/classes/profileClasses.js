@@ -7,6 +7,8 @@ class Store extends StoreUtilities {
       "readOwner"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -38,6 +40,8 @@ class Store extends StoreUtilities {
       "editing owner details",
       "editOwner"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -73,6 +77,8 @@ class Store extends StoreUtilities {
       "sendingCode"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -106,6 +112,8 @@ class Store extends StoreUtilities {
       "verifying reset code",
       "verifyingCode"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -145,6 +153,8 @@ class Store extends StoreUtilities {
       "changingPassword"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "PATCH",
@@ -179,6 +189,8 @@ class Store extends StoreUtilities {
       "verifyingPassword"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -211,6 +223,8 @@ class Store extends StoreUtilities {
       "changing password",
       "changingPassword"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -246,6 +260,8 @@ class Store extends StoreUtilities {
       "verifyingCode"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -278,6 +294,8 @@ class Store extends StoreUtilities {
       "deleting account",
       "deletingAccount"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
