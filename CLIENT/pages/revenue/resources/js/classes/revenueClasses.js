@@ -8,6 +8,8 @@ class Store extends StoreUtilities {
       "readProperties"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       method: "POST",
       mode: "cors",
@@ -39,6 +41,8 @@ class Store extends StoreUtilities {
       "reading payments",
       "readPayments"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       method: "POST",
