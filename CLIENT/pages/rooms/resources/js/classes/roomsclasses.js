@@ -8,6 +8,8 @@ class Store extends StoreUtilities {
       "readProperties"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       method: "POST",
       mode: "cors",
@@ -39,6 +41,8 @@ class Store extends StoreUtilities {
       "reading property rooms",
       "readingRooms"
     );
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -72,6 +76,9 @@ class Store extends StoreUtilities {
     if (!accessToken || !propertyId || !newRoom) return;
 
     const openLoader = UserInterface.openLoader("adding room", "addingRoom");
+
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "POST",
@@ -105,6 +112,8 @@ class Store extends StoreUtilities {
     if (!accessToken || !propertyId || !roomId || !editedRoom) return;
 
     const openLoader = UserInterface.openLoader("editing room", "editingRoom");
+
+    if (!openLoader) return;
 
     const requestOptions = {
       mode: "cors",
@@ -144,6 +153,8 @@ class Store extends StoreUtilities {
       "deletingRoom"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "DELETE",
@@ -170,6 +181,7 @@ class Store extends StoreUtilities {
       UserInterface.closeLoader("deletingRoom");
 
     if (error) return { error };
+
     if (deletedRooms && message) return { deletedRooms, message };
   }
 }
