@@ -165,6 +165,54 @@ class Store extends StoreUtilities {
     if (error) UserInterface.handleErrors(error);
     if (editedRoomTenants && message) return { editedRoomTenants, message };
   }
+
+  static async deleteTenantOnRoomInPorperty(
+    accessToken,
+    propertyId,
+    roomId,
+    tenantId
+  ) {
+    if (!accessToken || !propertyId || !roomId || !tenantId) return;
+
+    const openLoader = UserInterface.openLoader(
+      "deleting tenant",
+      "deletingTenant"
+    );
+
+    if (!openLoader) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token: accessToken,
+      },
+      body: JSON.stringify({
+        propertyId,
+        roomId,
+        tenantId,
+      }),
+    };
+
+    const deleteRoomTenantRequest = await fetch(
+      `${serverDomain}/api/user/owner/delete/property/room/tenant`,
+      requestOptions
+    );
+
+    const { deletedRoomTenants, message, error } =
+      await deleteRoomTenantRequest.json();
+
+    if (deletedRoomTenants || message || error)
+      UserInterface.closeLoader("deletingTenant");
+
+    if (error) {
+      this.handleErrors(error);
+    }
+
+    if (deletedRoomTenants && message) return { deletedRoomTenants, message };
+  }
 }
 class UserInterface extends UserinterfaceUtilities {
   static async renderRoomNumbersForSelection(accessToken, propertyId) {
@@ -516,58 +564,23 @@ class UserInterface extends UserinterfaceUtilities {
     )
       return;
 
-    // const { deletedRoomTenants, message, error } = await Store.deleteRoomOnPorperty(
-    //   accessToken,
-    //   propertyId,
-    //   roomId
-    // );
-
-    const openLoader = UserInterface.openLoader(
-      "deleting tenant",
-      "deletingTenant"
-    );
-
-    if (!openLoader) return;
-
-    const requestOptions = {
-      mode: "cors",
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        user: true,
-        token: accessToken,
-      },
-      body: JSON.stringify({
-        propertyId: selectedPropertyId,
-        roomId: selectedRoomId,
-        tenantId,
-      }),
-    };
-
-    const readAllRoomsOnSinglePropertyRequest = await fetch(
-      `${serverDomain}/api/user/owner/delete/property/room/tenant`,
-      requestOptions
-    );
-
-    const { deletedRoomTenants, message, error } =
-      await readAllRoomsOnSinglePropertyRequest.json();
-
-    if (deletedRoomTenants || message || error)
-      UserInterface.closeLoader("deletingTenant");
-
-    if (error) {
-      this.handleErrors(error);
-    }
+    const { deletedRoomTenants, message } =
+      await Store.deleteTenantOnRoomInPorperty(
+        accessToken,
+        selectedPropertyId,
+        selectedRoomId,
+        tenantId
+      );
 
     if (deletedRoomTenants && message) {
       this.alertMessage(message, "success");
       this.renderTenants(deletedRoomTenants, accessToken, tableBody);
 
-      //   const selectedRoomId =
-      //     localStorage.getItem("liparentSelectedRoomId") || null;
+      const selectedTenantId =
+        localStorage.getItem("liparentSelectedTenantId") || null;
 
-      //   if (selectedRoomId && selectedRoomId === roomId)
-      //     localStorage.removeItem("liparentSelectedRoomId");
+      if (selectedTenantId && selectedTenantId === tenantId)
+        localStorage.removeItem("liparentSelectedTenantId");
 
       return;
     }
