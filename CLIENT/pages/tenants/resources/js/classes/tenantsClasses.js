@@ -545,7 +545,7 @@ class UserInterface extends UserinterfaceUtilities {
     };
 
     const readAllRoomsOnSinglePropertyRequest = await fetch(
-      "http://localhost:4000/api/user/owner/delete/property/room/tenant",
+      `${serverDomain}/api/user/owner/delete/property/room/tenant`,
       requestOptions
     );
 
