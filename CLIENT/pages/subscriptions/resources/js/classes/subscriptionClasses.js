@@ -7,6 +7,8 @@ class Store extends StoreUtilities {
       "readSubscriptions"
     );
 
+    if (!openLoader) return;
+
     const requestOptions = {
       mode: "cors",
       method: "GET",
