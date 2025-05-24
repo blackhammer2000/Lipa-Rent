@@ -66,7 +66,6 @@ class UserinterfaceUtilities {
     if (!message) return;
 
     const loaderContainerActive = document.querySelector(".loaderContainer");
-    const loaderBox = this.createLoaderBox(message, loaderType);
 
     if (loaderContainerActive) {
       const isIdenticalRequestPending = loaderContainerActive.querySelector(
@@ -74,6 +73,8 @@ class UserinterfaceUtilities {
       );
 
       if (isIdenticalRequestPending) return false;
+
+      const loaderBox = this.createLoaderBox(message, loaderType);
 
       loaderContainerActive.append(loaderBox);
       return true;
@@ -83,6 +84,8 @@ class UserinterfaceUtilities {
       const loaderContainer = document.createElement("div");
       loaderContainer.className =
         "loaderContainer d-flex justify-content-center align-items-center container bg-transparent";
+
+      const loaderBox = this.createLoaderBox(message, loaderType);
 
       loaderContainer.append(loaderBox);
 
