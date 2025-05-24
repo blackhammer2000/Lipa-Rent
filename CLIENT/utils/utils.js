@@ -77,6 +77,7 @@ class UserinterfaceUtilities {
       const loaderBox = this.createLoaderBox(message, loaderType);
 
       loaderContainerActive.append(loaderBox);
+
       return true;
     }
 
