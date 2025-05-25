@@ -181,7 +181,7 @@ class UserinterfaceUtilities {
   }
 
   static clearTable(tableBody) {
-    tableBody.querySelectorAll("tr").forEach((row) => row.remove());
+    tableBody.querySelectorAll("tr")?.forEach((row) => row.remove());
   }
 
   static clearFormInputs(form) {
