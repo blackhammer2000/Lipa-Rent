@@ -185,7 +185,7 @@ class UserinterfaceUtilities {
   }
 
   static clearFormInputs(form) {
-    form.querySelectorAll("input").forEach((input) => (input.value = ""));
+    form.querySelectorAll("input")?.forEach((input) => (input.value = ""));
   }
 
   static clearLocalStorage() {
