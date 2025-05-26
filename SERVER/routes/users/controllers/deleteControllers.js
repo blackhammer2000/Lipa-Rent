@@ -604,16 +604,52 @@ const patchControllers = {
           "Tenant with the given ID has not been registered in the rents database."
         );
 
-      const newTenantPaymentReports =
+      // const newTenantPaymentReports =
+      //   checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.filter(
+      //     (payment) => payment.paymentID === paymentId
+      //   );
+
+      let selectedPaymentIndex = null;
+
+      const filteredPaymentReports =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.filter(
-          (payment) => payment.paymentID !== paymentId
+          (payment, index) => {
+            if (payment.paymentID === paymentId) {
+              selectedPaymentIndex = index;
+              return;
+            }
+
+            if (payment.paymentID !== paymentId) return payment;
+          }
         );
 
-      if (newTenantPaymentReports === (null || undefined))
+      console.log(selectedPaymentIndex, filteredPaymentReports);
+
+      const mappedTenantPaymentReports = filteredPaymentReports.map(
+        (payment, index) => {
+          if (selectedPaymentIndex === 0) {
+            return payment;
+          } else {
+            if (index <= selectedPaymentIndex - 1) return payment;
+
+            if (index > selectedPaymentIndex - 1) {
+              payment.previousPaymentBalance =
+                filteredPaymentReports[index - 1].newBalance;
+
+              payment.newBalance =
+                payment.previousPaymentBalance - +payment.amountPaid;
+
+              return payment;
+            }
+          }
+        }
+      );
+
+      if (mappedTenantPaymentReports === (null || undefined))
         throw new Error("Error when getting requested payment reports.");
 
       rents[0][propertyId].rentPayments[roomId][tenantId] =
-        newTenantPaymentReports;
+        mappedTenantPaymentReports;
 
       const deleteRent = await Rent.updateOne(
         { ownerID: id },
@@ -626,7 +662,7 @@ const patchControllers = {
 
       if (deleteRent.acknowledged && deleteRent.modifiedCount)
         res.status(200).json({
-          deletedTenantPayments: newTenantPaymentReports,
+          deletedTenantPayments: mappedTenantPaymentReports,
           message: `Rent payment with ID: ${paymentId} has been successfuly deleted.`,
         });
     } catch (err) {
