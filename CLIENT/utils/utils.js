@@ -212,12 +212,12 @@ class UserinterfaceUtilities {
 
     const fragment = document.createDocumentFragment();
 
-    const isDash = document.querySelector(".dashboard") ? true : false;
+    const hrefPrefix = document.querySelector(".dashboard") ? "../pages" : "..";
 
     const profile = document.createElement("li");
     profile.className = "dropdown-item";
     const profileLink = document.createElement("a");
-    profileLink.href = `${isDash ? "../pages" : ".."}/profile/profile.html`;
+    profileLink.href = `${hrefPrefix}/profile/profile.html`;
     profileLink.innerText = "My Profile";
     profile.append(profileLink);
     fragment.append(profile);
@@ -225,9 +225,7 @@ class UserinterfaceUtilities {
     const subscriptions = document.createElement("li");
     subscriptions.className = "dropdown-item";
     const subscriptionsLink = document.createElement("a");
-    subscriptionsLink.href = `${
-      isDash ? "../pages" : ".."
-    }/subscriptions/subscriptions.html`;
+    subscriptionsLink.href = `${hrefPrefix}/subscriptions/subscriptions.html`;
     subscriptionsLink.innerText = "My Subscriptions";
     subscriptions.append(subscriptionsLink);
     fragment.append(subscriptions);
