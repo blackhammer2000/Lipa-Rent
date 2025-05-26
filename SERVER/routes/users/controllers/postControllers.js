@@ -1632,7 +1632,7 @@ const post_controllers = {
         date: new Date().toLocaleDateString(),
         month: newPayment?.month,
         previousPaymentBalance: unpaidRentBalanceFromLastPayment,
-        amountPaid: newPayment.amount,
+        amountPaid: +newPayment.amount,
         newBalance: unpaidRentBalanceFromLastPayment - newPayment.amount,
         modeOfPayment: newPayment.mode,
         recieptNumber:
