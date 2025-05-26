@@ -656,7 +656,7 @@ const patchControllers = {
       if (deleteRent.acknowledged && deleteRent.modifiedCount)
         res.status(200).json({
           deletedTenantPayments: mappedTenantPaymentReports,
-          message: `Rent payment with ID: ${paymentId} has been successfuly deleted.`,
+          message: `Rent payment with ID: ${paymentId} has been successfully deleted.`,
         });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
