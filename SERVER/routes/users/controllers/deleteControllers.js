@@ -604,11 +604,6 @@ const patchControllers = {
           "Tenant with the given ID has not been registered in the rents database."
         );
 
-      // const newTenantPaymentReports =
-      //   checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.filter(
-      //     (payment) => payment.paymentID === paymentId
-      //   );
-
       let selectedPaymentIndex = null;
 
       const filteredPaymentReports =
