@@ -623,8 +623,6 @@ const patchControllers = {
           }
         );
 
-      console.log(selectedPaymentIndex, filteredPaymentReports);
-
       const mappedTenantPaymentReports = filteredPaymentReports.map(
         (payment, index) => {
           if (selectedPaymentIndex === 0) {
