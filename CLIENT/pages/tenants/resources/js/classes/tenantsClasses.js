@@ -395,7 +395,10 @@ class UserInterface extends UserinterfaceUtilities {
     const selectedRoomId =
       localStorage.getItem("liparentSelectedRoomId") || null;
 
-    if (!selectedRoomId) this.handleErrors("please select a room");
+    if (!selectedRoomId) {
+      this.handleErrors("please select a room");
+      return;
+    }
 
     const tenantName = form.querySelector("[data-new-tenant-name]")?.value;
     const tenantNationalID = form.querySelector(

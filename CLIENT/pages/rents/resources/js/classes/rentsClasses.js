@@ -412,7 +412,10 @@ class UserInterface extends UserinterfaceUtilities {
       ? localStorage.getItem("liparentSelectedRoomNumber")
       : null;
 
-    if (!selectedTenantId || !selectedTenantName) return;
+    if (!selectedTenantId || !selectedTenantName) {
+      this.handleErrors("please select a tenant.");
+      return;
+    }
 
     const paymentAmount = form.querySelector(
       "[data-new-payment-amount]"
