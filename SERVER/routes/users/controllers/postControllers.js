@@ -2327,6 +2327,8 @@ const post_controllers = {
     }
   },
 
+  //? logout
+
   logout: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unauthorized action");
