@@ -217,9 +217,8 @@ class UserInterface extends UserinterfaceUtilities {
         confirmPassword,
       });
 
-      if (message2) {
-        UserInterface.alertMessage(message2, "success");
-      }
+      if (message2) UserInterface.alertMessage(message2, "success");
+
       return;
     }
 
