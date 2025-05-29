@@ -209,7 +209,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (message) UserInterface.alertMessage(message, "success");
 
-    if (message && message.includes("verified")) {
+    if (signUpToken && message && message.includes("verified")) {
       const { message2 } = await Store.signUp(signUpToken, {
         password,
         confirmPassword,
