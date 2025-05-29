@@ -207,9 +207,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const { message, signUpToken } = await Store.sendSignUpOtp(user);
 
-    if (message) {
-      UserInterface.alertMessage(message, "success");
-    }
+    if (message) UserInterface.alertMessage(message, "success");
 
     if (message && message.includes("verified")) {
       const { message2 } = await Store.signUp(signUpToken, {
