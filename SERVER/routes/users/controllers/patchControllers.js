@@ -283,12 +283,10 @@ const patchControllers = {
   editRentDetails: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user...");
-      if (!req?.body.propertyId)
-        throw new Error("provide a valid property Id.");
-
-      if (!req?.body.roomId) throw new Error("provide a valid room Id.");
-      if (!req?.body.tenantId) throw new Error("provide a valid tenant Id.");
-      if (!req.body.paymentId) throw new Error("provide a valid payment Id.");
+      if (!req.body.propertyId) throw new Error("provide property Id.");
+      if (!req.body.roomId) throw new Error("provide room Id.");
+      if (!req.body.tenantId) throw new Error("provide tenant Id.");
+      if (!req.body.paymentId) throw new Error("provide payment Id.");
       if (!req.body.editedRent)
         throw new Error("provide a valid edited Rent doc.");
 
