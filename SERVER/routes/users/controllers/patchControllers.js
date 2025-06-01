@@ -329,13 +329,13 @@ const patchControllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
-      let requestedPaymentReportIndex = null;
+      let selectedPaymentIndex = null;
 
-      const newTenantPaymentReports =
+      const updatedTenantPaymentReports =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.map(
           (payment, index) => {
             if (payment.paymentID === paymentId) {
-              requestedPaymentReportIndex = index;
+              selectedPaymentIndex = index;
 
               for (const key in editedRent) {
                 if (key === "paymentID") {
@@ -351,13 +351,33 @@ const patchControllers = {
           }
         );
 
+      const reCalculatedTenantPaymentReports = updatedTenantPaymentReports.map(
+        (payment, index) => {
+          if (selectedPaymentIndex === updatedTenantPaymentReports.length - 1) {
+            return payment;
+          } else {
+            if (index <= selectedPaymentIndex) return payment;
+
+            if (index > selectedPaymentIndex) {
+              payment.previousPaymentBalance =
+                updatedTenantPaymentReports[index - 1].newBalance;
+
+              payment.newBalance =
+                payment.previousPaymentBalance - +payment.amountPaid;
+
+              return payment;
+            }
+          }
+        }
+      );
+
       if (!requestedPaymentReportIndex)
         throw new Error(
           "The requested payment report with the given payment ID was not found."
         );
 
       rents[0][propertyId].rentPayments[roomId][tenantId] =
-        newTenantPaymentReports;
+        reCalculatedTenantPaymentReports;
 
       const updateRents = await Rent.updateOne(
         { ownerID: id },
@@ -370,9 +390,8 @@ const patchControllers = {
 
       if (updateRents.acknowledged && updateRents.modifiedCount)
         res.status(200).json({
-          message: `Rent payment for the room with ID: ${roomId} made by tenant with ID: ${tenantId} has been successfuly edited.`,
-          selectedRentPaymentEdit:
-            newTenantPaymentReports[requestedPaymentReportIndex],
+          message: `Rent payment with ID: ${paymentId} for the room with ID: ${roomId} made by tenant with ID: ${tenantId} has been successfuly edited.`,
+          editedTenantPaymentReports: reCalculatedTenantPaymentReports,
         });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });
