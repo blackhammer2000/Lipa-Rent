@@ -390,7 +390,7 @@ const patchControllers = {
 
       if (updateRents.acknowledged && updateRents.modifiedCount)
         res.status(200).json({
-          message: `Rent payment with ID: ${paymentId} for the room with ID: ${roomId} made by tenant with ID: ${tenantId} has been successfuly edited.`,
+          message: `Rent payment with ID: ${paymentId} has been successfuly edited.`,
           editedTenantPaymentReports: reCalculatedTenantPaymentReports,
         });
     } catch (err) {
