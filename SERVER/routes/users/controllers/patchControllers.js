@@ -287,8 +287,7 @@ const patchControllers = {
       if (!req.body.roomId) throw new Error("provide room Id.");
       if (!req.body.tenantId) throw new Error("provide tenant Id.");
       if (!req.body.paymentId) throw new Error("provide payment Id.");
-      if (!req.body.editedRent)
-        throw new Error("provide a valid edited Rent doc.");
+      if (!req.body.editedRent) throw new Error("provide edited Rent.");
 
       const { id, propertyId, roomId, tenantId, paymentId, editedRent } =
         req?.body;
