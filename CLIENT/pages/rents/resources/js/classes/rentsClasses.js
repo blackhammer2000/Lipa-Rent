@@ -308,14 +308,14 @@ class UserInterface extends UserinterfaceUtilities {
 
     const rowCTAbuttonCell = document.createElement("td");
 
-    // const editButtonCell = document.createElement("button");
-    // editButtonCell.className = "btn btn-primary mr-2 edit";
-    // const editButtonCellText = document.createTextNode("Edit");
-    // editButtonCell.append(editButtonCellText);
-    // editButtonCell.addEventListener("click", (e) => {
-    //   this.populateEditTenantPaymentForm(e);
-    // });
-    // rowCTAbuttonCell.append(editButtonCell);
+    const editButtonCell = document.createElement("button");
+    editButtonCell.className = "btn btn-primary mr-2 edit";
+    const editButtonCellText = document.createTextNode("Edit");
+    editButtonCell.append(editButtonCellText);
+    editButtonCell.addEventListener("click", (e) => {
+      this.populateEditTenantPaymentForm(e);
+    });
+    rowCTAbuttonCell.append(editButtonCell);
 
     const deleteButtonCell = document.createElement("button");
     deleteButtonCell.className = "btn btn-danger ml-2 delete";
