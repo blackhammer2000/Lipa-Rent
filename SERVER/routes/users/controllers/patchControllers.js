@@ -340,6 +340,11 @@ const patchControllers = {
               for (const key in editedRent) {
                 if (key === "paymentID") {
                   payment[key] = payment[key];
+                } else if (key === "amountPaid") {
+                  payment[key] ? (payment[key] = editedRent[key]) : null;
+
+                  payment.newBalance =
+                    payment.previousPaymentBalance - +payment[key];
                 } else {
                   payment[key] ? (payment[key] = editedRent[key]) : null;
                 }
