@@ -474,8 +474,6 @@ class UserInterface extends UserinterfaceUtilities {
       e.target.parentElement.parentElement.parentElement.parentElement
         .parentElement.parentElement.parentElement;
 
-    console.log(homeSection);
-
     editTenantPaymentModal.classList.remove("hide");
     homeSection.classList.add("blur");
 
@@ -570,8 +568,6 @@ class UserInterface extends UserinterfaceUtilities {
         paymentId,
         editedTenantPayment
       );
-
-    console.log(editedTenantPayments, message);
 
     if (editedTenantPayments && message) {
       homeSection.classList.remove("blur");
