@@ -510,14 +510,23 @@ class UserInterface extends UserinterfaceUtilities {
     paymentReceiptNumberFormInput.value = receiptNumber;
   }
 
-  static async editTenantAndRender(
+  static async editTenantPaymentAndRender(
     accessToken,
     tableBody,
     propertyId,
     roomId,
+    tenantId,
     form
   ) {
-    if (!accessToken || !tableBody || !propertyId || !roomId || !form) return;
+    if (
+      !accessToken ||
+      !tableBody ||
+      !propertyId ||
+      !roomId ||
+      !tenantId ||
+      !form
+    )
+      return;
 
     const paymentId = form.parentElement.querySelector(
       "[data-edit-payment-id]"
@@ -530,20 +539,23 @@ class UserInterface extends UserinterfaceUtilities {
 
     const homeSection = document.querySelector(".home");
 
-    const editedTenantName = form.querySelector("[data-edited-name]")?.value;
-    const editedTenantNationalID = form.querySelector(
-      "[data-edited-nationalID]"
-    )?.value;
-    const editedTenantPhone = form.querySelector("[data-edited-phone]")?.value;
-    const editedTenantMoveOutDate = form.querySelector(
-      "[data-edited-moveout]"
-    )?.value;
+    const editedPaymentAmountFormInput = form.querySelector(
+      "[data-edited-amount]"
+    ).value;
+    const editedPaymentMonthFormInput = form.querySelector(
+      "[data-edited-month]"
+    ).value;
+    const editedPaymentModeFormInput =
+      form.querySelector("[data-edited-mode]").value;
+    const editedPaymentReceiptNumberFormInput = form.querySelector(
+      "[data-edited-receiptNumber]"
+    ).value;
 
     const editedTenant = {
-      tenantName: editedTenantName,
-      tenantNationalID: editedTenantNationalID,
-      tenantPhone: editedTenantPhone,
-      moveOutDate: editedTenantMoveOutDate,
+      amountPaid: editedPaymentAmountFormInput,
+      tenantNationalID: editedPaymentMonthFormInput,
+      tenantPhone: editedPaymentModeFormInput,
+      moveOutDate: editedPaymentReceiptNumberFormInput,
     };
 
     const { message, editedRoomTenants } =
