@@ -287,9 +287,9 @@ const patchControllers = {
       if (!req.body.roomId) throw new Error("provide room Id.");
       if (!req.body.tenantId) throw new Error("provide tenant Id.");
       if (!req.body.paymentId) throw new Error("provide payment Id.");
-      if (!req.body.editedRent) throw new Error("provide edited Rent.");
+      if (!req.body.editedPayment) throw new Error("provide edited Rent.");
 
-      const { id, propertyId, roomId, tenantId, paymentId, editedRent } =
+      const { id, propertyId, roomId, tenantId, paymentId, editedPayment } =
         req?.body;
 
       if (!isValid(id))
@@ -337,16 +337,16 @@ const patchControllers = {
             if (payment.paymentID === paymentId) {
               selectedPaymentIndex = index;
 
-              for (const key in editedRent) {
+              for (const key in editedPayment) {
                 if (key === "paymentID") {
                   payment[key] = payment[key];
                 } else if (key === "amountPaid") {
-                  payment[key] ? (payment[key] = editedRent[key]) : null;
+                  payment[key] ? (payment[key] = editedPayment[key]) : null;
 
                   payment.newBalance =
                     payment.previousPaymentBalance - +payment[key];
                 } else {
-                  payment[key] ? (payment[key] = editedRent[key]) : null;
+                  payment[key] ? (payment[key] = editedPayment[key]) : null;
                 }
                 return payment;
               }
@@ -376,7 +376,7 @@ const patchControllers = {
         }
       );
 
-      if (!requestedPaymentReportIndex)
+      if (!selectedPaymentIndex)
         throw new Error(
           "The requested payment report with the given payment ID was not found."
         );
@@ -396,7 +396,7 @@ const patchControllers = {
       if (updateRents.acknowledged && updateRents.modifiedCount)
         res.status(200).json({
           message: `Rent payment with ID: ${paymentId} has been successfuly edited.`,
-          editedTenantPaymentReports: reCalculatedTenantPaymentReports,
+          editedTenantPayments: reCalculatedTenantPaymentReports,
         });
     } catch (err) {
       if (err?.message) res.status(400).json({ error: err.message });

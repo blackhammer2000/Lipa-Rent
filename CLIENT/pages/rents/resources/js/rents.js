@@ -1,7 +1,7 @@
 (async function () {
   const accessToken = localStorage.getItem("liparentAccessToken")
-  ? localStorage.getItem("liparentAccessToken")
-  : null;
+    ? localStorage.getItem("liparentAccessToken")
+    : null;
 
   if (accessToken === (null || undefined))
     location.assign("/CLIENT/login/login.html");
@@ -97,16 +97,17 @@
   const closeEditPaymentModalButton =
     editPaymentForm.parentElement.querySelector("[data-close-edit-modal]");
 
-  // editPaymentForm.addEventListener("submit", (e) => {
-  //   e.preventDefault();
-  //   UserInterface.editRoomTenantAndRender(
-  //     accessToken,
-  //     tableBody,
-  //     selectedPropertyId,
-  //     selectedRoomId,
-  //     editPaymentForm
-  //   );
-  // });
+  editPaymentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    UserInterface.editTenantPaymentAndRender(
+      accessToken,
+      tableBody,
+      selectedPropertyId,
+      selectedRoomId,
+      selectedTenantId,
+      editPaymentForm
+    );
+  });
 
   closeEditPaymentModalButton.addEventListener("click", (e) => {
     e.preventDefault();

@@ -136,6 +136,7 @@ class Store extends StoreUtilities {
     propertyId,
     roomId,
     tenantId,
+    paymentId,
     editedPayment
   ) {
     if (!accessToken || !propertyId || !roomId || !tenantId || !editedPayment)
@@ -160,6 +161,7 @@ class Store extends StoreUtilities {
         propertyId,
         roomId,
         tenantId,
+        paymentId,
         editedPayment,
       }),
     };
@@ -169,14 +171,15 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { editedRoomTenants, message, error } =
+    const { editedTenantPayments, message, error } =
       await readAllRoomsOnSinglePropertyRequest.json();
 
-    if (editedRoomTenants || message || error)
-      UserInterface.closeLoader("editingTenant");
+    if (editedTenantPayments || message || error)
+      UserInterface.closeLoader("editingPayment");
 
     if (error) UserInterface.handleErrors(error);
-    if (editedRoomTenants && message) return { editedRoomTenants, message };
+    if (editedTenantPayments && message)
+      return { editedTenantPayments, message };
   }
 }
 class UserInterface extends UserinterfaceUtilities {
@@ -551,28 +554,29 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-edited-receiptNumber]"
     ).value;
 
-    const editedTenant = {
+    const editedTenantPayment = {
       amountPaid: editedPaymentAmountFormInput,
-      tenantNationalID: editedPaymentMonthFormInput,
-      tenantPhone: editedPaymentModeFormInput,
-      moveOutDate: editedPaymentReceiptNumberFormInput,
+      month: editedPaymentMonthFormInput,
+      modeOfPayment: editedPaymentModeFormInput,
+      recieptNumber: editedPaymentReceiptNumberFormInput,
     };
 
-    const { message, editedRoomTenants } =
-      await Store.editTenantOnRoomInProperty(
+    const { message, editedTenantPayments } =
+      await Store.editTenantPaymentOnRoomInProperty(
         accessToken,
         propertyId,
         roomId,
         tenantId,
-        editedTenant
+        paymentId,
+        editedTenantPayment
       );
 
-    console.log(editedRoomTenants, message);
+    console.log(editedTenantPayments, message);
 
-    if (editedRoomTenants && message) {
+    if (editedTenantPayments && message) {
       homeSection.classList.remove("blur");
       this.alertMessage(message, "success");
-      this.renderTenants(editedRoomTenants, accessToken, tableBody);
+      this.renderTenantPayments(editedTenantPayments, accessToken, tableBody);
       form.parentElement.parentElement.classList.add("hide");
       return;
     }

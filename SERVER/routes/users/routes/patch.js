@@ -24,7 +24,7 @@ const {
   editRoomDetails,
   editTenantDetails,
   editPassword,
-  // editRentDetails,
+  editRentDetails,
 } = require("../controllers/patchControllers");
 
 router.patch(
@@ -51,12 +51,12 @@ router.patch(
   verifyUserAccessToken,
   editTenantDetails
 );
-// router.patch(
-//   "/api/user/owner/edit/property/room/tenant/rent/payment",
-//   isUser,
-//   verifyAccessToken,
-//   editRentDetails
-// );
+router.patch(
+  "/api/user/owner/edit/property/room/tenant/payment",
+  isUser,
+  verifyUserAccessToken,
+  editRentDetails
+);
 
 router.patch(
   "/api/user/owner/edit/password",
