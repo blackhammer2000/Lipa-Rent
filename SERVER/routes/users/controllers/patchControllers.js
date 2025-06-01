@@ -338,18 +338,34 @@ const patchControllers = {
               selectedPaymentIndex = index;
 
               for (const key in editedPayment) {
-                if (key === "paymentID") {
-                  payment[key] = payment[key];
-                } else if (key === "amountPaid") {
-                  payment[key] ? (payment[key] = editedPayment[key]) : null;
+                if (
+                  key ===
+                  ("amountPaid" ||
+                    "modeOfPayment" ||
+                    "month" ||
+                    "recieptNumber")
+                ) {
+                  switch (key) {
+                    case "paymentID":
+                      payment[key] ? (payment[key] = editedPayment[key]) : null;
+                      break;
 
-                  payment.newBalance =
-                    payment.previousPaymentBalance - +payment[key];
-                } else {
-                  payment[key] ? (payment[key] = editedPayment[key]) : null;
+                    case "amountPaid":
+                      payment[key] ? (payment[key] = editedPayment[key]) : null;
+
+                      payment.newBalance =
+                        payment.previousPaymentBalance - +payment[key];
+                      break;
+
+                    default:
+                      payment[key] ? (payment[key] = editedPayment[key]) : null;
+                      break;
+                  }
                 }
-                return payment;
+
+                break;
               }
+              return payment;
             } else {
               return payment;
             }
