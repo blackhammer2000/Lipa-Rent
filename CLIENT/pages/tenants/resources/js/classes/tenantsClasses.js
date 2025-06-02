@@ -619,6 +619,8 @@ class UserInterface extends UserinterfaceUtilities {
   ) {
     if (!accessToken || !tableBody || !propertyId || !selectedRoomId) return;
 
+    // document.querySelector("select").options[selectedRoomId].selected = true;
+
     const { selectedRoomOnPropertyTenants, message } =
       await Store.readAllTenantsForRoomInProperty(
         accessToken,

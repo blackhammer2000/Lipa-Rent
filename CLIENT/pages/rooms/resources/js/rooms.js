@@ -27,13 +27,16 @@
   if (
     selectedPropertyId !== (null || undefined) &&
     selectedPropertyName !== (null || undefined)
-  )
+  ) {
+    // document.querySelector("select").options[selectedPropertyId].selected = true;
+    
     UserInterface.readAndRenderAllRoomsOnSingleProperty(
       accessToken,
       selectedPropertyId,
       selectedPropertyName,
       tableBody
     );
+  }
 
   const selectPropertyForm = document.querySelector("[data-select-property]");
 

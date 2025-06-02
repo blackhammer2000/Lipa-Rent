@@ -730,7 +730,7 @@ class UserInterface extends UserinterfaceUtilities {
         selectedTenantId
       );
 
-    document.querySelector("select").options[selectedTenantId].selected = true;
+    // document.querySelector("select").options[selectedTenantId].selected = true;
 
     if (!selectedTenantPayments.length && message) {
       this.handleErrors(message);
