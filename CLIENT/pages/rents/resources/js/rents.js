@@ -54,6 +54,7 @@
 
   selectTenantForm.addEventListener("submit", (e) => {
     e.preventDefault();
+
     UserInterface.readAndRenderPayments(
       accessToken,
       selectTenantForm,
