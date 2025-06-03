@@ -324,10 +324,12 @@ class Store extends StoreUtilities {
 }
 
 class UserInterface extends UserinterfaceUtilities {
-  static async populateEditOwnerDetailsForm(accessToken) {
+  static async populateEditOwnerDetailsForm(accessToken, homeSection) {
     if (!accessToken) return;
 
     if (!confirm("Do you want to change your account details?")) return;
+
+    homeSection.classList.add("blur");
 
     const form = document.querySelector("[data-edit-account-form]");
 

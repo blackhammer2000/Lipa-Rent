@@ -14,14 +14,13 @@
   const changeAccountDetails = document.querySelector("[data-edit-account]");
   changeAccountDetails.addEventListener("click", (e) => {
     e.preventDefault();
-    UserInterface.populateEditOwnerDetailsForm(accessToken);
-    homeSection.classList.add("blur");
+    UserInterface.populateEditOwnerDetailsForm(accessToken, homeSection);
   });
 
-  const editOwnerDetailsModalButton = document.querySelector(
+  const closeEditOwnerDetailsModalButton = document.querySelector(
     "[data-close-edit-modal]"
   );
-  editOwnerDetailsModalButton.addEventListener("click", (e) => {
+  closeEditOwnerDetailsModalButton.addEventListener("click", (e) => {
     e.preventDefault();
     e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
       "hide"
