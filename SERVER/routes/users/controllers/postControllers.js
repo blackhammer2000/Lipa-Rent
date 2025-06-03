@@ -1024,7 +1024,7 @@ const post_controllers = {
 
       newRoom.isOccupied = false;
       newRoom.currentTenantID = null;
-      newRoom.roomID = crypto.randomUUID()?.slice(-12);
+      newRoom.roomID = generateOTP();
 
       const propertyRooms = checkIfPropertyIdIsRegistered?.rooms;
 
