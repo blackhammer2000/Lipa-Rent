@@ -248,8 +248,10 @@ dropdownMenuButton?.addEventListener("click", () => {
 });
 
 const logoutButton = document.querySelector("[data-logout]");
-logoutButton?.addEventListener("click", () =>
-  UserinterfaceUtilities.handleLogout()
-);
+logoutButton?.addEventListener("click", () => {
+  if (!confirm("Confirm to logout")) return;
+
+  UserinterfaceUtilities.handleLogout();
+});
 
 const serverDomain = "http://localhost:4000";
