@@ -191,35 +191,25 @@
 
         <form data-new-payment-form action="" class="form">
           <div class="form-group">
+            <label class="font-weight-bold">PAYMENT AMOUNT</label>
             <input
               data-new-payment-amount
-              placeholder="PAYMENT AMOUNT"
               type="text"
               class="form-control text-uppercase"
               required
             />
           </div>
           <div class="form-group">
-            <select
+            <label class="font-weight-bold">PAYMENT MONTH</label>
+            <input
               data-new-payment-month
               required
-              class="form-control border border-right-0 border-left border-top-0 border-bottom"
-            >
-              <option value="">SELECT PAYMENT MONTH</option>
-              <option value="JANUARY">JANUARY</option>
-              <option value="FEBRUARY">FEBRUARY</option>
-              <option value="MARCH">MARCH</option>
-              <option value="APRIL">APRIL</option>
-            </select>
-            <!-- <input
-              data-new-payment-month
-              placeholder="PAYMENT MONTH"
-              type="text"
-              class="form-control text-uppercase"
-              required
-            /> -->
+              class="form-control text-uppercase border border-right-0 border-left border-top-0 border-bottom"
+              type="month"
+            />
           </div>
           <div class="form-group">
+            <label class="font-weight-bold">PAYMENT MODE</label>
             <select
               data-new-payment-mode
               required
@@ -231,9 +221,9 @@
             </select>
           </div>
           <div class="form-group">
+            <label class="font-weight-bold">RECEIPT NUMBER</label>
             <input
               data-new-payment-receiptNumber
-              placeholder="RECEIPT NUMBER"
               type="text"
               class="form-control text-uppercase"
               required
@@ -267,12 +257,13 @@
 
         <form data-edit-payment-form action="" class="form">
           <div class="form-group">
-            <label class="font-weight-bold">PAYMENT MONTH:</label>
+            <label class="font-weight-bold">PAYMENT MONTH</label>
             <input
+              placeholder="PAYMENT MONTH"
               data-edited-month
-              type="text"
-              class="form-control text-uppercase"
               required
+              class="form-control text-uppercase"
+              type="month"
             />
           </div>
           <div class="form-group">
@@ -285,7 +276,7 @@
             />
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">PAYMENT MODE:</label>
+            <label class="font-weight-bold">PAYMENT MODE</label>
             <select
               data-edited-mode
               required
@@ -297,7 +288,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="font-weight-bold">PAYMENT RECEIPT NUMBER:</label>
+            <label class="font-weight-bold">RECEIPT NUMBER</label>
             <input
               data-edited-receiptNumber
               type="text"
