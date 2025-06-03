@@ -1637,7 +1637,7 @@ const post_controllers = {
         modeOfPayment: newPayment.mode,
         recieptNumber:
           newPayment.mode.toLowerCase() === "cash"
-            ? "cash"
+            ? "CASH"
             : newPayment.recieptNumber.toUpperCase(),
       };
 
