@@ -93,7 +93,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     for (const key in propertiesOwned) {
       const option = document.createElement("option");
-      option.value = propertiesOwned[key].propertyName.toUpperCase();
+      option.value = key;
       option.id = key;
       option.innerText = propertiesOwned[key].propertyName.toUpperCase();
       fragment.append(option);

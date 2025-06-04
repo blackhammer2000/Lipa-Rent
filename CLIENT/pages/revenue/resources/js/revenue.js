@@ -16,16 +16,19 @@
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const propertyId = form.querySelector("select").id;
-    const propertyName = form.querySelector("select").value;
+    const propertyId = form.querySelector("select").value;
+    const propertyName =
+      form.querySelector("select").children[propertyId].innerText;
 
     if (!propertyId && !propertyName) {
       UserInterface.handleErrors("please select a property");
       return;
     }
 
+    console.log(propertyId, propertyName);
+
     const selectedMonth = document.querySelector("[data-month]").value;
-    const selectedYear = document.querySelector("[data-year]");
+    const selectedYear = document.querySelector("[data-year]").value;
 
     if (!selectedMonth && !selectedYear) {
       UserInterface.handleErrors(
@@ -35,12 +38,14 @@
       return;
     }
 
-    if (selectedMonth) {
+    if (selectedMonth && !selectedYear) {
       UserInterface.readAndRenderRevenueStats(accessToken, form, selectedMonth);
+      return;
     }
 
-    if (selectedYear) {
+    if (!selectedMonth && selectedYear) {
       UserInterface.readAndRenderRevenueStats(accessToken, form, selectedYear);
+      return;
     }
   });
 })();
