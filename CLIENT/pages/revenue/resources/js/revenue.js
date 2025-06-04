@@ -25,7 +25,7 @@
       return;
     }
 
-    console.log(propertyId, propertyName);
+    // console.log(propertyId, propertyName);
 
     const selectedMonth = document.querySelector("[data-month]").value;
     const selectedYear = document.querySelector("[data-year]").value;
