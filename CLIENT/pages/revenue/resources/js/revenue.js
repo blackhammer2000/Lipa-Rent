@@ -16,6 +16,20 @@
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    UserInterface.readAndRenderRevenueStats(accessToken, form, "JANUARY");
+    const selectedMonth = document.querySelector("[data-month]").value;
+    const selectedYear = document.querySelector("[data-year]");
+
+    if (!selectedMonth && !selectedYear)
+      UserInterface.handleErrors(
+        "Please select a month or year in the inputs below."
+      );
+
+    if (selectedMonth) {
+      UserInterface.readAndRenderRevenueStats(accessToken, form, selectedMonth);
+    }
+
+    if (selectedYear) {
+      UserInterface.readAndRenderRevenueStats(accessToken, form, selectedYear);
+    }
   });
 })();
