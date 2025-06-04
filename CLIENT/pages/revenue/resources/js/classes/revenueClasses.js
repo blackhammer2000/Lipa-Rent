@@ -93,7 +93,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     for (const key in propertiesOwned) {
       const option = document.createElement("option");
-      option.value = key;
+      option.value = propertiesOwned[key].propertyName.toUpperCase();
       option.id = key;
       option.innerText = propertiesOwned[key].propertyName.toUpperCase();
       fragment.append(option);
@@ -153,12 +153,13 @@ class UserInterface extends UserinterfaceUtilities {
         : `KES. -${selectedMonthDeficitRevenue.toLocaleString()}`;
   }
 
-  static async readAndRenderRevenueStats(accessToken, form, selectedMonth) {
-    if (!accessToken || !form || !selectedMonth) return;
-
-    const propertyId = form.querySelector("select")?.value;
-    const propertyName =
-      form.querySelector("select")?.children[propertyId].innerText;
+  static async readAndRenderRevenueStats(
+    accessToken,
+    propertyId,
+    propertyName,
+    selectedMonth
+  ) {
+    if (!accessToken || !propertyId || !propertyName || !selectedMonth) return;
 
     const { message, propertyRents, propertyExpectedRevenueMonthly } =
       await Store.readAllPayments(accessToken, propertyId);
