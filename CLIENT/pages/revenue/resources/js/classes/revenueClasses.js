@@ -157,10 +157,11 @@ class UserInterface extends UserinterfaceUtilities {
 
   static async readAndRenderRevenueStats(
     accessToken,
+    form,
     propertyId,
     selectedMonth
   ) {
-    if (!accessToken || !propertyId || !selectedMonth) return;
+    if (!accessToken || !form || !propertyId || !selectedMonth) return;
 
     const propertyName =
       form.querySelector("select").children[propertyId].innerText;
