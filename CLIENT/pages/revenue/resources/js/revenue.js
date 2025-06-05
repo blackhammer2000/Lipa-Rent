@@ -17,15 +17,13 @@
     e.preventDefault();
 
     const propertyId = form.querySelector("select").value;
-    const propertyName =
-      form.querySelector("select").children[propertyId].innerText;
 
-    if (!propertyId && !propertyName) {
+    if (!propertyId) {
       UserInterface.handleErrors("please select a property");
       return;
     }
 
-    // console.log(propertyId, propertyName);
+    console.log(propertyId, propertyName);
 
     const selectedMonth = document.querySelector("[data-month]").value;
     const selectedYear = document.querySelector("[data-year]").value;
@@ -39,12 +37,20 @@
     }
 
     if (selectedMonth && !selectedYear) {
-      UserInterface.readAndRenderRevenueStats(accessToken, form, selectedMonth);
+      UserInterface.readAndRenderRevenueStats(
+        accessToken,
+        propertyId,
+        selectedMonth
+      );
       return;
     }
 
     if (!selectedMonth && selectedYear) {
-      UserInterface.readAndRenderRevenueStats(accessToken, form, selectedYear);
+      UserInterface.readAndRenderRevenueStats(
+        accessToken,
+        propertyId,
+        selectedYear
+      );
       return;
     }
   });

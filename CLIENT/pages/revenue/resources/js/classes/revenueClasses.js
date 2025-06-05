@@ -140,6 +140,7 @@ class UserInterface extends UserinterfaceUtilities {
     selectedMonthTotalRevenue < propertyExpectedRevenueMonthly
       ? totalRevenueAmount.classList.add("text-danger")
       : totalRevenueAmount.classList.add("text-success");
+
     totalRevenueAmount.innerText = `KES. ${selectedMonthTotalRevenue.toLocaleString()}`;
 
     projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueMonthly.toLocaleString()}`;
@@ -147,6 +148,7 @@ class UserInterface extends UserinterfaceUtilities {
     selectedMonthDeficitRevenue < 0
       ? deficitRevenueAmount.classList.add("text-success")
       : deficitRevenueAmount.classList.add("text-danger");
+
     deficitRevenueAmount.innerText =
       selectedMonthDeficitRevenue < 0
         ? `KES. +${selectedMonthDeficitRevenue.toLocaleString().slice(1)}`
@@ -156,13 +158,19 @@ class UserInterface extends UserinterfaceUtilities {
   static async readAndRenderRevenueStats(
     accessToken,
     propertyId,
-    propertyName,
     selectedMonth
   ) {
-    if (!accessToken || !propertyId || !propertyName || !selectedMonth) return;
+    if (!accessToken || !propertyId || !selectedMonth) return;
+
+    const propertyName =
+      form.querySelector("select").children[propertyId].innerText;
+
+    if (!propertyName) return;
 
     const { message, propertyRents, propertyExpectedRevenueMonthly } =
       await Store.readAllPayments(accessToken, propertyId);
+
+    if (!message || !propertyRents || !propertyExpectedRevenueMonthly) return;
 
     this.alertMessage(message, "success");
     this.updatePageHeader(propertyName);
