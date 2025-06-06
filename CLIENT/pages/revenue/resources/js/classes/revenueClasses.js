@@ -68,7 +68,7 @@ class Store extends StoreUtilities {
 
     if (error) UserInterface.handleErrors(error);
 
-    // console.log(message, propertyRents, propertyExpectedRevenueMonthly);
+    console.log(message, propertyRents, propertyExpectedRevenueMonthly);
 
     if (propertyRents && propertyExpectedRevenueMonthly)
       return { message, propertyRents, propertyExpectedRevenueMonthly };
@@ -159,9 +159,9 @@ class UserInterface extends UserinterfaceUtilities {
     accessToken,
     form,
     propertyId,
-    selectedMonth
+    selectedRange
   ) {
-    if (!accessToken || !form || !propertyId || !selectedMonth) return;
+    if (!accessToken || !form || !propertyId || !selectedRange) return;
 
     const propertyName =
       form.querySelector("select").children[propertyId].innerText;
@@ -178,7 +178,7 @@ class UserInterface extends UserinterfaceUtilities {
     this.renderRevenueStats(
       propertyRents,
       propertyExpectedRevenueMonthly,
-      selectedMonth
+      selectedRange
     );
 
     // localStorage.setItem("liparentRevenueSelectedProperty", propertyId);

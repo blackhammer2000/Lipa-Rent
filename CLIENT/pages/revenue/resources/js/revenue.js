@@ -35,22 +35,16 @@
     }
 
     if (selectedMonth && !selectedYear) {
-      UserInterface.readAndRenderRevenueStats(
-        accessToken,
-        form,
-        propertyId,
-        selectedMonth
-      );
+      UserInterface.readAndRenderRevenueStats(accessToken, form, propertyId, {
+        month: selectedMonth,
+      });
       return;
     }
 
     if (!selectedMonth && selectedYear) {
-      UserInterface.readAndRenderRevenueStats(
-        accessToken,
-        form,
-        propertyId,
-        selectedYear
-      );
+      UserInterface.readAndRenderRevenueStats(accessToken, form, propertyId, {
+        year: selectedYear,
+      });
       return;
     }
   });
