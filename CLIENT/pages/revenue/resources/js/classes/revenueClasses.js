@@ -118,15 +118,14 @@ class UserInterface extends UserinterfaceUtilities {
     }
 
     const selectedRangePayments = allPayments.filter((payment) => {
-      if (selectedRange.month && payment.month === selectedRange.month)
-        return payment;
-
       if (
-        selectedRange.year &&
-        payment.month.getFullYear() === selectedRange.year
+        (selectedRange.month && payment.month === selectedRange.month) ||
+        (selectedRange.year && payment.month.slice(0, 4) === selectedRange.year)
       )
         return payment;
     });
+
+    console.log(selectedRangePayments);
 
     let selectedRangeTotalRevenue = 0;
 
