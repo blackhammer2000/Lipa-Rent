@@ -431,7 +431,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (
       !confirm(
-        `Do you want to add a new payemnt by ${selectedTenantName} for room: ${selectedRoomNumber}?`
+        `Do you want to add a new payment by ${selectedTenantName} for room: ${selectedRoomNumber}?`
       )
     )
       return;
