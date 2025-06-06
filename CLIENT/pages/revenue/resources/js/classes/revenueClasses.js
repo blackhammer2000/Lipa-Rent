@@ -105,9 +105,9 @@ class UserInterface extends UserinterfaceUtilities {
   static renderRevenueStats(
     propertyRents,
     propertyExpectedRevenueMonthly,
-    selectedMonth
+    selectedRange
   ) {
-    if (!propertyRents || !selectedMonth) return;
+    if (!propertyRents || !selectedRange) return;
 
     let allPayments = [];
 
@@ -117,18 +117,25 @@ class UserInterface extends UserinterfaceUtilities {
       }
     }
 
-    const selectedMonthPayments = allPayments.filter((payment) => {
-      if (payment.month === selectedMonth) return payment;
+    const selectedRangePayments = allPayments.filter((payment) => {
+      if (selectedRange.month && payment.month === selectedRange.month)
+        return payment;
+
+      if (
+        selectedRange.year &&
+        payment.month.getFullYear() === selectedRange.year
+      )
+        return payment;
     });
 
-    let selectedMonthTotalRevenue = 0;
+    let selectedRangeTotalRevenue = 0;
 
-    selectedMonthPayments.forEach((payment) => {
-      selectedMonthTotalRevenue += +payment.amountPaid;
+    selectedRangePayments.forEach((payment) => {
+      selectedRangeTotalRevenue += +payment.amountPaid;
     });
 
-    const selectedMonthDeficitRevenue =
-      propertyExpectedRevenueMonthly - selectedMonthTotalRevenue;
+    const selectedRangeDeficitRevenue =
+      propertyExpectedRevenueMonthly - selectedRangeTotalRevenue;
 
     const totalRevenueAmount = document.querySelector("[data-total-revenue]");
     const projectedRevenueAmount = document.querySelector(
@@ -137,22 +144,22 @@ class UserInterface extends UserinterfaceUtilities {
     const deficitRevenueAmount = document.querySelector(
       "[data-deficit-revenue]"
     );
-    selectedMonthTotalRevenue < propertyExpectedRevenueMonthly
+    selectedRangeTotalRevenue < propertyExpectedRevenueMonthly
       ? totalRevenueAmount.classList.add("text-danger")
       : totalRevenueAmount.classList.add("text-success");
 
-    totalRevenueAmount.innerText = `KES. ${selectedMonthTotalRevenue.toLocaleString()}`;
+    totalRevenueAmount.innerText = `KES. ${selectedRangeTotalRevenue.toLocaleString()}`;
 
     projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueMonthly.toLocaleString()}`;
 
-    selectedMonthDeficitRevenue < 0
+    selectedRangeDeficitRevenue < 0
       ? deficitRevenueAmount.classList.add("text-success")
       : deficitRevenueAmount.classList.add("text-danger");
 
     deficitRevenueAmount.innerText =
-      selectedMonthDeficitRevenue < 0
-        ? `KES. +${selectedMonthDeficitRevenue.toLocaleString().slice(1)}`
-        : `KES. -${selectedMonthDeficitRevenue.toLocaleString()}`;
+      selectedRangeDeficitRevenue < 0
+        ? `KES. +${selectedRangeDeficitRevenue.toLocaleString().slice(1)}`
+        : `KES. -${selectedRangeDeficitRevenue.toLocaleString()}`;
   }
 
   static async readAndRenderRevenueStats(
