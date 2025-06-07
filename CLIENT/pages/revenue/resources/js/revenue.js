@@ -26,7 +26,7 @@
     const selectedMonth = document.querySelector("[data-month]").value;
     const selectedYear = document.querySelector("[data-year]").value;
 
-    if (!selectedMonth && !selectedYear) {
+    if ((!selectedMonth && !selectedYear) || (selectedMonth && selectedYear)) {
       UserInterface.handleErrors(
         "Please select a month or year in the inputs below."
       );
