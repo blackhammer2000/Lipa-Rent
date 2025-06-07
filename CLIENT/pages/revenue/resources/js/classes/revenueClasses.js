@@ -125,6 +125,11 @@ class UserInterface extends UserinterfaceUtilities {
         return payment;
     });
 
+    if (!selectedRangePayments.length) {
+      this.handleErrors("No payments found for the selected range.");
+      return;
+    }
+
     // console.log(selectedRangePayments);
 
     let selectedRangeTotalRevenue = 0;
