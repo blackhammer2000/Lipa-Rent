@@ -132,9 +132,9 @@ class UserInterface extends UserinterfaceUtilities {
 
     console.log(selectedRangePayments);
 
-    // const selectedRangeTotalRevenue = selectedRangePayments.reduce((a, b) => {
-    //   return +a.amountPaid + +b.amountPaid;
-    // });
+    // const selectedRangeTotalRevenue = selectedRangePayments.reduce(
+    //   (a, b) => +a.amountPaid + +b.amountPaid
+    // );
 
     let selectedRangeTotalRevenue = 0;
 
