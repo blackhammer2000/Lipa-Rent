@@ -28,7 +28,7 @@
 
     if ((!selectedMonth && !selectedYear) || (selectedMonth && selectedYear)) {
       UserInterface.handleErrors(
-        "Please select a month or year in the inputs below."
+        "Please select either a month or enter the year in the inputs below."
       );
 
       return;
