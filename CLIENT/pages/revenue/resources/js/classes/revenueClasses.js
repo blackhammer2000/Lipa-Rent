@@ -125,7 +125,7 @@ class UserInterface extends UserinterfaceUtilities {
         return payment;
     });
 
-    console.log(selectedRangePayments);
+    // console.log(selectedRangePayments);
 
     let selectedRangeTotalRevenue = 0;
 
