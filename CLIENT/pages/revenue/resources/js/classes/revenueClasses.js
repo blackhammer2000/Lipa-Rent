@@ -117,6 +117,11 @@ class UserInterface extends UserinterfaceUtilities {
       }
     }
 
+    if (!allPayments.length) {
+      this.handleErrors("No payments found for the selected property.");
+      return;
+    }
+
     const selectedRangePayments = allPayments.filter((payment) => {
       if (
         (selectedRange.month && payment.month === selectedRange.month) ||
