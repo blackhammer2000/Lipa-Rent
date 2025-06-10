@@ -536,7 +536,7 @@ const patchControllers = {
 
         if (!updateRooms.acknowledged && !updateRooms.modifiedCount)
           throw new Error(
-            "Error when deleting the tenantID  for the room in the database."
+            "Error when deleting the tenantID for the room in the database."
           );
       }
 

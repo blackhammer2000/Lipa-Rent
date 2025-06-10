@@ -516,7 +516,7 @@ class UserInterface extends UserinterfaceUtilities {
       tenantName: editedTenantName,
       tenantNationalID: editedTenantNationalID,
       tenantPhone: editedTenantPhone,
-      moveOutDate: editedTenantMoveOutDate,
+      tenantMoveOut: editedTenantMoveOutDate.toLocaleDateString(),
     };
 
     const { message, editedRoomTenants } =

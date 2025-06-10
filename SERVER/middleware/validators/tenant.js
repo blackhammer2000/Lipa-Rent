@@ -6,6 +6,8 @@ const tenantValidator = async (req, res, next) => {
       tenantName: Joi.string().required(),
       tenantNationalID: Joi.string().required(),
       tenantPhone: Joi.string().required(),
+      tenantMoveIn: Joi.date().required(),
+      tenantMoveOut: Joi.date().required(),
     });
 
     const isValidTenantData = await tenantSchema.validateAsync(

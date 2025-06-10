@@ -247,6 +247,8 @@ const patchControllers = {
           "No tenant with the given tenantId has been added to this room."
         );
 
+      const tenantMoveOutDate = selectedTenantOnRoomOnProperty.tenantMoveOut;
+
       editedTenant.tenantID ? delete editedTenant.tenantID : null;
 
       for (const key in editedTenant) {
@@ -270,6 +272,40 @@ const patchControllers = {
 
       if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
         throw new Error("Could not update database after editing the tenant.");
+
+      if (
+        editedTenant.tenantMoveOut &&
+        editedTenant.tenantMoveOut !== tenantMoveOutDate &&
+        Date.parse(editedTenant.tenantMoveOut) >
+          Date.parse(editedTenant.tenantMoveIn)
+      ) {
+        const roomDoc = await Room.findOne({ ownerID: id });
+
+        if (!roomDoc) throw new Error(roomDoc);
+
+        const { rooms } = roomDoc;
+
+        const room = rooms[0][propertyId].rooms[roomId];
+
+        if (room.currentTenantID === tenantId) {
+          rooms[0][propertyId].rooms[roomId].currentTenantID = null;
+          rooms[0][propertyId].rooms[roomId].isOccupied = false;
+
+          const updateRooms = await Room.updateOne(
+            { ownerID: id },
+            {
+              $set: {
+                rooms,
+              },
+            }
+          );
+
+          if (!updateRooms.acknowledged && !updateRooms.modifiedCount)
+            throw new Error(
+              "Error when updating the room details for the room."
+            );
+        }
+      }
 
       res.status(200).json({
         message: `Tenant with the ID: ${tenantId} has been successfuly edited.`,
