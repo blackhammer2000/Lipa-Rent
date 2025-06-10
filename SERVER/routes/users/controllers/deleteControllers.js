@@ -541,7 +541,7 @@ const patchControllers = {
       }
 
       res.status(200).json({
-        message: `Tenant with the Name: ${selectedTenantOnRoomOnPropertyName} and ID: ${tenantId} has been successfuly deleted.`,
+        message: `Tenant with the Name: ${selectedTenantOnRoomOnPropertyName} and ID: ${tenantId} has been successfully deleted.`,
         deletedRoomTenants: tenants[0][propertyId].tenants[roomId],
       });
     } catch (err) {
