@@ -64,13 +64,14 @@ class Store extends StoreUtilities {
     const { message, propertyRents, propertyExpectedRevenueMonthly, error } =
       await getAllPropertyPaymentData.json();
 
-    if (propertyRents || error) UserInterface.closeLoader("readPayments");
+    if (message || propertyRents || error)
+      UserInterface.closeLoader("readPayments");
 
     if (error) UserInterface.handleErrors(error);
 
     console.log(message, propertyRents, propertyExpectedRevenueMonthly);
 
-    if (propertyRents && propertyExpectedRevenueMonthly)
+    if (message && propertyRents && propertyExpectedRevenueMonthly)
       return { message, propertyRents, propertyExpectedRevenueMonthly };
   }
 }
