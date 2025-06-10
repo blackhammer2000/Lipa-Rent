@@ -206,6 +206,7 @@ class UserInterface extends UserinterfaceUtilities {
     );
 
     // localStorage.setItem("liparentRevenueSelectedProperty", propertyId);
+    // localStorage.setItem("liparentRevenueSelectedPropertyRange", selectedRange);
   }
 
   static updatePageHeader(propertyName) {
