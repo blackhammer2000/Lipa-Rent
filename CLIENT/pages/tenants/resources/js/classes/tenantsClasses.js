@@ -278,8 +278,8 @@ class UserInterface extends UserinterfaceUtilities {
       tenantName,
       tenantNationalID,
       tenantPhone,
-      moveInDate,
-      moveOutDate,
+      tenantMoveIn,
+      tenantMoveOut,
     } = tenant;
 
     const row = document.createElement("tr");
@@ -311,12 +311,13 @@ class UserInterface extends UserinterfaceUtilities {
     row.append(tableTenantNumberCell);
 
     const tableTenantMoveInDateCell = document.createElement("td");
-    const tableTenantMoveInDateCellText = document.createTextNode(moveInDate);
+    const tableTenantMoveInDateCellText = document.createTextNode(tenantMoveIn);
     tableTenantMoveInDateCell.append(tableTenantMoveInDateCellText);
     row.append(tableTenantMoveInDateCell);
 
     const tableTenantMoveOutDateCell = document.createElement("td");
-    const tableTenantMoveOutDateCellText = document.createTextNode(moveOutDate);
+    const tableTenantMoveOutDateCellText =
+      document.createTextNode(tenantMoveOut);
     tableTenantMoveOutDateCell.append(tableTenantMoveOutDateCellText);
     row.append(tableTenantMoveOutDateCell);
 
@@ -405,6 +406,7 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-new-tenant-nationalID]"
     )?.value;
     const tenantPhone = form.querySelector("[data-new-tenant-phone]")?.value;
+    const tenantMoveIn = form.querySelector("[data-new-tenant-moveIn]")?.value;
 
     if (
       !confirm(`Do you want to add ${tenantName} to roomID: ${selectedRoomId}?`)
@@ -415,6 +417,7 @@ class UserInterface extends UserinterfaceUtilities {
       tenantName,
       tenantNationalID,
       tenantPhone,
+      tenantMoveIn,
     };
 
     const { newRoomTenants, message } =

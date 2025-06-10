@@ -1284,8 +1284,8 @@ const post_controllers = {
         );
 
       newTenant.tenantID = generateOTP();
-      newTenant.moveInDate = new Date().toLocaleDateString();
-      newTenant.moveOutDate = null;
+      newTenant.tenantMoveIn = new Date(newTenant.tenantMoveIn).toDateString();
+      newTenant.tenantMoveOut = null;
 
       tenants[0][propertyId].tenants[roomId][newTenant.tenantID] = newTenant;
 

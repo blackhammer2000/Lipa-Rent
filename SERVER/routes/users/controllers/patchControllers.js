@@ -250,13 +250,18 @@ const patchControllers = {
       const tenantMoveOutDate = selectedTenantOnRoomOnProperty.tenantMoveOut;
 
       editedTenant.tenantID ? delete editedTenant.tenantID : null;
+      editedTenant.tenantMoveOut
+        ? (editedTenant.tenantMoveOut = new Date(
+            editedTenant.tenantMoveOut
+          ).toDateString())
+        : null;
 
       for (const key in editedTenant) {
         if (key === "tenantID") {
           selectedTenantOnRoomOnProperty[key] =
             selectedTenantOnRoomOnProperty[key];
         } else {
-          selectedTenantOnRoomOnProperty[key]
+          selectedTenantOnRoomOnProperty.hasOwnProperty(key)
             ? (selectedTenantOnRoomOnProperty[key] = editedTenant[key])
             : null;
         }
