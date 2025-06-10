@@ -1330,8 +1330,10 @@ const post_controllers = {
       rooms[0][propertyId].rooms[roomId].currentTenantID =
         newTenant.tenantNationalID;
 
-      rooms[0][propertyId].rooms[roomId].isOccupied =
-        !rooms[0][propertyId].rooms[roomId].isOccupied;
+      rooms[0][propertyId].rooms[roomId].isOccupied = rooms[0][propertyId]
+        .rooms[roomId].currentTenantID
+        ? true
+        : false;
 
       const updateRooms = await Room.updateOne(
         { ownerID: id },
@@ -1740,7 +1742,6 @@ const post_controllers = {
   },
   //?  below is the expected requestBody from the user when reading all rent payments for a room
   //* {
-  //*   "propertyNo": "NGONG/NGONG/12058",
   //*   "propertyId": "HDFBSUEHDUIFHW783YRWUHF84YF3",
   //*   "roomId": "PK3",
   //* }
