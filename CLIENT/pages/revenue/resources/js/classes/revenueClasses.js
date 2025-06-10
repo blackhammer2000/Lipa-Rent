@@ -67,7 +67,10 @@ class Store extends StoreUtilities {
     if (message || propertyRents || error)
       UserInterface.closeLoader("readPayments");
 
-    if (error) UserInterface.handleErrors(error);
+    if (error) {
+      UserInterface.handleErrors(error);
+      return;
+    }
 
     console.log(message, propertyRents, propertyExpectedRevenueMonthly);
 
