@@ -446,8 +446,6 @@ class UserInterface extends UserinterfaceUtilities {
       e.target.parentElement.parentElement.parentElement.parentElement
         .parentElement.parentElement.parentElement;
 
-    console.log(homeSection);
-
     editTenantModal.classList.remove("hide");
     homeSection.classList.add("blur");
 
@@ -462,6 +460,8 @@ class UserInterface extends UserinterfaceUtilities {
       e.target.parentElement.parentElement.children[3].innerText;
     const tenantPhone =
       e.target.parentElement.parentElement.children[4].innerText;
+    const tenantMoveInDate =
+      e.target.parentElement.parentElement.children[5].innerText;
     const tenantMoveOutDate =
       e.target.parentElement.parentElement.children[6].innerText;
 
@@ -470,6 +470,9 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-edited-nationalID]"
     );
     const tenantPhoneFormInput = editForm.querySelector("[data-edited-phone]");
+    const tenantMoveInFormInput = editForm.querySelector(
+      "[data-edited-movein]"
+    );
     const tenantMoveOutFormInput = editForm.querySelector(
       "[data-edited-moveout]"
     );
@@ -479,6 +482,7 @@ class UserInterface extends UserinterfaceUtilities {
     tenantNameFormInput.value = tenantName;
     tenantNationalIDFormInput.value = tenantNationalID;
     tenantPhoneFormInput.value = tenantPhone;
+    tenantMoveInFormInput.value = tenantMoveInDate;
     tenantMoveOutFormInput.value = tenantMoveOutDate;
   }
 
@@ -511,6 +515,9 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-edited-nationalID]"
     )?.value;
     const editedTenantPhone = form.querySelector("[data-edited-phone]")?.value;
+    const editedTenantMoveInDate = form.querySelector(
+      "[data-edited-movein]"
+    )?.value;
     const editedTenantMoveOutDate = form.querySelector(
       "[data-edited-moveout]"
     )?.value;
@@ -519,6 +526,7 @@ class UserInterface extends UserinterfaceUtilities {
       tenantName: editedTenantName,
       tenantNationalID: editedTenantNationalID,
       tenantPhone: editedTenantPhone,
+      tenantMoveIn: editedTenantMoveInDate,
       tenantMoveOut: editedTenantMoveOutDate,
     };
 

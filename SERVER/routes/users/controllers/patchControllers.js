@@ -247,9 +247,14 @@ const patchControllers = {
           "No tenant with the given tenantId has been added to this room."
         );
 
-      const tenantMoveOutDate = selectedTenantOnRoomOnProperty.tenantMoveOut;
-
       editedTenant.tenantID ? delete editedTenant.tenantID : null;
+
+      editedTenant.tenantMoveIn
+        ? (editedTenant.tenantMoveIn = new Date(
+            editedTenant.tenantMoveIn
+          ).toDateString())
+        : null;
+
       editedTenant.tenantMoveOut
         ? (editedTenant.tenantMoveOut = new Date(
             editedTenant.tenantMoveOut
@@ -280,9 +285,8 @@ const patchControllers = {
 
       if (
         editedTenant.tenantMoveOut &&
-        editedTenant.tenantMoveOut !== tenantMoveOutDate &&
         Date.parse(editedTenant.tenantMoveOut) >
-          Date.parse(editedTenant.tenantMoveIn)
+          Date.parse(selectedTenantOnRoomOnProperty.tenantMoveIn)
       ) {
         const roomDoc = await Room.findOne({ ownerID: id });
 
