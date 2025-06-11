@@ -510,17 +510,17 @@ class UserInterface extends UserinterfaceUtilities {
 
     const homeSection = document.querySelector(".home");
 
-    const editedTenantName = form.querySelector("[data-edited-name]")?.value;
+    const editedTenantName = form.querySelector("[data-edited-name]").value;
     const editedTenantNationalID = form.querySelector(
       "[data-edited-nationalID]"
-    )?.value;
-    const editedTenantPhone = form.querySelector("[data-edited-phone]")?.value;
+    ).value;
+    const editedTenantPhone = form.querySelector("[data-edited-phone]").value;
     const editedTenantMoveInDate = form.querySelector(
       "[data-edited-movein]"
-    )?.value;
+    ).value;
     const editedTenantMoveOutDate = form.querySelector(
       "[data-edited-moveout]"
-    )?.value;
+    ).value;
 
     const editedTenant = {
       tenantName: editedTenantName,
