@@ -497,7 +497,7 @@ class UserInterface extends UserinterfaceUtilities {
 
     const tenantId = form.parentElement.querySelector(
       "[data-edit-tenant-id]"
-    )?.innerText;
+    ).innerText;
 
     if (!tenantId) return;
 
