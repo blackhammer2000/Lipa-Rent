@@ -442,9 +442,7 @@ class UserInterface extends UserinterfaceUtilities {
         .parentElement.parentElement.parentElement.nextElementSibling
         .nextElementSibling;
 
-    const homeSection =
-      e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.parentElement.parentElement;
+    const homeSection = document.querySelector(".home");
 
     editTenantModal.classList.remove("hide");
     homeSection.classList.add("blur");
