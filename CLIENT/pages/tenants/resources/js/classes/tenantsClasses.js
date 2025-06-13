@@ -437,11 +437,7 @@ class UserInterface extends UserinterfaceUtilities {
   static populateEditTenantForm(e) {
     e.preventDefault();
 
-    const editTenantModal =
-      e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.parentElement.parentElement.nextElementSibling
-        .nextElementSibling;
-
+    const editTenantModal = document.querySelector("[data-edit-tenant]");
     const homeSection = document.querySelector(".home");
 
     editTenantModal.classList.remove("hide");
