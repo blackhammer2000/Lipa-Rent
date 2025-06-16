@@ -533,7 +533,7 @@ class UserInterface extends UserinterfaceUtilities {
         editedTenant
       );
 
-    // console.log(editedRoomTenants, message);
+    console.log(editedRoomTenants, message);
 
     if (editedRoomTenants && message) {
       homeSection.classList.remove("blur");
