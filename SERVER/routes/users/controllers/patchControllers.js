@@ -195,7 +195,7 @@ const patchControllers = {
       if (updateRooms.acknowledged && updateRooms.modifiedCount)
         res.status(200).json({
           message: `Room with the ID: ${roomId} has been successfuly edited.`,
-          editedRooms: rooms[0][propertyId]?.rooms,
+          editedRooms: rooms[0][propertyId].rooms,
         });
     } catch (err) {
       if (err.message) res.status(400).json({ error: err.message });
@@ -249,6 +249,12 @@ const patchControllers = {
 
       editedTenant.tenantID ? delete editedTenant.tenantID : null;
 
+      if (
+        Date.parse(selectedTenantOnRoomOnProperty.tenantMoveOut) <
+        Date.parse(selectedTenantOnRoomOnProperty.tenantMoveIn)
+      )
+        throw new Error("The move out date can only be after the move in.");
+
       for (const key in editedTenant) {
         if (key === "tenantID") {
           selectedTenantOnRoomOnProperty[key] =
@@ -271,9 +277,14 @@ const patchControllers = {
       if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
         throw new Error("Could not update database after editing the tenant.");
 
+      // console.log(selectedTenantOnRoomOnProperty);
+      // console.log(Date.parse(selectedTenantOnRoomOnProperty.tenantMoveOut));
+      // console.log(Date.parse(selectedTenantOnRoomOnProperty.tenantMoveIn));
+
       if (
-        editedTenant.tenantMoveOut &&
-        Date.parse(editedTenant.tenantMoveOut) >
+        selectedTenantOnRoomOnProperty.tenantMoveIn &&
+        selectedTenantOnRoomOnProperty.tenantMoveOut &&
+        Date.parse(selectedTenantOnRoomOnProperty.tenantMoveOut) >
           Date.parse(selectedTenantOnRoomOnProperty.tenantMoveIn)
       ) {
         const roomDoc = await Room.findOne({ ownerID: id });
