@@ -346,6 +346,12 @@ class UserInterface extends UserinterfaceUtilities {
     });
     rowCTAbuttonCell.append(deleteButtonCell);
 
+    tenantMoveOut !== null
+      ? !row.classList.contains("table-active")
+        ? row.classList.add("table-active")
+        : null
+      : null;
+
     row.append(rowCTAbuttonCell);
 
     return row;
