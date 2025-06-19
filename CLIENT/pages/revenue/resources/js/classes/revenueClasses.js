@@ -61,12 +61,8 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const {
-      message,
-      propertyRents,
-      propertyExpectedRevenueForSelectedRange,
-      error,
-    } = await getAllPropertyPaymentData.json();
+    const { message, propertyRents, propertyExpectedRevenueMonthly, error } =
+      await getAllPropertyPaymentData.json();
 
     if (message || propertyRents || error)
       UserInterface.closeLoader("readPayments");
@@ -76,18 +72,10 @@ class Store extends StoreUtilities {
       return;
     }
 
-    console.log(
-      message,
-      propertyRents,
-      propertyExpectedRevenueForSelectedRange
-    );
+    console.log(message, propertyRents, propertyExpectedRevenueMonthly);
 
-    if (message && propertyRents && propertyExpectedRevenueForSelectedRange)
-      return {
-        message,
-        propertyRents,
-        propertyExpectedRevenueForSelectedRange,
-      };
+    if (message && propertyRents && propertyExpectedRevenueMonthly)
+      return { message, propertyRents, propertyExpectedRevenueMonthly };
   }
 }
 
@@ -120,7 +108,7 @@ class UserInterface extends UserinterfaceUtilities {
 
   static renderRevenueStats(
     propertyRents,
-    propertyExpectedRevenueForSelectedRange,
+    propertyExpectedRevenueMonthly,
     selectedRange
   ) {
     if (!propertyRents || !selectedRange) return;
@@ -163,6 +151,12 @@ class UserInterface extends UserinterfaceUtilities {
       selectedRangeTotalRevenue += +payment.amountPaid;
     });
 
+    const propertyExpectedRevenueForSelectedRange = selectedRange.month
+      ? propertyExpectedRevenueMonthly
+      : selectedRange.year
+      ? propertyExpectedRevenueMonthly * 12
+      : null;
+
     const selectedRangeDeficitRevenue =
       propertyExpectedRevenueForSelectedRange - selectedRangeTotalRevenue;
 
@@ -204,17 +198,16 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (!propertyName) return;
 
-    const { message, propertyRents, propertyExpectedRevenueForSelectedRange } =
+    const { message, propertyRents, propertyExpectedRevenueMonthly } =
       await Store.readAllPayments(accessToken, propertyId);
 
-    if (!message || !propertyRents || !propertyExpectedRevenueForSelectedRange)
-      return;
+    if (!message || !propertyRents || !propertyExpectedRevenueMonthly) return;
 
     this.alertMessage(message, "success");
     this.updatePageHeader(propertyName);
     this.renderRevenueStats(
       propertyRents,
-      propertyExpectedRevenueForSelectedRange,
+      propertyExpectedRevenueMonthly,
       selectedRange
     );
 
