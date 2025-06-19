@@ -311,13 +311,18 @@ class UserInterface extends UserinterfaceUtilities {
     row.append(tableTenantNumberCell);
 
     const tableTenantMoveInDateCell = document.createElement("td");
-    const tableTenantMoveInDateCellText = document.createTextNode(tenantMoveIn);
+    tableTenantMoveInDateCell.id = tenantMoveIn;
+    const tableTenantMoveInDateCellText = document.createTextNode(
+      new Date(tenantMoveIn).toDateString()
+    );
     tableTenantMoveInDateCell.append(tableTenantMoveInDateCellText);
     row.append(tableTenantMoveInDateCell);
 
     const tableTenantMoveOutDateCell = document.createElement("td");
-    const tableTenantMoveOutDateCellText =
-      document.createTextNode(tenantMoveOut);
+    tableTenantMoveOutDateCell.id = tenantMoveOut;
+    const tableTenantMoveOutDateCellText = tenantMoveOut
+      ? document.createTextNode(new Date(tenantMoveOut))
+      : tenantMoveOut;
     tableTenantMoveOutDateCell.append(tableTenantMoveOutDateCellText);
     row.append(tableTenantMoveOutDateCell);
 
@@ -455,9 +460,9 @@ class UserInterface extends UserinterfaceUtilities {
     const tenantPhone =
       e.target.parentElement.parentElement.children[4].innerText;
     const tenantMoveInDate =
-      e.target.parentElement.parentElement.children[5].innerText;
+      e.target.parentElement.parentElement.children[5].id;
     const tenantMoveOutDate =
-      e.target.parentElement.parentElement.children[6].innerText;
+      e.target.parentElement.parentElement.children[6].id;
 
     const tenantNameFormInput = editForm.querySelector("[data-edited-name]");
     const tenantNationalIDFormInput = editForm.querySelector(
