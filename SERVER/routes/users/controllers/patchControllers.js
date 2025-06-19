@@ -375,6 +375,8 @@ const patchControllers = {
           "Tenant with the given ID has not been registered in the tenants database."
         );
 
+      editedPayment.paymentID ? delete editedPayment.paymentID : null;
+
       let selectedPaymentIndex = null;
 
       const updatedTenantPaymentReports =
@@ -393,7 +395,7 @@ const patchControllers = {
                 ) {
                   switch (key) {
                     case "paymentID":
-                      payment[key] ? (payment[key] = editedPayment[key]) : null;
+                      payment[key] ? (payment[key] = payment[key]) : null;
                       break;
 
                     case "amountPaid":
