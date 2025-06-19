@@ -108,7 +108,7 @@ class UserInterface extends UserinterfaceUtilities {
 
   static renderRevenueStats(
     propertyRents,
-    propertyExpectedRevenueMonthly,
+    propertyExpectedRevenueForSelectedRange,
     selectedRange
   ) {
     if (!propertyRents || !selectedRange) return;
@@ -152,7 +152,7 @@ class UserInterface extends UserinterfaceUtilities {
     });
 
     const selectedRangeDeficitRevenue =
-      propertyExpectedRevenueMonthly - selectedRangeTotalRevenue;
+      propertyExpectedRevenueForSelectedRange - selectedRangeTotalRevenue;
 
     const totalRevenueAmount = document.querySelector("[data-total-revenue]");
     const projectedRevenueAmount = document.querySelector(
@@ -161,13 +161,13 @@ class UserInterface extends UserinterfaceUtilities {
     const deficitRevenueAmount = document.querySelector(
       "[data-deficit-revenue]"
     );
-    selectedRangeTotalRevenue < propertyExpectedRevenueMonthly
+    selectedRangeTotalRevenue < propertyExpectedRevenueForSelectedRange
       ? totalRevenueAmount.classList.add("text-danger")
       : totalRevenueAmount.classList.add("text-success");
 
     totalRevenueAmount.innerText = `KES. ${selectedRangeTotalRevenue.toLocaleString()}`;
 
-    projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueMonthly.toLocaleString()}`;
+    projectedRevenueAmount.innerText = `KES. ${propertyExpectedRevenueForSelectedRange.toLocaleString()}`;
 
     selectedRangeDeficitRevenue < 0
       ? deficitRevenueAmount.classList.add("text-success")
@@ -192,16 +192,17 @@ class UserInterface extends UserinterfaceUtilities {
 
     if (!propertyName) return;
 
-    const { message, propertyRents, propertyExpectedRevenueMonthly } =
+    const { message, propertyRents, propertyExpectedRevenueForSelectedRange } =
       await Store.readAllPayments(accessToken, propertyId);
 
-    if (!message || !propertyRents || !propertyExpectedRevenueMonthly) return;
+    if (!message || !propertyRents || !propertyExpectedRevenueForSelectedRange)
+      return;
 
     this.alertMessage(message, "success");
     this.updatePageHeader(propertyName);
     this.renderRevenueStats(
       propertyRents,
-      propertyExpectedRevenueMonthly,
+      propertyExpectedRevenueForSelectedRange,
       selectedRange
     );
 
