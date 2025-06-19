@@ -394,10 +394,6 @@ const patchControllers = {
                     "recieptNumber")
                 ) {
                   switch (key) {
-                    case "paymentID":
-                      payment[key] ? (payment[key] = payment[key]) : null;
-                      break;
-
                     case "amountPaid":
                       payment[key] ? (payment[key] = editedPayment[key]) : null;
 
