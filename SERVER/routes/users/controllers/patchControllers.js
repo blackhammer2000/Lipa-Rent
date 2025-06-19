@@ -252,7 +252,7 @@ const patchControllers = {
       if (
         editedTenant.tenantMoveOut &&
         editedTenant.tenantMoveIn &&
-        Date.parse(editedTenant.tenantMoveOut) <
+        Date.parse(editedTenant.tenantMoveOut) <=
           Date.parse(editedTenant.tenantMoveIn)
       )
         throw new Error("The move out date can only be after the move in.");
