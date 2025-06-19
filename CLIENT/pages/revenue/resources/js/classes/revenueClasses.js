@@ -61,8 +61,12 @@ class Store extends StoreUtilities {
       requestOptions
     );
 
-    const { message, propertyRents, propertyExpectedRevenueMonthly, error } =
-      await getAllPropertyPaymentData.json();
+    const {
+      message,
+      propertyRents,
+      propertyExpectedRevenueForSelectedRange,
+      error,
+    } = await getAllPropertyPaymentData.json();
 
     if (message || propertyRents || error)
       UserInterface.closeLoader("readPayments");
@@ -72,10 +76,18 @@ class Store extends StoreUtilities {
       return;
     }
 
-    console.log(message, propertyRents, propertyExpectedRevenueMonthly);
+    console.log(
+      message,
+      propertyRents,
+      propertyExpectedRevenueForSelectedRange
+    );
 
-    if (message && propertyRents && propertyExpectedRevenueMonthly)
-      return { message, propertyRents, propertyExpectedRevenueMonthly };
+    if (message && propertyRents && propertyExpectedRevenueForSelectedRange)
+      return {
+        message,
+        propertyRents,
+        propertyExpectedRevenueForSelectedRange,
+      };
   }
 }
 
