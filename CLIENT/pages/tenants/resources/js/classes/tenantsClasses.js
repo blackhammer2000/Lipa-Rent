@@ -517,9 +517,8 @@ class UserInterface extends UserinterfaceUtilities {
     const editedTenantMoveInDate = form.querySelector(
       "[data-edited-movein]"
     ).value;
-    const editedTenantMoveOutDate = form.querySelector(
-      "[data-edited-moveout]"
-    ).value;
+    const editedTenantMoveOutDate =
+      form.querySelector("[data-edited-moveout]").value || null;
 
     const editedTenant = {
       tenantName: editedTenantName,
