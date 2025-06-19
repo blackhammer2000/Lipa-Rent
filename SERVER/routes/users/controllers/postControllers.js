@@ -1326,8 +1326,7 @@ const post_controllers = {
 
       if (!rooms) throw new Error("rooms doc prop not found.");
 
-      rooms[0][propertyId].rooms[roomId].currentTenantID =
-        newTenant.tenantNationalID;
+      rooms[0][propertyId].rooms[roomId].currentTenantID = newTenant.tenantID;
 
       rooms[0][propertyId].rooms[roomId].isOccupied = rooms[0][propertyId]
         .rooms[roomId].currentTenantID
