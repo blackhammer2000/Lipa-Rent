@@ -321,7 +321,7 @@ class UserInterface extends UserinterfaceUtilities {
     const tableTenantMoveOutDateCell = document.createElement("td");
     tableTenantMoveOutDateCell.id = tenantMoveOut;
     const tableTenantMoveOutDateCellText = tenantMoveOut
-      ? document.createTextNode(new Date(tenantMoveOut))
+      ? document.createTextNode(new Date(tenantMoveOut).toDateString())
       : tenantMoveOut;
     tableTenantMoveOutDateCell.append(tableTenantMoveOutDateCellText);
     row.append(tableTenantMoveOutDateCell);
