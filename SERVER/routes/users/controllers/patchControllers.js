@@ -204,7 +204,7 @@ const patchControllers = {
 
   editTenantDetails: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unknown user...please log in");
+      if (!req.body.id) throw new Error("Unauthorized action.");
       if (!req.body.propertyId) throw new Error("provide a valid property Id.");
       if (!req.body.roomId) throw new Error("provide a valid room Id.");
       if (!req.body.tenantId) throw new Error("provide a valid tenant Id.");
