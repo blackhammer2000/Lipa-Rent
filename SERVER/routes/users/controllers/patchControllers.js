@@ -279,10 +279,6 @@ const patchControllers = {
       if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
         throw new Error("Could not update database after editing the tenant.");
 
-      // console.log(selectedTenantOnRoomOnProperty);
-      // console.log(Date.parse(selectedTenantOnRoomOnProperty.tenantMoveOut));
-      // console.log(Date.parse(selectedTenantOnRoomOnProperty.tenantMoveIn));
-
       if (
         selectedTenantOnRoomOnProperty.tenantMoveIn &&
         selectedTenantOnRoomOnProperty.tenantMoveOut &&
