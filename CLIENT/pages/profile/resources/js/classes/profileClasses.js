@@ -847,7 +847,9 @@ class UserInterface extends UserinterfaceUtilities {
     if (e.target.classList.contains("fa-eye")) {
       e.target.classList.remove("fa-eye");
       e.target.classList.add("fa-eye-slash");
-    } else {
+    }
+
+    if (e.target.classList.contains("fa-eye-slash")) {
       e.target.classList.remove("fa-eye-slash");
       e.target.classList.add("fa-eye");
     }
