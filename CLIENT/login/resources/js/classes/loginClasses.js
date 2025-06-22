@@ -1,3 +1,7 @@
+const {
+  login,
+} = require("../../../../../SERVER/routes/users/controllers/postControllers");
+
 class Store extends StoreUtilities {
   static async login(loginInfo) {
     if (!loginInfo) return;
@@ -279,7 +283,7 @@ class UserInterface extends UserinterfaceUtilities {
   }
 
   static createVerifyOtpModal(loginToken, loginForm) {
-    if (!loginToken) return;
+    if (!loginToken || !loginForm) return;
 
     document.querySelector(".enterOtpModal")?.remove();
 
