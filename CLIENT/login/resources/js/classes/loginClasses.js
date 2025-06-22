@@ -1,7 +1,3 @@
-const {
-  login,
-} = require("../../../../../SERVER/routes/users/controllers/postControllers");
-
 class Store extends StoreUtilities {
   static async login(loginInfo) {
     if (!loginInfo) return;
