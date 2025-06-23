@@ -41,7 +41,7 @@ class Store extends StoreUtilities {
     if (!otp || !token) return;
 
     const openLoader = UserInterface.openLoader(
-      "verifying your email...",
+      "verifying your email",
       "emailVerification"
     );
 
