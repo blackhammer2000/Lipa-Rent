@@ -1723,11 +1723,8 @@ const post_controllers = {
 
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
 
-      if (!propertyRents)
-        throw new Error("No tenants have been added to this property.");
-
-      if (!Object.keys(propertyRents))
-        throw new Error("No payment reports for the property room.");
+      if (!Object.keys(propertyRents).length)
+        throw new Error("No rooms have been added to this property.");
 
       res.status(200).json({
         message: "Revenue details fetched successfully",
