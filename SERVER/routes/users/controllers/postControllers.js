@@ -1721,7 +1721,7 @@ const post_controllers = {
           "Property with the given property Id has not been registered in the rents database."
         );
 
-      const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
+      const propertyRents = checkIfPropertyIdIsRegistered.rentPayments;
 
       if (!Object.keys(propertyRents).length)
         throw new Error("No rooms have been added to this property.");
@@ -1732,7 +1732,7 @@ const post_controllers = {
         propertyExpectedRevenueMonthly,
       });
     } catch (err) {
-      if (err?.message) res.status(400).json({ error: err.message });
+      if (err.message) res.status(400).json({ error: err.message });
     }
   },
   //?  below is the expected requestBody from the user when reading all rent payments for a room
