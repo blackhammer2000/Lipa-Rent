@@ -37,4 +37,5 @@ thead {
 
 .active {
   text-decoration: underline 2.5px;
+  font-weight: bolder;
 }
