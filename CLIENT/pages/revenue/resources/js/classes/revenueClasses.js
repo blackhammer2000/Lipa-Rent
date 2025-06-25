@@ -72,8 +72,6 @@ class Store extends StoreUtilities {
       return;
     }
 
-    console.log(message, propertyRents, propertyExpectedRevenueMonthly);
-
     if (message && propertyRents && propertyExpectedRevenueMonthly)
       return { message, propertyRents, propertyExpectedRevenueMonthly };
   }
