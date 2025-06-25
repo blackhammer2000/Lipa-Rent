@@ -1692,8 +1692,11 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegisteredInRooms)
         throw new Error(
-          "Property with the given property Id has not been registered in the rooms database."
+          "No property with the given property Id has been found in the rooms database."
         );
+
+      if (!Object.keys(checkIfPropertyIdIsRegisteredInRooms.rooms).length)
+        throw new Error("No rooms found in the selected property.");
 
       let propertyExpectedRevenueMonthly = 0;
 
@@ -1708,6 +1711,9 @@ const post_controllers = {
         }
       }
 
+      if (!propertyExpectedRevenueMonthly)
+        throw new Error("No occupied rooms found in the selected property.");
+
       const rentsDocument = await Rent.findOne({ ownerID: id });
 
       if (!rentsDocument) throw new Error(rentsDocument);
@@ -1721,14 +1727,12 @@ const post_controllers = {
           "Property with the given property Id has not been registered in the rents database."
         );
 
-      const propertyRents = checkIfPropertyIdIsRegistered.rentPayments;
-
-      if (!Object.keys(propertyRents).length)
-        throw new Error("No rooms have been added to this property.");
+      if (!Object.keys(checkIfPropertyIdIsRegistered.rentPayments).length)
+        throw new Error("No payments have been added to this property.");
 
       res.status(200).json({
         message: "Revenue details fetched successfully",
-        propertyRents,
+        propertyRents: checkIfPropertyIdIsRegistered.rentPayments,
         propertyExpectedRevenueMonthly,
       });
     } catch (err) {
