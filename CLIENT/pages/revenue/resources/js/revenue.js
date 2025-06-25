@@ -11,6 +11,21 @@
 
   UserInterface.renderPropertySelectionOptions(accessToken);
 
+  const selectedMonthInput = document.querySelector("[data-month]");
+  const selectedYearInput = document.querySelector("[data-year]");
+
+  selectedMonthInput.addEventListener("change", () => {
+    selectedMonthInput.value
+      ? selectedYearInput.setAttribute("disabled", "true")
+      : selectedYearInput.removeAttribute("disabled");
+  });
+
+  selectedYearInput.addEventListener("change", () => {
+    selectedYearInput.value
+      ? selectedMonthInput.setAttribute("disabled", "true")
+      : selectedMonthInput.removeAttribute("disabled");
+  });
+
   const form = document.querySelector("[data-select-property]");
 
   form.addEventListener("submit", (e) => {
