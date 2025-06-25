@@ -15,15 +15,23 @@
   const selectedYearInput = document.querySelector("[data-year]");
 
   selectedMonthInput.addEventListener("change", () => {
-    selectedMonthInput.value
-      ? selectedYearInput.setAttribute("disabled", "true")
-      : selectedYearInput.removeAttribute("disabled");
+    if (selectedMonthInput.value) {
+      selectedYearInput.setAttribute("disabled", "true");
+      selectedMonthInput.previousElementSibling.classList.add("active");
+    } else {
+      selectedYearInput.removeAttribute("disabled");
+      selectedMonthInput.previousElementSibling.classList.remove("active");
+    }
   });
 
   selectedYearInput.addEventListener("change", () => {
-    selectedYearInput.value
-      ? selectedMonthInput.setAttribute("disabled", "true")
-      : selectedMonthInput.removeAttribute("disabled");
+    if (selectedYearInput.value) {
+      selectedMonthInput.setAttribute("disabled", "true");
+      selectedYearInput.previousElementSibling.classList.add("active");
+    } else {
+      selectedMonthInput.removeAttribute("disabled");
+      selectedYearInput.previousElementSibling.classList.remove("active");
+    }
   });
 
   const form = document.querySelector("[data-select-property]");
