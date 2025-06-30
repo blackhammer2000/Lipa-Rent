@@ -350,6 +350,8 @@ class UserInterface extends UserinterfaceUtilities {
       ? !row.classList.contains("table-active")
         ? row.classList.add("table-active")
         : null
+      : row.classList.contains("table-active")
+      ? row.classList.remove("table-active")
       : null;
 
     row.append(rowCTAbuttonCell);
