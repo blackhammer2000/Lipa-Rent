@@ -333,7 +333,7 @@ class UserInterface extends UserinterfaceUtilities {
     const editButtonCellText = document.createTextNode("Edit");
     editButtonCell.append(editButtonCellText);
     editButtonCell.addEventListener("click", (e) => {
-      this.populateEditTenantForm(e);
+      this.populateEditTenantForm(e, tenant);
     });
     rowCTAbuttonCell.append(editButtonCell);
 
@@ -445,8 +445,9 @@ class UserInterface extends UserinterfaceUtilities {
     }
   }
 
-  static populateEditTenantForm(e) {
+  static populateEditTenantForm(e, tenant) {
     e.preventDefault();
+    if (!tenant) return;
 
     const editTenantModal = document.querySelector("[data-edit-tenant]");
     const homeSection = document.querySelector(".home");
@@ -458,17 +459,14 @@ class UserInterface extends UserinterfaceUtilities {
 
     const tenantIdSpan = editTenantModal.querySelector("[data-edit-tenant-id]");
 
-    const tenantId = e.target.parentElement.parentElement.children[1].innerText;
-    const tenantName =
-      e.target.parentElement.parentElement.children[2].innerText;
-    const tenantNationalID =
-      e.target.parentElement.parentElement.children[3].innerText;
-    const tenantPhone =
-      e.target.parentElement.parentElement.children[4].innerText;
-    const tenantMoveInDate =
-      e.target.parentElement.parentElement.children[5].id;
-    const tenantMoveOutDate =
-      e.target.parentElement.parentElement.children[6].id;
+    const {
+      tenantID,
+      tenantName,
+      tenantNationalID,
+      tenantPhone,
+      tenantMoveIn,
+      tenantMoveOut,
+    } = tenant;
 
     const tenantNameFormInput = editForm.querySelector("[data-edited-name]");
     const tenantNationalIDFormInput = editForm.querySelector(
@@ -482,13 +480,13 @@ class UserInterface extends UserinterfaceUtilities {
       "[data-edited-moveout]"
     );
 
-    tenantIdSpan.innerText = tenantId;
+    tenantIdSpan.innerText = tenantID;
 
     tenantNameFormInput.value = tenantName;
     tenantNationalIDFormInput.value = tenantNationalID;
     tenantPhoneFormInput.value = tenantPhone;
-    tenantMoveInFormInput.value = tenantMoveInDate;
-    tenantMoveOutFormInput.value = tenantMoveOutDate;
+    tenantMoveInFormInput.value = tenantMoveIn;
+    tenantMoveOutFormInput.value = tenantMoveOut;
   }
 
   static async editRoomTenantAndRender(
