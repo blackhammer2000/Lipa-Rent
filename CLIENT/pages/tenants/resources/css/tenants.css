@@ -1,8 +1,8 @@
 .tenantModal {
   position: absolute;
   content: "";
-  top: 15%;
-  left: 12.5%;
+  top: 20%;
+  left: 35%;
   height: fit-content;
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 10px, 10px, 10px, 10px, #000;
