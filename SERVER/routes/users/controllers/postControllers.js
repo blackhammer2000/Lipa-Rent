@@ -792,8 +792,6 @@ const post_controllers = {
           "Property with the given property number has already been registered."
         );
 
-      newProperty.expectedRevenues = { [new Date().getFullYear()]: [] };
-
       propertiesOwned[0][newProperty.propertyID] = newProperty;
 
       const addNewProperty = await Property.updateOne(
@@ -873,6 +871,7 @@ const post_controllers = {
         propertyID: newProperty.propertyID,
         propertyNumber: newProperty.propertyNumber,
         rentPayments: {},
+        expectedMonthlyRevenues: { [new Date().getFullYear()]: [] },
       };
 
       const updatePropertiesRoomsTenantsRents = await Rent.findOneAndUpdate(
