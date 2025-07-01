@@ -1646,6 +1646,16 @@ const post_controllers = {
         newRentPaymentEntry
       );
 
+      const yearOfRentPaymentInExpectedMonthlyRevenues =
+        rents[0][propertyId].expectedMonthlyRevenues[
+          new Date(newRentPaymentEntry.date).getFullYear()
+        ];
+
+      if (!yearOfRentPaymentInExpectedMonthlyRevenues)
+        rents[0][propertyId].expectedMonthlyRevenues[
+          new Date(newRentPaymentEntry.date).getFullYear()
+        ] = [];
+
       const updateRents = await Rent.updateOne(
         { ownerID: id },
         {
