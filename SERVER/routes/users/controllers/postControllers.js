@@ -1,7 +1,5 @@
 const { compare, hash } = require("bcrypt");
 
-const crypto = require("node:crypto");
-
 const { signAccessToken } = require("../../../middleware/tokens/accessToken");
 
 const {
