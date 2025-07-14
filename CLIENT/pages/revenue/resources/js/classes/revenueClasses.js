@@ -165,6 +165,7 @@ class UserInterface extends UserinterfaceUtilities {
     const deficitRevenueAmount = document.querySelector(
       "[data-deficit-revenue]"
     );
+
     selectedRangeTotalRevenue < propertyExpectedRevenueForSelectedRange
       ? totalRevenueAmount.classList.add("text-danger")
       : totalRevenueAmount.classList.add("text-success");
