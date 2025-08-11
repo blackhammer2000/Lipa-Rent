@@ -210,8 +210,7 @@ class UserInterface extends UserinterfaceUtilities {
       selectedRange
     );
 
-    // localStorage.setItem("liparentRevenueSelectedProperty", propertyId);
-    // localStorage.setItem("liparentRevenueSelectedPropertyRange", selectedRange);
+    this.saveQueryDetailsToLocalStorage(propertyId, selectedRange);
   }
 
   static updatePageHeader(propertyName) {
@@ -220,5 +219,26 @@ class UserInterface extends UserinterfaceUtilities {
     document.querySelector(
       "[data-header]"
     ).innerText = `REVENUE REPORT FOR ${propertyName}`;
+  }
+
+  static saveQueryDetailsToLocalStorage(propertyId, selectedRange) {
+    !localStorage.getItem("liparentRevenueSelectedProperty") ||
+    (localStorage.getItem("liparentRevenueSelectedProperty") &&
+      localStorage.getItem("liparentRevenueSelectedProperty") !== propertyId)
+      ? localStorage.setItem("liparentRevenueSelectedProperty", propertyId)
+      : null;
+
+    !localStorage.getItem("liparentRevenueSelectedPropertyRange") ||
+    (localStorage.getItem("liparentRevenueSelectedPropertyRange") &&
+      JSON.parse(
+        localStorage.getItem("liparentRevenueSelectedPropertyRange")
+      ) !== selectedRange)
+      ? JSON.stringify(
+          localStorage.setItem(
+            "liparentRevenueSelectedPropertyRange",
+            selectedRange
+          )
+        )
+      : null;
   }
 }
