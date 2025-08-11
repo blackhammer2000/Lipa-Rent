@@ -197,6 +197,9 @@ class UserinterfaceUtilities {
     localStorage.removeItem("liparentSelectedRoomNumber");
     localStorage.removeItem("liparentSelectedTenantId");
     localStorage.removeItem("liparentSelectedTenantName");
+    localStorage.removeItem("liparentRevenueSelectedPropertyName");
+    localStorage.removeItem("liparentRevenueSelectedPropertyId");
+    localStorage.removeItem("liparentRevenueSelectedPropertyRange");
   }
 
   static createDropdownMenu() {

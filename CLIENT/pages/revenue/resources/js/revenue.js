@@ -11,35 +11,54 @@
 
   UserInterface.renderPropertySelectionOptions(accessToken);
 
+  const form = document.querySelector("[data-select-property]");
+
   const selectedMonthInput = document.querySelector("[data-month]");
   const selectedYearInput = document.querySelector("[data-year]");
 
-  selectedMonthInput.addEventListener("change", () => {
-    if (selectedMonthInput.value) {
-      selectedYearInput.setAttribute("disabled", "true");
-      selectedMonthInput.previousElementSibling.classList.add("active");
-    } else {
-      selectedYearInput.removeAttribute("disabled");
-      selectedMonthInput.previousElementSibling.classList.remove("active");
-    }
-  });
+  UserInterface.rangeInputsEventListeners(
+    selectedMonthInput,
+    selectedYearInput
+  );
 
-  selectedYearInput.addEventListener("change", () => {
-    if (selectedYearInput.value) {
-      selectedMonthInput.setAttribute("disabled", "true");
-      selectedYearInput.previousElementSibling.classList.add("active");
-    } else {
-      selectedMonthInput.removeAttribute("disabled");
-      selectedYearInput.previousElementSibling.classList.remove("active");
-    }
-  });
+  const selectedPropertyName = localStorage.getItem(
+    "liparentRevenueSelectedPropertyName"
+  );
+  const selectedPropertyId = localStorage.getItem(
+    "liparentRevenueSelectedPropertyId"
+  );
+  const selectedPropertyRange = JSON.parse(
+    localStorage.getItem("liparentRevenueSelectedPropertyRange")
+  );
 
-  const form = document.querySelector("[data-select-property]");
+  if (selectedPropertyId && selectedPropertyRange) {
+    UserInterface.readAndRenderRevenueStats(
+      accessToken,
+      selectedPropertyName,
+      selectedPropertyId,
+      selectedPropertyRange
+    );
+
+    if (selectedPropertyRange.month) {
+      selectedMonthInput.value = selectedPropertyRange.month;
+      selectedMonthInput.classList.add("active");
+      selectedYearInput.classList.remove("active");
+      selectedYearInput.disabled = true;
+    }
+
+    if (selectedPropertyRange.year) {
+      selectedYearInput.value = selectedPropertyRange.year;
+      selectedYearInput.classList.add("active");
+      selectedMonthInput.classList.remove("active");
+      selectedMonthInput.disabled = true;
+    }
+  }
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-
     const propertyId = form.querySelector("select").value;
+    const propertyName =
+      form.querySelector("select").children[propertyId].innerText;
 
     if (!propertyId) {
       UserInterface.handleErrors("please select a property");
@@ -58,16 +77,26 @@
     }
 
     if (selectedMonth && !selectedYear) {
-      UserInterface.readAndRenderRevenueStats(accessToken, form, propertyId, {
-        month: selectedMonth,
-      });
+      UserInterface.readAndRenderRevenueStats(
+        accessToken,
+        propertyName,
+        propertyId,
+        {
+          month: selectedMonth,
+        }
+      );
       return;
     }
 
     if (!selectedMonth && selectedYear) {
-      UserInterface.readAndRenderRevenueStats(accessToken, form, propertyId, {
-        year: selectedYear,
-      });
+      UserInterface.readAndRenderRevenueStats(
+        accessToken,
+        propertyName,
+        propertyId,
+        {
+          year: selectedYear,
+        }
+      );
       return;
     }
   });

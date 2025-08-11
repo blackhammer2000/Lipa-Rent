@@ -186,14 +186,11 @@ class UserInterface extends UserinterfaceUtilities {
 
   static async readAndRenderRevenueStats(
     accessToken,
-    form,
+    propertyName,
     propertyId,
     selectedRange
   ) {
-    if (!accessToken || !form || !propertyId || !selectedRange) return;
-
-    const propertyName =
-      form.querySelector("select").children[propertyId].innerText;
+    if (!accessToken || !propertyName || !propertyId || !selectedRange) return;
 
     if (!propertyName) return;
 
@@ -210,7 +207,11 @@ class UserInterface extends UserinterfaceUtilities {
       selectedRange
     );
 
-    this.saveQueryDetailsToLocalStorage(propertyId, selectedRange);
+    this.saveQueryDetailsToLocalStorage(
+      propertyName,
+      propertyId,
+      selectedRange
+    );
   }
 
   static updatePageHeader(propertyName) {
@@ -221,11 +222,25 @@ class UserInterface extends UserinterfaceUtilities {
     ).innerText = `REVENUE REPORT FOR ${propertyName}`;
   }
 
-  static saveQueryDetailsToLocalStorage(propertyId, selectedRange) {
-    !localStorage.getItem("liparentRevenueSelectedProperty") ||
-    (localStorage.getItem("liparentRevenueSelectedProperty") &&
-      localStorage.getItem("liparentRevenueSelectedProperty") !== propertyId)
-      ? localStorage.setItem("liparentRevenueSelectedProperty", propertyId)
+  static saveQueryDetailsToLocalStorage(
+    propertyName,
+    propertyId,
+    selectedRange
+  ) {
+    !localStorage.getItem("liparentRevenueSelectedPropertyName") ||
+    (localStorage.getItem("liparentRevenueSelectedPropertyName") &&
+      localStorage.getItem("liparentRevenueSelectedPropertyName") !==
+        propertyName)
+      ? localStorage.setItem(
+          "liparentRevenueSelectedPropertyName",
+          propertyName
+        )
+      : null;
+
+    !localStorage.getItem("liparentRevenueSelectedPropertyId") ||
+    (localStorage.getItem("liparentRevenueSelectedPropertyId") &&
+      localStorage.getItem("liparentRevenueSelectedPropertyId") !== propertyId)
+      ? localStorage.setItem("liparentRevenueSelectedPropertyId", propertyId)
       : null;
 
     !localStorage.getItem("liparentRevenueSelectedPropertyRange") ||
@@ -233,12 +248,32 @@ class UserInterface extends UserinterfaceUtilities {
       JSON.parse(
         localStorage.getItem("liparentRevenueSelectedPropertyRange")
       ) !== selectedRange)
-      ? JSON.stringify(
-          localStorage.setItem(
-            "liparentRevenueSelectedPropertyRange",
-            selectedRange
-          )
+      ? localStorage.setItem(
+          "liparentRevenueSelectedPropertyRange",
+          JSON.stringify(selectedRange)
         )
       : null;
+  }
+
+  static rangeInputsEventListeners(selectedMonthInput, selectedYearInput) {
+    selectedMonthInput.addEventListener("change", () => {
+      if (selectedMonthInput.value) {
+        selectedYearInput.setAttribute("disabled", "true");
+        selectedMonthInput.previousElementSibling.classList.add("active");
+      } else {
+        selectedYearInput.removeAttribute("disabled");
+        selectedMonthInput.previousElementSibling.classList.remove("active");
+      }
+    });
+
+    selectedYearInput.addEventListener("change", () => {
+      if (selectedYearInput.value) {
+        selectedMonthInput.setAttribute("disabled", "true");
+        selectedYearInput.previousElementSibling.classList.add("active");
+      } else {
+        selectedMonthInput.removeAttribute("disabled");
+        selectedYearInput.previousElementSibling.classList.remove("active");
+      }
+    });
   }
 }
