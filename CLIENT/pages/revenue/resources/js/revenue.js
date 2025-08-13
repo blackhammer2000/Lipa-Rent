@@ -31,7 +31,7 @@
     localStorage.getItem("liparentRevenueSelectedPropertyRange")
   );
 
-  if (selectedPropertyId && selectedPropertyRange) {
+  if (selectedPropertyName && selectedPropertyId && selectedPropertyRange) {
     UserInterface.readAndRenderRevenueStats(
       accessToken,
       selectedPropertyName,
