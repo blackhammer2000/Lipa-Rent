@@ -192,8 +192,6 @@ class UserInterface extends UserinterfaceUtilities {
   ) {
     if (!accessToken || !propertyName || !propertyId || !selectedRange) return;
 
-    if (!propertyName) return;
-
     const { message, propertyRents, propertyExpectedRevenueMonthly } =
       await Store.readAllPayments(accessToken, propertyId);
 
