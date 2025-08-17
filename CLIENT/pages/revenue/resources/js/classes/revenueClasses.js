@@ -225,32 +225,39 @@ class UserInterface extends UserinterfaceUtilities {
     propertyId,
     selectedRange
   ) {
-    !localStorage.getItem("liparentRevenueSelectedPropertyName") ||
-    (localStorage.getItem("liparentRevenueSelectedPropertyName") &&
-      localStorage.getItem("liparentRevenueSelectedPropertyName") !==
-        propertyName)
-      ? localStorage.setItem(
-          "liparentRevenueSelectedPropertyName",
-          propertyName
-        )
-      : null;
+    if (
+      !localStorage.getItem("liparentRevenueSelectedPropertyName") ||
+      (localStorage.getItem("liparentRevenueSelectedPropertyName") &&
+        localStorage.getItem("liparentRevenueSelectedPropertyName") !==
+          propertyName)
+    ) {
+      localStorage.removeItem("liparentRevenueSelectedPropertyName");
+      localStorage.setItem("liparentRevenueSelectedPropertyName", propertyName);
+    }
 
-    !localStorage.getItem("liparentRevenueSelectedPropertyId") ||
-    (localStorage.getItem("liparentRevenueSelectedPropertyId") &&
-      localStorage.getItem("liparentRevenueSelectedPropertyId") !== propertyId)
-      ? localStorage.setItem("liparentRevenueSelectedPropertyId", propertyId)
-      : null;
+    if (
+      !localStorage.getItem("liparentRevenueSelectedPropertyId") ||
+      (localStorage.getItem("liparentRevenueSelectedPropertyId") &&
+        localStorage.getItem("liparentRevenueSelectedPropertyId") !==
+          propertyId)
+    ) {
+      localStorage.removeItem("liparentRevenueSelectedPropertyId");
+      localStorage.setItem("liparentRevenueSelectedPropertyId", propertyId);
+    }
 
-    !localStorage.getItem("liparentRevenueSelectedPropertyRange") ||
-    (localStorage.getItem("liparentRevenueSelectedPropertyRange") &&
-      JSON.parse(
-        localStorage.getItem("liparentRevenueSelectedPropertyRange")
-      ) !== selectedRange)
-      ? localStorage.setItem(
-          "liparentRevenueSelectedPropertyRange",
-          JSON.stringify(selectedRange)
-        )
-      : null;
+    if (
+      !localStorage.getItem("liparentRevenueSelectedPropertyRange") ||
+      (localStorage.getItem("liparentRevenueSelectedPropertyRange") &&
+        JSON.parse(
+          localStorage.getItem("liparentRevenueSelectedPropertyRange")
+        ) !== selectedRange)
+    ) {
+      localStorage.removeItem("liparentRevenueSelectedPropertyRange");
+      localStorage.setItem(
+        "liparentRevenueSelectedPropertyRange",
+        JSON.stringify(selectedRange)
+      );
+    }
   }
 
   static rangeInputsEventListeners(selectedMonthInput, selectedYearInput) {
