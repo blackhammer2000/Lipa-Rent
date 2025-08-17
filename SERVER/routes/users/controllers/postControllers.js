@@ -424,6 +424,14 @@ const post_controllers = {
     }
   },
 
+  //! SUBSCRIPTIONS.
+
+  createPayment: async (req, res) => {},
+
+  verifyPayment: async (req, res) => {},
+
+  createSubscription: async (req, res) => {},
+
   //! LOGIN USER.
 
   //?  below is the expected requestBody from the user when creating a property.
