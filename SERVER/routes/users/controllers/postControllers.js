@@ -432,6 +432,8 @@ const post_controllers = {
 
   createSubscription: async (req, res) => {},
 
+  checkSubscription: async (req, res) => {},
+
   //! LOGIN USER.
 
   //?  below is the expected requestBody from the user when creating a property.
