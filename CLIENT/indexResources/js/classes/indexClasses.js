@@ -196,7 +196,7 @@ class UserInterface extends UserinterfaceUtilities {
   static async sendSignUpOtp(form) {
     if (!form) return;
 
-    const name = form.querySelector("[data-name]")?.value;
+    const name = form.querySelector("[data-name]").value;
     const nationalID = form.querySelector("[data-national-id]").value;
     const email = form.querySelector("[data-email]").value;
     const phone = form.querySelector("[data-phone]").value;
