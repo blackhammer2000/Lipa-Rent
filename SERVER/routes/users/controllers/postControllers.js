@@ -426,7 +426,10 @@ const post_controllers = {
 
   //! SUBSCRIPTIONS.
 
-  createPayment: async (req, res) => {},
+  createPayment: async (req, res) => {
+    try {
+    } catch (err) {}
+  },
 
   verifyPayment: async (req, res) => {},
 
