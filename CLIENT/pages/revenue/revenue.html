@@ -27,6 +27,7 @@
     <script src="../../utils/utils.js" defer></script>
     <script src="./resources/js/classes/revenueClasses.js" defer></script>
     <script src="./resources/js/revenue.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   </head>
   <body>
     <div class="home container-fluid font-italic">
@@ -143,6 +144,10 @@
             </div>
             <div data-deficit-revenue class="card-body"></div>
           </div>
+        </div>
+
+        <div class="charts">
+          <canvas id="revenueChart" width="400" height="200"> </canvas>
         </div>
       </div>
 
