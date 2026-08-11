@@ -475,7 +475,10 @@ const patchControllers = {
 
       if (encrypt(newPassword) !== encrypt(confirmNewPassword))
         throw new Error("Passwords do not match.");
+      
+      if(encrypt(newPassword).length < 8) throw new Error("Password must be at least 8 characters long.");
 
+      
       const passwordDoc = await Password.findOne({ ownerID: id });
 
       const resetPasswordToken = passwordDoc.resetToken || null;
