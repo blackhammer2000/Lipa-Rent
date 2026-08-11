@@ -26,39 +26,34 @@ app.listen(PORT, () => {
 
 
 
-(async function () {
-  try {
-    const connection = await connect(process.env.DB_CONNECTION);
-    
-    if (connection) console.log("connected to database.");
-  } catch (error) {
-    if (error) console.error(`Error connecting to database: ${error.message}`);
-  }
-})();
-
-
-// const { MongoClient, ServerApiVersion } = require('mongodb');
-// const uri = "mongodb+srv://waweruzamuel_db_user:KoGJoLN2vmXu0TvY@cluster0.qhjwfxc.mongodb.net/?appName=Cluster0";
-
-// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   }
-// });
-
-// async function run() {
+// (async function () {
 //   try {
-//     // Connect the client to the server	(optional starting in v4.7)
-//     await client.connect();
-//     // Send a ping to confirm a successful connection
-//     await client.db("admin").command({ ping: 1 });
-//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//   } finally {
-//     // Ensures that the client will close when you finish/error
-//     await client.close();
+//     const connection = await connect(process.env.DB_CONNECTION);
+    
+//     if (connection) console.log("connected to database.");
+//   } catch (error) {
+//     if (error) console.error(`Error connecting to database: ${error.message}`);
 //   }
-// }
-// run().catch(console.dir);
+// })();
+
+    const { MongoClient, ServerApiVersion } = require('mongodb');
+    const uri = process.env.DB_CONNECTION
+    // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+    const client = new MongoClient(uri);
+    
+    async function run() {
+      try {
+        // Connect the client to the server	(optional starting in v4.7)
+        const mongoConnection = await client.connect();
+        // Send a ping to confirm a successful connection
+        if(!mongoConnection) throw new Error(mongoConnection)
+    
+        const database= await client.db("lipa-rent");
+        if(database)console.log("You successfully connected to MongoDB!");
+    }finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+      }
+    }
+    
+    run().catch(console.dir)
