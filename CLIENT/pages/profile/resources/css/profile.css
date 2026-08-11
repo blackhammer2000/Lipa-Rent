@@ -1,0 +1,46 @@
+.hero {
+  /* display: grid;
+      place-items: center; */
+  height: 60vh;
+  overflow: hidden;
+}
+
+.hero ul li {
+  cursor: pointer;
+}
+
+.hero ul li:hover {
+  text-decoration: underline;
+}
+
+.accountModal {
+  position: absolute;
+  content: "";
+  top: 15%;
+  left: 12.5%;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 10px, 10px, 10px, 10px, #000;
+}
+
+.resetModal,
+.verifyModal,
+.deleteAccountModal {
+  position: absolute;
+  content: "";
+  top: 30%;
+  left: 35%;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 10px, 10px, 10px, 10px, #000;
+}
+
+.changePasswordModal {
+  position: absolute;
+  content: "";
+  top: 30%;
+  left: 39%;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 10px, 10px, 10px, 10px, #000;
+}

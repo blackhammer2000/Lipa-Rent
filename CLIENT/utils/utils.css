@@ -1,0 +1,97 @@
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow-y: hidden;
+}
+
+.hide {
+  display: none;
+}
+
+.loaderContainer,
+.alertModal {
+  position: absolute;
+  content: "";
+  top: 3%;
+  left: 12%;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 10px, 10px, 10px, 10px, #000;
+}
+
+.loaderBox {
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.alertBox {
+  border-radius: 10px;
+}
+
+.blur {
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.profile {
+  position: relative;
+}
+
+.profile > i {
+  cursor: pointer;
+  font-size: 2em;
+}
+
+.profile > i:active {
+  scale: 0.95;
+}
+
+.logo > i {
+  font-size: 2.5em;
+}
+
+fieldset {
+  border-radius: 10px;
+}
+
+.loaderSpinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid;
+  border-radius: 50%;
+  border-width: 5px;
+  border-color: white transparent;
+  animation: spin 1.3s ease infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disablePointerEvents {
+  pointer-events: none;
+}
+
+thead {
+  top: 0;
+}
+
+.userDropdown {
+  bottom: 6%;
+  left: 2%;
+}
+
+.userDropdown > ul > li > a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.removePointerEvents {
+  pointer-events: none;
+  opacity: 0.7;
+}

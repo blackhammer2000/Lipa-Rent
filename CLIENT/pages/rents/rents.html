@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiPARENT | RENTS</title>
+
+    <link rel="stylesheet" href="../../utils/utils.css" />
+    <link
+      rel="stylesheet"
+      href="../../indexResources/css/font-awesome/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../indexResources/css/font-awesome/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../indexResources/bootstrap/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../indexResources/bootstrap/css/bootstrap.min.css.map"
+    />
+    <link rel="stylesheet" href="./resources/css/rents.css" />
+
+    <!-- <script src="./resources/js/helpers.js" defer></script> -->
+
+    <script src="../../utils/utils.js" defer></script>
+    <script src="./resources/js/classes/rentsClasses.js" defer></script>
+    <script src="./resources/js/rents.js" defer></script>
+  </head>
+  <body>
+    <div class="home container-fluid font-italic">
+      <header
+        class="header d-flex container-fluid align-items-center mt-2 border-bottom border-success"
+      >
+        <div
+          class="heading d-flex justify-content-start align-items-center w-50 border-success"
+        >
+          <div class="profile">
+            <i class="fa fa-user-circle font-weight-bold text-dark"></i>
+          </div>
+          <div class="d-flex flex-column container ml-5">
+            <div
+              class="logo d-flex justify-content-center align-items-center w-50"
+            >
+              <h1 class="font-weight-bolder">
+                <span>LiPA<span class="text-success">RENT</span></span>
+              </h1>
+              <i class="fa fa-home"></i>
+            </div>
+
+            <div
+              class="action d-flex justify-content-center align-items-center w-50"
+            >
+              <form
+                data-select-tenant-form
+                action=""
+                class="mr-2 w-100 d-flex justify-content-center align-items-center"
+              >
+                <div class="form-group d-flex w-100">
+                  <select
+                    class="form-control border border-right-0 border-left border-top-0 border-bottom"
+                  ></select>
+                  <button
+                    type="submit"
+                    class="btn border border-right border-left-0 border-top-0 border-bottom text-success"
+                  >
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="routers mt-4 d-flex w-50 justify-content-center">
+          <ul class="list-unstyled d-flex">
+            <li class="mr-4">
+              <a href="../../dashboard/dashboard.html"
+                ><button class="btn btn-outline-success">DASH</button></a
+              >
+            </li>
+            <li>
+              <a href="../rooms/rooms.html"
+                ><button class="btn btn-outline-success">ROOMS</button></a
+              >
+            </li>
+            <li class="ml-4">
+              <a href="../tenants/tenants.html"
+                ><button class="btn btn-outline-success">TENANTS</button></a
+              >
+            </li>
+            <li class="ml-4">
+              <a href="../revenue/revenue.html"
+                ><button data-nav-revenue class="btn btn-outline-success">
+                  REVENUE
+                </button></a
+              >
+            </li>
+          </ul>
+        </div>
+      </header>
+
+      <div class="hero mt-5 d-flex flex-column container-fluid text-center">
+        <div class="first d-flex justify-content-between mb-2">
+          <div class="text-left w-25">
+            <button data-create-payment-button class="btn btn-success">
+              ADD PAYMENT
+            </button>
+          </div>
+          <div class="text-center d-flex justify-content-between w-75">
+            <u><h2 class="" data-table-description></h2></u>
+            <button class="btn btn-dark">
+              Export as PDF <i class="fa fa-file-pdf-o"></i>
+            </button>
+          </div>
+        </div>
+        <div class="overflow-auto pt-0">
+          <table class="table table-active bg-white mt-2">
+            <thead class="position-sticky bg-white">
+              <tr>
+                <th>NO.</th>
+                <th>PAYMENT ID</th>
+                <th>DATE</th>
+                <th>MONTH</th>
+                <th>PREV. BALANCE</th>
+                <th>AMOUNT PAID</th>
+                <th>NEW BALANCE</th>
+                <th>MODE</th>
+                <th>RECEIPT NO.</th>
+                <th>PAYMENT ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody data-table></tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer
+        class="footer mt-5 font-weight-bold d-flex container-fluid border-top border-success pt-3"
+      >
+        <div class="copyrights w-50 pl-5">
+          <span>LiPA<span class="text-success">RENT&reg;</span></span>
+          2024
+        </div>
+
+        <div
+          class="conditions w-50 d-flex justify-content-center align-items-center"
+        >
+          <ul
+            class="d-flex justify-content-center align-items-center list-unstyled"
+          >
+            <li class="mr-3">
+              <a class="text-dark" href="">About Us</a>
+            </li>
+            <li class="mr-3">
+              <a class="text-dark" href="">Contact</a>
+            </li>
+            <li class="mr-3">
+              <a class="text-dark" href="">Terms & Conditions</a>
+            </li>
+            <li class="ml-3">
+              <a class="text-dark" href="">Privacy Policies</a>
+            </li>
+            <li class="ml-5">
+              <button data-logout class="btn btn-outline-danger">
+                LOG OUT
+              </button>
+            </li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+
+    <!-- CREATE NEW PAYMENT MODAL -->
+    <div
+      data-create-payment
+      class="rentModal hide container justify-content-center align-items-center"
+    >
+      <fieldset class="border border-success p-5 border-radius-50">
+        <legend class="d-flex justify-content-around text-center">
+          <h4>ADD PAYMENT</h4>
+          <span class="closeModal" draggable="true">
+            <button data-close-create-payment-modal class="btn btn-danger">
+              X
+            </button>
+          </span>
+        </legend>
+
+        <form data-new-payment-form action="" class="form">
+          <div class="form-group">
+            <label class="font-weight-bold">PAYMENT AMOUNT</label>
+            <input
+              data-new-payment-amount
+              type="text"
+              class="form-control text-uppercase"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">PAYMENT MONTH</label>
+            <input
+              data-new-payment-month
+              required
+              class="form-control text-uppercase border border-right-0 border-left border-top-0 border-bottom"
+              type="month"
+            />
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">PAYMENT MODE</label>
+            <select
+              data-new-payment-mode
+              required
+              class="form-control border border-right-0 border-left border-top-0 border-bottom"
+            >
+              <option value="">SELECT PAYMENT MODE</option>
+              <option value="CASH">CASH</option>
+              <option value="M-PESA">M-PESA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">RECEIPT NUMBER</label>
+            <input
+              data-new-payment-receiptNumber
+              type="text"
+              class="form-control text-uppercase"
+              required
+            />
+          </div>
+
+          <div class="form-group text-center">
+            <button class="btn btn-success w-100">ADD PAYMENT</button>
+          </div>
+        </form>
+      </fieldset>
+    </div>
+
+    <!-- EDIT PROPERTY MODAL -->
+    <div
+      data-edit-payment
+      class="rentModal hide container justify-content-center align-items-center"
+    >
+      <fieldset class="border border-success p-5 border-radius-50">
+        <legend class="d-flex justify-content-around text-center">
+          <h4>EDIT PAYMENT</h4>
+          <span class="closeModal" draggable="true">
+            <button data-close-edit-modal class="btn btn-danger">X</button>
+          </span>
+        </legend>
+
+        <h5 class="text-center">
+          Payment Id:
+          <span class="font-weight-light" data-edit-payment-id></span>
+        </h5>
+
+        <form data-edit-payment-form action="" class="form">
+          <div class="form-group">
+            <label class="font-weight-bold">PAYMENT MONTH</label>
+            <input
+              placeholder="PAYMENT MONTH"
+              data-edited-month
+              required
+              class="form-control text-uppercase"
+              type="month"
+            />
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">PAYMENT AMOUNT</label>
+            <input
+              data-edited-amount
+              type="text"
+              class="form-control text-uppercase"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">PAYMENT MODE</label>
+            <select
+              data-edited-mode
+              required
+              class="form-control border border-right-0 border-left border-top-0 border-bottom"
+            >
+              <option value="">SELECT PAYMENT MODE</option>
+              <option value="CASH">CASH</option>
+              <option value="M-PESA">M-PESA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="font-weight-bold">RECEIPT NUMBER</label>
+            <input
+              data-edited-receiptNumber
+              type="text"
+              class="form-control text-uppercase"
+              required
+            />
+          </div>
+          <div class="form-group text-center">
+            <button data-edit-payment-button class="btn btn-primary w-100">
+              EDIT PAYMENT
+            </button>
+          </div>
+        </form>
+      </fieldset>
+    </div>
+
+    <!-- LOADER -->
+    <div
+      data-loader
+      class="loader text-white bg-secondary hide justify-content-between align-items-center p-2 font-weight-bold"
+    >
+      <div data-loaderText class="loaderText"></div>
+      <div data-loaderSpinner class="loaderSpinner ml-3"></div>
+    </div>
+  </body>
+</html>

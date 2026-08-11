@@ -1,0 +1,241 @@
+class Store extends StoreUtilities {
+  static async sendSignUpOtp(user) {
+    if (!user) return;
+
+    const openLoader = UserInterface.openLoader(
+      "sending verification code to your email",
+      "emailVerification"
+    );
+
+    if (!openLoader) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+      },
+      body: JSON.stringify({ user }),
+    };
+
+    const getSignUpOtpRequest = await fetch(
+      `${serverDomain}/api/user/owner/signup/generate/otp`,
+      requestOptions
+    );
+
+    const { message, signUpOtp, signUpToken, error } =
+      await getSignUpOtpRequest.json();
+
+    if (signUpToken || message || error)
+      UserInterface.closeLoader("emailVerification");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (signUpOtp) alert(signUpOtp);
+
+    if (message && signUpToken) return { message, signUpToken };
+  }
+
+  static async verifySignUpOtp(otp, token) {
+    if (!otp || !token) return;
+
+    const openLoader = UserInterface.openLoader(
+      "verifying your email",
+      "emailVerification"
+    );
+
+    if (!openLoader) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token,
+        otp,
+      },
+    };
+
+    const verifySignUpOtpRequest = await fetch(
+      `${serverDomain}/api/user/owner/signup/verify/otp`,
+      requestOptions
+    );
+
+    const { message, signUpToken, error } = await verifySignUpOtpRequest.json();
+
+    if (signUpToken || message || error)
+      UserInterface.closeLoader("emailVerification");
+
+    if (error) UserInterface.handleErrors(error);
+
+    if (message && signUpToken) return { message, signUpToken };
+  }
+
+  static async signUp(token, { password, confirmPassword }) {
+    if (!token || !password || !confirmPassword) return;
+
+    const openLoader = UserInterface.openLoader("completing sign up", "signup");
+
+    if (!openLoader) return;
+
+    const requestOptions = {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        user: true,
+        token,
+      },
+      body: JSON.stringify({ password, confirmPassword }),
+    };
+
+    const signUpRequest = await fetch(
+      `${serverDomain}/api/user/owner/signup`,
+      requestOptions
+    );
+
+    const { message, error } = await signUpRequest.json();
+
+    if (message || error) UserInterface.closeLoader("signup");
+
+    if (error && !message) UserInterface.handleErrors(error);
+
+    if (message && !error) return { message2: message };
+  }
+}
+
+class UserInterface extends UserinterfaceUtilities {
+  static createVerifyOtpForm(token, user) {
+    if (!token || !user) return;
+
+    document.querySelector(".enterOtpModal")?.remove();
+
+    const modal = document.createElement("div");
+    modal.className =
+      "enterOtpModal d-flex justify-content-center align-items-center border border-success py-2 w-25";
+
+    const fieldset = document.createElement("fieldset");
+    fieldset.className =
+      "container-fluid d-flex flex-column justify-content-center align-items-center";
+
+    const legend = document.createElement("legend");
+    legend.className = "container-fluid d-flex justify-content-end";
+
+    const closeModalButton = document.createElement("button");
+    closeModalButton.draggable = "true";
+    closeModalButton.className = "closeResetModal btn btn-danger";
+    closeModalButton.innerText = "X";
+    closeModalButton.addEventListener("click", () => {
+      document.querySelector(".home").classList.remove("blur");
+      document.querySelector(".enterOtpModal").remove();
+    });
+    legend.append(closeModalButton);
+    fieldset.append(legend);
+
+    const form = document.createElement("form");
+
+    const formGroup1 = document.createElement("div");
+    formGroup1.className = "form-group";
+
+    const label = document.createElement("label");
+    label.className = "text-center";
+
+    const labelText = document.createElement("h5");
+    labelText.innerText = "Enter Sign Up OTP";
+    label.append(labelText);
+    formGroup1.append(label);
+
+    const input = document.createElement("input");
+    input.className = "form-control";
+    input.type = "text";
+    formGroup1.append(input);
+    form.append(formGroup1);
+
+    const formGroup2 = document.createElement("div");
+    formGroup2.className = "form-group";
+
+    const verifyButton = document.createElement("button");
+    verifyButton.className = "btn btn-success";
+    verifyButton.innerText = "Verify";
+    verifyButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!input.value) return;
+      this.verifySignUpOtpAndCompleteSignUp(input.value, token, user);
+    });
+
+    const sendCodeAgainButton = document.createElement("button");
+    sendCodeAgainButton.className = "ml-2 btn btn-dark";
+    sendCodeAgainButton.innerText = "Send code again";
+    sendCodeAgainButton.disabled = "true";
+
+    // const newResetCodeTimer = document.createElement("span");
+
+    // this.handleSendCodeAgainTimer(newResetCodeTimer, sendCodeAgainButton);
+
+    // sendCodeAgainButton.append(newResetCodeTimer);
+
+    // sendCodeAgainButton.addEventListener("click", () => {
+    //   this.loginAndGetOtp(loginToken, loginForm);
+    //   sendCodeAgainButton.disabled = "true";
+    //   this.handleSendCodeAgainTimer(newResetCodeTimer, sendCodeAgainButton);
+    // });
+
+    formGroup2.append(verifyButton);
+    formGroup2.append(sendCodeAgainButton);
+    form.append(formGroup2);
+
+    fieldset.append(form);
+    modal.append(fieldset);
+
+    document.querySelector("body").append(modal);
+    document.querySelector(".home").classList.add("blur");
+  }
+
+  static async sendSignUpOtp(form) {
+    if (!form) return;
+
+    const name = form.querySelector("[data-name]").value;
+    const nationalID = form.querySelector("[data-national-id]").value;
+    const email = form.querySelector("[data-email]").value;
+    const phone = form.querySelector("[data-phone]").value;
+    const password = form.querySelector("[data-password]").value;
+    const confirmPassword = form.querySelector("[data-confirm-password]").value;
+
+    const user = { name, nationalID, email, phone, password, confirmPassword };
+
+    const { message, signUpToken } = await Store.sendSignUpOtp(user);
+
+    if (message) UserInterface.alertMessage(message, "success");
+
+    if (signUpToken && message && message.includes("verified")) {
+      const { message2 } = await Store.signUp(signUpToken, {
+        password,
+        confirmPassword,
+      });
+
+      if (message2) UserInterface.alertMessage(message2, "success");
+
+      return;
+    }
+
+    this.createVerifyOtpForm(signUpToken, { password, confirmPassword });
+  }
+
+  static async verifySignUpOtpAndCompleteSignUp(otp, token, user) {
+    if (!otp || !token || !user) return;
+
+    const { message, signUpToken } = await Store.verifySignUpOtp(otp, token);
+
+    if (message) UserInterface.alertMessage(message, "success");
+
+    const { message2 } = await Store.signUp(signUpToken, user);
+
+    if (message2) UserInterface.alertMessage(message2, "success");
+
+    document.querySelector(".enterOtpModal").remove();
+
+    location.assign("/CLIENT/login/login.html");
+  }
+}
