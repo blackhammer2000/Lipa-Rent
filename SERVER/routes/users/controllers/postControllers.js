@@ -50,6 +50,8 @@ const post_controllers = {
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
 
+      if(encrypt(password).length < 8) throw new Error("Password must be at least 8 characters long.");
+
       const accountExists = await Owner?.findOne({
         email: email,
         nationalID: nationalID,
@@ -287,7 +289,6 @@ const post_controllers = {
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
 
-      if(encrypt(password).length < 8) throw new Error("Password must be at least 8 characters long.");
 
 
       const accountExists = await Owner?.findOne({
