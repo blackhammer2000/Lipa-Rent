@@ -234,26 +234,22 @@ export default function Profile() {
         {error && <div className="alert alert-danger">{error}</div>}
         {message && <div className="alert alert-success">{message}</div>}
 
-        <div className="container border border-dark mt-4 py-4">
-          <div className="container d-flex flex-column align-items-start">
-            <h4>Profile Details</h4>
-            <ul className="d-flex flex-column list-unstyled text-left">
-              <li className="mb-3" style={{ cursor: "pointer" }} onClick={handleEditAccountClick}>
-                <i className="fa fa-user mr-2"></i>Change profile details
-              </li>
-              <li style={{ cursor: "pointer" }} onClick={handleChangePasswordClick}>
-                <i className="fa fa-key mr-2"></i>Change password
-              </li>
-            </ul>
-          </div>
-          <div className="container d-flex flex-column align-items-start mt-3 border-0 border-top border-dark">
-            <h4>Reset Account</h4>
-            <ul className="d-flex flex-column list-unstyled text-left">
-              <li style={{ cursor: "pointer" }} onClick={handleDeleteAccountClick}>
-                <i className="fa fa-trash mr-2"></i>Delete Account
-              </li>
-            </ul>
-          </div>
+        <div className="container mt-4">
+          <div className="settings-group-title">Profile Details</div>
+          <ul className="settings-list">
+            <li onClick={handleEditAccountClick}>
+              <i className="fa fa-user"></i>Change profile details
+            </li>
+            <li onClick={handleChangePasswordClick}>
+              <i className="fa fa-key"></i>Change password
+            </li>
+          </ul>
+          <div className="settings-group-title">Reset Account</div>
+          <ul className="settings-list">
+            <li className="text-danger" onClick={handleDeleteAccountClick}>
+              <i className="fa fa-trash"></i>Delete Account
+            </li>
+          </ul>
         </div>
       </div>
 

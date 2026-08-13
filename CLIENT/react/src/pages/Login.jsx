@@ -253,10 +253,9 @@ export default function Login() {
               </button>
             </div>
 
-            <div className="form-group text-center">
+            <div className="form-group text-center forgot-link">
               <span
                 onClick={() => setShowForgotModal(true)}
-                className="text-dark"
                 style={{ cursor: "pointer" }}
               >
                 Forgot password?
