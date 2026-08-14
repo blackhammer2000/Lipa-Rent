@@ -48,8 +48,8 @@ export default function Header({ showPropertySelector = false, children }) {
       </div>
 
       <div className="routers mt-4 d-flex w-50 justify-content-center">
-        <ul className="list-unstyled d-flex">
-          <li className="mr-4">
+        <ul className="list-unstyled d-flex gap-3">
+          <li className="">
             <Link to="/dashboard">
               <button className="btn btn-outline-success">DASH</button>
             </Link>
@@ -59,17 +59,17 @@ export default function Header({ showPropertySelector = false, children }) {
               <button className="btn btn-outline-success">ROOMS</button>
             </Link>
           </li>
-          <li className="ml-4">
+          <li className="">
             <Link to="/tenants">
               <button className="btn btn-outline-success">TENANTS</button>
             </Link>
           </li>
-          <li className="ml-4">
+          <li className="">
             <Link to="/rents">
               <button className="btn btn-outline-success">RENTS</button>
             </Link>
           </li>
-          <li className="ml-4">
+          <li className="">
             <Link to="/revenue">
               <button className="btn btn-outline-success">REVENUE</button>
             </Link>
