@@ -16,7 +16,7 @@ const verifyUserAccessToken = async (req, res, next) => {
 
     const { id, currentSubscription, user, disabled } = verify(
       token,
-      process.env.MY_SECRET_KEY
+      process.env.ACCESS_SECRET_KEY
     );
 
     if (!user) throw new Error("Unauthorized action, unknown role.");
