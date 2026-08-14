@@ -379,6 +379,37 @@ select.form-control {
   gap: 8px;
 }
 
+/* Password input with toggle */
+.password-input-group {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-group .form-control {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--mdb-text-muted);
+  font-size: 1rem;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: color var(--mdb-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle:hover {
+  color: var(--mdb-green);
+}
+
 .hero.ctaform .form .password .form-control {
   height: 46px;
 }
@@ -522,6 +553,96 @@ select.form-control {
 /* ============ Landing / Auth ============ */
 .home {
   background: var(--mdb-bg);
+}
+
+/* Auth pages (Login & Landing) with rental property background */
+.auth-page {
+  position: relative;
+  background-image: url("https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 0;
+}
+
+.auth-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-page .header {
+  background: rgba(0, 30, 43, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.auth-page .header .logo h1 {
+  color: #fff;
+}
+
+.auth-page .header .logo h1 .text-success {
+  color: var(--mdb-green-bright) !important;
+}
+
+.auth-page .header .logo i {
+  color: var(--mdb-green-bright);
+}
+
+.auth-page .header .btn-outline-success {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-page .header .btn-outline-success:hover {
+  background: var(--mdb-green);
+  border-color: var(--mdb-green);
+  color: #fff;
+}
+
+.auth-page .footer {
+  background: rgba(0, 30, 43, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-page .footer .text-success {
+  color: var(--mdb-green-bright) !important;
+}
+
+.auth-page .footer a {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.auth-page .footer a:hover {
+  color: var(--mdb-green-bright) !important;
+}
+
+.auth-page .heroText h2 {
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.auth-page .heroText h2 .text-success {
+  color: var(--mdb-green-bright) !important;
+}
+
+.auth-page .ctaform fieldset,
+.auth-page .hero.ctaform fieldset {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 .home .ctaform fieldset,

@@ -21,6 +21,7 @@ export default function Login() {
     nationalID: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [loginToken, setLoginToken] = useState(null);
   const [otp, setOtp] = useState("");
@@ -179,7 +180,7 @@ export default function Login() {
   };
 
   return (
-    <div className="home container-fluid font-italic">
+    <div className="home container-fluid font-italic auth-page">
       <div className="header d-flex container-fluid justify-content-around align-items-center mt-2 border-bottom border-success">
         <div className="logo d-flex justify-content-center align-items-center w-50">
           <h1 className="font-weight-bolder">
@@ -227,22 +228,27 @@ export default function Login() {
                 required
               />
             </div>
-            <div className="password d-flex justify-content-start">
               <div className="form-group">
-                <input
-                  name="password"
-                  placeholder="Password"
-                  type="password"
-                  className="form-control border-right-0"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="password-input-group">
+                  <input
+                    name="password"
+                    placeholder="Password"
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                  </button>
+                </div>
               </div>
-              <div className="form-group">
-                <i className="fa fa-eye form-control border-left-0"></i>
-              </div>
-            </div>
 
             {error && <div className="alert alert-danger">{error}</div>}
             {message && <div className="alert alert-success">{message}</div>}
@@ -273,13 +279,13 @@ export default function Login() {
           2024
         </div>
         <div className="conditions w-50 d-flex justify-content-center align-items-center">
-          <ul className="d-flex list-unstyled">
-            <li className="mr-3">
+          <ul className="d-flex list-unstyled gap-4">
+            <li>
               <a className="text-dark" href="">
                 Terms & Conditions
               </a>
             </li>
-            <li className="ml-3">
+            <li>
               <a className="text-dark" href="">
                 Privacy Policies
               </a>

@@ -21,28 +21,28 @@ export default function Footer() {
       </div>
 
       <div className="conditions w-50 d-flex justify-content-center align-items-center">
-        <ul className="d-flex justify-content-center align-items-center list-unstyled">
-          <li className="mr-3">
+        <ul className="d-flex justify-content-center align-items-center list-unstyled gap-4">
+          <li>
             <a className="text-dark" href="">
               About Us
             </a>
           </li>
-          <li className="mr-3">
+          <li>
             <a className="text-dark" href="">
               Contact
             </a>
           </li>
-          <li className="mr-3">
+          <li>
             <a className="text-dark" href="">
               Terms & Conditions
             </a>
           </li>
-          <li className="ml-3">
+          <li>
             <a className="text-dark" href="">
               Privacy Policies
             </a>
           </li>
-          <li className="ml-5">
+          <li>
             <button onClick={onLogout} className="btn btn-outline-danger">
               LOG OUT
             </button>

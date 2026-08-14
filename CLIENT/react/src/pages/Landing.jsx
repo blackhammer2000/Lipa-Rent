@@ -17,6 +17,8 @@ export default function Landing() {
     password: "",
     confirmPassword: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [signUpToken, setSignUpToken] = useState(null);
   const [otp, setOtp] = useState("");
@@ -102,7 +104,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="home container-fluid font-italic">
+    <div className="home container-fluid font-italic auth-page">
       <div className="header d-flex container-fluid justify-content-around align-items-center mt-2 border-bottom border-success">
         <div className="logo d-flex justify-content-center align-items-center w-50">
           <h1 className="font-weight-bolder">
@@ -184,26 +186,46 @@ export default function Landing() {
                   />
                 </div>
                 <div className="form-group">
-                  <input
-                    name="password"
-                    placeholder="PASSWORD"
-                    type="password"
-                    className="form-control"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
+                  <div className="password-input-group">
+                    <input
+                      name="password"
+                      placeholder="PASSWORD"
+                      type={showPassword ? "text" : "password"}
+                      className="form-control"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                    </button>
+                  </div>
                 </div>
                 <div className="form-group">
-                  <input
-                    name="confirmPassword"
-                    placeholder="CONFIRM PASSWORD"
-                    type="password"
-                    className="form-control"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                  />
+                  <div className="password-input-group">
+                    <input
+                      name="confirmPassword"
+                      placeholder="CONFIRM PASSWORD"
+                      type={showConfirmPassword ? "text" : "password"}
+                      className="form-control"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    >
+                      <i className={`fa ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                    </button>
+                  </div>
                 </div>
                 {error && <div className="alert alert-danger">{error}</div>}
                 {message && <div className="alert alert-success">{message}</div>}
@@ -227,23 +249,23 @@ export default function Landing() {
         </div>
 
         <div className="conditions w-50 d-flex justify-content-center align-items-center">
-          <ul className="d-flex list-unstyled">
-            <li className="mr-3">
+          <ul className="d-flex list-unstyled gap-4">
+            <li>
               <a className="text-dark" href="">
                 About Us
               </a>
             </li>
-            <li className="mr-3">
+            <li>
               <a className="text-dark" href="">
                 Contact
               </a>
             </li>
-            <li className="mr-3">
+            <li>
               <a className="text-dark" href="">
                 Terms & Conditions
               </a>
             </li>
-            <li className="ml-3">
+            <li>
               <a className="text-dark" href="">
                 Privacy Policies
               </a>
