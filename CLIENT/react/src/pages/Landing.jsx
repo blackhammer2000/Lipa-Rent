@@ -129,7 +129,7 @@ export default function Landing() {
       <div className="hero mt-5 container-fluid">
         <div className="first d-flex container-fluid">
           <div className="heroText w-50 d-flex justify-content-center align-items-center">
-            <h2>
+            <h2 className="font-weight-bold text-white">
               RENTAL PROPERTY MANAGEMENT <br />
               MADE EASY WITH <br />
               <span>
