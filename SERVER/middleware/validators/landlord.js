@@ -7,8 +7,8 @@ const landlordValidator = async (req, res, next) => {
       nationalID: Joi.string().required(),
       email: Joi.string().email().required().lowercase(),
       phone: Joi.string().min(12).required(),
-      password: Joi.string().required().min(6),
-      confirmPassword: Joi.string().required().min(6),
+      password: Joi.string().required().min(8).max(100),
+      confirmPassword: Joi.string().required().min(8).max(100),
     });
 
     const isValidSignUpData = await landlordSchema.validateAsync(req.body);

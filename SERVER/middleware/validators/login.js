@@ -5,7 +5,7 @@ const loginValidator = async (req, res, next) => {
     const loginSchema = Joi.object({
       email: Joi.string().email().lowercase().required(),
       nationalID: Joi.string().lowercase().required(),
-      password: Joi.string().min(6).required(),
+      password: Joi.string().min(8).max(100).required(),
     });
 
     const isValidLoginData = await loginSchema.validateAsync(req.body);
