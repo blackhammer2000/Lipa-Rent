@@ -293,6 +293,7 @@ export default function Revenue() {
                   legend: { position: "top" },
                   title: { display: true, text: "Revenue by Month" },
                 },
+                barThickness: 15,
               }}
             />
           </div>
