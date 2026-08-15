@@ -542,7 +542,7 @@ const post_controllers = {
       )
         throw new Error("Unauthorized action.");
 
-      const { id,email, currentSubscription, disabled } = req.body;
+      const { id, email, currentSubscription, disabled } = req.body;
 
       const userOtpDoc = (await Otp.findOne({ ownerID: id })) || null;
 
@@ -605,6 +605,7 @@ const post_controllers = {
 
         const loginToken = await signLoginToken({
           id,
+          email,
           currentSubscription,
           disabled,
           otp: newLoginOtp,
@@ -651,6 +652,7 @@ const post_controllers = {
 
         const loginToken = await signLoginToken({
           id,
+          email,
           currentSubscription,
           disabled,
           otp: newLoginOtp,
@@ -678,7 +680,7 @@ const post_controllers = {
         req.body.disabled !== false ||
         !req.body.otp
       )
-        throw new Error("Unauthorized action");
+        throw new Error("Unauthorized action 2");
 
       const { id, currentSubscription, disabled, otp } = req.body;
 
