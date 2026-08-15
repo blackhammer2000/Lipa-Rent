@@ -123,6 +123,10 @@ const post_controllers = {
 
         if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
+         const isEmailSent = await sendEmail([{ email }], "LIPARENT signup OTP", `Your signup OTP is: ${signUpOtp}`);
+
+        if (!isEmailSent) throw new Error("Failed to send signup OTP email.");
+
         const signUpOtpDetailsToDB = await Otp.updateOne(
           { ownerID: accountExists._id.toString() },
           {
@@ -179,6 +183,10 @@ const post_controllers = {
         const hashedSignUpOtp = await hash(encrypt(signUpOtp), 10);
 
         if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
+
+        const isEmailSent = await sendEmail([{ email }], "LIPARENT signup OTP", `Your signup OTP is: ${signUpOtp}`);
+
+        if (!isEmailSent) throw new Error("Failed to send signup OTP email.");
 
         const signUpOtpDetailsToDB = await Otp.create({
           ownerID: newOwner?._id?.toString(),
