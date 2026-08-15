@@ -231,8 +231,16 @@ export default function Profile() {
           </div>
         </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
-        {message && <div className="alert alert-success">{message}</div>}
+         {error && <div className="alert alert-danger alert-dismissible fade show">{error}
+           <button onClick={() => setError("")} type="button" className="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button></div>}
+        {message && <div className="alert alert-success alert-dismissible fade show" role="alert">
+          {message}
+          <button onClick={() => setMessage("")} type="button" className="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button>
+        </div>}
 
         <div className="container mt-4">
           <div className="settings-group-title">Profile Details</div>

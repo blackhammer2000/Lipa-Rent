@@ -197,8 +197,8 @@ export default function Revenue() {
 
         <form onSubmit={handleGenerateReport} className="first d-flex justify-content-center container-fluid">
           <div className="duration mt-2">
-            <ul className="list-unstyled d-flex font-weight-bolder px-3 py-2">
-              <div className="d-flex flex-column mr-1">
+            <ul className="list-unstyled d-flex font-weight-bolder px-3 py-2 gap-4">
+              <div className="d-flex flex-column">
                 <label htmlFor="month" className="mr-3">
                   <h5>Month</h5>
                 </label>
@@ -213,7 +213,7 @@ export default function Revenue() {
                   disabled={!!year}
                 />
               </div>
-              <div className="d-flex flex-column ml-1">
+              <div className="d-flex flex-column">
                 <label htmlFor="year" className="mr-3">
                   <h5>Year</h5>
                 </label>
@@ -228,7 +228,7 @@ export default function Revenue() {
                   disabled={!!month}
                 />
               </div>
-              <div className="d-flex align-items-center ml-3">
+              <div className="d-flex align-items-center">
                 <button type="submit" className="btn btn-success">
                   Generate Report
                 </button>
@@ -237,8 +237,16 @@ export default function Revenue() {
           </div>
         </form>
 
-        {error && <div className="alert alert-danger">{error}</div>}
-        {message && <div className="alert alert-success">{message}</div>}
+        {error && <div className="alert alert-danger alert-dismissible fade show">{error}
+           <button onClick={() => setError("")} type="button" className="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button></div>}
+        {message && <div className="alert alert-success alert-dismissible fade show" role="alert">
+          {message}
+          <button onClick={() => setMessage("")} type="button" className="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button>
+        </div>}
 
         <div className="summary d-flex justify-content-center">
           <div className="card mx-2">
