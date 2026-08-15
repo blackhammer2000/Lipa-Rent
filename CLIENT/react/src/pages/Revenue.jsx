@@ -294,6 +294,10 @@ export default function Revenue() {
                   title: { display: true, text: "Revenue by Month" },
                 },
                 barThickness: 15,
+                scales: {
+                  x: { title: { display: true, text: "Month" }, values: chartData.labels },
+                  y: { title: { display: true, text: "Revenue (KES)" }, values: chartData.datasets[0].data, beginAtZero: true },
+                },
               }}
             />
           </div>
