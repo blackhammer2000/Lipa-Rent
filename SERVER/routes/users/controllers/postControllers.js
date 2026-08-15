@@ -2078,6 +2078,10 @@ const post_controllers = {
         if (!hashedresetPasswordToken)
           throw new Error(hashedresetPasswordToken);
 
+         const isEmailSent = await sendEmail([{ email }], "LIPARENT reset password OTP", `Your reset password OTP is: ${resetPasswordToken}`);
+
+        if (!isEmailSent) throw new Error("Failed to send reset password OTP email.");
+
         const addResetTokenToDB = await Password.updateOne(
           { ownerID: id },
           {
@@ -2215,6 +2219,10 @@ const post_controllers = {
 
         if (!hashedDeleteAccountToken)
           throw new Error(hashedDeleteAccountToken);
+
+         const isEmailSent = await sendEmail([{ email }], "LIPARENT Delete Account OTP", `Your delete account OTP is: ${deleteAccountToken}`);
+
+        if (!isEmailSent) throw new Error("Failed to send delete account OTP email.");
 
         const addDeleteAccountTokenToDB = await Otp.updateOne(
           { ownerID: id },
