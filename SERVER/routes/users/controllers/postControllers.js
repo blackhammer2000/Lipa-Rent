@@ -561,23 +561,10 @@ const post_controllers = {
         loginOtpExpiry &&
         loginOtpExpiry !== null &&
         Date.now() < loginOtpExpiry
-      ) {
-        const loginToken = await signLoginToken({
-          id,
-          currentSubscription,
-          disabled,
-          otp: 1,
-          repeat: 1,
-        });
-
-        if (!loginToken) throw new Error(loginToken);
-
-        res.status(200).json({
-          message:
-            "OTP has already been sent, please try again after a few minutes",
-          loginToken,
-        });
-      }
+      ) 
+        throw new Error("OTP has already been sent, please try again after a few minutes");
+       
+      
 
       if (
         loginOtp !== null &&
