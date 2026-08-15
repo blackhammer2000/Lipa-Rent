@@ -14,7 +14,7 @@ const verifyLoginToken = (req, res, next) => {
     );
 
     if (
-      id && email&&
+      id && email &&
       currentSubscription &&
       disabled !== (null || undefined) &&
       otp !== (null || undefined)
