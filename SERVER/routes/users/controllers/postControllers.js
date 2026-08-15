@@ -27,6 +27,8 @@ const {
   signForgotPasswordToken,
 } = require("../../../middleware/tokens/forgotPasswordToken");
 
+const {sendEmail} = require("../../helpers/mailtrap");
+
 ///////*************************POST CONTROLLERS************************////////////////
 
 const post_controllers = {
@@ -504,7 +506,7 @@ const post_controllers = {
         if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
       }
 
-      const userData = { id: _id, currentSubscription, disabled, otp: false };
+      const userData = { id: _id, email, currentSubscription, disabled, otp: false };
 
       const loginToken = await signLoginToken(userData);
 
@@ -525,13 +527,14 @@ const post_controllers = {
     try {
       if (
         !req.body.id ||
+        !req.body.email ||
         !req.body.currentSubscription ||
         req.body.disabled !== false ||
         req.body.otp !== false
       )
         throw new Error("Unauthorized action.");
 
-      const { id, currentSubscription, disabled } = req.body;
+      const { id,email, currentSubscription, disabled } = req.body;
 
       const userOtpDoc = (await Otp.findOne({ ownerID: id })) || null;
 
@@ -584,6 +587,10 @@ const post_controllers = {
 
         if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
+        const isEmailSent = await sendEmail([{ email }], "LIPARENT Login OTP", `Your login OTP is: ${newLoginOtp}`);
+
+        if (!isEmailSent) throw new Error("Failed to send login OTP email.");
+
         const resetLoginOtpDetails = await Otp.updateOne(
           { ownerID: id },
           {
@@ -625,6 +632,10 @@ const post_controllers = {
 
         if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
+        const isEmailSent = await sendEmail([{ email }], "LIPARENT Login OTP", `Your login OTP is: ${newLoginOtp}`);
+
+        if (!isEmailSent) throw new Error("Failed to send login OTP email.");
+
         const loginOtpDetailsToDB = !userOtpDoc
           ? await Otp.create({
               ownerID: id,
@@ -652,6 +663,7 @@ const post_controllers = {
 
         if (!loginToken) throw new Error(loginToken);
 
+      
         res.status(200).json({
           message: "Login Otp has been sent to your email",
           newLoginOtp,

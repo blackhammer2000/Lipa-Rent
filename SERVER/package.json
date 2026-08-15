@@ -7,6 +7,7 @@
     "intasend-node": "^1.1.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "mailtrap": "^4.8.0",
     "mongodb": "^6.19.0",
     "mongoose": "^8.6.1"
   },
@@ -27,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/blackhammer2000/Lipa-Rent/issues"
   },
-  "homepage": "https://github.com/blackhammer2000/Lipa-Rent#readme"
+  "homepage": "https://github.com/blackhammer2000/Lipa-Rent#readme",
+  "allowScripts": {
+    "bcrypt@5.1.1": true
+  }
 }

@@ -8,18 +8,19 @@ const verifyLoginToken = (req, res, next) => {
 
     const { logintoken } = req.headers;
 
-    const { id, currentSubscription, disabled, otp, repeat } = verify(
+    const { id, email, currentSubscription, disabled, otp, repeat } = verify(
       logintoken,
       process.env.LOGIN_SECRET_KEY
     );
 
     if (
-      id &&
+      id && email&&
       currentSubscription &&
       disabled !== (null || undefined) &&
       otp !== (null || undefined)
     ) {
       req.body.id = id;
+      req.body.email = email;
       req.body.currentSubscription = currentSubscription;
       req.body.disabled = disabled;
       req.body.otp = repeat ? req.headers.otp : otp;
