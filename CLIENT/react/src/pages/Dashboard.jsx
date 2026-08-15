@@ -195,16 +195,16 @@ export default function Dashboard() {
                     <td>{property.propertyName}</td>
                     <td>{property.propertyNumber}</td>
                     <td>{property.propertyLocation}</td>
-                    <td>
+                    <td className="">
                       <button
                         onClick={() => openEditModal(property)}
-                        className="btn btn-primary mr-2 edit"
+                        className="btn mr-2 btn-primary edit"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteProperty(property)}
-                        className="btn btn-danger ml-2 delete"
+                        className="btn btn-danger delete"
                       >
                         Delete
                       </button>

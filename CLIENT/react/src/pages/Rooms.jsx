@@ -229,12 +229,12 @@ export default function Rooms() {
               </h2>
             </u>
             <div className="d-flex justify-content-center align-items-center">
-              <ul className="d-flex list-unstyled mt-2">
+              <ul className="d-flex list-unstyled mt-2 gap-2">
                 <li className="mr-2">TOTAL: {roomStats.totalRooms}</li>
-                <li className="text-success ml-2 mr-2">
+                <li className="text-success">
                   OCCUPIED: {roomStats.occupiedRooms}
                 </li>
-                <li className="text-danger ml-2">
+                <li className="text-danger">
                   VACANT: {roomStats.totalRooms - roomStats.occupiedRooms}
                 </li>
               </ul>
@@ -270,7 +270,7 @@ export default function Rooms() {
                     <td>{room.roomNumber}</td>
                     <td>{room.roomType}</td>
                     <td>{room.roomArea}</td>
-                    <td>KES.{room.roomRatePerMonth}</td>
+                    <td>KES. {room.roomRatePerMonth}</td>
                     <td className={room.isOccupied ? "text-success" : "text-danger"}>
                       {room.isOccupied ? "Occupied" : "Vacant"}
                     </td>
