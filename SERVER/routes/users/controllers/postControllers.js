@@ -682,7 +682,7 @@ const post_controllers = {
       )
         throw new Error("Unauthorized action 2");
 
-      const { id, currentSubscription, disabled, otp } = req.body;
+      const { id, email, currentSubscription, disabled, otp } = req.body;
 
       if (otp !== req.headers.otp) throw new Error("Unauthorized action");
 
@@ -725,7 +725,7 @@ const post_controllers = {
       )
         throw new Error("Error adding login otp details to database");
 
-      const userData = { id, currentSubscription, disabled, user: true };
+      const userData = { id, email, currentSubscription, disabled, user: true };
 
       const loginToken = await signAccessToken(userData);
 
@@ -2008,9 +2008,9 @@ const post_controllers = {
 
   genarateResetPasswordToken: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unauthorized action");
+      if (!req.body.id || !req.body.email) throw new Error("Unauthorized action");
 
-      const { id } = req.body;
+      const { id, email } = req.body;
 
       const passwordDoc = await Password.findOne({ ownerID: id });
 
@@ -2035,13 +2035,8 @@ const post_controllers = {
         passwordDoc.resetTokenExpiry !== (null || undefined) &&
         Date.now() < passwordDoc.resetTokenExpiry;
 
-      if (tokenIsNotVerifiedAndHasNotExpired) {
-        res.status(200).json({
-          message:
-            "OTP has already been sent, please try again after a few minutes",
-          resetPasswordToken: "null",
-        });
-      }
+      if (tokenIsNotVerifiedAndHasNotExpired) 
+        throw new Error( "OTP has already been sent, please try again after a few minutes")
 
       const tokenIsNotVerifiedAndHasExpired =
         passwordDoc.resetToken !== (null || undefined) &&
@@ -2357,7 +2352,7 @@ const post_controllers = {
 
       if (nationalID !== nationalId) throw new Error("Invalid credentials");
 
-      const token = await signForgotPasswordToken({ id });
+      const token = await signForgotPasswordToken({ id, email });
 
       res
         .status(200)

@@ -238,7 +238,6 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-
   genarateResetPasswordToken
 );
 router.post(

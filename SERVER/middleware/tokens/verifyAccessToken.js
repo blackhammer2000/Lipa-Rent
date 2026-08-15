@@ -14,7 +14,7 @@ const verifyUserAccessToken = async (req, res, next) => {
       headers: { token },
     } = req;
 
-    const { id, currentSubscription, user, disabled } = verify(
+    const { id, email, currentSubscription, user, disabled } = verify(
       token,
       process.env.ACCESS_SECRET_KEY
     );
@@ -34,6 +34,7 @@ const verifyUserAccessToken = async (req, res, next) => {
       throw new Error(isSubscriptionExpired?.error);
 
     req.body.id = id;
+    req.body.email = email;
 
     user ? (req.body.user = user) : null;
 
