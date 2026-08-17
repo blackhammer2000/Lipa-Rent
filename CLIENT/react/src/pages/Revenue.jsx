@@ -4,18 +4,29 @@ import { readAllProperties, readAllPaymentsForRevenue } from "../services/api";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Toast from "../components/Toast";
-import { Bar } from "react-chartjs-2";
+import { Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function Revenue() {
   const { accessToken } = useAuth();
@@ -31,7 +42,8 @@ export default function Revenue() {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [projectedRevenue, setProjectedRevenue] = useState(0);
   const [deficitRevenue, setDeficitRevenue] = useState(0);
-  const [chartData, setChartData] = useState(null);
+  const [lineChartData, setLineChartData] = useState(null);
+  const [pieChartData, setPieChartData] = useState(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -84,12 +96,22 @@ export default function Revenue() {
     if (result.message && result.propertyRents && result.propertyExpectedRevenueMonthly) {
       setMessage(result.message);
 
-      let allPayments = [];
+      // Collect all payments per room first
+      const roomPayments = {}; // { roomId: [payments] }
       for (const roomId in result.propertyRents) {
+        roomPayments[roomId] = [];
         for (const tenantId in result.propertyRents[roomId]) {
-          allPayments = [...allPayments, ...result.propertyRents[roomId][tenantId]];
+          roomPayments[roomId] = [
+            ...roomPayments[roomId],
+            ...result.propertyRents[roomId][tenantId],
+          ];
         }
       }
+
+      let allPayments = [];
+      Object.keys(roomPayments).forEach((roomId) => {
+        allPayments = [...allPayments, ...roomPayments[roomId]];
+      });
 
       if (!allPayments.length) {
         setError("No payments found for the selected property.");
@@ -127,23 +149,84 @@ export default function Revenue() {
       setProjectedRevenue(propertyExpectedRevenueForSelectedRange);
       setDeficitRevenue(selectedRangeDeficitRevenue);
 
-      // Prepare chart data
+      // ---- Line chart: Total (blue) vs Projected (black) per month ----
       const months = [...new Set(selectedRangePayments.map((p) => p.month))].sort();
-      const amounts = months.map((m) => {
+      const totalPerMonth = months.map((m) => {
         return selectedRangePayments
           .filter((p) => p.month === m)
           .reduce((sum, p) => sum + +p.amountPaid, 0);
       });
 
-      setChartData({
+      // Distribute projected revenue evenly across the months shown
+      const projectedPerMonth = months.map(
+        () => Math.round(propertyExpectedRevenueForSelectedRange / months.length) || 0
+      );
+
+      setLineChartData({
         labels: months,
         datasets: [
           {
-            label: "Revenue",
-            data: amounts,
-            backgroundColor: "rgba(40, 167, 69, 0.6)",
-            borderColor: "rgba(40, 167, 69, 1)",
-            borderWidth: 1,
+            label: "Total Revenue",
+            data: totalPerMonth,
+            borderColor: "#2563eb",
+            backgroundColor: "rgba(37, 99, 235, 0.15)",
+            pointBackgroundColor: "#2563eb",
+            fill: true,
+            tension: 0.3,
+          },
+          {
+            label: "Projected Revenue",
+            data: projectedPerMonth,
+            borderColor: "#000000",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            pointBackgroundColor: "#000000",
+            pointBorderColor: "#ffffff",
+            borderDash: [5, 5],
+            fill: false,
+            tension: 0.3,
+          },
+        ],
+      });
+
+      // ---- Pie chart: Room contributions to total revenue ----
+      const roomContributions = {};
+      Object.keys(roomPayments).forEach((roomId) => {
+        const roomTotal = roomPayments[roomId]
+          .filter((p) => {
+            if (
+              (month && p.month === month) ||
+              (year && p.month.slice(0, 4) === year)
+            )
+              return p;
+          })
+          .reduce((sum, p) => sum + +p.amountPaid, 0);
+
+        if (roomTotal > 0) roomContributions[roomId] = roomTotal;
+      });
+
+      const roomIds = Object.keys(roomContributions);
+      const roomValues = roomIds.map((id) => roomContributions[id]);
+
+      setPieChartData({
+        labels: roomIds,
+        datasets: [
+          {
+            label: "Room Contribution",
+            data: roomValues,
+            backgroundColor: [
+              "#2563eb",
+              "#0e9f6e",
+              "#f59e0b",
+              "#8b5cf6",
+              "#ef4444",
+              "#06b6d4",
+              "#f97316",
+              "#10b981",
+              "#6366f1",
+              "#d946ef",
+            ],
+            borderWidth: 2,
+            borderColor: "#ffffff",
           },
         ],
       });
@@ -276,23 +359,51 @@ export default function Revenue() {
           </div>
         </div>
 
-        {chartData && (
-          <div className="charts mt-4">
-            <Bar
-              data={chartData}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: { position: "top" },
-                  title: { display: true, text: "Revenue by Month" },
-                },
-                barThickness: 15,
-                scales: {
-                  x: { title: { display: true, text: "Month" }, values: chartData.labels },
-                  y: { title: { display: true, text: "Revenue (KES)" }, values: chartData.datasets[0].data, beginAtZero: true },
-                },
-              }}
-            />
+        {lineChartData && (
+          <div className="charts d-flex gap-3 mt-4">
+            <div className="card p-3 flex-fill">
+              <Line
+                data={lineChartData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: { position: "top", labels: { boxWidth: 12, font: { size: 11 } } },
+                    title: {
+                      display: true,
+                      text: "Total vs Projected Revenue by Month",
+                      font: { size: 13 },
+                    },
+                  },
+                  scales: {
+                    x: { title: { display: true, text: "Month", font: { size: 11 } } },
+                    y: {
+                      title: { display: true, text: "Revenue (KES)", font: { size: 11 } },
+                      beginAtZero: true,
+                    },
+                  },
+                }}
+              />
+            </div>
+            {pieChartData && (
+              <div className="card p-3 flex-fill">
+                <Pie
+                  data={pieChartData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { position: "right", labels: { boxWidth: 12, font: { size: 11 } } },
+                      title: {
+                        display: true,
+                        text: "Room Contribution",
+                        font: { size: 13 },
+                      },
+                    },
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
