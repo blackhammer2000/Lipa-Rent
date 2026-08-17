@@ -1,0 +1,22 @@
+@keyframes spin {
+    0%,100%{
+        transform: rotate(0deg);
+    }
+
+    25%{
+        transform: rotate(90deg);
+    }
+
+    50%{
+        transform: rotate(180deg);
+    }
+
+    75%{
+        transform: rotate(270deg);
+    }
+    
+}
+
+.animate{
+    animation: spin 2s ease-in infinite;
+}

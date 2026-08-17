@@ -13,6 +13,18 @@ export default function Toast({ type = "success", message, onClose }) {
 
   if (!message) return null;
 
+  //  /*if(type==="loader"){
+  //    return createPortal(
+  //   <div className="toast-notification toast-success" role="alert">
+  //     <div className="toast-icon">
+  //       <i className="fa fa-spinner animate"></i>
+  //     </div>
+  //     <div className="toast-message">{message}</div>
+  //   </div>,
+  //   document.body
+  // );
+  // }*/
+
   const isSuccess = type === "success";
 
   return createPortal(
