@@ -253,7 +253,7 @@ export default function Rents() {
             <u>
               <h2>
                 {selectedTenantName && selectedRoomNumber && selectedPropertyName
-                  ? `PAYMENTS BY ${selectedTenantName} FOR ${selectedRoomNumber} IN ${selectedPropertyName}`
+                  ? `PAYMENTS BY ${selectedTenantName.toUpperCase()} FOR ${selectedRoomNumber.toUpperCase()} IN ${selectedPropertyName.toUpperCase()}`
                   : "PAYMENTS"}
               </h2>
             </u>
