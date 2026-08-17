@@ -14,6 +14,7 @@ import {
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Modal from "../components/Modal";
+import Toast from "../components/Toast";
 
 export default function Profile() {
   const { accessToken, handleLogout } = useAuth();
@@ -231,16 +232,8 @@ export default function Profile() {
           </div>
         </div>
 
-         {error && <div className="alert alert-danger alert-dismissible fade show">{error}
-           <button onClick={() => setError("")} type="button" className="close" data-dismiss="alert">
-            <span>&times;</span>
-          </button></div>}
-        {message && <div className="alert alert-success alert-dismissible fade show" role="alert">
-          {message}
-          <button onClick={() => setMessage("")} type="button" className="close" data-dismiss="alert">
-            <span>&times;</span>
-          </button>
-        </div>}
+        <Toast type="error" message={error} onClose={() => setError("")} />
+        <Toast type="success" message={message} onClose={() => setMessage("")} />
 
         <div className="container mt-4">
           <div className="settings-group-title">Profile Details</div>

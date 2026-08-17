@@ -401,8 +401,8 @@ select.form-control {
 .modal-blur-active {
   filter: blur(3px);
   pointer-events: none;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
 }
 
 @keyframes fadeIn {
@@ -413,6 +413,80 @@ select.form-control {
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+.toast-notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 320px;
+  max-width: 420px;
+  padding: 14px 16px;
+  border-radius: var(--mdb-radius);
+  box-shadow: var(--mdb-shadow-lg);
+  animation: toastIn 0.35s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: var(--mdb-surface);
+  color: var(--mdb-text);
+  border: 1px solid var(--mdb-border);
+}
+
+.toast-success {
+  border-left: 4px solid var(--mdb-success, #0e9f6e);
+}
+
+.toast-error {
+  border-left: 4px solid var(--danger);
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.toast-success .toast-icon {
+  color: var(--mdb-green);
+}
+
+.toast-error .toast-icon {
+  color: var(--danger);
+}
+
+.toast-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: var(--mdb-text-muted);
+  font-size: 0.9rem;
+  padding: 4px;
+  border-radius: var(--mdb-radius-sm);
+  transition: all var(--mdb-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+@keyframes toastIn {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 /* ============ Hero / Page Content ============ */
@@ -653,8 +727,8 @@ select.form-control {
 .auth-page .header {
   background: rgba(0, 30, 43, 0.6);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 .auth-page .header .logo h1 {
@@ -683,8 +757,8 @@ select.form-control {
 .auth-page .footer {
   background: rgba(0, 30, 43, 0.6);
   border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -712,8 +786,8 @@ select.form-control {
 .auth-page .ctaform fieldset,
 .auth-page .hero.ctaform fieldset {
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 

@@ -10,6 +10,7 @@ import {
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Modal from "../components/Modal";
+import Toast from "../components/Toast";
 
 export default function Tenants() {
   const { accessToken } = useAuth();
@@ -252,23 +253,15 @@ export default function Tenants() {
             <u>
               <h2>
                 {selectedRoomNumber && selectedPropertyName
-                  ? `TENANTS FOR ${selectedRoomNumber} IN ${selectedPropertyName.toUpperCase()}`
+                  ? `TENANTS FOR ${selectedRoomNumber.toUpperCase()} IN ${selectedPropertyName.toUpperCase()}`
                   : "TENANTS"}
               </h2>
             </u>
           </div>
         </div>
 
-        {error && <div className="alert alert-danger alert-dismissible fade show">{error}
-           <button onClick={() => setError("")} type="button" className="close" data-dismiss="alert">
-            <span>&times;</span>
-          </button></div>}
-        {message && <div className="alert alert-success alert-dismissible fade show" role="alert">
-          {message}
-          <button onClick={() => setMessage("")} type="button" className="close" data-dismiss="alert">
-            <span>&times;</span>
-          </button>
-        </div>}
+        <Toast type="error" message={error} onClose={() => setError("")} />
+        <Toast type="success" message={message} onClose={() => setMessage("")} />
 
         <div className="overflow-auto pt-0">
           <table className="table table-active bg-white mt-2">
