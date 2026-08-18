@@ -696,6 +696,55 @@ select.form-control {
 
 .settings-list li.text-danger i { color: var(--danger); }
 
+/* ============ Loader (API spinner) ============ */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 30, 43, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.loader-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--mdb-surface);
+  border: 1px solid var(--mdb-border);
+  border-radius: var(--mdb-radius-lg);
+  box-shadow: var(--mdb-shadow-lg);
+  padding: 18px 26px;
+  max-width: 90vw;
+  animation: slideUp 0.35s ease;
+}
+
+.loader-spinner {
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--mdb-border);
+  border-top-color: var(--mdb-green);
+  border-radius: 50%;
+  animation: loaderSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.loader-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--mdb-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes loaderSpin {
+  to { transform: rotate(360deg); }
+}
+
 /* ============ Landing / Auth ============ */
 .home {
   background: var(--mdb-bg);

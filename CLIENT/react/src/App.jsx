@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
+import { LoaderProvider } from "./context/LoaderProvider";
+import Loader from "./components/Loader";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -14,8 +16,10 @@ import Subscriptions from "./pages/Subscriptions";
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
+      <LoaderProvider>
+        <BrowserRouter>
+          <Loader />
+          <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route
@@ -74,8 +78,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </LoaderProvider>
     </AuthProvider>
   );
 }

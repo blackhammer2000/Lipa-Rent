@@ -1,5 +1,19 @@
 const serverDomain = "http://localhost:4000";
 
+// Global loader hook - registered by LoaderProvider
+let globalShowLoader = null;
+let globalHideLoader = null;
+
+export const registerLoader = (show, hide) => {
+  globalShowLoader = show;
+  globalHideLoader = hide;
+};
+
+export const unregisterLoader = () => {
+  globalShowLoader = null;
+  globalHideLoader = null;
+};
+
 // Helper to get access token from localStorage
 export const getAccessToken = () =>
   localStorage.getItem("liparentAccessToken") || null;
@@ -23,10 +37,67 @@ export const clearLocalStorage = () => {
   localStorage.removeItem("liparentRevenueSelectedPropertyRange");
 };
 
+// Map API paths to friendly loading messages
+const LOADING_MESSAGES = {
+  "/api/user/owner/signup/generate/otp": "Sending sign up OTP...",
+  "/api/user/owner/signup/verify/otp": "Verifying sign up OTP...",
+  "/api/user/owner/signup": "Creating your account...",
+  "/api/user/owner/login": "Logging in...",
+  "/api/user/owner/get/otp": "Sending login OTP...",
+  "/api/user/owner/verify/otp": "Verifying login OTP...",
+  "/api/user/owner/logout": "Logging out...",
+  "/api/user/owner/verify/nationalid": "Verifying your details...",
+  "/api/user/owner/generate/forgotToken": "Generating password reset code...",
+  "/api/user/owner/verify/forgotToken": "Verifying password reset code...",
+  "/api/user/owner/edit/forgotPassword": "Resetting password...",
+  "/api/user/read/owner": "Fetching owner details...",
+  "/api/user/owner/edit/owner": "Updating profile...",
+  "/api/user/owner/edit/password": "Updating password...",
+  "/api/user/owner/verify/password": "Verifying password...",
+  "/api/user/owner/generate/deleteToken": "Generating account deletion code...",
+  "/api/user/owner/verify/deleteToken": "Verifying account deletion code...",
+  "/api/user/owner/generate/resetToken": "Generating password reset code...",
+  "/api/user/owner/verify/resetToken": "Verifying password reset code...",
+  "/api/user/owner/read/properties": "Fetching properties...",
+  "/api/user/owner/create/property": "Creating property...",
+  "/api/user/owner/edit/property": "Updating property...",
+  "/api/user/owner/delete/property": "Deleting property...",
+  "/api/user/owner/read/property/rooms": "Fetching rooms...",
+  "/api/user/owner/create/property/room": "Creating room...",
+  "/api/user/owner/edit/property/room": "Updating room...",
+  "/api/user/owner/delete/property/room": "Deleting room...",
+  "/api/user/owner/read/property/room/tenants": "Fetching tenants...",
+  "/api/user/owner/create/property/room/tenant": "Adding tenant...",
+  "/api/user/owner/edit/property/room/tenant": "Updating tenant...",
+  "/api/user/owner/delete/property/room/tenant": "Deleting tenant...",
+  "/api/user/owner/read/property/room/tenant/payments": "Fetching rent payments...",
+  "/api/user/owner/create/property/room/tenant/payment": "Adding payment...",
+  "/api/user/owner/edit/property/room/tenant/payment": "Updating payment...",
+  "/api/user/owner/delete/property/room/tenant/payment": "Deleting payment...",
+  "/api/user/owner/read/property/rooms/tenants/payments": "Generating revenue report...",
+  "/api/user/owner/read/subscriptions": "Fetching subscriptions...",
+};
+
+function getLoadingMessage(path) {
+  let match = "";
+  for (const key of Object.keys(LOADING_MESSAGES)) {
+    if (path.startsWith(key) && key.length > match.length) {
+      match = key;
+    }
+  }
+  return match ? LOADING_MESSAGES[match] : "Loading...";
+}
+
 // Generic request handler
-async function request(path, options = {}) {
-  const response = await fetch(`${serverDomain}${path}`, options);
-  return response.json();
+async function request(path, options = {}, loadingMessage = "") {
+  const msg = loadingMessage || getLoadingMessage(path);
+  if (globalShowLoader && msg) globalShowLoader(msg);
+  try {
+    const response = await fetch(`${serverDomain}${path}`, options);
+    return await response.json();
+  } finally {
+    if (globalHideLoader) globalHideLoader();
+  }
 }
 
 // ==================== AUTH API ====================
