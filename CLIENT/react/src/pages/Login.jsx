@@ -68,6 +68,9 @@ export default function Login() {
 
       if (otpResult.message) setMessage(otpResult.message);
 
+      if (otpResult.message && otpResult.message.includes("already been sent"))
+        setShowOtpModal(true);
+
       if (otpResult.loginToken) {
         setLoginToken(otpResult.loginToken);
         setShowOtpModal(true);
@@ -113,7 +116,8 @@ export default function Login() {
 
     if (verifyResult.message) setMessage(verifyResult.message);
 
-    const codeResult = await generateForgotPasswordCode(forgotToken);
+    const codeResult = await generateForgotPasswordCode(verifyResult.token);
+
     console.log("codeResult", codeResult);
 
     if (codeResult.error) {
@@ -127,7 +131,6 @@ export default function Login() {
       alert(codeResult.resetPasswordOTP);
     }
 
-    setForgotOtp(codeResult.resetPasswordOTP);
     setShowForgotModal(false);
     setShowForgotOtpModal(true);
   };

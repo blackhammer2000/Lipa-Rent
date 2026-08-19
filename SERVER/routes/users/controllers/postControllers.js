@@ -574,9 +574,10 @@ const post_controllers = {
         loginOtpExpiry !== null &&
         Date.now() < loginOtpExpiry
       )
-        throw new Error(
-          "OTP has already been sent, please try again after a few minutes",
-        );
+        res.status(200).json({
+          message:
+            "OTP has already been sent, please try again after a few minutes",
+        });
 
       if (
         loginOtp !== null &&
@@ -2056,9 +2057,10 @@ const post_controllers = {
         Date.now() < passwordDoc.resetTokenExpiry;
 
       if (tokenIsNotVerifiedAndHasNotExpired)
-        throw new Error(
-          "OTP has already been sent, please try again after a few minutes",
-        );
+        res.status(200).json({
+          message:
+            "OTP has already been sent, please try again after a few minutes",
+        });
 
       const tokenIsNotVerifiedAndHasExpired =
         passwordDoc.resetToken !== (null || undefined) &&
@@ -2122,7 +2124,7 @@ const post_controllers = {
   verifyResetPasswordOTP: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user.");
-      if (!req.headers.resettoken) throw new Error("Unauthorized action.");
+      if (!req.headers.resettoken) throw new Error("Unauthorized action1.");
 
       if (req.body.otp && req.body.otp !== req.headers.resettoken)
         throw new Error("Invalid otp.");
@@ -2208,7 +2210,6 @@ const post_controllers = {
         res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
-          deleteAccountToken: "null",
         });
       }
 
@@ -2380,6 +2381,8 @@ const post_controllers = {
       const { email, nationalId } = req.body;
 
       const ownerDoc = await Owner.findOne({ email, nationalID: nationalId });
+
+      if (!ownerDoc) throw new Error("Invalid credentials");
 
       const id = ownerDoc?._id || null;
 

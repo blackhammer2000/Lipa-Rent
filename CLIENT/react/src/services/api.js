@@ -196,7 +196,7 @@ export const verifyForgotPasswordCode = (token, resetCode) =>
       "Content-Type": "application/json",
       user: true,
       token,
-      resetOTP: resetCode,
+      resettoken: resetCode,
     },
   });
 
@@ -213,7 +213,7 @@ export const editForgotPassword = (
       "Content-Type": "application/json",
       user: true,
       token,
-      resetOTP: resetCode,
+      resettoken: resetCode,
     },
     body: JSON.stringify({ newPassword, confirmNewPassword }),
   });
@@ -327,7 +327,7 @@ export const verifyResetPasswordCode = (accessToken, resetToken) =>
       "Content-Type": "application/json",
       user: true,
       token: accessToken,
-      resetOTP: resetToken,
+      resettoken: resetToken,
     },
   });
 
