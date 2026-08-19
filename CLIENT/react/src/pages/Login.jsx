@@ -109,9 +109,12 @@ export default function Login() {
       return;
     }
 
+    if (verifyResult.token) setForgotToken(verifyResult.token);
+
     if (verifyResult.message) setMessage(verifyResult.message);
 
-    const codeResult = await generateForgotPasswordCode(verifyResult.token);
+    const codeResult = await generateForgotPasswordCode(forgotToken);
+    console.log("codeResult", codeResult);
 
     if (codeResult.error) {
       setError(codeResult.error);
@@ -120,11 +123,11 @@ export default function Login() {
 
     if (codeResult.message) setMessage(codeResult.message);
 
-    if (codeResult.resetPasswordToken && codeResult.resetPasswordToken !== "null") {
-      alert(codeResult.resetPasswordToken);
+    if (codeResult.resetPasswordOTP && codeResult.resetPasswordOTP !== "null") {
+      alert(codeResult.resetPasswordOTP);
     }
 
-    setForgotToken(verifyResult.token);
+    setForgotOtp(codeResult.resetPasswordOTP);
     setShowForgotModal(false);
     setShowForgotOtpModal(true);
   };
@@ -162,7 +165,7 @@ export default function Login() {
       newPassword,
       confirmNewPassword,
       forgotToken,
-      forgotOtp
+      forgotOtp,
     );
 
     if (result.error) {
@@ -196,7 +199,9 @@ export default function Login() {
           <ul className="d-flex list-unstyled">
             <li>
               <Link to="/">
-                <button className="btn btn-outline-success ml-2">SIGN UP</button>
+                <button className="btn btn-outline-success ml-2">
+                  SIGN UP
+                </button>
               </Link>
             </li>
           </ul>
@@ -229,29 +234,35 @@ export default function Login() {
                 required
               />
             </div>
-              <div className="form-group">
-                <div className="password-input-group">
-                  <input
-                    name="password"
-                    placeholder="Password"
-                    type={showPassword ? "text" : "password"}
-                    className="form-control"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
-                  </button>
-                </div>
+            <div className="form-group">
+              <div className="password-input-group">
+                <input
+                  name="password"
+                  placeholder="Password"
+                  type={showPassword ? "text" : "password"}
+                  className="form-control"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  <i
+                    className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+                  ></i>
+                </button>
               </div>
-                <Toast type="error" message={error} onClose={() => setError("")} />
-                <Toast type="success" message={message} onClose={() => setMessage("")} />
+            </div>
+            <Toast type="error" message={error} onClose={() => setError("")} />
+            <Toast
+              type="success"
+              message={message}
+              onClose={() => setMessage("")}
+            />
 
             <div className="form-group text-center">
               <button type="submit" className="btn btn-success w-100">
@@ -350,7 +361,10 @@ export default function Login() {
       )}
 
       {showForgotOtpModal && (
-        <Modal title="Enter password reset OTP" onClose={() => setShowForgotOtpModal(false)}>
+        <Modal
+          title="Enter password reset OTP"
+          onClose={() => setShowForgotOtpModal(false)}
+        >
           <form onSubmit={handleVerifyForgotOtp} className="form">
             <div className="form-group">
               <input
@@ -372,7 +386,10 @@ export default function Login() {
       )}
 
       {showChangePasswordModal && (
-        <Modal title="Password Reset" onClose={() => setShowChangePasswordModal(false)}>
+        <Modal
+          title="Password Reset"
+          onClose={() => setShowChangePasswordModal(false)}
+        >
           <form onSubmit={handleChangePassword} className="form">
             <div className="form-group">
               <input

@@ -2023,9 +2023,9 @@ const post_controllers = {
     }
   },
 
-  //? Reset password tokens
+  //? Reset password otp
 
-  genarateResetPasswordToken: async (req, res) => {
+  genarateResetPasswordOTP: async (req, res) => {
     try {
       if (!req.body.id || !req.body.email)
         throw new Error("Unauthorized action");
@@ -2073,7 +2073,7 @@ const post_controllers = {
         passwordDoc.resetTokenExpiry === (null || undefined);
 
       if (tokenIsNotVerifiedAndHasExpired || noExistingToken) {
-        const resetPasswordToken = generateOTP();
+        const resetPasswordToken = req.body.otp || generateOTP();
         const resetPasswordTokenExpiry = generateOTPExpiryTime();
 
         const hashedresetPasswordToken = await hash(
@@ -2082,7 +2082,9 @@ const post_controllers = {
         );
 
         if (!hashedresetPasswordToken)
-          throw new Error(hashedresetPasswordToken);
+          throw new Error(
+            "Could not generate reset password OTP, please try again later.",
+          );
 
         const isEmailSent = await sendEmail(
           [{ email }],
@@ -2109,7 +2111,7 @@ const post_controllers = {
 
         res.status(200).json({
           message: "Password reset token sent to your email",
-          resetPasswordToken,
+          resetPasswordOTP: resetPasswordToken,
         });
       }
     } catch (err) {
@@ -2117,10 +2119,13 @@ const post_controllers = {
     }
   },
 
-  verifyResetPasswordToken: async (req, res) => {
+  verifyResetPasswordOTP: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user.");
       if (!req.headers.resettoken) throw new Error("Unauthorized action.");
+
+      if (req.body.otp && req.body.otp !== req.headers.resettoken)
+        throw new Error("Invalid otp.");
 
       const { id } = req.body;
 
@@ -2184,9 +2189,9 @@ const post_controllers = {
     }
   },
 
-  //? Delete account tokens
+  //? Delete account otp
 
-  genarateDeleteAccountToken: async (req, res) => {
+  genarateDeleteAccountOTP: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unauthorized action");
 
@@ -2268,7 +2273,7 @@ const post_controllers = {
     }
   },
 
-  verifyDeleteAccountToken: async (req, res) => {
+  verifyDeleteAccountOTP: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unauthorized action.");
       if (!req.headers.deletetoken) throw new Error("Unauthorized action.");
@@ -2384,7 +2389,9 @@ const post_controllers = {
 
       if (nationalID !== nationalId) throw new Error("Invalid credentials");
 
-      const token = await signForgotPasswordToken({ id, email });
+      const otp = generateOTP();
+
+      const token = await signForgotPasswordToken({ id, email, otp });
 
       res
         .status(200)

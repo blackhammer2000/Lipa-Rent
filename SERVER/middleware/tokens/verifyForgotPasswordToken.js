@@ -8,12 +8,13 @@ const verifyForgotPasswordToken = (req, res, next) => {
 
     const { token } = req.headers;
 
-    const { id, email } = verify(token, process.env.FORGOT_SECRET_KEY);
+    const { id, email, otp } = verify(token, process.env.FORGOT_SECRET_KEY);
 
-    if (!id || !email) throw new Error("Unauthorized action.");
+    if (!id || !email || !otp) throw new Error("Unauthorized action.");
 
     req.body.id = id;
     req.body.email = email;
+    req.body.otp = otp;
 
     delete req.headers.token;
 

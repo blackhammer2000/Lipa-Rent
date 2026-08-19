@@ -48,12 +48,12 @@ const {
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
 
-  genarateResetPasswordToken,
-  verifyResetPasswordToken,
+  genarateResetPasswordOTP,
+  verifyResetPasswordOTP,
 
   verifyPassword,
-  genarateDeleteAccountToken,
-  verifyDeleteAccountToken,
+  genarateDeleteAccountOTP,
+  verifyDeleteAccountOTP,
 
   verifyUserInfo,
 
@@ -78,7 +78,7 @@ router.post(
   "/api/user/owner/signup/verify/otp",
   isUser,
   verifySignUpToken,
-  verifySignUpOtp
+  verifySignUpOtp,
 );
 router.post("/api/user/owner/signup", isUser, verifySignUpToken, signUp);
 
@@ -88,13 +88,13 @@ router.post(
   "/api/user/owner/get/otp",
   isUser,
   verifyLoginToken,
-  generateLoginOtp
+  generateLoginOtp,
 );
 router.post(
   "/api/user/owner/verify/otp",
   isUser,
   verifyLoginToken,
-  verifyLoginOtp
+  verifyLoginOtp,
 );
 
 // OWNERS DB ROUTES
@@ -103,7 +103,7 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readOwnerDetails
+  readOwnerDetails,
 );
 
 // PROPERTIES DB ROUTES
@@ -113,21 +113,21 @@ router.post(
   verifyUserAccessToken,
   isLoginVerified,
   propertyValidator,
-  createNewProperty
+  createNewProperty,
 );
 router.post(
   "/api/user/owner/read/property",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readSinglePropertyOwned
+  readSinglePropertyOwned,
 );
 router.post(
   "/api/user/owner/read/properties",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllPropertiesOwned
+  readAllPropertiesOwned,
 );
 
 // ROOM DB ROUTES
@@ -137,21 +137,21 @@ router.post(
   verifyUserAccessToken,
   isLoginVerified,
   roomValidator,
-  createSingleRoomOnProperty
+  createSingleRoomOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/rooms",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRoomsOnProperty
+  readAllRoomsOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/room",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readSingleRoomOnProperty
+  readSingleRoomOnProperty,
 );
 
 // TENANTS DB ROUTES
@@ -161,28 +161,28 @@ router.post(
   verifyUserAccessToken,
   isLoginVerified,
   tenantValidator,
-  createTenantForRoomOnProperty
+  createTenantForRoomOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/rooms/tenants",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllTenantsForAllRoomsOnProperty
+  readAllTenantsForAllRoomsOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenants",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllTenantsInRoomOnProperty
+  readAllTenantsInRoomOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenant",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readSingleTenantInRoomOnProperty
+  readSingleTenantInRoomOnProperty,
 );
 
 // RENTS DB ROUTES
@@ -191,35 +191,35 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  createRentPaymentForRoomInPropertyByTenant
+  createRentPaymentForRoomInPropertyByTenant,
 );
 router.post(
   "/api/user/owner/read/property/rooms/tenants/payments",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRentPaymentsForAllRoomsInProperty
+  readAllRentPaymentsForAllRoomsInProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenants/payments",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRentPaymentsForRoomInProperty
+  readAllRentPaymentsForRoomInProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payments",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRentPaymentsForRoomInPropertyByTenant
+  readAllRentPaymentsForRoomInPropertyByTenant,
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payment",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readRentPaymentForRoomInPropertyByTenant
+  readRentPaymentForRoomInPropertyByTenant,
 );
 
 // VERIFY CREDETIALS
@@ -228,8 +228,9 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  verifyPassword
+  verifyPassword,
 );
+
 router.post("/api/user/owner/verify/nationalid", isUser, verifyUserInfo);
 
 // PASSWORD RESET ROUTES
@@ -238,14 +239,14 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  genarateResetPasswordToken
+  genarateResetPasswordOTP,
 );
 router.post(
   "/api/user/owner/verify/resetToken",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  verifyResetPasswordToken
+  verifyResetPasswordOTP,
 );
 
 // DELETE ACCOUNT ROUTES
@@ -254,14 +255,14 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  genarateDeleteAccountToken
+  genarateDeleteAccountOTP,
 );
 router.post(
   "/api/user/owner/verify/deleteToken",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  verifyDeleteAccountToken
+  verifyDeleteAccountOTP,
 );
 
 // FORGOT PASSWORD ROUTES
@@ -269,13 +270,13 @@ router.post(
   "/api/user/owner/generate/forgotToken",
   isUser,
   verifyForgotPasswordToken,
-  genarateResetPasswordToken
+  genarateResetPasswordOTP,
 );
 router.post(
   "/api/user/owner/verify/forgotToken",
   isUser,
   verifyForgotPasswordToken,
-  verifyResetPasswordToken
+  verifyResetPasswordOTP,
 );
 
 router.post("/api/user/owner/logout", verifyUserAccessToken, logout);
