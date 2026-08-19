@@ -273,7 +273,7 @@ export default function Revenue() {
           <u>
             <h3 className="text-center">
               {selectedPropertyName
-                ? `REVENUE REPORT FOR ${selectedPropertyName}`
+                ? `REVENUE REPORT FOR ${selectedPropertyName.toUpperCase()}`
                 : "REVENUE REPORT"}
             </h3>
           </u>
