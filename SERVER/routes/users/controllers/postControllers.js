@@ -700,11 +700,11 @@ const post_controllers = {
         req.body.disabled !== false ||
         !req.body.otp
       )
-        throw new Error("Unauthorized action 2");
+        throw new Error("Unauthorized action");
 
       const { id, email, currentSubscription, disabled, otp } = req.body;
 
-      if (otp !== req.headers.otp) throw new Error("Unauthorized action");
+      if (otp !== req.headers.otp) throw new Error("Invalid OTP");
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 

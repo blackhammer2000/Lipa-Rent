@@ -10,11 +10,12 @@ const verifyLoginToken = (req, res, next) => {
 
     const { id, email, currentSubscription, disabled, otp, repeat } = verify(
       logintoken,
-      process.env.LOGIN_SECRET_KEY
+      process.env.LOGIN_SECRET_KEY,
     );
 
     if (
-      id && email &&
+      id &&
+      email &&
       currentSubscription &&
       disabled !== (null || undefined) &&
       otp !== (null || undefined)
