@@ -291,7 +291,6 @@ export default function Landing() {
                 required
               />
             </div>
-            {error && <div className="alert alert-danger">{error}</div>}
             <div className="form-group text-center">
               <button type="submit" className="btn btn-success w-100">
                 Verify
