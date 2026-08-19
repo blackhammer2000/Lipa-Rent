@@ -76,11 +76,11 @@ const post_controllers = {
 
       if (
         accountExists &&
-        accountExists?._id &&
+        accountExists._id &&
         otpExists &&
-        otpExists?.isSignUpOtpVerified === false &&
-        otpExists?.signUpOtpExpiry &&
-        otpExists?.signUpOtpExpiry !== null &&
+        otpExists.isSignUpOtpVerified === false &&
+        otpExists.signUpOtpExpiry &&
+        otpExists.signUpOtpExpiry !== null &&
         Date.now() < otpExists.signUpOtpExpiry
       ) {
         const signUpToken = await signSignUpToken({
@@ -102,9 +102,9 @@ const post_controllers = {
         accountExists &&
         accountExists?._id &&
         otpExists &&
-        otpExists?.isSignUpOtpVerified === false &&
-        otpExists?.signUpOtpExpiry &&
-        otpExists?.signUpOtpExpiry !== null &&
+        otpExists.isSignUpOtpVerified === false &&
+        otpExists.signUpOtpExpiry &&
+        otpExists.signUpOtpExpiry !== null &&
         Date.now() > otpExists.signUpOtpExpiry
       ) {
         const signUpOtp = generateOTP();
@@ -134,7 +134,7 @@ const post_controllers = {
         );
 
         if (
-          !accountExists?._id &&
+          !accountExists._id &&
           !signUpOtpDetailsToDB.acknowledged &&
           !signUpOtpDetailsToDB.modifiedCount
         )
@@ -193,21 +193,21 @@ const post_controllers = {
         if (!isEmailSent) throw new Error("Failed to send signup OTP email.");
 
         const signUpOtpDetailsToDB = await Otp.create({
-          ownerID: newOwner?._id?.toString(),
+          ownerID: newOwner._id.toString(),
           signUpOtp: hashedSignUpOtp,
           isSignUpOtpVerified: false,
           signUpOtpExpiry: signUpOtpExpiry,
         });
 
         if (
-          !accountExists?._id &&
+          !accountExists._id &&
           !signUpOtpDetailsToDB._id &&
           !signUpOtpDetailsToDB.ownerID
         )
           throw new Error("Error adding sign up otp details to database");
 
         const signUpToken = await signSignUpToken({
-          id: newOwner?._id?.toString(),
+          id: newOwner._id.toString(),
           otp: signUpOtp,
         });
 
