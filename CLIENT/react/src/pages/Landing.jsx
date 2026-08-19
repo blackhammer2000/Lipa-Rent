@@ -46,30 +46,12 @@ export default function Landing() {
 
     if (result.message) setMessage(result.message);
 
-    if (result.signUpOtp) alert(result.signUpOtp);
-
-    if (result.signUpToken && result.message && result.message.includes("verified")) {
-      const signUpResult = await completeSignUp(result.signUpToken, {
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-      });
-
-      if (signUpResult.error) {
-        setError(signUpResult.error);
-        return;
-      }
-
-      if (signUpResult.message) {
-        setMessage(signUpResult.message);
-        navigate("/login");
-      }
-      return;
-    }
-
     if (result.signUpToken) {
       setSignUpToken(result.signUpToken);
       setShowOtpModal(true);
     }
+
+    if (result.signUpOtp) alert(result.signUpOtp);
   };
 
   const handleVerifyOtp = async (e) => {
@@ -140,7 +122,9 @@ export default function Landing() {
           </div>
           <div className="ctaform w-50 d-flex justify-content-center align-items-center border-left border-success">
             <fieldset className="border border-success p-5 border-radius-50">
-              <legend className="font-weight-bold text-center">GET STARTED</legend>
+              <legend className="font-weight-bold text-center">
+                GET STARTED
+              </legend>
               <form onSubmit={handleSubmit} className="form">
                 <div className="form-group">
                   <input
@@ -201,9 +185,13 @@ export default function Landing() {
                       type="button"
                       className="password-toggle"
                       onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
-                      <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                      <i
+                        className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+                      ></i>
                     </button>
                   </div>
                 </div>
@@ -221,17 +209,31 @@ export default function Landing() {
                     <button
                       type="button"
                       className="password-toggle"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      aria-label={
+                        showConfirmPassword ? "Hide password" : "Show password"
+                      }
                     >
-                      <i className={`fa ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                      <i
+                        className={`fa ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`}
+                      ></i>
                     </button>
                   </div>
                 </div>
 
-                 <Toast type="error" message={error} onClose={() => setError("")} />
-                 <Toast type="success" message={message} onClose={() => setMessage("")} />
-                
+                <Toast
+                  type="error"
+                  message={error}
+                  onClose={() => setError("")}
+                />
+                <Toast
+                  type="success"
+                  message={message}
+                  onClose={() => setMessage("")}
+                />
+
                 <div className="form-group text-center">
                   <button type="submit" className="btn btn-success w-100">
                     SIGN UP
