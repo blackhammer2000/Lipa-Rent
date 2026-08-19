@@ -192,14 +192,14 @@ export default function Revenue() {
       const roomContributions = {};
       Object.keys(roomPayments).forEach((roomId) => {
         const roomTotal = roomPayments[roomId]
-          .filter((p) => {
+          .filter((payment) => {
             if (
-              (month && p.month === month) ||
-              (year && p.month.slice(0, 4) === year)
+              (month && payment.month === month) ||
+              (year && payment.month.slice(0, 4) === year)
             )
-              return p;
+              return payment;
           })
-          .reduce((sum, p) => sum + +p.amountPaid, 0);
+          .reduce((sum, payment) => sum + +payment.amountPaid, 0);
 
         if (roomTotal > 0) roomContributions[roomId] = roomTotal;
       });
