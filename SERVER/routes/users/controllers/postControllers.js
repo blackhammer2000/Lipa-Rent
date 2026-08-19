@@ -2068,9 +2068,9 @@ const post_controllers = {
         Date.now() > passwordDoc.resetTokenExpiry;
 
       const noExistingToken =
-        passwordDoc.resetToken === (null || undefined) &&
-        passwordDoc.resetTokenVerified === (null || undefined) &&
-        passwordDoc.resetTokenExpiry === (null || undefined);
+        passwordDoc.resetToken == null &&
+        passwordDoc.resetTokenVerified == null &&
+        passwordDoc.resetTokenExpiry == null;
 
       if (tokenIsNotVerifiedAndHasExpired || noExistingToken) {
         const resetPasswordToken = req.body.otp || generateOTP();
@@ -2130,7 +2130,7 @@ const post_controllers = {
       const { id } = req.body;
 
       const {
-        headers: { resettoken },
+        headers: { resettoken: resetOTP },
       } = req;
 
       const passwordDoc = await Password.findOne({ ownerID: id });
@@ -2140,7 +2140,7 @@ const post_controllers = {
       if (!resetPasswordToken) throw new Error("Invalid otp.");
 
       const resetPasswordTokenMatch = await compare(
-        encrypt(resettoken),
+        encrypt(resetOTP),
         resetPasswordToken,
       );
 
@@ -2220,9 +2220,9 @@ const post_controllers = {
         Date.now() > otpDoc?.deleteAccountOtpExpiry;
 
       const noExistingToken =
-        otpDoc?.resetToken === (null || undefined) &&
-        otpDoc?.isDeleteAccountOtpVerified === (null || undefined) &&
-        otpDoc?.deleteAccountOtpExpiry === (null || undefined);
+        otpDoc?.deleteAccountOtp == null &&
+        otpDoc?.isDeleteAccountOtpVerified == null &&
+        otpDoc?.deleteAccountOtpExpiry == null;
 
       if (tokenHasExpired || noExistingToken) {
         const deleteAccountToken = generateOTP();

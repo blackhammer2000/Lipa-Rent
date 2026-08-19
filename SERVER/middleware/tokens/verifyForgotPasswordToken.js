@@ -21,7 +21,9 @@ const verifyForgotPasswordToken = (req, res, next) => {
     next();
   } catch (err) {
     if (
-      err?.message === ("jwt expired" || "invalid token" || "jwt malformed")
+      err?.message === "jwt expired" ||
+      err?.message === "invalid token" ||
+      err?.message === "jwt malformed"
     ) {
       res.status(403).json({ error: "Unauthorized action." });
     } else {
