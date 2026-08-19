@@ -68,16 +68,6 @@ const post_controllers = {
         nationalID: nationalID,
       });
 
-      if (emailExists)
-        throw new Error(
-          "Invalid Email, try signing up with a different email.",
-        );
-
-      if (nationalIDExists)
-        throw new Error(
-          "Invalid NationalID, try signing up with a different NationalID.",
-        );
-
       const otpExists = accountExists
         ? await Otp?.findOne({
             ownerID: accountExists._id,
@@ -103,7 +93,7 @@ const post_controllers = {
 
         res.status(200).json({
           message:
-            "OTP has already been sent, please try again after a few minutes",
+            "OTP has already been sent, check your email or try again after a few minutes",
           signUpToken,
         });
       }
@@ -163,6 +153,11 @@ const post_controllers = {
           signUpToken,
         });
       }
+
+      if ((emailExists || nationalIDExists) && !accountExists)
+        throw new Error(
+          `Invalid ${emailExists ? "Email" : "NationalID"}, try signing up with a different ${emailExists ? "Email" : "NationalID"}.`,
+        );
 
       if (!accountExists && !otpExists) {
         const owner = {
