@@ -55,20 +55,25 @@ const post_controllers = {
       if (encrypt(password).length < 8)
         throw new Error("Password must be at least 8 characters long.");
 
-      const accountExistsEmail = await Owner?.findOne({
+      const emailExists = await Owner?.findOne({
         email: email,
       });
 
-      const accountExistsNationalID = await Owner?.findOne({
+      const nationalIDExists = await Owner?.findOne({
         nationalID: nationalID,
       });
 
-      if (accountExistsEmail)
+      const accountExists = await Owner?.findOne({
+        email: email,
+        nationalID: nationalID,
+      });
+
+      if (emailExists)
         throw new Error(
           "Invalid Email, try signing up with a different email.",
         );
 
-      if (accountExistsNationalID)
+      if (nationalIDExists)
         throw new Error(
           "Invalid NationalID, try signing up with a different NationalID.",
         );
