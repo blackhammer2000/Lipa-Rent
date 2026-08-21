@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useConfirm } from "../hooks/useConfirm";
 import {
   readOwnerDetails,
   editOwnerDetails,
@@ -18,6 +19,7 @@ import Toast from "../components/Toast";
 
 export default function Profile() {
   const { accessToken, handleLogout } = useAuth();
+  const { confirm } = useConfirm();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -44,7 +46,13 @@ export default function Profile() {
   const [deleteCode, setDeleteCode] = useState("");
 
   const handleEditAccountClick = async () => {
-    if (!confirm("Do you want to change your account details?")) return;
+    const confirmed = await confirm({
+      title: "Edit Account Details",
+      message: "Do you want to change your account details?",
+      confirmText: "Continue",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await readOwnerDetails(accessToken);
 
@@ -61,12 +69,14 @@ export default function Profile() {
     setError("");
     setMessage("");
 
-    if (
-      !confirm(
-        "Are you sure you wish to proceed with editing the owner details?, If so you will be required to log in again after changing any of the login details."
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Confirm Profile Edit",
+      message:
+        "Are you sure you wish to proceed with editing the owner details? If so, you will be required to log in again after changing any of the login details.",
+      confirmText: "Edit",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await editOwnerDetails(accessToken, {
       name: editedOwner.name.toUpperCase(),
@@ -90,7 +100,13 @@ export default function Profile() {
   };
 
   const handleChangePasswordClick = async () => {
-    if (!confirm("Do you want to change your password?")) return;
+    const confirmed = await confirm({
+      title: "Change Password",
+      message: "Do you want to change your password?",
+      confirmText: "Continue",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await generateResetPasswordCode(accessToken);
 
@@ -139,7 +155,7 @@ export default function Profile() {
       newPassword,
       confirmNewPassword,
       accessToken,
-      resetCode
+      resetCode,
     );
 
     if (result.error) {
@@ -157,8 +173,16 @@ export default function Profile() {
     }
   };
 
-  const handleDeleteAccountClick = () => {
-    if (!confirm("Do you want to delete your account?")) return;
+  const handleDeleteAccountClick = async () => {
+    const confirmed = await confirm({
+      title: "Delete Account",
+      message:
+        "Do you want to delete your account? This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!confirmed) return;
     setShowVerifyPasswordModal(true);
   };
 
@@ -184,7 +208,10 @@ export default function Profile() {
 
     if (codeResult.message) setMessage(codeResult.message);
 
-    if (codeResult.deleteAccountToken && codeResult.deleteAccountToken !== "null") {
+    if (
+      codeResult.deleteAccountToken &&
+      codeResult.deleteAccountToken !== "null"
+    ) {
       alert(codeResult.deleteAccountToken);
     }
 
@@ -233,7 +260,11 @@ export default function Profile() {
         </div>
 
         <Toast type="error" message={error} onClose={() => setError("")} />
-        <Toast type="success" message={message} onClose={() => setMessage("")} />
+        <Toast
+          type="success"
+          message={message}
+          onClose={() => setMessage("")}
+        />
 
         <div className="container mt-4">
           <div className="settings-group-title">Profile Details</div>
@@ -257,7 +288,10 @@ export default function Profile() {
       <Footer />
 
       {showEditAccountModal && (
-        <Modal title="EDIT PROFILE DETAILS" onClose={() => setShowEditAccountModal(false)}>
+        <Modal
+          title="EDIT PROFILE DETAILS"
+          onClose={() => setShowEditAccountModal(false)}
+        >
           <form onSubmit={handleEditAccountSubmit} className="form">
             <div className="form-group">
               <label className="font-weight-bold">NAME:</label>
@@ -265,7 +299,9 @@ export default function Profile() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedOwner.name}
-                onChange={(e) => setEditedOwner({ ...editedOwner, name: e.target.value })}
+                onChange={(e) =>
+                  setEditedOwner({ ...editedOwner, name: e.target.value })
+                }
                 required
               />
             </div>
@@ -275,7 +311,9 @@ export default function Profile() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedOwner.nationalID}
-                onChange={(e) => setEditedOwner({ ...editedOwner, nationalID: e.target.value })}
+                onChange={(e) =>
+                  setEditedOwner({ ...editedOwner, nationalID: e.target.value })
+                }
                 required
               />
             </div>
@@ -285,7 +323,9 @@ export default function Profile() {
                 type="text"
                 className="form-control"
                 value={editedOwner.email}
-                onChange={(e) => setEditedOwner({ ...editedOwner, email: e.target.value })}
+                onChange={(e) =>
+                  setEditedOwner({ ...editedOwner, email: e.target.value })
+                }
                 required
               />
             </div>
@@ -295,7 +335,9 @@ export default function Profile() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedOwner.phone}
-                onChange={(e) => setEditedOwner({ ...editedOwner, phone: e.target.value })}
+                onChange={(e) =>
+                  setEditedOwner({ ...editedOwner, phone: e.target.value })
+                }
                 required
               />
             </div>
@@ -309,7 +351,10 @@ export default function Profile() {
       )}
 
       {showResetCodeModal && (
-        <Modal title="Enter password reset code" onClose={() => setShowResetCodeModal(false)}>
+        <Modal
+          title="Enter password reset code"
+          onClose={() => setShowResetCodeModal(false)}
+        >
           <form onSubmit={handleVerifyResetCode} className="form">
             <div className="form-group">
               <input
@@ -330,7 +375,10 @@ export default function Profile() {
       )}
 
       {showChangePasswordModal && (
-        <Modal title="Password Reset" onClose={() => setShowChangePasswordModal(false)}>
+        <Modal
+          title="Password Reset"
+          onClose={() => setShowChangePasswordModal(false)}
+        >
           <form onSubmit={handleChangePasswordSubmit} className="form">
             <div className="form-group">
               <input
@@ -362,7 +410,10 @@ export default function Profile() {
       )}
 
       {showVerifyPasswordModal && (
-        <Modal title="Verify password" onClose={() => setShowVerifyPasswordModal(false)}>
+        <Modal
+          title="Verify password"
+          onClose={() => setShowVerifyPasswordModal(false)}
+        >
           <form onSubmit={handleVerifyPassword} className="form">
             <div className="form-group">
               <input
@@ -384,7 +435,10 @@ export default function Profile() {
       )}
 
       {showDeleteCodeModal && (
-        <Modal title="Enter account deletion code" onClose={() => setShowDeleteCodeModal(false)}>
+        <Modal
+          title="Enter account deletion code"
+          onClose={() => setShowDeleteCodeModal(false)}
+        >
           <form onSubmit={handleVerifyDeleteCode} className="form">
             <div className="form-group">
               <input

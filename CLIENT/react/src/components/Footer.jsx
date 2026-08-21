@@ -1,12 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useConfirm } from "../hooks/useConfirm";
 
 export default function Footer() {
   const { handleLogout } = useAuth();
+  const { confirm } = useConfirm();
   const navigate = useNavigate();
 
   const onLogout = async () => {
-    if (!confirm("Confirm to logout")) return;
+    const confirmed = await confirm({
+      title: "Confirm Logout",
+      message: "Are you sure you want to log out of your account?",
+      confirmText: "Log Out",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!confirmed) return;
     await handleLogout();
     navigate("/login");
   };

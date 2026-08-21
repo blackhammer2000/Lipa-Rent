@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useConfirm } from "../hooks/useConfirm";
 import {
   readAllProperties,
   readOwnerDetails,
@@ -14,6 +15,7 @@ import Toast from "../components/Toast";
 
 export default function Dashboard() {
   const { accessToken } = useAuth();
+  const { confirm } = useConfirm();
   const [properties, setProperties] = useState({});
   const [ownerName, setOwnerName] = useState("");
   const [message, setMessage] = useState("");
@@ -58,12 +60,13 @@ export default function Dashboard() {
     setError("");
     setMessage("");
 
-    if (
-      !confirm(
-        `Do you want to create property with Name: "${newProperty.propertyName}", and Number: "${newProperty.propertyNumber}", located at: "${newProperty.propertyLocation}"?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Create Property",
+      message: `Do you want to create property with Name: "${newProperty.propertyName}", and Number: "${newProperty.propertyNumber}", located at: "${newProperty.propertyLocation}"?`,
+      confirmText: "Create",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await createProperty(accessToken, newProperty);
 
@@ -76,7 +79,11 @@ export default function Dashboard() {
       setMessage(result.message);
       setProperties(result.newProperties);
       setShowCreateModal(false);
-      setNewProperty({ propertyName: "", propertyNumber: "", propertyLocation: "" });
+      setNewProperty({
+        propertyName: "",
+        propertyNumber: "",
+        propertyLocation: "",
+      });
     }
   };
 
@@ -87,18 +94,19 @@ export default function Dashboard() {
 
     if (!editingProperty) return;
 
-    if (
-      !confirm(
-        `Do you want to edit, property with ID: "${editingProperty.propertyID}", with Number: "${editingProperty.propertyNumber}"?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Edit Property",
+      message: `Do you want to edit, property with ID: "${editingProperty.propertyID}", with Number: "${editingProperty.propertyNumber}"?`,
+      confirmText: "Edit",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await editProperty(
       accessToken,
       editingProperty.propertyID,
       editingProperty.propertyNumber,
-      editedProperty
+      editedProperty,
     );
 
     if (result.error) {
@@ -118,14 +126,20 @@ export default function Dashboard() {
     setError("");
     setMessage("");
 
-    if (
-      !confirm(
-        `Do you want to delete, "${property.propertyName}", with Number: "${property.propertyNumber}"?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Delete Property",
+      message: `Do you want to delete, "${property.propertyName}", with Number: "${property.propertyNumber}"?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!confirmed) return;
 
-    const result = await deleteProperty(accessToken, property.propertyID, property.propertyNumber);
+    const result = await deleteProperty(
+      accessToken,
+      property.propertyID,
+      property.propertyNumber,
+    );
 
     if (result.error) {
       setError(result.error);
@@ -172,7 +186,11 @@ export default function Dashboard() {
         </div>
 
         <Toast type="error" message={error} onClose={() => setError("")} />
-        <Toast type="success" message={message} onClose={() => setMessage("")} />
+        <Toast
+          type="success"
+          message={message}
+          onClose={() => setMessage("")}
+        />
 
         <div className="overflow-auto pt-0">
           <table className="table table-active bg-white mt-2">
@@ -221,7 +239,10 @@ export default function Dashboard() {
       <Footer />
 
       {showCreateModal && (
-        <Modal title="CREATE PROPERTY" onClose={() => setShowCreateModal(false)}>
+        <Modal
+          title="CREATE PROPERTY"
+          onClose={() => setShowCreateModal(false)}
+        >
           <form onSubmit={handleCreateProperty} className="form">
             <div className="form-group">
               <input
@@ -230,7 +251,10 @@ export default function Dashboard() {
                 className="form-control text-uppercase"
                 value={newProperty.propertyName}
                 onChange={(e) =>
-                  setNewProperty({ ...newProperty, propertyName: e.target.value })
+                  setNewProperty({
+                    ...newProperty,
+                    propertyName: e.target.value,
+                  })
                 }
                 required
               />
@@ -242,7 +266,10 @@ export default function Dashboard() {
                 className="form-control text-uppercase"
                 value={newProperty.propertyNumber}
                 onChange={(e) =>
-                  setNewProperty({ ...newProperty, propertyNumber: e.target.value })
+                  setNewProperty({
+                    ...newProperty,
+                    propertyNumber: e.target.value,
+                  })
                 }
                 required
               />
@@ -254,7 +281,10 @@ export default function Dashboard() {
                 className="form-control text-uppercase"
                 value={newProperty.propertyLocation}
                 onChange={(e) =>
-                  setNewProperty({ ...newProperty, propertyLocation: e.target.value })
+                  setNewProperty({
+                    ...newProperty,
+                    propertyLocation: e.target.value,
+                  })
                 }
                 required
               />
@@ -272,7 +302,9 @@ export default function Dashboard() {
         <Modal title="EDIT PROPERTY" onClose={() => setShowEditModal(false)}>
           <h5 className="text-center">
             Property Id:{" "}
-            <span className="font-weight-light">{editingProperty.propertyID}</span>
+            <span className="font-weight-light">
+              {editingProperty.propertyID}
+            </span>
           </h5>
           <form onSubmit={handleEditProperty} className="form">
             <div className="form-group">
@@ -282,7 +314,10 @@ export default function Dashboard() {
                 className="form-control text-uppercase"
                 value={editedProperty.propertyName}
                 onChange={(e) =>
-                  setEditedProperty({ ...editedProperty, propertyName: e.target.value })
+                  setEditedProperty({
+                    ...editedProperty,
+                    propertyName: e.target.value,
+                  })
                 }
                 required
               />
@@ -294,7 +329,10 @@ export default function Dashboard() {
                 className="form-control text-uppercase"
                 value={editedProperty.propertyNumber}
                 onChange={(e) =>
-                  setEditedProperty({ ...editedProperty, propertyNumber: e.target.value })
+                  setEditedProperty({
+                    ...editedProperty,
+                    propertyNumber: e.target.value,
+                  })
                 }
                 required
               />
@@ -306,7 +344,10 @@ export default function Dashboard() {
                 className="form-control text-uppercase"
                 value={editedProperty.propertyLocation}
                 onChange={(e) =>
-                  setEditedProperty({ ...editedProperty, propertyLocation: e.target.value })
+                  setEditedProperty({
+                    ...editedProperty,
+                    propertyLocation: e.target.value,
+                  })
                 }
                 required
               />

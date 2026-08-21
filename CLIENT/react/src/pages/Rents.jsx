@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useConfirm } from "../hooks/useConfirm";
 import {
   readAllTenantsForRoom,
   readAllTenantPayments,
@@ -14,21 +15,25 @@ import Toast from "../components/Toast";
 
 export default function Rents() {
   const { accessToken } = useAuth();
+  const { confirm } = useConfirm();
   const [tenants, setTenants] = useState({});
   const [selectedTenantId, setSelectedTenantId] = useState(
-    localStorage.getItem("liparentSelectedTenantId") || ""
+    localStorage.getItem("liparentSelectedTenantId") || "",
   );
   const [selectedTenantName, setSelectedTenantName] = useState(
-    localStorage.getItem("liparentSelectedTenantName") || ""
+    localStorage.getItem("liparentSelectedTenantName") || "",
   );
   const [payments, setPayments] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId") || "";
-  const selectedPropertyName = localStorage.getItem("liparentSelectedPropertyName") || "";
+  const selectedPropertyId =
+    localStorage.getItem("liparentSelectedPropertyId") || "";
+  const selectedPropertyName =
+    localStorage.getItem("liparentSelectedPropertyName") || "";
   const selectedRoomId = localStorage.getItem("liparentSelectedRoomId") || "";
-  const selectedRoomNumber = localStorage.getItem("liparentSelectedRoomNumber") || "";
+  const selectedRoomNumber =
+    localStorage.getItem("liparentSelectedRoomNumber") || "";
 
   // Create payment modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -56,7 +61,7 @@ export default function Rents() {
       const result = await readAllTenantsForRoom(
         accessToken,
         selectedPropertyId,
-        selectedRoomId
+        selectedRoomId,
       );
       if (result.selectedRoomOnPropertyTenants) {
         setTenants(result.selectedRoomOnPropertyTenants);
@@ -68,7 +73,12 @@ export default function Rents() {
   }, [accessToken, selectedPropertyId, selectedRoomId]);
 
   useEffect(() => {
-    if (!accessToken || !selectedPropertyId || !selectedRoomId || !selectedTenantId)
+    if (
+      !accessToken ||
+      !selectedPropertyId ||
+      !selectedRoomId ||
+      !selectedTenantId
+    )
       return;
 
     const loadPayments = async () => {
@@ -76,7 +86,7 @@ export default function Rents() {
         accessToken,
         selectedPropertyId,
         selectedRoomId,
-        selectedTenantId
+        selectedTenantId,
       );
       if (result.selectedTenantPayments) {
         setPayments(result.selectedTenantPayments);
@@ -110,19 +120,20 @@ export default function Rents() {
       return;
     }
 
-    if (
-      !confirm(
-        `Do you want to add a new payment by ${selectedTenantName} for room: ${selectedRoomNumber}?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Add Payment",
+      message: `Do you want to add a new payment by ${selectedTenantName} for room: ${selectedRoomNumber}?`,
+      confirmText: "Add",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await createPayment(
       accessToken,
       selectedPropertyId,
       selectedRoomId,
       selectedTenantId,
-      newPayment
+      newPayment,
     );
 
     if (result.error) {
@@ -145,8 +156,13 @@ export default function Rents() {
 
     if (!editingPayment) return;
 
-    if (!confirm(`Do you want to edit tenant payment with ID: "${editingPayment.paymentID}"?`))
-      return;
+    const confirmed = await confirm({
+      title: "Edit Payment",
+      message: `Do you want to edit tenant payment with ID: "${editingPayment.paymentID}"?`,
+      confirmText: "Edit",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await editPayment(
       accessToken,
@@ -154,7 +170,7 @@ export default function Rents() {
       selectedRoomId,
       selectedTenantId,
       editingPayment.paymentID,
-      editedPayment
+      editedPayment,
     );
 
     if (result.error) {
@@ -174,15 +190,21 @@ export default function Rents() {
     setError("");
     setMessage("");
 
-    if (!confirm(`Do you want to delete tenant payment with ID: "${payment.paymentID}"?`))
-      return;
+    const confirmed = await confirm({
+      title: "Delete Payment",
+      message: `Do you want to delete tenant payment with ID: "${payment.paymentID}"?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!confirmed) return;
 
     const result = await deletePayment(
       accessToken,
       selectedPropertyId,
       selectedRoomId,
       selectedTenantId,
-      payment.paymentID
+      payment.paymentID,
     );
 
     if (result.error) {
@@ -252,7 +274,9 @@ export default function Rents() {
           <div className="text-center d-flex justify-content-between w-75">
             <u>
               <h2>
-                {selectedTenantName && selectedRoomNumber && selectedPropertyName
+                {selectedTenantName &&
+                selectedRoomNumber &&
+                selectedPropertyName
                   ? `PAYMENTS BY ${selectedTenantName.toUpperCase()} FOR ${selectedRoomNumber.toUpperCase()} IN ${selectedPropertyName.toUpperCase()}`
                   : "PAYMENTS"}
               </h2>
@@ -264,7 +288,11 @@ export default function Rents() {
         </div>
 
         <Toast type="error" message={error} onClose={() => setError("")} />
-        <Toast type="success" message={message} onClose={() => setMessage("")} />
+        <Toast
+          type="success"
+          message={message}
+          onClose={() => setMessage("")}
+        />
 
         <div className="overflow-auto pt-0">
           <table className="table table-active bg-white mt-2">
@@ -326,7 +354,9 @@ export default function Rents() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newPayment.amount}
-                onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
+                onChange={(e) =>
+                  setNewPayment({ ...newPayment, amount: e.target.value })
+                }
                 required
               />
             </div>
@@ -336,7 +366,9 @@ export default function Rents() {
                 type="month"
                 className="form-control text-uppercase"
                 value={newPayment.month}
-                onChange={(e) => setNewPayment({ ...newPayment, month: e.target.value })}
+                onChange={(e) =>
+                  setNewPayment({ ...newPayment, month: e.target.value })
+                }
                 required
               />
             </div>
@@ -345,7 +377,9 @@ export default function Rents() {
               <select
                 className="form-control"
                 value={newPayment.mode}
-                onChange={(e) => setNewPayment({ ...newPayment, mode: e.target.value })}
+                onChange={(e) =>
+                  setNewPayment({ ...newPayment, mode: e.target.value })
+                }
                 required
               >
                 <option value="">SELECT PAYMENT MODE</option>
@@ -359,7 +393,12 @@ export default function Rents() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newPayment.recieptNumber}
-                onChange={(e) => setNewPayment({ ...newPayment, recieptNumber: e.target.value })}
+                onChange={(e) =>
+                  setNewPayment({
+                    ...newPayment,
+                    recieptNumber: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -376,7 +415,9 @@ export default function Rents() {
         <Modal title="EDIT PAYMENT" onClose={() => setShowEditModal(false)}>
           <h5 className="text-center">
             Payment Id:{" "}
-            <span className="font-weight-light">{editingPayment.paymentID}</span>
+            <span className="font-weight-light">
+              {editingPayment.paymentID}
+            </span>
           </h5>
           <form onSubmit={handleEditPayment} className="form">
             <div className="form-group">
@@ -385,7 +426,9 @@ export default function Rents() {
                 type="month"
                 className="form-control text-uppercase"
                 value={editedPayment.month}
-                onChange={(e) => setEditedPayment({ ...editedPayment, month: e.target.value })}
+                onChange={(e) =>
+                  setEditedPayment({ ...editedPayment, month: e.target.value })
+                }
                 required
               />
             </div>
@@ -395,7 +438,12 @@ export default function Rents() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedPayment.amountPaid}
-                onChange={(e) => setEditedPayment({ ...editedPayment, amountPaid: e.target.value })}
+                onChange={(e) =>
+                  setEditedPayment({
+                    ...editedPayment,
+                    amountPaid: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -404,7 +452,12 @@ export default function Rents() {
               <select
                 className="form-control"
                 value={editedPayment.modeOfPayment}
-                onChange={(e) => setEditedPayment({ ...editedPayment, modeOfPayment: e.target.value })}
+                onChange={(e) =>
+                  setEditedPayment({
+                    ...editedPayment,
+                    modeOfPayment: e.target.value,
+                  })
+                }
                 required
               >
                 <option value="">SELECT PAYMENT MODE</option>
@@ -418,7 +471,12 @@ export default function Rents() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedPayment.recieptNumber}
-                onChange={(e) => setEditedPayment({ ...editedPayment, recieptNumber: e.target.value })}
+                onChange={(e) =>
+                  setEditedPayment({
+                    ...editedPayment,
+                    recieptNumber: e.target.value,
+                  })
+                }
                 required
               />
             </div>
