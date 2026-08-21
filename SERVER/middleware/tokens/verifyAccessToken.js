@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { verify } = require("jsonwebtoken");
 const { Otp } = require("../models/Otp");
+const { Password } = require("../models/Password");
 
 const {
   checkSubscriptionExpiry,
@@ -14,10 +15,8 @@ const verifyUserAccessToken = async (req, res, next) => {
       headers: { token },
     } = req;
 
-    const { id, email, currentSubscription, user, disabled } = verify(
-      token,
-      process.env.ACCESS_SECRET_KEY
-    );
+    const { id, email, currentSubscription, user, disabled, tokenVersion } =
+      verify(token, process.env.ACCESS_SECRET_KEY);
 
     if (!user) throw new Error("Unauthorized action, unknown role.");
 
@@ -33,6 +32,14 @@ const verifyUserAccessToken = async (req, res, next) => {
     if (user && isSubscriptionExpired)
       throw new Error(isSubscriptionExpired?.error);
 
+    // Token version check: reject tokens issued before the latest logout
+    const passwordDoc = await Password.findOne({ ownerID: id });
+    const currentVersion = passwordDoc?.tokenVersion ?? 0;
+
+    if ((tokenVersion ?? 0) !== currentVersion) {
+      throw new Error("Session has been invalidated, please log in again.");
+    }
+
     req.body.id = id;
     req.body.email = email;
 
@@ -42,7 +49,11 @@ const verifyUserAccessToken = async (req, res, next) => {
 
     next();
   } catch (err) {
-    if (err.message === ("jwt expired" || "invalid token" || "jwt malformed")) {
+    if (
+      err?.message === "jwt expired" ||
+      err?.message === "invalid token" ||
+      err?.message === "jwt malformed"
+    ) {
       res.status(403).json({ error: "session expired" });
     } else {
       res.status(500).json({ error: err?.message });

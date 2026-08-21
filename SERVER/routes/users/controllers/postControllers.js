@@ -745,7 +745,18 @@ const post_controllers = {
       )
         throw new Error("Error adding login otp details to database");
 
-      const userData = { id, email, currentSubscription, disabled, user: true };
+      const passwordDoc = await Password.findOne({ ownerID: id });
+
+      const tokenVersion = passwordDoc?.tokenVersion ?? 0;
+
+      const userData = {
+        id,
+        email,
+        currentSubscription,
+        disabled,
+        user: true,
+        tokenVersion,
+      };
 
       const loginToken = await signAccessToken(userData);
 
@@ -2411,6 +2422,15 @@ const post_controllers = {
       if (!req.body.id) throw new Error("Unauthorized action");
 
       const { id } = req.body;
+
+      // Invalidate all existing access tokens for this user
+      const invalidateTokens = await Password.updateOne(
+        { ownerID: id },
+        { $inc: { tokenVersion: 1 } },
+      );
+
+      if (!invalidateTokens.acknowledged)
+        throw new Error("something went wrong, 'token invalidation'");
 
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
 
