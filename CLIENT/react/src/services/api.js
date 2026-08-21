@@ -96,7 +96,11 @@ async function request(path, options = {}, loadingMessage = "") {
   if (globalShowLoader && msg) globalShowLoader(msg);
   try {
     const response = await fetch(`${serverDomain}${path}`, options);
-    return await response.json();
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    // Surface network/server errors so the UI can show a message
+    return { error: err?.message || "Network error, please try again." };
   } finally {
     if (globalHideLoader) globalHideLoader();
   }

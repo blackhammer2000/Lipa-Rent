@@ -2057,7 +2057,7 @@ const post_controllers = {
         Date.now() < passwordDoc.resetTokenExpiry;
 
       if (tokenIsNotVerifiedAndHasNotExpired)
-        res.status(200).json({
+        return res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
         });
