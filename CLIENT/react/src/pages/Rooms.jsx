@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useConfirm } from "../hooks/useConfirm";
 import {
   readAllProperties,
   readAllRooms,
@@ -14,12 +15,13 @@ import Toast from "../components/Toast";
 
 export default function Rooms() {
   const { accessToken } = useAuth();
+  const { confirm } = useConfirm();
   const [properties, setProperties] = useState({});
   const [selectedPropertyId, setSelectedPropertyId] = useState(
-    localStorage.getItem("liparentSelectedPropertyId") || ""
+    localStorage.getItem("liparentSelectedPropertyId") || "",
   );
   const [selectedPropertyName, setSelectedPropertyName] = useState(
-    localStorage.getItem("liparentSelectedPropertyName") || ""
+    localStorage.getItem("liparentSelectedPropertyName") || "",
   );
   const [rooms, setRooms] = useState({});
   const [message, setMessage] = useState("");
@@ -102,7 +104,12 @@ export default function Rooms() {
       setMessage(result.message);
       setRooms(result.propertyRooms);
       setShowCreateModal(false);
-      setNewRoom({ roomNumber: "", roomRatePerMonth: "", roomArea: "", roomType: "" });
+      setNewRoom({
+        roomNumber: "",
+        roomRatePerMonth: "",
+        roomArea: "",
+        roomType: "",
+      });
     }
   };
 
@@ -113,18 +120,19 @@ export default function Rooms() {
 
     if (!editingRoom) return;
 
-    if (
-      !confirm(
-        `Do you want to edit room with ID: "${editingRoom.roomID}" on property with ID: "${selectedPropertyId}"?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Edit Room",
+      message: `Do you want to edit room with ID: "${editingRoom.roomID}" on property with ID: "${selectedPropertyId}"?`,
+      confirmText: "Edit",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await editRoom(
       accessToken,
       selectedPropertyId,
       editingRoom.roomID,
-      editedRoom
+      editedRoom,
     );
 
     if (result.error) {
@@ -144,14 +152,20 @@ export default function Rooms() {
     setError("");
     setMessage("");
 
-    if (
-      !confirm(
-        `Do you want to delete room with ID: "${room.roomID}" on property with ID: "${selectedPropertyId}"?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Delete Room",
+      message: `Do you want to delete room with ID: "${room.roomID}" on property with ID: "${selectedPropertyId}"?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!confirmed) return;
 
-    const result = await deleteRoom(accessToken, selectedPropertyId, room.roomID);
+    const result = await deleteRoom(
+      accessToken,
+      selectedPropertyId,
+      room.roomID,
+    );
 
     if (result.error) {
       setError(result.error);
@@ -178,7 +192,8 @@ export default function Rooms() {
   const roomStats = { totalRooms: 0, occupiedRooms: 0 };
   Object.keys(rooms).forEach((key) => {
     if (rooms[key].roomID) roomStats.totalRooms++;
-    if (rooms[key].isOccupied && rooms[key].currentTenantID) roomStats.occupiedRooms++;
+    if (rooms[key].isOccupied && rooms[key].currentTenantID)
+      roomStats.occupiedRooms++;
   });
 
   return (
@@ -244,8 +259,12 @@ export default function Rooms() {
         </div>
 
         <Toast type="error" message={error} onClose={() => setError("")} />
-        <Toast type="success" message={message} onClose={() => setMessage("")} />
-        
+        <Toast
+          type="success"
+          message={message}
+          onClose={() => setMessage("")}
+        />
+
         <div className="overflow-auto pt-0">
           <table className="table table-active bg-white mt-2">
             <thead className="position-sticky bg-white">
@@ -272,10 +291,16 @@ export default function Rooms() {
                     <td>{room.roomType}</td>
                     <td>{room.roomArea}</td>
                     <td>KES. {room.roomRatePerMonth}</td>
-                    <td className={room.isOccupied ? "text-success" : "text-danger"}>
+                    <td
+                      className={
+                        room.isOccupied ? "text-success" : "text-danger"
+                      }
+                    >
                       {room.isOccupied ? "Occupied" : "Vacant"}
                     </td>
-                    <td>{room.currentTenantID ? room.currentTenantID : "none"}</td>
+                    <td>
+                      {room.currentTenantID ? room.currentTenantID : "none"}
+                    </td>
                     <td>
                       <button
                         onClick={() => openEditModal(room)}
@@ -309,7 +334,9 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newRoom.roomNumber}
-                onChange={(e) => setNewRoom({ ...newRoom, roomNumber: e.target.value })}
+                onChange={(e) =>
+                  setNewRoom({ ...newRoom, roomNumber: e.target.value })
+                }
                 required
               />
             </div>
@@ -319,7 +346,9 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newRoom.roomRatePerMonth}
-                onChange={(e) => setNewRoom({ ...newRoom, roomRatePerMonth: e.target.value })}
+                onChange={(e) =>
+                  setNewRoom({ ...newRoom, roomRatePerMonth: e.target.value })
+                }
                 required
               />
             </div>
@@ -329,7 +358,9 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newRoom.roomArea}
-                onChange={(e) => setNewRoom({ ...newRoom, roomArea: e.target.value })}
+                onChange={(e) =>
+                  setNewRoom({ ...newRoom, roomArea: e.target.value })
+                }
                 required
               />
             </div>
@@ -339,7 +370,9 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newRoom.roomType}
-                onChange={(e) => setNewRoom({ ...newRoom, roomType: e.target.value })}
+                onChange={(e) =>
+                  setNewRoom({ ...newRoom, roomType: e.target.value })
+                }
                 required
               />
             </div>
@@ -355,7 +388,8 @@ export default function Rooms() {
       {showEditModal && editingRoom && (
         <Modal title="EDIT ROOM" onClose={() => setShowEditModal(false)}>
           <h5 className="text-center">
-            Room Id: <span className="font-weight-light">{editingRoom.roomID}</span>
+            Room Id:{" "}
+            <span className="font-weight-light">{editingRoom.roomID}</span>
           </h5>
           <form onSubmit={handleEditRoom} className="form">
             <div className="form-group">
@@ -364,7 +398,9 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedRoom.roomNumber}
-                onChange={(e) => setEditedRoom({ ...editedRoom, roomNumber: e.target.value })}
+                onChange={(e) =>
+                  setEditedRoom({ ...editedRoom, roomNumber: e.target.value })
+                }
                 required
               />
             </div>
@@ -374,7 +410,9 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedRoom.roomType}
-                onChange={(e) => setEditedRoom({ ...editedRoom, roomType: e.target.value })}
+                onChange={(e) =>
+                  setEditedRoom({ ...editedRoom, roomType: e.target.value })
+                }
                 required
               />
             </div>
@@ -384,7 +422,9 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedRoom.roomArea}
-                onChange={(e) => setEditedRoom({ ...editedRoom, roomArea: e.target.value })}
+                onChange={(e) =>
+                  setEditedRoom({ ...editedRoom, roomArea: e.target.value })
+                }
                 required
               />
             </div>
@@ -394,7 +434,12 @@ export default function Rooms() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedRoom.roomRatePerMonth}
-                onChange={(e) => setEditedRoom({ ...editedRoom, roomRatePerMonth: e.target.value })}
+                onChange={(e) =>
+                  setEditedRoom({
+                    ...editedRoom,
+                    roomRatePerMonth: e.target.value,
+                  })
+                }
                 required
               />
             </div>
