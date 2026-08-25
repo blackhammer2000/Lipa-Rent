@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useConfirm } from "../hooks/useConfirm";
 import {
   sendSignUpOtp,
   verifySignUpOtp,
@@ -10,6 +11,7 @@ import Toast from "../components/Toast";
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { confirm } = useConfirm();
   const [formData, setFormData] = useState({
     name: "",
     nationalID: "",
@@ -36,6 +38,15 @@ export default function Landing() {
     setMessage("");
 
     const user = { ...formData };
+
+    const confirmed = await confirm({
+      title: "Create Account",
+      message: `Do you want to create an account for, "${user.name}"?`,
+      confirmText: "Create",
+      cancelText: "Cancel",
+    });
+
+    if (!confirmed) return;
 
     const result = await sendSignUpOtp(user);
 
