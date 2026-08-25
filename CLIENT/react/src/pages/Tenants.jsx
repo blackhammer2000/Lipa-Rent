@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useConfirm } from "../hooks/useConfirm";
 import {
   readAllRooms,
   readAllTenantsForRoom,
@@ -14,19 +15,22 @@ import Toast from "../components/Toast";
 
 export default function Tenants() {
   const { accessToken } = useAuth();
+  const { confirm } = useConfirm();
   const [rooms, setRooms] = useState({});
   const [selectedRoomId, setSelectedRoomId] = useState(
-    localStorage.getItem("liparentSelectedRoomId") || ""
+    localStorage.getItem("liparentSelectedRoomId") || "",
   );
   const [selectedRoomNumber, setSelectedRoomNumber] = useState(
-    localStorage.getItem("liparentSelectedRoomNumber") || ""
+    localStorage.getItem("liparentSelectedRoomNumber") || "",
   );
   const [tenants, setTenants] = useState({});
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const selectedPropertyId = localStorage.getItem("liparentSelectedPropertyId") || "";
-  const selectedPropertyName = localStorage.getItem("liparentSelectedPropertyName") || "";
+  const selectedPropertyId =
+    localStorage.getItem("liparentSelectedPropertyId") || "";
+  const selectedPropertyName =
+    localStorage.getItem("liparentSelectedPropertyName") || "";
 
   // Create tenant modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -67,7 +71,7 @@ export default function Tenants() {
       const result = await readAllTenantsForRoom(
         accessToken,
         selectedPropertyId,
-        selectedRoomId
+        selectedRoomId,
       );
       if (result.selectedRoomOnPropertyTenants) {
         setTenants(result.selectedRoomOnPropertyTenants);
@@ -101,16 +105,19 @@ export default function Tenants() {
       return;
     }
 
-    if (
-      !confirm(`Do you want to add ${newTenant.tenantName} to roomID: ${selectedRoomId}?`)
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Add Tenant",
+      message: `Do you want to add ${newTenant.tenantName} to roomID: ${selectedRoomId}?`,
+      confirmText: "Add",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await createTenant(
       accessToken,
       selectedPropertyId,
       selectedRoomId,
-      newTenant
+      newTenant,
     );
 
     if (result.error) {
@@ -138,19 +145,20 @@ export default function Tenants() {
 
     if (!editingTenant) return;
 
-    if (
-      !confirm(
-        `Do you want to edit tenant with ID: "${editingTenant.tenantID}" on roomID: "${selectedRoomId}"?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Edit Tenant",
+      message: `Do you want to edit tenant with ID: "${editingTenant.tenantID}" on roomID: "${selectedRoomId}"?`,
+      confirmText: "Edit",
+      cancelText: "Cancel",
+    });
+    if (!confirmed) return;
 
     const result = await editTenant(
       accessToken,
       selectedPropertyId,
       selectedRoomId,
       editingTenant.tenantID,
-      editedTenant
+      editedTenant,
     );
 
     if (result.error) {
@@ -170,18 +178,20 @@ export default function Tenants() {
     setError("");
     setMessage("");
 
-    if (
-      !confirm(
-        `Do you want to delete tenant with ID: "${tenant.tenantID}" from roomID: "${selectedRoomId}"?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+      title: "Delete Tenant",
+      message: `Do you want to delete tenant with ID: "${tenant.tenantID}" from roomID: "${selectedRoomId}"?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!confirmed) return;
 
     const result = await deleteTenant(
       accessToken,
       selectedPropertyId,
       selectedRoomId,
-      tenant.tenantID
+      tenant.tenantID,
     );
 
     if (result.error) {
@@ -261,7 +271,11 @@ export default function Tenants() {
         </div>
 
         <Toast type="error" message={error} onClose={() => setError("")} />
-        <Toast type="success" message={message} onClose={() => setMessage("")} />
+        <Toast
+          type="success"
+          message={message}
+          onClose={() => setMessage("")}
+        />
 
         <div className="overflow-auto pt-0">
           <table className="table table-active bg-white mt-2">
@@ -321,7 +335,10 @@ export default function Tenants() {
       <Footer />
 
       {showCreateModal && (
-        <Modal title="ADD TENANT TO ROOM" onClose={() => setShowCreateModal(false)}>
+        <Modal
+          title="ADD TENANT TO ROOM"
+          onClose={() => setShowCreateModal(false)}
+        >
           <form onSubmit={handleCreateTenant} className="form">
             <div className="form-group">
               <label className="font-weight-bold">TENANT NAME</label>
@@ -329,7 +346,9 @@ export default function Tenants() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newTenant.tenantName}
-                onChange={(e) => setNewTenant({ ...newTenant, tenantName: e.target.value })}
+                onChange={(e) =>
+                  setNewTenant({ ...newTenant, tenantName: e.target.value })
+                }
                 required
               />
             </div>
@@ -339,7 +358,12 @@ export default function Tenants() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newTenant.tenantNationalID}
-                onChange={(e) => setNewTenant({ ...newTenant, tenantNationalID: e.target.value })}
+                onChange={(e) =>
+                  setNewTenant({
+                    ...newTenant,
+                    tenantNationalID: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -349,7 +373,9 @@ export default function Tenants() {
                 type="text"
                 className="form-control text-uppercase"
                 value={newTenant.tenantPhone}
-                onChange={(e) => setNewTenant({ ...newTenant, tenantPhone: e.target.value })}
+                onChange={(e) =>
+                  setNewTenant({ ...newTenant, tenantPhone: e.target.value })
+                }
                 required
               />
             </div>
@@ -359,7 +385,9 @@ export default function Tenants() {
                 type="date"
                 className="form-control text-uppercase"
                 value={newTenant.tenantMoveIn}
-                onChange={(e) => setNewTenant({ ...newTenant, tenantMoveIn: e.target.value })}
+                onChange={(e) =>
+                  setNewTenant({ ...newTenant, tenantMoveIn: e.target.value })
+                }
                 required
               />
             </div>
@@ -385,7 +413,12 @@ export default function Tenants() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedTenant.tenantName}
-                onChange={(e) => setEditedTenant({ ...editedTenant, tenantName: e.target.value })}
+                onChange={(e) =>
+                  setEditedTenant({
+                    ...editedTenant,
+                    tenantName: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -395,7 +428,12 @@ export default function Tenants() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedTenant.tenantNationalID}
-                onChange={(e) => setEditedTenant({ ...editedTenant, tenantNationalID: e.target.value })}
+                onChange={(e) =>
+                  setEditedTenant({
+                    ...editedTenant,
+                    tenantNationalID: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -405,7 +443,12 @@ export default function Tenants() {
                 type="text"
                 className="form-control text-uppercase"
                 value={editedTenant.tenantPhone}
-                onChange={(e) => setEditedTenant({ ...editedTenant, tenantPhone: e.target.value })}
+                onChange={(e) =>
+                  setEditedTenant({
+                    ...editedTenant,
+                    tenantPhone: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -415,7 +458,12 @@ export default function Tenants() {
                 type="date"
                 className="form-control text-uppercase"
                 value={editedTenant.tenantMoveIn}
-                onChange={(e) => setEditedTenant({ ...editedTenant, tenantMoveIn: e.target.value })}
+                onChange={(e) =>
+                  setEditedTenant({
+                    ...editedTenant,
+                    tenantMoveIn: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -425,7 +473,12 @@ export default function Tenants() {
                 type="date"
                 className="form-control text-uppercase"
                 value={editedTenant.tenantMoveOut}
-                onChange={(e) => setEditedTenant({ ...editedTenant, tenantMoveOut: e.target.value })}
+                onChange={(e) =>
+                  setEditedTenant({
+                    ...editedTenant,
+                    tenantMoveOut: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="form-group text-center">
