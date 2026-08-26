@@ -2206,9 +2206,10 @@ const post_controllers = {
 
   genarateDeleteAccountOTP: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unauthorized action");
+      if (!req.body.id || !req.body.email)
+        throw new Error("Unauthorized action");
 
-      const { id } = req.body;
+      const { id, email } = req.body;
 
       const otpDoc = await Otp.findOne({ ownerID: id });
 
@@ -2300,21 +2301,18 @@ const post_controllers = {
 
       const deleteAccountToken = otpDoc.deleteAccountOtp || null;
 
-      if (!deleteAccountToken)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!deleteAccountToken) throw new Error("Invalid Token");
 
       const deleteAccountTokenMatch = await compare(
         encrypt(deletetoken),
         deleteAccountToken,
       );
 
-      if (!deleteAccountTokenMatch)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!deleteAccountTokenMatch) throw new Error("Invalid Token");
 
       const deleteAccountTokenExpiry = otpDoc.deleteAccountOtpExpiry || null;
 
-      if (!deleteAccountTokenExpiry)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!deleteAccountTokenExpiry) throw new Error("Invalid Token.");
 
       const isTokenValid = Date.now() < deleteAccountTokenExpiry ? true : false;
 
