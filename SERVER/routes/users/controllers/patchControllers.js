@@ -12,6 +12,7 @@ const { Rent } = require("../../../middleware/models/Rent");
 const { Password } = require("../../../middleware/models/Password");
 
 const { encrypt } = require("../../helpers/cipher");
+const { Otp } = require("../../../middleware/models/Otp");
 
 ///////*************************PATCHCONTROLLERS************************////////////////
 const patchControllers = {
@@ -39,12 +40,12 @@ const patchControllers = {
         { _id: id },
         {
           $set: { name, nationalID, email, phone },
-        }
+        },
       );
 
       if (!ownerUpdate.acknowledged)
         throw new Error(
-          "Error when updating the owner details in the database."
+          "Error when updating the owner details in the database.",
         );
 
       const triggerLogOut =
@@ -90,7 +91,7 @@ const patchControllers = {
 
       if (checkIfPropertyIdIsRegistered.propertyNumber !== propertyNo)
         throw new Error(
-          "The property number given does not match the number of the property saved in the database with the given ID."
+          "The property number given does not match the number of the property saved in the database with the given ID.",
         );
 
       editedProperty.propertyID ? delete editedProperty.propertyID : null;
@@ -111,7 +112,7 @@ const patchControllers = {
 
       const updateEditedProperty = await Property.updateOne(
         { ownerID: id },
-        { $set: { propertiesOwned } }
+        { $set: { propertiesOwned } },
       );
 
       if (!updateEditedProperty.acknowledged)
@@ -153,7 +154,7 @@ const patchControllers = {
 
       if (!selectPropertyUsingPropertyID)
         throw new Error(
-          "Selected propertyID Rooms are not found/not registered in the database."
+          "Selected propertyID Rooms are not found/not registered in the database.",
         );
 
       const propertyRooms = selectPropertyUsingPropertyID?.rooms;
@@ -162,7 +163,7 @@ const patchControllers = {
 
       if (!selectRoomInPropertyUsingRoomID)
         throw new Error(
-          "Selected room ID is not found/not registered in the property."
+          "Selected room ID is not found/not registered in the property.",
         );
 
       if (!Object.keys(propertyRooms))
@@ -189,7 +190,7 @@ const patchControllers = {
           $set: {
             rooms,
           },
-        }
+        },
       );
 
       if (updateRooms.acknowledged && updateRooms.modifiedCount)
@@ -226,7 +227,7 @@ const patchControllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the tenants database."
+          "Property with the given property Id has not been registered in the tenants database.",
         );
 
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
@@ -244,7 +245,7 @@ const patchControllers = {
 
       if (!selectedTenantOnRoomOnProperty)
         throw new Error(
-          "No tenant with the given tenantId has been added to this room."
+          "No tenant with the given tenantId has been added to this room.",
         );
 
       editedTenant.tenantID ? delete editedTenant.tenantID : null;
@@ -273,7 +274,7 @@ const patchControllers = {
 
       const updateTenants = await Tenant.updateOne(
         { ownerID: id },
-        { $set: { tenants } }
+        { $set: { tenants } },
       );
 
       if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
@@ -303,12 +304,12 @@ const patchControllers = {
               $set: {
                 rooms,
               },
-            }
+            },
           );
 
           if (!updateRooms.acknowledged && !updateRooms.modifiedCount)
             throw new Error(
-              "Error when updating the room details for the room."
+              "Error when updating the room details for the room.",
             );
         }
       }
@@ -347,7 +348,7 @@ const patchControllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the tenants database."
+          "Property with the given property Id has not been registered in the tenants database.",
         );
 
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
@@ -360,7 +361,7 @@ const patchControllers = {
 
       if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
         throw new Error(
-          "Room with the given ID has not been registered in the tenants database."
+          "Room with the given ID has not been registered in the tenants database.",
         );
 
       const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
@@ -368,7 +369,7 @@ const patchControllers = {
 
       if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
         throw new Error(
-          "Tenant with the given ID has not been registered in the tenants database."
+          "Tenant with the given ID has not been registered in the tenants database.",
         );
 
       editedPayment.paymentID ? delete editedPayment.paymentID : null;
@@ -409,7 +410,7 @@ const patchControllers = {
             } else {
               return payment;
             }
-          }
+          },
         );
 
       const reCalculatedTenantPaymentReports = updatedTenantPaymentReports.map(
@@ -429,12 +430,12 @@ const patchControllers = {
               return payment;
             }
           }
-        }
+        },
       );
 
       if (!selectedPaymentIndex)
         throw new Error(
-          "The requested payment report with the given payment ID was not found."
+          "The requested payment report with the given payment ID was not found.",
         );
 
       rents[0][propertyId].rentPayments[roomId][tenantId] =
@@ -446,7 +447,7 @@ const patchControllers = {
           $set: {
             rents,
           },
-        }
+        },
       );
 
       if (updateRents.acknowledged && updateRents.modifiedCount)
@@ -475,24 +476,22 @@ const patchControllers = {
 
       if (encrypt(newPassword) !== encrypt(confirmNewPassword))
         throw new Error("Passwords do not match.");
-      
-      if(encrypt(newPassword).length < 8) throw new Error("Password must be at least 8 characters long.");
 
-      
+      if (encrypt(newPassword).length < 8)
+        throw new Error("Password must be at least 8 characters long.");
+
       const passwordDoc = await Password.findOne({ ownerID: id });
 
       const resetPasswordToken = passwordDoc.resetToken || null;
 
-      if (!resetPasswordToken)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!resetPasswordToken) throw new Error("Invalid Token.");
 
       const resetPasswordTokenMatch = await compare(
         encrypt(resettoken),
-        resetPasswordToken
+        resetPasswordToken,
       );
 
-      if (!resetPasswordTokenMatch)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!resetPasswordTokenMatch) throw new Error("Invalid Token.");
 
       const isResetPasswordTokenVerified =
         passwordDoc.resetTokenVerified || null;
@@ -501,11 +500,28 @@ const patchControllers = {
         !isResetPasswordTokenVerified ||
         isResetPasswordTokenVerified !== true
       )
-        throw new Error("Invalid Token, generate a new one.");
+        throw new Error("Invalid Token.");
 
       const hashedNewPassword = await hash(encrypt(newPassword), 10);
 
       if (!hashedNewPassword) throw new Error(hashedNewPassword);
+
+      const resetAnyPreviousExistingValidLoginOtp = await Otp.updateOne(
+        { ownerID: id },
+        {
+          $set: {
+            loginOtp: null,
+            isLoginOtpVerified: false,
+            loginOtpExpiry: null,
+          },
+        },
+      );
+
+      if (
+        !resetAnyPreviousExistingValidLoginOtp.acknowledged &&
+        !resetAnyPreviousExistingValidLoginOtp.modifiedCount
+      )
+        throw new Error("Error in reset password in the database");
 
       const updatePassword = await Password.updateOne(
         { ownerID: id },
@@ -517,7 +533,7 @@ const patchControllers = {
             resetTokenVerified: null,
             lastReset: Date.now(),
           },
-        }
+        },
       );
 
       if (!updatePassword.acknowledged && !updatePassword.modifiedCount)
