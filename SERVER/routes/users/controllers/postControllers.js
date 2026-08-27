@@ -115,7 +115,7 @@ const post_controllers = {
         if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
         const isEmailSent = await sendEmail(
-          [{ email }],
+          email,
           "LIPARENT signup OTP",
           `Your signup OTP is: ${signUpOtp}`,
         );
@@ -596,7 +596,7 @@ const post_controllers = {
         if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
         const isEmailSent = await sendEmail(
-          [{ email }],
+          email,
           "LIPARENT Login OTP",
           `Your login OTP is: ${newLoginOtp}`,
         );
@@ -646,7 +646,7 @@ const post_controllers = {
         if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
         const isEmailSent = await sendEmail(
-          [{ email }],
+          email,
           "LIPARENT Login OTP",
           `Your login OTP is: ${newLoginOtp}`,
         );
@@ -2100,7 +2100,7 @@ const post_controllers = {
           );
 
         const isEmailSent = await sendEmail(
-          [{ email }],
+          email,
           "LIPARENT reset password OTP",
           `Your reset password OTP is: ${resetPasswordToken}`,
         );
@@ -2250,7 +2250,7 @@ const post_controllers = {
           throw new Error(hashedDeleteAccountToken);
 
         const isEmailSent = await sendEmail(
-          [{ email }],
+          email,
           "LIPARENT Delete Account OTP",
           `Your delete account OTP is: ${deleteAccountToken}`,
         );

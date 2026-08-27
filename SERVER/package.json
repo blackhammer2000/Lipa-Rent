@@ -9,7 +9,8 @@
     "jsonwebtoken": "^9.0.2",
     "mailtrap": "^4.8.0",
     "mongodb": "^6.19.0",
-    "mongoose": "^8.6.1"
+    "mongoose": "^8.6.1",
+    "resend": "^6.24.0"
   },
   "scripts": {
     "server": "nodemon server.js"
