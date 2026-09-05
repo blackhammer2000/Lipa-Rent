@@ -74,7 +74,9 @@ Lipa-Rent/
 ## Prerequisites
 
 - **Node.js 18+** (developed/tested on v24.x) — <https://nodejs.org>
-- **npm** (bundled with Node.js)
+- **A package manager.** npm is bundled with Node.js; you may alternatively install
+  [yarn](https://yarnpkg.com/), [pnpm](https://pnpm.io/), or [bun](https://bun.sh/) and use
+  it throughout (see "Install dependencies" and "Run the apps" below).
 - A **MongoDB** database. For a fresh fork/dev setup the easiest option is a free
   [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster (no local install needed);
   you can also run MongoDB locally (`mongod` / `mongosh`).
@@ -99,21 +101,52 @@ cd Lipa-Rent
 
 ### 2. Install dependencies
 
-Each sub-project manages its own dependencies.
+Each sub-project manages its own dependencies. The projects ship with `package-lock.json`
+(npm), but they work with any of the popular package managers. Pick one and use it
+consistently for both `SERVER/` and `CLIENT/react`.
+
+| Manager | Install command           | Lockfile created         |
+| ------- | ------------------------- | ------------------------ |
+| **npm** | `npm install`             | `package-lock.json`      |
+| **yarn** (classic) | `yarn install`    | `yarn.lock`              |
+| **pnpm** | `pnpm install`            | `pnpm-lock.yaml`         |
+| **bun**  | `bun install`             | `bun.lock` / `bun.lockb` |
 
 **Back end — `SERVER/`:**
 
 ```bash
 cd SERVER
+# npm
 npm install
+# yarn
+yarn install
+# pnpm
+pnpm install
+# bun
+bun install
 ```
 
 **Front end — `CLIENT/react`:**
 
 ```bash
 cd CLIENT/react
+# npm
 npm install
+# yarn
+yarn install
+# pnpm
+pnpm install
+# bun
+bun install
 ```
+
+> Prefer signing in with the **same** package manager for both sub-projects so only one
+> lockfile type is generated. If you switch managers later, delete the old lockfile (and
+> `node_modules`) before installing with the new one to avoid conflicts:
+>
+> ```bash
+> rm -rf node_modules package-lock.json yarn.lock pnpm-lock.yaml bun.lock bun.lockb
+> ```
 
 ### 3. Configure the environment
 
@@ -163,12 +196,23 @@ RESEND_API_KEY=""
 | `ADMIN_SECRET_KEY`   | Yes      | JWT signing key for admin flow                              |
 | `MAILTRAP_API_KEY`   | No       | Mailtrap API key (dev email)                                |
 | `RESEND_API_KEY`     | No       | Resend API key (production email)                           |
+
 ### 4. Run the apps
+
+Use the same package manager you installed with. If you're not sure which one you're
+running, `npm run <script>` is always available since npm ships with Node.js.
 
 **Start the API** — from `SERVER/`:
 
 ```bash
+# npm
 npm run server
+# yarn
+yarn run server   (or just: yarn server)
+# pnpm
+pnpm run server
+# bun
+bun run server
 ```
 
 This runs `nodemon server.js`, connects to MongoDB, and serves the API on
@@ -177,7 +221,14 @@ This runs `nodemon server.js`, connects to MongoDB, and serves the API on
 **Start the front end** — from `CLIENT/react`, in a second terminal:
 
 ```bash
+# npm
 npm run dev
+# yarn
+yarn run dev      (or just: yarn dev)
+# pnpm
+pnpm run dev
+# bun
+bun run dev
 ```
 
 Vite serves the app on `http://localhost:5173` by default.
@@ -198,13 +249,23 @@ dashboard and revenue.
 
 ## Available Scripts
 
-| App               | Script             | Description                                   |
-| ----------------- | ------------------ | --------------------------------------------- |
-| `SERVER`          | `npm run server`   | run the API with auto-reload (`nodemon`)       |
-| `CLIENT/react`    | `npm run dev`      | start the Vite dev server                     |
-| `CLIENT/react`    | `npm run build`    | production build to `dist/`                   |
-| `CLIENT/react`    | `npm run preview`  | preview the production build                  |
-| `CLIENT/react`    | `npm run lint`     | run ESLint on the front end                   |
+| App            | npm script          | Description                                    |
+| -------------- | ------------------- | ---------------------------------------------- |
+| `SERVER`       | `npm run server`    | run the API with auto-reload (`nodemon`)       |
+| `CLIENT/react` | `npm run dev`       | start the Vite dev server                      |
+| `CLIENT/react` | `npm run build`     | production build to `dist/`                    |
+| `CLIENT/react` | `npm run preview`   | preview the production build                   |
+| `CLIENT/react` | `npm run lint`      | run ESLint on the front end                    |
+
+**Running the same scripts with other package managers** — prepend the manager in the same
+way shown above:
+
+| npm            | yarn                      | pnpm               | bun             |
+| -------------- | ------------------------- | ------------------ | --------------- |
+| `npm run dev`  | `yarn dev`                | `pnpm run dev`     | `bun run dev`   |
+| `npm run build` | `yarn build`             | `pnpm run build`   | `bun run build` |
+| `npm run server` | `yarn server`           | `pnpm run server`  | `bun run server`|
+| `npm run lint` | `yarn lint`               | `pnpm run lint`    | `bun run lint`  |
 
 ---
 

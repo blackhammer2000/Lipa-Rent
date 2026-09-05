@@ -192,6 +192,18 @@ Current entries:
   it must never be pushed to GitHub, it needs to be removed from tracking and re-added to
   `.gitignore`.
 
+### 2026-09-05 — README: added other-package-manager support
+
+- **Scope**: repo root (`README.md`)
+- **What was done**: Extended the README so developers using package managers other than
+  npm (yarn, pnpm, bun) have full instructions: a manager table (install command + lockfile),
+  per-manager `install` steps for both `SERVER/` and `CLIENT/react`, a tip on keeping a
+  single lockfile / switching managers, per-manager run commands (`server`, `dev`), an
+  "Available Scripts" section with an npm→yarn/pnpm/bun mapping table, and an updated
+  Prerequisites section mentioning yarn/pnpm/bun. Fixed a missing blank line so the env
+  table doesn't run into the "Run the apps" header.
+- **Notes / next steps**: Still untracked (`?? README.md`); ready to commit.
+
 ---
 
 ## 9. Current Focus / Next Steps
