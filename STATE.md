@@ -180,6 +180,18 @@ Current entries:
   it is never committed to GitHub.
 - **Notes / next steps**: Use this file as the context baseline for all future tasks.
 
+### 2026-09-05 — Root README created
+
+- **Scope**: repo root (`README.md`)
+- **What was done**: Created `README.md` covering: what the project does, tech stack,
+  repository structure, prerequisites, and full "run on another machine"/forking steps
+  (clone, install, `.env` setup with variable reference, run server + front end, available
+  scripts, API overview, data model, and contributing notes).
+- **Notes / next steps**: README is currently untracked (ready to commit). Note: `STATE.md`
+  is currently tracked in git (committed in `51d4093`, also present on `origin/react`); if
+  it must never be pushed to GitHub, it needs to be removed from tracking and re-added to
+  `.gitignore`.
+
 ---
 
 ## 9. Current Focus / Next Steps
