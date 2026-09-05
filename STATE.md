@@ -204,6 +204,16 @@ Current entries:
   table doesn't run into the "Run the apps" header.
 - **Notes / next steps**: Still untracked (`?? README.md`); ready to commit.
 
+### 2026-09-05 — README: clarified run steps & env example
+
+- **Scope**: repo root (`README.md`)
+- **What was done**: Added a direct `node server.js` fallback for starting the API when
+  `nodemon` isn't available/preferred; replaced the inline `.env` "minimal config" example
+  with one that exactly matches the real `SERVER/.env.example` placeholder format
+  (`"server port number"`, `"secret_key_signup"`, etc.) and clarified that all placeholders
+  must be replaced.
+- **Notes / next steps**: N/A.
+
 ---
 
 ## 9. Current Focus / Next Steps

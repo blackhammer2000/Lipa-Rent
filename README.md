@@ -160,25 +160,25 @@ cp .env.example .env
 Then edit `SERVER/.env`. A minimal working development config:
 
 ```dotenv
-PORT=4000
-ORIGIN="http://localhost:5173"
-DB_CONNECTION="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=<name>"
+PORT="server port number"
+ORIGIN="frontend url"
+DB_CONNECTION="db connection string"
 
-SIGNUP_SECRET_KEY="any-random-string-1"
-LOGIN_SECRET_KEY="any-random-string-2"
-LOGOUT_SECRET_KEY="any-random-string-3"
-ACCESS_SECRET_KEY="any-random-string-4"
-FORGOT_SECRET_KEY="any-random-string-5"
-RESET_SECRET_KEY="any-random-string-6"
-ADMIN_SECRET_KEY="any-random-string-7"
+SIGNUP_SECRET_KEY="secret_key_signup"
+LOGIN_SECRET_KEY="secret_key_login"
+LOGOUT_SECRET_KEY="secret_key_logout"
+ACCESS_SECRET_KEY="secret_key_access"
+FORGOT_SECRET_KEY="secret_key_forgot"
+RESET_SECRET_KEY="secret_key_reset"
+ADMIN_SECRET_KEY="secret_key_admin"
 
-MAILTRAP_API_KEY=""
-RESEND_API_KEY=""
+MAILTRAP_API_KEY="api_key_for_mailtrap"
+RESEND_API_KEY="api_key_for_resend"
 ```
 
-> Use strong, unique secret keys per environment (e.g. a password manager or
-> `openssl rand -hex 32`). Email keys are optional to get the app running — core
-> management features work without them.
+> Every one of these placeholders must be replaced with your own values. Use strong, unique
+> secret keys per environment (e.g. a password manager or `openssl rand -hex 32`). Email
+> keys are optional to get the app running — core management features work without them.
 
 #### Environment variables reference
 
@@ -216,7 +216,13 @@ bun run server
 ```
 
 This runs `nodemon server.js`, connects to MongoDB, and serves the API on
-`http://localhost:4000` (when `PORT=4000`).
+`http://localhost:4000` (when `PORT=4000`). If you don't have `nodemon` (it is only a dev
+dependency) or prefer running Node directly, you can instead run:
+
+```bash
+cd SERVER
+node server.js
+```
 
 **Start the front end** — from `CLIENT/react`, in a second terminal:
 
