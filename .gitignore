@@ -25,3 +25,4 @@ build/
 # Server-specific
 /SERVER/node_modules/
 /SERVER/.env
+/SERVER/coverage/

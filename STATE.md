@@ -16,7 +16,6 @@ Lipa-Rent is a property/rent management platform for landlords. Landlords regist
 account, add properties, add rooms, add tenants, and record rent payments. The project
 consists of:
 
-- **`ADMIN/`** – admin/legacy assets
 - **`CLIENT/`** – front-end applications
   - `CLIENT/react` – the landlord/admin React (Vite) app
   - `CLIENT/tenant` – **empty**; intended future home of a tenant-facing React portal
