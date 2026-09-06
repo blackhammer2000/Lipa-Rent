@@ -18,4 +18,15 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  // Test files run under Jest, which provides these globals (Node + browser + jest).
+  {
+    files: ['**/*.{test,spec}.{js,jsx}', '**/jest.setup.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+        ...globals.browser,
+      },
+    },
+  },
 ])

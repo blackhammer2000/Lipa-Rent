@@ -213,6 +213,49 @@ Current entries:
   must be replaced.
 - **Notes / next steps**: N/A.
 
+### 2026-09-06 — Added tests (Jest) for server & client
+
+- **Scope**:
+  - `SERVER/` — `jest.config.js`, `tests/` (unit + e2e), `package.json` test scripts
+    (`test`, `test:unit`, `test:e2e`, `test:watch`); installed `jest` + `supertest`.
+  - `CLIENT/react/` — `jest.config.js`, `babel.config.js`, `jest.setup.js`,
+    `src/test-utils/fileMock.js`, `src/__tests__/unit` + `src/__tests__/e2e`,
+    `package.json` `test*` scripts; installed `jest`, `jest-environment-jsdom`,
+    `jest-css-modules`, `babel-jest`, `@babel/core`, `@babel/preset-env`,
+    `@babel/preset-react`, `@testing-library/*`.
+  - Root `.gitignore` (`/SERVER/coverage/`) and `CLIENT/react/.gitignore` (`coverage/`).
+- **What was done**:
+  - **Server unit tests**: `cipher`, `generateOtp`, `checkSubscription`, `isUser`,
+    `isLoginVerified`, Joi validators, JWT token sign helpers, `createModel` +
+    `checkIfPropertyNumberAndIDareRegistered`.
+  - **Server e2e**: supertest over the real route tree (`tests/helpers/app.js`) with
+    Mongoose models + bcrypt mocked — `POST /api/user/owner/login` flow.
+  - **Client unit tests**: `api.js` helpers + `request` wrapper (with mocked `fetch`),
+    `AuthProvider` + `ProtectedRoute`, `Header` + `Footer`.
+  - **Client e2e/integration**: Login → OTP → protected Dashboard flow with mocked API
+    and `MemoryRouter`.
+- **Result**: Server 9 suites (40 passed, 3 skipped); Client 4 suites (22 passed).
+  The 3 skipped server tests document a latent bug in
+  `checkIfPropertyNumberAndIDareRegistered` (reassigns `const` → TypeError).
+- **Notes / next steps**:
+  - Server test files are already committed (2 local commits ahead of origin).
+  - Client test files + configs are uncommitted (working tree).
+  - `coverage/` folders are git-ignored.
+
+### 2026-09-06 — Fixed ESLint errors in client test files
+
+- **Scope**: `CLIENT/react/eslint.config.js`, `jest.setup.js`,
+  `src/__tests__/e2e/login-flow.spec.jsx`, `src/__tests__/unit/{layout,api,auth}.test.js`
+- **What was done**:
+  - `eslint.config.js`: added an override so Jest test/spec files and `jest.setup.js` get
+    Node + `globals.jest` + browser globals (fixes `no-undef` for `describe`/`test`/
+    `expect`/`jest`/`beforeEach`/`global`/`require`).
+  - `jest.setup.js`: removed unused `import { jest }`.
+  - `login-flow.spec.jsx`: removed unused `waitFor` import and unused `api` variable.
+  - `auth.test.js`: removed unused `act` import; replaced `require("../../services/api")`
+    calls with an imported `getAccessToken` mock (ESM-friendly).
+- **Result**: `npx eslint .` exits 0; client tests still 4 suites / 22 passed.
+
 ---
 
 ## 9. Current Focus / Next Steps
