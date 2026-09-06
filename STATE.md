@@ -262,8 +262,40 @@ Current entries:
 
 - Current branch/topic: `react`.
 - No active task in flight.
-- **Planned/next**: a tenant-facing React portal at `CLIENT/tenant/` where tenants log in
-  with tenant ID + property ID + password (no OTP**), then view a read-only payment
-  history dashboard filterable by room dwelt and by date. Likely needs new read-only server
-  endpoints, a tenant access token, optional `tenantPassword` on the tenant model, and
-  adding the portal origin to CORS.
+
+### Next up: Refactor the controllers to be modular & semantic
+
+Long-term maintainability concern: the server controllers live in a few very long files and
+would benefit from a modular, semantic file/folder structure.
+
+Confirmed current sizes (lines):
+
+- `SERVER/routes/users/controllers/postControllers.js` — **2447 lines**
+- `SERVER/routes/users/controllers/deleteControllers.js` — 667 lines
+- `SERVER/routes/users/controllers/patchControllers.js` — 551 lines
+- `SERVER/routes/users/controllers/getControllers.js` — 58 lines
+
+**Goal**: break these blobs into smaller, focused modules organized by domain/resource
+(e.g. auth, properties, rooms, tenants, rents/payments, subscriptions) while preserving the
+existing route wiring in `routes/users/routes/*.js`, the `isUser`/`verifyUserAccessToken`
+middleware chain, and the current response shapes (e.g. `res.json({ error })`, `_id`/`id`
+body injection) so the front end keeps working unchanged.
+
+Suggested shape (put the `POST /api/user/owner/login` endpoint's logic in a dedicated module):
+
+```
+routes/users/controllers/
+  auth/          (signup, login, OTP, logout, password reset)
+  properties/    (property CRUD + reads)
+  rooms/         (room CRUD + reads)
+  tenants/       (tenant CRUD + reads)
+  rents/         (payments + revenue)
+  subscriptions/ (subscription reads)
+```
+
+> **Note for the refactor**: the tenant-facing portal at `CLIENT/tenant/` is still planned,
+> but the controller refactor is the immediate next step. Keep the long history of latent
+> bugs in mind (e.g. `checkIfPropertyNumberAndIDareRegistered` reassigns `const` →
+> TypeError; the 3 skipped unit tests) — the refactor is a good opportunity to surface/fix
+> them, and the existing Jest suites (`npm run test`, `npm run test:unit`, `npm run
+> test:e2e` in `SERVER/`) must stay green after the changes.
