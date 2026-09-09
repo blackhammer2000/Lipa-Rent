@@ -27,15 +27,15 @@ charts, and an OTP-verified sign-up and login flow.
 
 ## Tech Stack
 
-| Layer      | Technology                                                        |
-| ---------- | ----------------------------------------------------------------- |
-| Front end  | React 19, React Router 7, Vite 8, Bootstrap 5, Chart.js           |
-| Back end   | Node.js + Express 4                                                |
-| Database   | MongoDB (via Mongoose 8 + native `mongodb` driver)                 |
-| Auth       | `jsonwebtoken` (JWT) + `bcrypt` (password hashing)                 |
-| Validation | Joi                                                               |
-| Email      | Mailtrap (dev) / Resend (production)                              |
-| Module fmt | Back end: CommonJS (`require`) · Front end: ESM (`type: module`)  |
+| Layer      | Technology                                                       |
+| ---------- | ---------------------------------------------------------------- |
+| Front end  | React 19, React Router 7, Vite 8, Bootstrap 5, Chart.js          |
+| Back end   | Node.js + Express 4                                              |
+| Database   | MongoDB (via Mongoose 8 + native `mongodb` driver)               |
+| Auth       | `jsonwebtoken` (JWT) + `bcrypt` (password hashing)               |
+| Validation | Joi                                                              |
+| Email      | Mailtrap (dev) / Resend (production)                             |
+| Module fmt | Back end: CommonJS (`require`) · Front end: ESM (`type: module`) |
 
 ---
 
@@ -69,6 +69,7 @@ Lipa-Rent/
 > **Legacy landing page:** the root `index.html` is an older static page that references
 > `CLIENT/indexResources`, which no longer exists in this repo. The current, maintained
 > user-facing app lives in **`CLIENT/react`**. You can safely ignore `index.html`.
+
 ---
 
 ## Prerequisites
@@ -80,7 +81,7 @@ Lipa-Rent/
 - A **MongoDB** database. For a fresh fork/dev setup the easiest option is a free
   [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster (no local install needed);
   you can also run MongoDB locally (`mongod` / `mongosh`).
-- *(Optional)* email API keys: [Mailtrap](https://mailtrap.io/) (development) or
+- _(Optional)_ email API keys: [Mailtrap](https://mailtrap.io/) (development) or
   [Resend](https://resend.com/) (production).
 
 ---
@@ -105,12 +106,12 @@ Each sub-project manages its own dependencies. The projects ship with `package-l
 (npm), but they work with any of the popular package managers. Pick one and use it
 consistently for both `SERVER/` and `CLIENT/react`.
 
-| Manager | Install command           | Lockfile created         |
-| ------- | ------------------------- | ------------------------ |
-| **npm** | `npm install`             | `package-lock.json`      |
-| **yarn** (classic) | `yarn install`    | `yarn.lock`              |
-| **pnpm** | `pnpm install`            | `pnpm-lock.yaml`         |
-| **bun**  | `bun install`             | `bun.lock` / `bun.lockb` |
+| Manager            | Install command | Lockfile created         |
+| ------------------ | --------------- | ------------------------ |
+| **npm**            | `npm install`   | `package-lock.json`      |
+| **yarn** (classic) | `yarn install`  | `yarn.lock`              |
+| **pnpm**           | `pnpm install`  | `pnpm-lock.yaml`         |
+| **bun**            | `bun install`   | `bun.lock` / `bun.lockb` |
 
 **Back end — `SERVER/`:**
 
@@ -182,20 +183,19 @@ RESEND_API_KEY="api_key_for_resend"
 
 #### Environment variables reference
 
-| Variable             | Required | Purpose                                                     |
-| -------------------- | -------- | ----------------------------------------------------------- |
-| `PORT`               | Yes      | Port the API listens on (e.g. `4000`)                       |
-| `ORIGIN`             | Yes      | Allowed CORS front-end origin (e.g. `http://localhost:5173`) |
-| `DB_CONNECTION`      | Yes      | MongoDB connection string                                   |
-| `SIGNUP_SECRET_KEY`  | Yes      | JWT signing key for the sign-up flow                        |
-| `LOGIN_SECRET_KEY`   | Yes      | JWT signing key for login tokens                            |
-| `LOGOUT_SECRET_KEY`  | Yes      | JWT signing key for logout                                  |
-| `ACCESS_SECRET_KEY`  | Yes      | JWT signing key for access tokens                           |
-| `FORGOT_SECRET_KEY`  | Yes      | JWT signing key for forgot-password                         |
-| `RESET_SECRET_KEY`   | Yes      | JWT signing key for the reset flow                          |
-| `ADMIN_SECRET_KEY`   | Yes      | JWT signing key for admin flow                              |
-| `MAILTRAP_API_KEY`   | No       | Mailtrap API key (dev email)                                |
-| `RESEND_API_KEY`     | No       | Resend API key (production email)                           |
+| Variable            | Required | Purpose                                                      |
+| ------------------- | -------- | ------------------------------------------------------------ |
+| `PORT`              | Yes      | Port the API listens on (e.g. `4000`)                        |
+| `ORIGIN`            | Yes      | Allowed CORS front-end origin (e.g. `http://localhost:5173`) |
+| `DB_CONNECTION`     | Yes      | MongoDB connection string                                    |
+| `SIGNUP_SECRET_KEY` | Yes      | JWT signing key for the sign-up flow                         |
+| `LOGIN_SECRET_KEY`  | Yes      | JWT signing key for login tokens                             |
+| `LOGOUT_SECRET_KEY` | Yes      | JWT signing key for logout                                   |
+| `ACCESS_SECRET_KEY` | Yes      | JWT signing key for access tokens                            |
+| `FORGOT_SECRET_KEY` | Yes      | JWT signing key for forgot-password                          |
+| `RESET_SECRET_KEY`  | Yes      | JWT signing key for the reset flow                           |
+| `MAILTRAP_API_KEY`  | No       | Mailtrap API key (dev email)                                 |
+| `RESEND_API_KEY`    | No       | Resend API key (production email)                            |
 
 ### 4. Run the apps
 
@@ -255,23 +255,23 @@ dashboard and revenue.
 
 ## Available Scripts
 
-| App            | npm script          | Description                                    |
-| -------------- | ------------------- | ---------------------------------------------- |
-| `SERVER`       | `npm run server`    | run the API with auto-reload (`nodemon`)       |
-| `CLIENT/react` | `npm run dev`       | start the Vite dev server                      |
-| `CLIENT/react` | `npm run build`     | production build to `dist/`                    |
-| `CLIENT/react` | `npm run preview`   | preview the production build                   |
-| `CLIENT/react` | `npm run lint`      | run ESLint on the front end                    |
+| App            | npm script        | Description                              |
+| -------------- | ----------------- | ---------------------------------------- |
+| `SERVER`       | `npm run server`  | run the API with auto-reload (`nodemon`) |
+| `CLIENT/react` | `npm run dev`     | start the Vite dev server                |
+| `CLIENT/react` | `npm run build`   | production build to `dist/`              |
+| `CLIENT/react` | `npm run preview` | preview the production build             |
+| `CLIENT/react` | `npm run lint`    | run ESLint on the front end              |
 
 **Running the same scripts with other package managers** — prepend the manager in the same
 way shown above:
 
-| npm            | yarn                      | pnpm               | bun             |
-| -------------- | ------------------------- | ------------------ | --------------- |
-| `npm run dev`  | `yarn dev`                | `pnpm run dev`     | `bun run dev`   |
-| `npm run build` | `yarn build`             | `pnpm run build`   | `bun run build` |
-| `npm run server` | `yarn server`           | `pnpm run server`  | `bun run server`|
-| `npm run lint` | `yarn lint`               | `pnpm run lint`    | `bun run lint`  |
+| npm              | yarn          | pnpm              | bun              |
+| ---------------- | ------------- | ----------------- | ---------------- |
+| `npm run dev`    | `yarn dev`    | `pnpm run dev`    | `bun run dev`    |
+| `npm run build`  | `yarn build`  | `pnpm run build`  | `bun run build`  |
+| `npm run server` | `yarn server` | `pnpm run server` | `bun run server` |
+| `npm run lint`   | `yarn lint`   | `pnpm run lint`   | `bun run lint`   |
 
 ---
 
@@ -285,17 +285,17 @@ All API routes are prefixed with `/api/user`. They are protected by:
 
 Key endpoints (all `POST` unless noted):
 
-| Method | Path                                                           | Purpose                        |
-| ------ | -------------------------------------------------------------- | ------------------------------ |
-| POST   | `/api/user/owner/signup/generate/otp`                          | start the sign-up OTP flow     |
-| POST   | `/api/user/owner/login`                                        | log in → `loginToken`          |
-| POST   | `/api/user/owner/read/properties`                              | list properties                |
-| POST   | `/api/user/owner/read/property/rooms`                          | list rooms for a property      |
-| POST   | `/api/user/owner/create/property/room/tenant`                  | add a tenant to a room         |
-| POST   | `/api/user/owner/create/property/room/tenant/payment`          | record a rent payment          |
-| POST   | `/api/user/owner/read/property/room/tenants`                   | list tenants in a room         |
-| POST   | `/api/user/owner/read/property/room/tenant/payments`           | list a tenant's payments       |
-| POST   | `/api/user/owner/read/property/rooms/tenants/payments`         | aggregate revenue              |
+| Method | Path                                                   | Purpose                    |
+| ------ | ------------------------------------------------------ | -------------------------- |
+| POST   | `/api/user/owner/signup/generate/otp`                  | start the sign-up OTP flow |
+| POST   | `/api/user/owner/login`                                | log in → `loginToken`      |
+| POST   | `/api/user/owner/read/properties`                      | list properties            |
+| POST   | `/api/user/owner/read/property/rooms`                  | list rooms for a property  |
+| POST   | `/api/user/owner/create/property/room/tenant`          | add a tenant to a room     |
+| POST   | `/api/user/owner/create/property/room/tenant/payment`  | record a rent payment      |
+| POST   | `/api/user/owner/read/property/room/tenants`           | list tenants in a room     |
+| POST   | `/api/user/owner/read/property/room/tenant/payments`   | list a tenant's payments   |
+| POST   | `/api/user/owner/read/property/rooms/tenants/payments` | aggregate revenue          |
 
 See `CLIENT/react/src/services/api.js` for the exact request/response shapes used by the
 front end.
