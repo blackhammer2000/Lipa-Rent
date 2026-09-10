@@ -1,4 +1,7 @@
+require("dotenv").config();
 const router = require("express").Router();
+
+const apiVersion = process.env.API_VERSION;
 
 ////////////////   TOKEN VALIDATION MIDDLWARE IMPORTS    //////////////////////
 const {
