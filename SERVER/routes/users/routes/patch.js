@@ -1,4 +1,7 @@
+require("dotenv").config();
 const router = require("express").Router();
+
+const apiVersion = process.env.API_VERSION;
 
 const {
   verifyUserAccessToken,
@@ -31,45 +34,45 @@ router.patch(
   "/api/user/owner/edit/owner",
   isUser,
   verifyUserAccessToken,
-  editOwnerDetails
+  editOwnerDetails,
 );
 router.patch(
   "/api/user/owner/edit/property",
   isUser,
   verifyUserAccessToken,
-  editPropertyDetails
+  editPropertyDetails,
 );
 router.patch(
   "/api/user/owner/edit/property/room",
   isUser,
   verifyUserAccessToken,
-  editRoomDetails
+  editRoomDetails,
 );
 router.patch(
   "/api/user/owner/edit/property/room/tenant",
   isUser,
   verifyUserAccessToken,
-  editTenantDetails
+  editTenantDetails,
 );
 router.patch(
   "/api/user/owner/edit/property/room/tenant/payment",
   isUser,
   verifyUserAccessToken,
-  editRentDetails
+  editRentDetails,
 );
 
 router.patch(
   "/api/user/owner/edit/password",
   isUser,
   verifyUserAccessToken,
-  editPassword
+  editPassword,
 );
 
 router.patch(
   "/api/user/owner/edit/forgotPassword",
   isUser,
   verifyForgotPasswordToken,
-  editPassword
+  editPassword,
 );
 
 module.exports = router;
