@@ -1,11 +1,27 @@
 const router = require("express").Router();
 
+////////////////   TOKEN VALIDATION MIDDLWARE IMPORTS    //////////////////////
+const {
+  verifySignUpToken,
+} = require("../../../middleware/tokens/verifySignUpToken");
+
+const {
+  verifyLoginToken,
+} = require("../../../middleware/tokens/verifyLoginToken");
+
 const {
   verifyUserAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
+
+const {
+  isLoginVerified,
+} = require("../../../middleware/validators/isLoginVerified");
+
 const {
   verifyForgotPasswordToken,
 } = require("../../../middleware/tokens/verifyForgotPasswordToken");
+
+//////////          JOI VALIDATORS IMPORTS  ////////////////////////
 
 const {
   landlordValidator,
@@ -15,60 +31,67 @@ const {
   roomValidator,
 } = require("../../../middleware/validators/validators");
 
+///////////    IS USER VVALIDATOR IMPORT     ////////////////////////
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
+
+/////////////////  POST CONTROLLERS IMPORTS      ////////////////////////////////
 
 const {
   generateSignUpOtp,
   verifySignUpOtp,
   signUp,
+} = require("../controllers/post/signUpControllers");
 
+const {
   login,
   generateLoginOtp,
   verifyLoginOtp,
+} = require("../controllers/post/loginControllers");
 
-  readOwnerDetails,
-
+const {
   createNewProperty,
   readSinglePropertyOwned,
   readAllPropertiesOwned,
-
+} = require("../controllers/post/propertyControllers");
+const {
   createSingleRoomOnProperty,
   readAllRoomsOnProperty,
   readSingleRoomOnProperty,
-
+} = require("../controllers/post/roomControllers");
+const {
   createTenantForRoomOnProperty,
   readAllTenantsForAllRoomsOnProperty,
   readAllTenantsInRoomOnProperty,
   readSingleTenantInRoomOnProperty,
+} = require("../controllers/post/tenantControllers");
 
+const {
   createRentPaymentForRoomInPropertyByTenant,
   readAllRentPaymentsForAllRoomsInProperty,
   readAllRentPaymentsForRoomInProperty,
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
+} = require("../controllers/post/rentControllers");
 
-  genarateResetPasswordOTP,
-  verifyResetPasswordOTP,
-
+const {
   verifyPassword,
   genarateDeleteAccountOTP,
   verifyDeleteAccountOTP,
+} = require("../controllers/post/deleteAccountControllers");
 
+const {
+  genarateResetPasswordOTP,
+  verifyResetPasswordOTP,
+} = require("../controllers/post/resetPasswordControllers");
+
+const {
   verifyUserInfo,
+} = require("../controllers/post/forgotPasswordControllers");
 
-  logout,
-} = require("../controllers/postControllers");
+const { logout } = require("../controllers/post/logoutControllers");
 
-const {
-  verifyLoginToken,
-} = require("../../../middleware/tokens/verifyLoginToken");
-const {
-  verifySignUpToken,
-} = require("../../../middleware/tokens/verifySignUpToken");
-const {
-  isLoginVerified,
-} = require("../../../middleware/validators/isLoginVerified");
+const { readOwnerDetails } = require("../controllers/post/ownerControllers");
 
 // ////////////////////////  ROUTES   ///////////////////////////////
 
