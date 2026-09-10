@@ -4,6 +4,7 @@ require("dotenv").config();
 const signSignUpToken = (userData) => {
   return new Promise((resolve, reject) => {
     const token = sign(userData, process.env.SIGNUP_SECRET_KEY, {
+      algorithm: process.env.TOKEN_HASHING_ALGO,
       expiresIn: "15min",
       issuer: "LipaRent Inc.",
       audience: `${userData.id}`,
