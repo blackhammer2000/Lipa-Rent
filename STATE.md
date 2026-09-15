@@ -295,8 +295,8 @@ routes/users/controllers/
   subscriptions/ (subscription reads)
 ```
 
-> **Note for the refactor**: the tenant-facing portal at `CLIENT/tenant/` is still planned,
-> but the controller refactor is the immediate next step. Keep the long history of latent
+> **Note for the refactor**:
+> the controller refactor is the immediate next step. Keep the long history of latent
 > bugs in mind (e.g. `checkIfPropertyNumberAndIDareRegistered` reassigns `const` →
 > TypeError; the 3 skipped unit tests) — the refactor is a good opportunity to surface/fix
 > them, and the existing Jest suites (`npm run test`, `npm run test:unit`, `npm run
