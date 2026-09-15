@@ -37,6 +37,7 @@ Default app title: **LiPARENT**.
 ## 3. Tech Stack & Conventions
 
 ### Server (`SERVER/`)
+
 - Runtime: Node.js (`v24.x` available locally), `npm`.
 - Express + MongoDB via Mongoose. Auth uses `jsonwebtoken` + `bcrypt`.
 - Entry: `SERVER/server.js` (port `PORT` from `.env`, default `8080`; local `.env` uses `4000`).
@@ -46,7 +47,7 @@ Default app title: **LiPARENT**.
 - Controllers are one large object per HTTP method:
   - `routes/users/controllers/postControllers.js`
   - `routes/users/controllers/patchControllers.js`
-  (note: deletes file is named `deleteControllers.js`)
+    (note: deletes file is named `deleteControllers.js`)
 - Models in `middleware/models/*.js` - see section 5.
 - Token helpers in `middleware/tokens/*.js`: `sign*Token` sign; `verify*Token` middleware
   also inject `req.body.id` (and other fields) and delete `req.headers.token`.
@@ -56,6 +57,7 @@ Default app title: **LiPARENT**.
   and `verifyUserAccessToken` (header `token`, body `id`) middlewares.
 
 ### Client admin (`CLIENT/react`)
+
 - React 19, React Router 7, Vite 8, Bootstrap 5 (`bootstrap` npm pkg), chart.js.
 - `src/services/api.js` has `serverDomain`, a `request()` wrapper wired to a global loader,
   `getAccessToken()`/`getLoginToken()`/`clearLocalStorage()`, and all API functions.
@@ -64,6 +66,7 @@ Default app title: **LiPARENT**.
   exposed through `hooks/useAuth.js` / `context/AuthContext.js`.
 - Routing in `src/App.jsx` using `<BrowserRouter>`; protected routes wrap with `ProtectedRoute`.
 - Bootstrap CSS imported in `main.jsx` plus `index.css`.
+
 ---
 
 ## 4. Directory Layout (non-node_modules)
@@ -85,7 +88,6 @@ Lipa-Rent/
 │   │       ├─ hooks/{useAuth,useConfirm}.js
 │   │       ├─ pages/{Dashboard,Landing,Login,Profile,Rents,Revenue,Rooms,Subscriptions,Tenants}.jsx
 │   │       └─ services/api.js
-│   ├─ tenant/               # EMPTY - future tenant portal
 │   └─ utils/
 ├─ SERVER/
 │   ├─ .env.example
@@ -124,6 +126,7 @@ entities are nested objects keyed by generated alpha-numeric IDs.
 
 **Navigation tip**: to reach a tenant, walk key-by-key:
 `tenants[0][propertyId].tenants[roomId][tenantId]`.
+
 ---
 
 ## 6. Key API Endpoints
@@ -161,6 +164,7 @@ Login/registration uses OTP flows (email/phone OTP). Payment entries carry
 ## 8. Task Log / Change History
 
 > Append a dated entry after each completed task. Format:
+>
 > ```
 > ### YYYY-MM-DD — summary title
 > **Scope**: folders/files touched
@@ -169,8 +173,6 @@ Login/registration uses OTP flows (email/phone OTP). Payment entries carry
 > ```
 
 Current entries:
-
-- *(none yet — this is the first time this state file exists.)*
 
 ### first — State file added
 
@@ -298,4 +300,4 @@ routes/users/controllers/
 > bugs in mind (e.g. `checkIfPropertyNumberAndIDareRegistered` reassigns `const` →
 > TypeError; the 3 skipped unit tests) — the refactor is a good opportunity to surface/fix
 > them, and the existing Jest suites (`npm run test`, `npm run test:unit`, `npm run
-> test:e2e` in `SERVER/`) must stay green after the changes.
+test:e2e` in `SERVER/`) must stay green after the changes.
