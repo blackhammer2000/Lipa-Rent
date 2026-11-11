@@ -469,6 +469,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 ### S7 Implementation Summary — Refresh Token Rotation (COMPLETE — Verified)
 
 **Files changed:**
+
 - `SERVER/package.json` — added `"cookie-parser": "^1.4.7"` dependency
 - `SERVER/.env.example` — added `REFRESH_SECRET_KEY` variable
 - `SERVER/server.js` — added `cookie-parser` middleware (`app.use(cookieParser())`)
@@ -480,11 +481,12 @@ next proposed task. Please review and approve (or amend) before work begins.
 - `SERVER/routes/users/routes/post.js` — added `/api/user/owner/refresh` route + refresh controller import
 
 **How refresh token rotation works:**
+
 1. **Login:** Server issues access token (2h, in response body) + refresh token (7d, HttpOnly/Secure/SameSite=Strict cookie, stored in DB)
 2. **Refresh:** Client sends request to `/api/user/owner/refresh`; server verifies refresh cookie, looks up token in DB, revokes old token, issues new access token + new refresh token (rotation), sets new cookie
 3. **Logout:** Server revokes all refresh tokens for user + clears refreshToken cookie
 
-**Verification:** Server starts successfully on PORT 8080 with no errors (DB connection error is expected — no `.env` configured).
+**Verification:** Server starts successfully on PORT 4000 with no errors (DB connection error is expected — no `.env` configured).
 
 ### Proposed acceptance criteria (for the task when approved)
 
