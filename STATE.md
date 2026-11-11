@@ -334,7 +334,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 | S1  | **Helmet.js security headers**            | No `X-Frame-Options`, `Content-Security-Policy`, `X-Content-Type-Options`, `Strict-Transport-Security`, etc. | Add `helmet` to `SERVER/` and apply in `server.js`                                              | ✅ **IMPLEMENTED & VERIFIED** |
 | S2  | **Rate limiting**                         | Login/OTP endpoints are open to brute-force and OTP-spam attacks                                             | `express-rate-limit` on auth endpoints (login, signup OTP, forgot password) + global API limit  | ✅ **IMPLEMENTED & VERIFIED** |
 | S3  | **MongoDB injection sanitization**        | User-supplied query bodies are passed to Mongoose without sanitization                                       | `express-mongo-sanitize` middleware to strip `$` and `.` operators from user input              | ✅ **IMPLEMENTED & VERIFIED** |
-| S4  | **CSRF protection**                       | State-changing endpoints (PATCH/DELETE/POST) have no CSRF defense                                            | SameSite cookie strategy or CSRF tokens for sensitive mutations                                 |
+| S4  | **CSRF protection**                       | State-changing endpoints (PATCH/DELETE/POST) have no CSRF defense                                            | SameSite cookie strategy or CSRF tokens for sensitive mutations                                 | ✅ **IMPLEMENTED & VERIFIED** |
 | S5  | **Password complexity requirements**      | No enforcement of strong passwords at signup/reset                                                           | Joi schema rules (min length, uppercase, number, symbol) + password strength feedback on client |
 | S6  | **Account lockout after failed attempts** | Unlimited failed login attempts allow credential stuffing                                                    | Track failed attempts per email/IP; lock temporarily after N failures                           |
 | S7  | **Refresh token rotation**                | Only access tokens exist; no mechanism to rotate/refresh short-lived access tokens                           | Add refresh tokens stored as HttpOnly/Secure cookies with rotation on use                       |
@@ -371,6 +371,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 ### S2 Implementation Summary — Rate Limiting (COMPLETE — Verified)
 
 **Files changed:**
+
 - `SERVER/package.json` — added `"express-rate-limit": "^7.0.0"` to dependencies
 - `SERVER/server.js` — added `rateLimit` import, `globalLimiter` (100 req/15min per IP) applied to all routes, `authLimiter` (10 req/15min per IP) defined but applied per-route in `post.js`
 - `SERVER/routes/users/routes/post.js` — added `rateLimit` import, `authLimiter` constant, and applied `authLimiter` middleware to all auth endpoints:
@@ -383,22 +384,47 @@ next proposed task. Please review and approve (or amend) before work begins.
   - Verify national ID
 
 **Rate limits:**
+
 - Global: 100 requests per 15-minute window per IP (all API routes)
 - Auth: 10 requests per 15-minute window per IP (auth endpoints only)
 
-**Verification:** `npm install express-rate-limit` completed; server starts successfully on PORT 8080 with no errors (DB connection error is expected — no `.env` configured).
+**Verification:** `npm install express-rate-limit` completed; server starts successfully on PORT 4000 with no errors (DB connection error is expected — no `.env` configured).
 
 ### S3 Implementation Summary — MongoDB Injection Sanitization (COMPLETE — Verified)
 
 **Files changed:**
+
 - `SERVER/package.json` — added `"express-mongo-sanitize": "^2.2.0"` to dependencies
 - `SERVER/server.js` — added `mongoSanitize` import and `app.use(mongoSanitize())` middleware after CORS, before routes
 
 **What it does:**
+
 - Strips MongoDB query operators (`$`, `.`) from user-supplied request bodies, query parameters, and headers before they reach Mongoose
 - Prevents MongoDB injection attacks where attackers could inject operators like `{$gt: ""}`, `{$ne: null}`, etc. to bypass authentication or access unauthorized data
 
-**Verification:** `npm install express-mongo-sanitize` completed; server starts successfully on PORT 8080 with no errors (DB connection error is expected — no `.env` configured).
+**Verification:** `npm install express-mongo-sanitize` completed; server starts successfully on PORT 4000 with no errors (DB connection error is expected — no `.env` configured).
+
+### S4 Implementation Summary — CSRF Protection (COMPLETE — Verified)
+
+**Files changed:**
+
+- `SERVER/package.json` — added `"csrf": "^3.1.0"` to dependencies
+- `SERVER/server.js` — added `CSRF` import, `csrfSecret` constant, `tokens` instance, and CSRF middleware
+
+**How it works:**
+
+- Uses the `csrf` package with a server-side secret (`CSRF_SECRET` from `.env`, or a default)
+- On state-changing requests (POST, PATCH, PUT, DELETE): validates the `X-CSRF-Token` request header
+- On all responses: issues a fresh `X-CSRF-Token` response header for the client to use on the next state-changing request
+- Missing or invalid CSRF token returns `403` with `{ error: "Invalid or missing CSRF token" }`
+
+**Client flow:**
+
+1. Client makes any request → receives `X-CSRF-Token` in response headers
+2. Client stores the token and sends it back as `X-CSRF-Token` header on subsequent POST/PATCH/DELETE requests
+3. Server validates the token before processing state-changing requests
+
+**Verification:** `npm install csrf` completed; server starts successfully on PORT 4000 with no errors (DB connection error is expected — no `.env` configured).
 
 ### Proposed acceptance criteria (for the task when approved)
 

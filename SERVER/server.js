@@ -6,8 +6,11 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
+const CSRF = require("csrf");
 const PORT = process.env.PORT || 8080;
 const origin = process.env.ORIGIN;
+const csrfSecret = process.env.CSRF_SECRET || "default-csrf-secret-change-in-production";
+const tokens = new CSRF();
 
 const { connect } = require("mongoose");
 
@@ -60,6 +63,24 @@ app.use(
 
 // --- MongoDB injection sanitization ---
 app.use(mongoSanitize());
+
+// --- CSRF protection ---
+app.use((req, res, next) => {
+  const stateChanging = ["POST", "PATCH", "PUT", "DELETE"].includes(req.method);
+
+  if (stateChanging) {
+    const csrfToken = req.headers["x-csrf-token"];
+    if (!csrfToken || !tokens.verify(csrfSecret, csrfToken)) {
+      return res.status(403).json({ error: "Invalid or missing CSRF token" });
+    }
+  }
+
+  // Issue a fresh CSRF token for the client to use on the next state-changing request
+  const token = tokens.create(csrfSecret);
+  res.setHeader("X-CSRF-Token", token);
+
+  next();
+});
 
 app.use(userRoutes);
 
