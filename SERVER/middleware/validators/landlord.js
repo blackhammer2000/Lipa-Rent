@@ -1,5 +1,7 @@
 const Joi = require("joi");
 
+const { passwordSchema } = require("./password");
+
 const landlordValidator = async (req, res, next) => {
   try {
     const landlordSchema = Joi.object({
@@ -7,8 +9,10 @@ const landlordValidator = async (req, res, next) => {
       nationalID: Joi.string().required(),
       email: Joi.string().email().required().lowercase(),
       phone: Joi.string().min(12).required(),
-      password: Joi.string().required().min(8).max(100),
-      confirmPassword: Joi.string().required().min(8).max(100),
+      password: passwordSchema,
+      confirmPassword: Joi.string().valid(Joi.ref("password")).required().messages({
+        "any.only": "Confirm password does not match password.",
+      }),
     });
 
     const isValidSignUpData = await landlordSchema.validateAsync(req.body);
