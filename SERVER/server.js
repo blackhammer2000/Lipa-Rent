@@ -6,6 +6,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
+const cookieParser = require("cookie-parser");
 const CSRF = require("csrf");
 const PORT = process.env.PORT || 8080;
 const origin = process.env.ORIGIN;
@@ -17,6 +18,7 @@ const { connect } = require("mongoose");
 const userRoutes = require("./routes/users/routes/routes");
 
 app.use(express.json());
+app.use(cookieParser());
 
 // --- Global rate limiter (all API routes) ---
 const globalLimiter = rateLimit({

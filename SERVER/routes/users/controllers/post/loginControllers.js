@@ -3,10 +3,12 @@ const { compare, hash } = require("bcrypt");
 const {
   signAccessToken,
 } = require("../../../../middleware/tokens/accessToken");
+const { signRefreshToken } = require("../../../../middleware/tokens/refreshToken");
 
 const { Subscription } = require("../../../../middleware/models/Subscription");
 
 const { Password } = require("../../../../middleware/models/Password");
+const { RefreshToken } = require("../../../../middleware/models/RefreshToken");
 
 const { Owner } = require("../../../../middleware/models/Owner");
 
@@ -123,12 +125,36 @@ const loginControllers = {
         otp: false,
       };
 
-      const loginToken = await signLoginToken(userData);
+      // Sign short-lived access token (2h)
+      const accessToken = await signAccessToken(userData);
 
-      if (!loginToken) throw new Error(loginToken);
+      if (!accessToken) throw new Error(accessToken);
+
+      // Sign long-lived refresh token (7d) and store in DB
+      const refreshToken = await signRefreshToken(userData);
+
+      if (!refreshToken) throw new Error(refreshToken);
+
+      const refreshTokenDoc = await RefreshToken.create({
+        ownerID: _id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      });
+
+      if (!refreshTokenDoc) throw new Error("Failed to store refresh token.");
+
+      // Set refresh token as HttpOnly, Secure cookie
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: "/",
+      });
 
       res.status(200).json({
-        loginToken,
+        message: "Login successful",
+        token: accessToken,
       });
     } catch (err) {
       if (err?.message)

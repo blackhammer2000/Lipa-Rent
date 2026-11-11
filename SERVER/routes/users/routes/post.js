@@ -99,6 +99,7 @@ const {
 } = require("../controllers/post/forgotPasswordControllers");
 
 const { logout } = require("../controllers/post/logoutControllers");
+const { refresh } = require("../controllers/post/refreshTokenControllers");
 
 const { readOwnerDetails } = require("../controllers/post/ownerControllers");
 
@@ -108,13 +109,20 @@ const authLimiter = rateLimit({
   max: 10, // limit each IP to 10 auth requests per windowMs
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: "Too many authentication attempts, please try again later." },
+  message: {
+    error: "Too many authentication attempts, please try again later.",
+  },
 });
 
 // ////////////////////////  ROUTES   ///////////////////////////////
 
 // SIGN UP
-router.post("/api/user/owner/signup/generate/otp", authLimiter, isUser, generateSignUpOtp);
+router.post(
+  "/api/user/owner/signup/generate/otp",
+  authLimiter,
+  isUser,
+  generateSignUpOtp,
+);
 router.post(
   "/api/user/owner/signup/verify/otp",
   authLimiter,
@@ -122,7 +130,13 @@ router.post(
   verifySignUpToken,
   verifySignUpOtp,
 );
-router.post("/api/user/owner/signup", authLimiter, isUser, verifySignUpToken, signUp);
+router.post(
+  "/api/user/owner/signup",
+  authLimiter,
+  isUser,
+  verifySignUpToken,
+  signUp,
+);
 
 // LOGIN
 router.post(
@@ -133,6 +147,10 @@ router.post(
   loginValidator,
   login,
 );
+
+// TOKEN REFRESH (refresh access token using refresh token cookie)
+router.post("/api/user/owner/refresh", refresh);
+
 router.post(
   "/api/user/owner/get/otp",
   authLimiter,
@@ -282,7 +300,12 @@ router.post(
   verifyPassword,
 );
 
-router.post("/api/user/owner/verify/nationalid", authLimiter, isUser, verifyUserInfo);
+router.post(
+  "/api/user/owner/verify/nationalid",
+  authLimiter,
+  isUser,
+  verifyUserInfo,
+);
 
 // PASSWORD RESET ROUTES
 router.post(
@@ -336,6 +359,11 @@ router.post(
   verifyResetPasswordOTP,
 );
 
-router.post("/api/user/owner/logout", authLimiter, verifyUserAccessToken, logout);
+router.post(
+  "/api/user/owner/logout",
+  authLimiter,
+  verifyUserAccessToken,
+  logout,
+);
 
 module.exports = router;
