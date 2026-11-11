@@ -5,6 +5,7 @@ const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
 const PORT = process.env.PORT || 8080;
 const origin = process.env.ORIGIN;
 
@@ -56,6 +57,9 @@ app.use(
     origin,
   }),
 );
+
+// --- MongoDB injection sanitization ---
+app.use(mongoSanitize());
 
 app.use(userRoutes);
 
