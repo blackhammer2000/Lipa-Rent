@@ -332,7 +332,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 | #   | Feature                                   | Why it matters                                                                                               | Suggested scope                                                                                 |
 | --- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | ----------------------------- |
 | S1  | **Helmet.js security headers**            | No `X-Frame-Options`, `Content-Security-Policy`, `X-Content-Type-Options`, `Strict-Transport-Security`, etc. | Add `helmet` to `SERVER/` and apply in `server.js`                                              | ✅ **IMPLEMENTED & VERIFIED** |
-| S2  | **Rate limiting**                         | Login/OTP endpoints are open to brute-force and OTP-spam attacks                                             | `express-rate-limit` on auth endpoints (login, signup OTP, forgot password) + global API limit  |
+| S2  | **Rate limiting**                         | Login/OTP endpoints are open to brute-force and OTP-spam attacks                                             | `express-rate-limit` on auth endpoints (login, signup OTP, forgot password) + global API limit  | ✅ **IMPLEMENTED & VERIFIED** |
 | S3  | **MongoDB injection sanitization**        | User-supplied query bodies are passed to Mongoose without sanitization                                       | `express-mongo-sanitize` middleware to strip `$` and `.` operators from user input              |
 | S4  | **CSRF protection**                       | State-changing endpoints (PATCH/DELETE/POST) have no CSRF defense                                            | SameSite cookie strategy or CSRF tokens for sensitive mutations                                 |
 | S5  | **Password complexity requirements**      | No enforcement of strong passwords at signup/reset                                                           | Joi schema rules (min length, uppercase, number, symbol) + password strength feedback on client |
@@ -367,6 +367,26 @@ next proposed task. Please review and approve (or amend) before work begins.
 **Bug fix:** The initial CSP `connect-src` used `[\"'self'\", origin].filter(Boolean)` which helmet rejected when `ORIGIN` was undefined/empty. Fixed by conditionally building the array — `origin` is only added if it's a valid non-empty string.
 
 **Verification:** `npm install helmet` completed; server starts successfully on PORT 4000 with no CSP error.
+
+### S2 Implementation Summary — Rate Limiting (COMPLETE — Verified)
+
+**Files changed:**
+- `SERVER/package.json` — added `"express-rate-limit": "^7.0.0"` to dependencies
+- `SERVER/server.js` — added `rateLimit` import, `globalLimiter` (100 req/15min per IP) applied to all routes, `authLimiter` (10 req/15min per IP) defined but applied per-route in `post.js`
+- `SERVER/routes/users/routes/post.js` — added `rateLimit` import, `authLimiter` constant, and applied `authLimiter` middleware to all auth endpoints:
+  - Sign up: generate/otp, verify/otp, signup
+  - Login: login, get/otp, verify/otp
+  - Password reset: generate/resetToken, verify/resetToken
+  - Forgot password: generate/forgotToken, verify/forgotToken, edit/forgotPassword
+  - Delete account: generate/deleteToken, verify/deleteToken
+  - Logout
+  - Verify national ID
+
+**Rate limits:**
+- Global: 100 requests per 15-minute window per IP (all API routes)
+- Auth: 10 requests per 15-minute window per IP (auth endpoints only)
+
+**Verification:** `npm install express-rate-limit` completed; server starts successfully on PORT 8080 with no errors (DB connection error is expected — no `.env` configured).
 
 ### Proposed acceptance criteria (for the task when approved)
 

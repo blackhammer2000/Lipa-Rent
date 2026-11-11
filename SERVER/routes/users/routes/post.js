@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const router = require("express").Router();
+const rateLimit = require("express-rate-limit");
 
 const apiVersion = process.env.API_VERSION;
 
@@ -97,28 +98,40 @@ const { logout } = require("../controllers/post/logoutControllers");
 
 const { readOwnerDetails } = require("../controllers/post/ownerControllers");
 
+// --- Stricter rate limiter for auth endpoints ---
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 auth requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many authentication attempts, please try again later." },
+});
+
 // ////////////////////////  ROUTES   ///////////////////////////////
 
 // SIGN UP
-router.post("/api/user/owner/signup/generate/otp", isUser, generateSignUpOtp);
+router.post("/api/user/owner/signup/generate/otp", authLimiter, isUser, generateSignUpOtp);
 router.post(
   "/api/user/owner/signup/verify/otp",
+  authLimiter,
   isUser,
   verifySignUpToken,
   verifySignUpOtp,
 );
-router.post("/api/user/owner/signup", isUser, verifySignUpToken, signUp);
+router.post("/api/user/owner/signup", authLimiter, isUser, verifySignUpToken, signUp);
 
 // LOGIN
-router.post("/api/user/owner/login", isUser, loginValidator, login);
+router.post("/api/user/owner/login", authLimiter, isUser, loginValidator, login);
 router.post(
   "/api/user/owner/get/otp",
+  authLimiter,
   isUser,
   verifyLoginToken,
   generateLoginOtp,
 );
 router.post(
   "/api/user/owner/verify/otp",
+  authLimiter,
   isUser,
   verifyLoginToken,
   verifyLoginOtp,
@@ -258,11 +271,12 @@ router.post(
   verifyPassword,
 );
 
-router.post("/api/user/owner/verify/nationalid", isUser, verifyUserInfo);
+router.post("/api/user/owner/verify/nationalid", authLimiter, isUser, verifyUserInfo);
 
 // PASSWORD RESET ROUTES
 router.post(
   "/api/user/owner/generate/resetToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
@@ -270,6 +284,7 @@ router.post(
 );
 router.post(
   "/api/user/owner/verify/resetToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
@@ -279,6 +294,7 @@ router.post(
 // DELETE ACCOUNT ROUTES
 router.post(
   "/api/user/owner/generate/deleteToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
@@ -286,6 +302,7 @@ router.post(
 );
 router.post(
   "/api/user/owner/verify/deleteToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
@@ -295,17 +312,19 @@ router.post(
 // FORGOT PASSWORD ROUTES
 router.post(
   "/api/user/owner/generate/forgotToken",
+  authLimiter,
   isUser,
   verifyForgotPasswordToken,
   genarateResetPasswordOTP,
 );
 router.post(
   "/api/user/owner/verify/forgotToken",
+  authLimiter,
   isUser,
   verifyForgotPasswordToken,
   verifyResetPasswordOTP,
 );
 
-router.post("/api/user/owner/logout", verifyUserAccessToken, logout);
+router.post("/api/user/owner/logout", authLimiter, verifyUserAccessToken, logout);
 
 module.exports = router;
