@@ -331,7 +331,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 
 | # | Feature | Why it matters | Suggested scope |
 |---|---------|---------------|-----------------|
-| S1 | **Helmet.js security headers** | No `X-Frame-Options`, `Content-Security-Policy`, `X-Content-Type-Options`, `Strict-Transport-Security`, etc. | Add `helmet` to `SERVER/` and apply in `server.js` |
+| S1 | **Helmet.js security headers** | No `X-Frame-Options`, `Content-Security-Policy`, `X-Content-Type-Options`, `Strict-Transport-Security`, etc. | Add `helmet` to `SERVER/` and apply in `server.js` | ✅ **IMPLEMENTED** |
 | S2 | **Rate limiting** | Login/OTP endpoints are open to brute-force and OTP-spam attacks | `express-rate-limit` on auth endpoints (login, signup OTP, forgot password) + global API limit |
 | S3 | **MongoDB injection sanitization** | User-supplied query bodies are passed to Mongoose without sanitization | `express-mongo-sanitize` middleware to strip `$` and `.` operators from user input |
 | S4 | **CSRF protection** | State-changing endpoints (PATCH/DELETE/POST) have no CSRF defense | SameSite cookie strategy or CSRF tokens for sensitive mutations |
@@ -343,6 +343,26 @@ next proposed task. Please review and approve (or amend) before work begins.
 | S10 | **Content Security Policy (CSP)** | No CSP on the client; inline scripts/styles could be injected | Vite/Build CSP headers + `helmet.contentSecurityPolicy()` on server |
 | S11 | **Dependency vulnerability scanning** | No `npm audit` or Snyk/GitHub Dependabot integration | Add `npm audit` to CI/test scripts; Dependabot config |
 | S12 | **Error information leakage** | Server errors may return raw stack traces / DB details to clients | Generic error responses in production; log details server-side only |
+
+---
+
+### S1 Implementation Summary — Helmet.js Security Headers (DONE — pending `npm install`)
+
+**Files changed:**
+- `SERVER/package.json` — added `"helmet": "^8.0.0"` to dependencies
+- `SERVER/server.js` — added `helmet` import and `app.use(helmet({...}))` middleware before CORS and routes
+
+**Headers applied:**
+- `X-Frame-Options`: `DENY` (prevents clickjacking)
+- `Strict-Transport-Security` (HSTS): enforces HTTPS
+- `X-Content-Type-Options`: `nosniff` (prevents MIME sniffing)
+- `Referrer-Policy`: `no-referrer`
+- `X-XSS-Protection`: enables XSS filter
+- `Content-Security-Policy`: restrictive policy allowing `self` plus the configured `ORIGIN` for connect requests
+- `crossOriginEmbedderPolicy`: disabled (avoids conflict with CORS)
+- `crossOriginResourcePolicy`: restricted to the configured `ORIGIN`
+
+**Pending:** Run `npm install helmet` in `SERVER/` to install the package (npm not available in this terminal session).
 
 ### Proposed acceptance criteria (for the task when approved)
 - [ ] Each security feature (S1–S12) is implemented and verified with tests where applicable
