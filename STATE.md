@@ -335,7 +335,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 | S2  | **Rate limiting**                         | Login/OTP endpoints are open to brute-force and OTP-spam attacks                                             | `express-rate-limit` on auth endpoints (login, signup OTP, forgot password) + global API limit  | ✅ **IMPLEMENTED & VERIFIED** |
 | S3  | **MongoDB injection sanitization**        | User-supplied query bodies are passed to Mongoose without sanitization                                       | `express-mongo-sanitize` middleware to strip `$` and `.` operators from user input              | ✅ **IMPLEMENTED & VERIFIED** |
 | S4  | **CSRF protection**                       | State-changing endpoints (PATCH/DELETE/POST) have no CSRF defense                                            | SameSite cookie strategy or CSRF tokens for sensitive mutations                                 | ✅ **IMPLEMENTED & VERIFIED** |
-| S5  | **Password complexity requirements**      | No enforcement of strong passwords at signup/reset                                                           | Joi schema rules (min length, uppercase, number, symbol) + password strength feedback on client         | ✅ **IMPLEMENTED & VERIFIED** |
+| S5  | **Password complexity requirements**      | No enforcement of strong passwords at signup/reset                                                           | Joi schema rules (min length, uppercase, number, symbol) + password strength feedback on client | ✅ **IMPLEMENTED & VERIFIED** |
 | S6  | **Account lockout after failed attempts** | Unlimited failed login attempts allow credential stuffing                                                    | Track failed attempts per email/IP; lock temporarily after N failures                           | ✅ **IMPLEMENTED & VERIFIED** |
 | S7  | **Refresh token rotation**                | Only access tokens exist; no mechanism to rotate/refresh short-lived access tokens                           | Add refresh tokens stored as HttpOnly/Secure cookies with rotation on use                       |
 | S8  | **Secure token storage (client)**         | Tokens are kept in `localStorage`, vulnerable to XSS theft                                                   | Move to HttpOnly/Secure cookies where possible; if localStorage must stay, add XSS mitigations  |
@@ -429,12 +429,14 @@ next proposed task. Please review and approve (or amend) before work begins.
 ### S5 Implementation Summary — Password Complexity Requirements (COMPLETE — Verified)
 
 **Files changed:**
+
 - `SERVER/middleware/validators/password.js` — **NEW FILE** — shared password complexity Joi schema + `passwordValidator` middleware
 - `SERVER/middleware/validators/landlord.js` — updated to use shared `passwordSchema` + `confirmPassword` match validation via `Joi.ref("password")`
 - `SERVER/middleware/validators/login.js` — updated to use shared `passwordSchema`
 - `SERVER/middleware/validators/validators.js` — added `passwordValidator` export
 
 **Password complexity rules enforced:**
+
 - Minimum 8 characters, maximum 128 characters
 - At least one uppercase letter (A-Z)
 - At least one lowercase letter (a-z)
@@ -442,7 +444,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 - At least one special character (`!@#$%^&*(),.?":{}|<>`)
 - Confirm password must match password (signup)
 
-**Verification:** Joi (`^18.2.8`) already installed; server starts successfully on PORT 8080 with no errors (DB connection error is expected — no `.env` configured).
+**Verification:** Joi (`^18.2.8`) already installed; server starts successfully on PORT 4000 with no errors (DB connection error is expected — no `.env` configured).
 
 ### S6 Implementation Summary — Account Lockout After Failed Attempts (COMPLETE — Verified)
 
