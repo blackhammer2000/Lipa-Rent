@@ -25,6 +25,11 @@ const { signLoginToken } = require("../../../../middleware/tokens/loginToken");
 
 const { sendEmail } = require("../../../helpers/mailtrap");
 
+const {
+  recordFailedAttempt,
+  resetFailedAttempts,
+} = require("../../../../middleware/validators/loginAttempt");
+
 const loginControllers = {
   //! LOGIN USER.
 
@@ -48,31 +53,46 @@ const loginControllers = {
         email,
       });
 
-      if (!user) throw new Error("Incorrect Email,NationalID or Password.");
+      if (!user) {
+        await recordFailedAttempt(req);
+        throw new Error("Incorrect Email,NationalID or Password.");
+      }
 
       const { _id, paid, disabled, emailVerified } = user;
 
-      if (emailVerified === false) throw new Error("Unverified email.");
+      if (emailVerified === false) {
+        await recordFailedAttempt(req);
+        throw new Error("Unverified email.");
+      }
 
-      if (paid === false)
+      if (paid === false) {
+        await recordFailedAttempt(req);
         throw new Error("Renew subscription to regain access.");
+      }
 
-      if (disabled === true) throw new Error("Account has been disabled.");
+      if (disabled === true) {
+        await recordFailedAttempt(req);
+        throw new Error("Account has been disabled.");
+      }
 
       const dbPassword = await Password?.findOne({
         ownerID: _id,
       });
 
-      if (!dbPassword)
+      if (!dbPassword) {
+        await recordFailedAttempt(req);
         throw new Error("Incorrect Email,NationalID or Password.");
+      }
 
       const passwordMatch = await compare(
         encryptedPassword,
         dbPassword?.password,
       );
 
-      if (!passwordMatch)
+      if (!passwordMatch) {
+        await recordFailedAttempt(req);
         throw new Error("Incorrect Email,NationalID or Password.");
+      }
 
       const { currentSubscription } = await Subscription?.findOne({
         ownerID: _id,
@@ -91,6 +111,9 @@ const loginControllers = {
 
         if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
       }
+
+      // Successful login — reset failed attempts
+      await resetFailedAttempts(req);
 
       const userData = {
         id: _id,

@@ -40,6 +40,10 @@ const {
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
 
+const {
+  loginAttemptMiddleware,
+} = require("../../../middleware/validators/loginAttempt");
+
 /////////////////  POST CONTROLLERS IMPORTS      ////////////////////////////////
 
 const {
@@ -121,7 +125,14 @@ router.post(
 router.post("/api/user/owner/signup", authLimiter, isUser, verifySignUpToken, signUp);
 
 // LOGIN
-router.post("/api/user/owner/login", authLimiter, isUser, loginValidator, login);
+router.post(
+  "/api/user/owner/login",
+  authLimiter,
+  isUser,
+  loginAttemptMiddleware,
+  loginValidator,
+  login,
+);
 router.post(
   "/api/user/owner/get/otp",
   authLimiter,
