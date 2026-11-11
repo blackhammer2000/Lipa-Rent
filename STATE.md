@@ -301,3 +301,55 @@ routes/users/controllers/
 > TypeError; the 3 skipped unit tests) — the refactor is a good opportunity to surface/fix
 > them, and the existing Jest suites (`npm run test`, `npm run test:unit`, `npm run
 test:e2e` in `SERVER/`) must stay green after the changes.
+
+---
+
+## 10. Pending Task — Missing Features Review (AWAITING APPROVAL)
+
+The following functionality and security gaps were identified by reviewing STATE.md,
+the route files, controllers, middleware, client API service, and package.json
+dependencies. **None of these have been implemented yet.** This section lists them as the
+next proposed task. Please review and approve (or amend) before work begins.
+
+### Missing Functionality Features
+
+| # | Feature | Why it matters | Suggested scope |
+|---|---------|---------------|-----------------|
+| F1 | **Tenant-facing portal** | `CLIENT/tenant/` is empty; STATE.md marks it as the intended future home | Separate React app / route set for tenants to view room, lease, payment history, balance |
+| F2 | **Email / SMS notifications** | `MAILTRAP_API_KEY` / `RESEND_API_KEY` exist but no email/SMS sending is wired | OTP delivery, payment reminders, receipts, lease-expiry notices via Mailtrap (dev) / production provider |
+| F3 | **Property image uploads** | No file upload support; properties/rooms are text-only | `multer` + file-size/allowed-type validation on server; image preview/delete on client |
+| F4 | **Search & filtering** | No way to search properties, rooms, or tenants; reads return full collections | Query params (`?search=`, `?status=occupied`) on read endpoints + client filter UI |
+| F5 | **Export reports (PDF / CSV)** | Revenue/payment data exists but cannot be exported | Server endpoints to generate CSV/PDF for rent rolls, revenue, tenant lists |
+| F6 | **Lease agreement generation** | No digital lease created when a tenant is added | Generate a simple PDF lease from property/room/tenant data |
+| F7 | **Maintenance request system** | No channel to report/track maintenance issues | New models/routes for tickets (create, read, update status, assign) |
+| F8 | **Late-fee calculation** | Rent balances tracked but no automated late-fee logic | Scheduled job / on-read calculation applying late fees after due date |
+| F9 | **Recurring payment reminders** | No automatic reminders before/after rent due dates | Email/SMS reminders tied to payment due dates |
+| F10 | **Activity / audit log** | No record of who created/edited/deleted what | Append-only log collection keyed by ownerID: actor, action, target, timestamp |
+| F11 | **Role-based access control (RBAC)** | Only a single `user` role exists; no landlord/staff/admin distinction | Role field on owner + middleware guards (e.g. only admin can disable accounts) |
+
+### Missing Security Features
+
+| # | Feature | Why it matters | Suggested scope |
+|---|---------|---------------|-----------------|
+| S1 | **Helmet.js security headers** | No `X-Frame-Options`, `Content-Security-Policy`, `X-Content-Type-Options`, `Strict-Transport-Security`, etc. | Add `helmet` to `SERVER/` and apply in `server.js` |
+| S2 | **Rate limiting** | Login/OTP endpoints are open to brute-force and OTP-spam attacks | `express-rate-limit` on auth endpoints (login, signup OTP, forgot password) + global API limit |
+| S3 | **MongoDB injection sanitization** | User-supplied query bodies are passed to Mongoose without sanitization | `express-mongo-sanitize` middleware to strip `$` and `.` operators from user input |
+| S4 | **CSRF protection** | State-changing endpoints (PATCH/DELETE/POST) have no CSRF defense | SameSite cookie strategy or CSRF tokens for sensitive mutations |
+| S5 | **Password complexity requirements** | No enforcement of strong passwords at signup/reset | Joi schema rules (min length, uppercase, number, symbol) + password strength feedback on client |
+| S6 | **Account lockout after failed attempts** | Unlimited failed login attempts allow credential stuffing | Track failed attempts per email/IP; lock temporarily after N failures |
+| S7 | **Refresh token rotation** | Only access tokens exist; no mechanism to rotate/refresh short-lived access tokens | Add refresh tokens stored as HttpOnly/Secure cookies with rotation on use |
+| S8 | **Secure token storage (client)** | Tokens are kept in `localStorage`, vulnerable to XSS theft | Move to HttpOnly/Secure cookies where possible; if localStorage must stay, add XSS mitigations |
+| S9 | **Request body size limits** | No limit on JSON payload size; vulnerable to DoS via huge bodies | `express.json({ limit: '10kb' })` and similar limits |
+| S10 | **Content Security Policy (CSP)** | No CSP on the client; inline scripts/styles could be injected | Vite/Build CSP headers + `helmet.contentSecurityPolicy()` on server |
+| S11 | **Dependency vulnerability scanning** | No `npm audit` or Snyk/GitHub Dependabot integration | Add `npm audit` to CI/test scripts; Dependabot config |
+| S12 | **Error information leakage** | Server errors may return raw stack traces / DB details to clients | Generic error responses in production; log details server-side only |
+
+### Proposed acceptance criteria (for the task when approved)
+- [ ] Each security feature (S1–S12) is implemented and verified with tests where applicable
+- [ ] Each functionality feature (F1–F11) is prioritized and implemented per approved scope
+- [ ] All existing Jest suites (`npm run test` in `SERVER/`, `npm run test` in `CLIENT/react/`) remain green
+- [ ] `STATE.md` updated after each completed sub-task
+
+---
+
+**Awaiting your review and approval.** Please confirm whether to proceed with this task list as-is, or let me know which items to add, remove, or reprioritize before I begin implementation.
