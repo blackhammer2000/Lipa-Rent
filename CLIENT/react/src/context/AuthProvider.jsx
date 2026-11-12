@@ -7,7 +7,8 @@ import {
 } from "../services/api";
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // null = checking mount-time refresh cookie; true = authenticated; false = not
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     // Mount-time auth check: try to refresh via the HttpOnly cookie.

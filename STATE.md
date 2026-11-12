@@ -513,6 +513,8 @@ next proposed task. Please review and approve (or amend) before work begins.
 6. `clearLocalStorage()` only clears non-token UI state (selected property/room/tenant IDs). Tokens are cleared via cookie clearance on logout.
 7. No `liparentAccessToken` or `liparentLoginToken` keys exist in localStorage anywhere.
 
+**Limitation fixed:** `AuthProvider.jsx` now performs a mount-time auth check via `refreshAccessToken()`. `isAuthenticated` starts as `null` (checking), so `ProtectedRoute` renders `null` during the async check instead of flashing the login page. On a valid refresh cookie, the session survives a reload.
+
 **Verification:** All server files pass `node --check`; `CLIENT/react/src/services/api.js` and `src/context/AuthProvider.jsx` pass eslint (0 new errors; `AuthContext` unused is a pre-existing parser false positive). Client Jest suites cannot run locally due to a pre-existing Node 24 / jest v25 incompatibility (`rootDir` config error), unrelated to these changes.
 
 ### Proposed acceptance criteria (for the task when approved)
