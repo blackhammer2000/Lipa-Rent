@@ -16,6 +16,7 @@ const tokens = new CSRF();
 const { connect } = require("mongoose");
 
 const userRoutes = require("./routes/users/routes/routes");
+const { errorHandler, notFoundHandler } = require("./middleware/errorHandler");
 
 // Request body size limits (S9) — prevent DoS via huge payloads
 app.use(express.json({ limit: "10kb" }));
@@ -92,6 +93,12 @@ app.use((req, res, next) => {
 });
 
 app.use(userRoutes);
+
+// --- 404 for unmatched routes ---
+app.use(notFoundHandler);
+
+// --- Global error handler (S12: no error info leakage) ---
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`server running on PORT ${PORT}.`);

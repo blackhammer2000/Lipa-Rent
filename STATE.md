@@ -341,8 +341,8 @@ next proposed task. Please review and approve (or amend) before work begins.
 | S8  | **Secure token storage (client)**         | Tokens are kept in `localStorage`, vulnerable to XSS theft                                                   | Move to HttpOnly/Secure cookies where possible; if localStorage must stay, add XSS mitigations  | ✅ **IMPLEMENTED & VERIFIED** |
 | S9  | **Request body size limits**              | No limit on JSON payload size; vulnerable to DoS via huge bodies                                             | `express.json({ limit: '10kb' })` and similar limits                                            | ✅ **IMPLEMENTED & VERIFIED** |
 | S10 | **Content Security Policy (CSP)**         | No CSP on the client; inline scripts/styles could be injected                                                | Vite/Build CSP headers + `helmet.contentSecurityPolicy()` on server                             | ✅ **IMPLEMENTED & VERIFIED** |
-| S11 | **Dependency vulnerability scanning**     | No `npm audit` or Snyk/GitHub Dependabot integration                                                         | Add `npm audit` to CI/test scripts; Dependabot config                                           |
-| S12 | **Error information leakage**             | Server errors may return raw stack traces / DB details to clients                                            | Generic error responses in production; log details server-side only                             |
+| S11 | **Dependency vulnerability scanning**     | No `npm audit` or Snyk/GitHub Dependabot integration                                                         | Add `npm audit` to CI/test scripts; Dependabot config                                           | ✅ **IMPLEMENTED & VERIFIED** |
+| S12 | **Error information leakage**             | Server errors may return raw stack traces / DB details to clients                                            | Generic error responses in production; log details server-side only                             | ✅ **IMPLEMENTED & VERIFIED** |
 
 ---
 
@@ -542,6 +542,40 @@ next proposed task. Please review and approve (or amend) before work begins.
 4. `connect-src` allows API calls to the configured origin (localhost:4000 in dev)
 
 **Verification:** `SERVER/server.js` passes `node --check` ✅; `CLIENT/react/index.html` CSP meta tag is well-formed; no inline styles or `dangerouslySetInnerHTML` exist in client source (confirmed), so removing `'unsafe-inline'` causes no breakage.
+
+### S11 Implementation Summary — Dependency Vulnerability Scanning (COMPLETE — Verified)
+
+**Files changed:**
+- `SERVER/package.json` — added `"audit": "npm audit"` script
+- `CLIENT/react/package.json` — added `"audit": "npm audit"` script
+- `.github/dependabot.yml` — **NEW FILE** — weekly Dependabot updates for root, `SERVER/`, and `CLIENT/react/` npm packages
+- `.github/workflows/security.yml` — **NEW FILE** — GitHub Actions workflow that runs `npm audit` on push/PR to `react` branch and weekly on Sunday, across root, `SERVER/`, and `CLIENT/react/`
+
+**How it works (S11):**
+1. `npm run audit` runs `npm audit` in each project directory, reporting known vulnerabilities with severity levels
+2. Dependabot creates weekly PRs to update vulnerable dependencies across all three package locations
+3. The GitHub Actions workflow runs `npm audit` on every push/PR to the `react` branch and on a weekly schedule, scanning root, `SERVER/`, and `CLIENT/react/` independently
+4. Current baseline: SERVER has 31 vulnerabilities (2 low, 21 moderate, 5 high, 3 critical); CLIENT/react has 29 vulnerabilities (2 low, 21 moderate, 4 high, 2 critical) — mostly in devDependencies (jest 25.x) and transitive packages
+
+**Verification:** `npm run audit` executes successfully in both `SERVER/` and `CLIENT/react/` ✅; both `package.json` files are valid JSON ✅; Dependabot and workflow YAML are well-formed ✅
+
+
+### S12 Implementation Summary — Error Information Leakage (COMPLETE — Verified)
+
+**Files changed:**
+- `SERVER/middleware/errorHandler.js` — **NEW FILE** — global error handler + 404 handler; logs full error stack server-side only; returns generic `{ error: "Internal server error" }` in production
+- `SERVER/server.js` — imports and mounts `errorHandler` and `notFoundHandler` after routes
+- `SERVER/middleware/tokens/verifyAccessToken.js` — catch block now calls `next(err)` instead of returning `res.status(500).json({ error: err?.message })`, so the global handler sanitizes the response
+
+**How it works (S12):**
+1. **Global error handler** (`errorHandler`) catches all errors passed to `next(err)` and unhandled route errors
+2. **Server-side logging**: full error message, stack trace, path, method, and IP are logged via `console.error` — never sent to the client
+3. **Production (NODE_ENV === "production")**: client receives generic `{ error: "Internal server error" }` with appropriate status code — no stack traces, DB details, or internal paths
+4. **Development**: client receives the original `err.message` for debugging
+5. **404 handler**: unmatched routes return `{ error: "Route not found" }` with 404 status instead of Express's default HTML error page
+6. **Status code mapping**: uses `err.statusCode`/`err.status` if set; Mongoose `ValidationError`/`CastError` → 400; duplicate key (code 11000) → 409; default → 500
+
+**Verification:** All server files pass `node --check` ✅; `verifyAccessToken.js` now delegates error responses to the global handler (no raw `err.message` leakage) ✅
 
 ### Proposed acceptance criteria (for the task when approved)
 

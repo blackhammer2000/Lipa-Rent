@@ -21,7 +21,8 @@
     "test": "jest",
     "test:unit": "jest tests/unit",
     "test:e2e": "jest tests/e2e",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "audit": "npm audit"
   },
   "name": "liparent",
   "version": "1.0.0",

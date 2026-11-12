@@ -45,15 +45,8 @@ const verifyUserAccessToken = async (req, res, next) => {
 
     next();
   } catch (err) {
-    if (
-      err?.message === "jwt expired" ||
-      err?.message === "invalid token" ||
-      err?.message === "jwt malformed"
-    ) {
-      res.status(403).json({ error: "session expired" });
-    } else {
-      res.status(500).json({ error: err?.message });
-    }
+    // Pass to global error handler (S12): logs server-side, returns generic in production
+    next(err);
   }
 };
 

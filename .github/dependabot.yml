@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # Root package.json (shared server deps)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # SERVER backend dependencies
+  - package-ecosystem: "npm"
+    directory: "/SERVER"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # CLIENT/react frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/CLIENT/react"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
