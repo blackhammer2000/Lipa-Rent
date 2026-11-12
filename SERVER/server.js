@@ -17,7 +17,8 @@ const { connect } = require("mongoose");
 
 const userRoutes = require("./routes/users/routes/routes");
 
-app.use(express.json());
+// Request body size limits (S9) — prevent DoS via huge payloads
+app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
 
 // --- Global rate limiter (all API routes) ---
