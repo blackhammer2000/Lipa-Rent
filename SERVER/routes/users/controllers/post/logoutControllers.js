@@ -31,7 +31,8 @@ const logoutControllers = {
       if (!otpDocDeletion.acknowledged && !otpDocDeletion.deletedCount)
         throw new Error("something went wrong, 'otp'");
 
-      // Clear refresh token cookie
+      // Clear access token and refresh token cookies
+      res.clearCookie("accessToken", { path: "/" });
       res.clearCookie("refreshToken", { path: "/" });
 
       res.status(200).json({

@@ -94,7 +94,7 @@ export default function Login() {
     if (verifyResult.message) setMessage(verifyResult.message);
 
     if (verifyResult.token) {
-      handleLogin(verifyResult.token);
+      handleLogin();
       setShowOtpModal(false);
       navigate("/dashboard");
     }

@@ -143,11 +143,8 @@ class UserinterfaceUtilities {
   }
 
   static async handleLogout() {
-    const accessToken = localStorage.getItem("liparentAccessToken")
-      ? localStorage.getItem("liparentAccessToken")
-      : null;
-
-    if (accessToken === (null || undefined))
+    // Tokens are stored as HttpOnly cookies (S8); no localStorage token lookup needed.
+    if (typeof localStorage === "undefined" || !localStorage.getItem("liparentAccessToken"))
       location.assign("/CLIENT/login/login.html");
 
     this.openLoader("logging out", "logout");
@@ -155,10 +152,10 @@ class UserinterfaceUtilities {
     const requestOptions = {
       mode: "cors",
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         user: true,
-        token: accessToken,
       },
     };
 
@@ -189,8 +186,7 @@ class UserinterfaceUtilities {
   }
 
   static clearLocalStorage() {
-    localStorage.removeItem("liparentLoginToken");
-    localStorage.removeItem("liparentAccessToken");
+    // Tokens are in HttpOnly cookies (S8); only clear non-token UI state here.
     localStorage.removeItem("liparentSelectedPropertyId");
     localStorage.removeItem("liparentSelectedPropertyName");
     localStorage.removeItem("liparentSelectedRoomId");

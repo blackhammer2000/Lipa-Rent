@@ -101,6 +101,15 @@ const refreshTokenControllers = {
 
       if (!newRefreshTokenDoc) throw new Error("Failed to store refresh token.");
 
+      // Set new access token as HttpOnly, Secure cookie (S8: cookies only, no localStorage)
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 2 * 60 * 60 * 1000, // 2 hours
+        path: "/",
+      });
+
       // Set new refresh token as HttpOnly, Secure cookie
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
@@ -112,7 +121,6 @@ const refreshTokenControllers = {
 
       res.status(200).json({
         message: "Access token refreshed successfully",
-        token: accessToken,
       });
     } catch (err) {
       if (err?.message)

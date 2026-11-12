@@ -14,18 +14,12 @@ export const unregisterLoader = () => {
   globalHideLoader = null;
 };
 
-// Helper to get access token from localStorage
-export const getAccessToken = () =>
-  localStorage.getItem("liparentAccessToken") || null;
+// ---- Secure token storage (S8): cookies only, no localStorage ----
+// Tokens are stored as HttpOnly/Secure cookies by the server. The browser
+// sends them automatically when fetch() uses credentials: "include".
 
-// Helper to get login token from localStorage
-export const getLoginToken = () =>
-  localStorage.getItem("liparentLoginToken") || null;
-
-// Helper to clear all localStorage items
+// Helper to clear non-token localStorage items (UI state only)
 export const clearLocalStorage = () => {
-  localStorage.removeItem("liparentLoginToken");
-  localStorage.removeItem("liparentAccessToken");
   localStorage.removeItem("liparentSelectedPropertyId");
   localStorage.removeItem("liparentSelectedPropertyName");
   localStorage.removeItem("liparentSelectedRoomId");
@@ -35,6 +29,32 @@ export const clearLocalStorage = () => {
   localStorage.removeItem("liparentRevenueSelectedPropertyName");
   localStorage.removeItem("liparentRevenueSelectedPropertyId");
   localStorage.removeItem("liparentRevenueSelectedPropertyRange");
+};
+
+// ---- Secure token storage (S8) ----
+// CSRF token issued by the server on every response (X-CSRF-TOKEN header).
+// Replayed on state-changing requests so S4 protection works on the client.
+let csrfToken = null;
+
+export const getCsrfToken = () => csrfToken;
+export const setCsrfToken = (token) => {
+  csrfToken = token;
+};
+
+// Refresh the short-lived access token using the HttpOnly refresh cookie
+// set by the server (S7). Sent with credentials so the cookie travels.
+export const refreshAccessToken = async () => {
+  const response = await fetch(`${serverDomain}/api/user/owner/refresh`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error || "Token refresh failed");
+  return data; // { message, token: accessToken }
 };
 
 // Map API paths to friendly loading messages
@@ -94,8 +114,23 @@ function getLoadingMessage(path) {
 async function request(path, options = {}, loadingMessage = "") {
   const msg = loadingMessage || getLoadingMessage(path);
   if (globalShowLoader && msg) globalShowLoader(msg);
+  // Send cookies (HttpOnly refresh token) cross-origin so S7/S8 cookie auth works.
+  const fetchOptions = { ...options, credentials: "include" };
+  // Attach CSRF token on state-changing requests (required by server S4 middleware).
+  const isStateChanging = ["POST", "PATCH", "PUT", "DELETE"].includes(
+    String(options.method || "GET").toUpperCase(),
+  );
+  if (isStateChanging && csrfToken) {
+    fetchOptions.headers = {
+      ...options.headers,
+      "X-CSRF-Token": csrfToken,
+    };
+  }
   try {
-    const response = await fetch(`${serverDomain}${path}`, options);
+    const response = await fetch(`${serverDomain}${path}`, fetchOptions);
+    // Capture the fresh CSRF token issued by the server on every response.
+    const responseCsrf = response.headers?.get?.("x-csrf-token");
+    if (responseCsrf) setCsrfToken(responseCsrf);
     const data = await response.json();
     return data;
   } catch (err) {
@@ -165,14 +200,13 @@ export const verifyLoginOtp = (loginToken, otp) =>
   });
 
 // Logout
-export const logout = (accessToken) =>
+export const logout = () =>
   request("/api/user/owner/logout", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
   });
 
@@ -224,25 +258,23 @@ export const editForgotPassword = (
 
 // ==================== OWNER API ====================
 
-export const readOwnerDetails = (accessToken) =>
+export const readOwnerDetails = () =>
   request("/api/user/read/owner", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
   });
 
-export const editOwnerDetails = (accessToken, editedOwner) =>
+export const editOwnerDetails = (editedOwner) =>
   request("/api/user/owner/edit/owner", {
     mode: "cors",
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ editedOwner }),
   });
@@ -250,7 +282,7 @@ export const editOwnerDetails = (accessToken, editedOwner) =>
 export const editPassword = (
   newPassword,
   confirmNewPassword,
-  accessToken,
+
   resetCode,
 ) =>
   request("/api/user/owner/edit/password", {
@@ -259,109 +291,100 @@ export const editPassword = (
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
       resettoken: resetCode,
     },
     body: JSON.stringify({ newPassword, confirmNewPassword }),
   });
 
-export const verifyPassword = (accessToken, password) =>
+export const verifyPassword = (password) =>
   request("/api/user/owner/verify/password", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ password }),
   });
 
-export const generateDeleteAccountCode = (accessToken) =>
+export const generateDeleteAccountCode = () =>
   request("/api/user/owner/generate/deleteToken", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
   });
 
-export const verifyDeleteAccountCode = (accessToken, deleteCode) =>
+export const verifyDeleteAccountCode = (deleteCode) =>
   request("/api/user/owner/verify/deleteToken", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
       deletetoken: deleteCode,
     },
   });
 
-export const deleteAccount = (accessToken, deleteCode) =>
+export const deleteAccount = (deleteCode) =>
   request("/api/user/owner/delete", {
     mode: "cors",
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
       deletetoken: deleteCode,
     },
   });
 
-export const generateResetPasswordCode = (accessToken) =>
+export const generateResetPasswordCode = () =>
   request("/api/user/owner/generate/resetToken", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
   });
 
-export const verifyResetPasswordCode = (accessToken, resetToken) =>
+export const verifyResetPasswordCode = (resetToken) =>
   request("/api/user/owner/verify/resetToken", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
       resettoken: resetToken,
     },
   });
 
 // ==================== PROPERTIES API ====================
 
-export const readAllProperties = (accessToken) =>
+export const readAllProperties = () =>
   request("/api/user/owner/read/properties", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
   });
 
-export const createProperty = (accessToken, newProperty) =>
+export const createProperty = (newProperty) =>
   request("/api/user/owner/create/property", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ newProperty }),
   });
 
 export const editProperty = (
-  accessToken,
+
   propertyId,
   propertyNo,
   editedProperty,
@@ -372,101 +395,93 @@ export const editProperty = (
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, propertyNo, editedProperty }),
   });
 
-export const deleteProperty = (accessToken, propertyId, propertyNo) =>
+export const deleteProperty = (propertyId, propertyNo) =>
   request("/api/user/owner/delete/property", {
     mode: "cors",
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, propertyNo }),
   });
 
 // ==================== ROOMS API ====================
 
-export const readAllRooms = (accessToken, propertyId) =>
+export const readAllRooms = (propertyId) =>
   request("/api/user/owner/read/property/rooms", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId }),
   });
 
-export const createRoom = (accessToken, propertyId, newRoom) =>
+export const createRoom = (propertyId, newRoom) =>
   request("/api/user/owner/create/property/room", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, newRoom }),
   });
 
-export const editRoom = (accessToken, propertyId, roomId, editedRoom) =>
+export const editRoom = (propertyId, roomId, editedRoom) =>
   request("/api/user/owner/edit/property/room", {
     mode: "cors",
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId, editedRoom }),
   });
 
-export const deleteRoom = (accessToken, propertyId, roomId) =>
+export const deleteRoom = (propertyId, roomId) =>
   request("/api/user/owner/delete/property/room", {
     mode: "cors",
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId }),
   });
 
 // ==================== TENANTS API ====================
 
-export const readAllTenantsForRoom = (accessToken, propertyId, roomId) =>
+export const readAllTenantsForRoom = (propertyId, roomId) =>
   request("/api/user/owner/read/property/room/tenants", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId }),
   });
 
-export const createTenant = (accessToken, propertyId, roomId, newTenant) =>
+export const createTenant = (propertyId, roomId, newTenant) =>
   request("/api/user/owner/create/property/room/tenant", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId, newTenant }),
   });
 
 export const editTenant = (
-  accessToken,
+
   propertyId,
   roomId,
   tenantId,
@@ -478,19 +493,17 @@ export const editTenant = (
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId, tenantId, editedTenant }),
   });
 
-export const deleteTenant = (accessToken, propertyId, roomId, tenantId) =>
+export const deleteTenant = (propertyId, roomId, tenantId) =>
   request("/api/user/owner/delete/property/room/tenant", {
     mode: "cors",
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId, tenantId }),
   });
@@ -498,7 +511,7 @@ export const deleteTenant = (accessToken, propertyId, roomId, tenantId) =>
 // ==================== RENTS/PAYMENTS API ====================
 
 export const readAllTenantPayments = (
-  accessToken,
+
   propertyId,
   roomId,
   tenantId,
@@ -509,13 +522,12 @@ export const readAllTenantPayments = (
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId, tenantId }),
   });
 
 export const createPayment = (
-  accessToken,
+
   propertyId,
   roomId,
   tenantId,
@@ -527,13 +539,12 @@ export const createPayment = (
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId, tenantId, newPayment }),
   });
 
 export const editPayment = (
-  accessToken,
+
   propertyId,
   roomId,
   tenantId,
@@ -546,7 +557,6 @@ export const editPayment = (
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({
       propertyId,
@@ -558,7 +568,7 @@ export const editPayment = (
   });
 
 export const deletePayment = (
-  accessToken,
+
   propertyId,
   roomId,
   tenantId,
@@ -570,34 +580,31 @@ export const deletePayment = (
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId, roomId, tenantId, paymentId }),
   });
 
 // ==================== REVENUE API ====================
 
-export const readAllPaymentsForRevenue = (accessToken, propertyId) =>
+export const readAllPaymentsForRevenue = (propertyId) =>
   request("/api/user/owner/read/property/rooms/tenants/payments", {
     mode: "cors",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
     body: JSON.stringify({ propertyId }),
   });
 
 // ==================== SUBSCRIPTIONS API ====================
 
-export const readSubscriptions = (accessToken) =>
+export const readSubscriptions = () =>
   request("/api/user/owner/read/subscriptions", {
     mode: "cors",
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       user: true,
-      token: accessToken,
     },
   });

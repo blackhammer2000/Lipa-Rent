@@ -9,11 +9,9 @@ const {
 
 const verifyUserAccessToken = async (req, res, next) => {
   try {
-    if (!req.headers.token) throw new Error("Access Denied.");
+    if (!req.cookies.accessToken) throw new Error("Access Denied.");
 
-    const {
-      headers: { token },
-    } = req;
+    const token = req.cookies.accessToken;
 
     const { id, email, currentSubscription, user, disabled, tokenVersion } =
       verify(token, process.env.ACCESS_SECRET_KEY);
@@ -44,8 +42,6 @@ const verifyUserAccessToken = async (req, res, next) => {
     req.body.email = email;
 
     user ? (req.body.user = user) : null;
-
-    delete req.headers.token;
 
     next();
   } catch (err) {

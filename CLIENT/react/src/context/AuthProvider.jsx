@@ -1,33 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { getAccessToken, clearLocalStorage, logout as apiLogout } from "../services/api";
+import {
+  clearLocalStorage,
+  logout as apiLogout,
+  refreshAccessToken,
+} from "../services/api";
 
 export function AuthProvider({ children }) {
-  const [accessToken, setAccessToken] = useState(getAccessToken());
-  const [isAuthenticated, setIsAuthenticated] = useState(!!getAccessToken());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogin = (token) => {
-    localStorage.setItem("liparentAccessToken", token);
-    setAccessToken(token);
+  useEffect(() => {
+    // Mount-time auth check: try to refresh via the HttpOnly cookie.
+    // If the refresh cookie is valid, the session survives a reload.
+    refreshAccessToken()
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false));
+  }, []);
+
+  const handleLogin = () => {
+    // Access token is already set as HttpOnly cookie by the server (Set-Cookie).
+    setIsAuthenticated(true);
+  };
+
+  const handleRefresh = async () => {
+    await refreshAccessToken();
     setIsAuthenticated(true);
   };
 
   const handleLogout = async () => {
-    if (accessToken) {
-      try {
-        await apiLogout(accessToken);
-      } catch (error) {
-        console.error("Logout error:", error);
-      }
+    try {
+      await apiLogout();
+    } catch (error) {
+      console.error("Logout error:", error);
     }
     clearLocalStorage();
-    setAccessToken(null);
     setIsAuthenticated(false);
   };
 
   return (
     <AuthContext.Provider
-      value={{ accessToken, isAuthenticated, handleLogin, handleLogout }}
+      value={{
+        isAuthenticated,
+        handleLogin,
+        handleRefresh,
+        handleLogout,
+      }}
     >
       {children}
     </AuthContext.Provider>
