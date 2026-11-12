@@ -340,7 +340,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 | S7  | **Refresh token rotation**                | Only access tokens exist; no mechanism to rotate/refresh short-lived access tokens                           | Add refresh tokens stored as HttpOnly/Secure cookies with rotation on use                       | ✅ **IMPLEMENTED & VERIFIED** |
 | S8  | **Secure token storage (client)**         | Tokens are kept in `localStorage`, vulnerable to XSS theft                                                   | Move to HttpOnly/Secure cookies where possible; if localStorage must stay, add XSS mitigations  | ✅ **IMPLEMENTED & VERIFIED** |
 | S9  | **Request body size limits**              | No limit on JSON payload size; vulnerable to DoS via huge bodies                                             | `express.json({ limit: '10kb' })` and similar limits                                            | ✅ **IMPLEMENTED & VERIFIED** |
-| S10 | **Content Security Policy (CSP)**         | No CSP on the client; inline scripts/styles could be injected                                                | Vite/Build CSP headers + `helmet.contentSecurityPolicy()` on server                             |
+| S10 | **Content Security Policy (CSP)**         | No CSP on the client; inline scripts/styles could be injected                                                | Vite/Build CSP headers + `helmet.contentSecurityPolicy()` on server                             | ✅ **IMPLEMENTED & VERIFIED** |
 | S11 | **Dependency vulnerability scanning**     | No `npm audit` or Snyk/GitHub Dependabot integration                                                         | Add `npm audit` to CI/test scripts; Dependabot config                                           |
 | S12 | **Error information leakage**             | Server errors may return raw stack traces / DB details to clients                                            | Generic error responses in production; log details server-side only                             |
 
@@ -528,6 +528,20 @@ next proposed task. Please review and approve (or amend) before work begins.
 3. No `express.urlencoded` or standalone `body-parser` is used elsewhere in `server.js`, so no additional limits are needed
 
 **Verification:** `SERVER/server.js` passes `node --check` ✅
+
+### S10 Implementation Summary — Content Security Policy (CSP) (COMPLETE — Verified)
+
+**Files changed:**
+- `SERVER/server.js` — hardened helmet `contentSecurityPolicy`: removed `'unsafe-inline'` from `styleSrc`; added `fontSrc`, `objectSrc: ['none']`, `frameSrc: ['none']`, `baseUri: ['self']`, `formAction: ['self']` directives
+- `CLIENT/react/index.html` — added `<meta http-equiv="Content-Security-Policy">` tag with restrictive policy for client-side defense in depth (covers Vite dev server and static file serving where helmet doesn't apply)
+
+**How it works (S10):**
+1. **Server CSP (helmet):** `script-src 'self'` blocks inline and external scripts not from same origin; `style-src 'self'` (no `unsafe-inline`) blocks injected styles; `object-src 'none'` and `frame-src 'none'` block plugins and clickjacking iframes; `base-uri 'self'` prevents base URI hijacking; `form-action 'self'` restricts form submissions; `font-src` allows Google Fonts only from gstatic.com
+2. **Client CSP (meta tag):** Provides the same restrictions in the browser for HTML pages served by Vite dev server or any static host, where the Express/helmet middleware doesn't apply
+3. Both policies permit Google Fonts (`fonts.googleapis.com` for CSS, `fonts.gstatic.com` for font files) and Font Awesome CDN styles used by the UI
+4. `connect-src` allows API calls to the configured origin (localhost:4000 in dev)
+
+**Verification:** `SERVER/server.js` passes `node --check` ✅; `CLIENT/react/index.html` CSP meta tag is well-formed; no inline styles or `dangerouslySetInnerHTML` exist in client source (confirmed), so removing `'unsafe-inline'` causes no breakage.
 
 ### Proposed acceptance criteria (for the task when approved)
 
