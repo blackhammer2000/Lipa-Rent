@@ -1,4 +1,8 @@
+require("dotenv").config();
+
 const router = require("express").Router();
+
+const apiVersion = process.env.API_VERSION;
 
 const {
   verifyUserAccessToken,
@@ -23,14 +27,14 @@ router.get(
   "/api/user/landlord/read/allproperties",
   isUser,
   verifyUserAccessToken,
-  readAllPropertiesOwned
+  readAllPropertiesOwned,
 );
 
 router.get(
   "/api/user/owner/read/subscriptions",
   isUser,
   verifyUserAccessToken,
-  readSubscriptionsReports
+  readSubscriptionsReports,
 );
 
 module.exports = router;

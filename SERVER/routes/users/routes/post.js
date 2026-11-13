@@ -1,11 +1,32 @@
+require("dotenv").config();
+
 const router = require("express").Router();
+const rateLimit = require("express-rate-limit");
+
+const apiVersion = process.env.API_VERSION;
+
+////////////////   TOKEN VALIDATION MIDDLWARE IMPORTS    //////////////////////
+const {
+  verifySignUpToken,
+} = require("../../../middleware/tokens/verifySignUpToken");
+
+const {
+  verifyLoginToken,
+} = require("../../../middleware/tokens/verifyLoginToken");
 
 const {
   verifyUserAccessToken,
 } = require("../../../middleware/tokens/verifyAccessToken");
+
+const {
+  isLoginVerified,
+} = require("../../../middleware/validators/isLoginVerified");
+
 const {
   verifyForgotPasswordToken,
 } = require("../../../middleware/tokens/verifyForgotPasswordToken");
+
+//////////          JOI VALIDATORS IMPORTS  ////////////////////////
 
 const {
   landlordValidator,
@@ -15,86 +36,134 @@ const {
   roomValidator,
 } = require("../../../middleware/validators/validators");
 
+///////////    IS USER VVALIDATOR IMPORT     ////////////////////////
 const { isUser } = require("../helpers/isUser");
 // const { hasPaid } = require("../helpers/hasPaid");
+
+const {
+  loginAttemptMiddleware,
+} = require("../../../middleware/validators/loginAttempt");
+
+/////////////////  POST CONTROLLERS IMPORTS      ////////////////////////////////
 
 const {
   generateSignUpOtp,
   verifySignUpOtp,
   signUp,
+} = require("../controllers/post/signUpControllers");
 
+const {
   login,
   generateLoginOtp,
   verifyLoginOtp,
+} = require("../controllers/post/loginControllers");
 
-  readOwnerDetails,
-
+const {
   createNewProperty,
   readSinglePropertyOwned,
   readAllPropertiesOwned,
-
+} = require("../controllers/post/propertyControllers");
+const {
   createSingleRoomOnProperty,
   readAllRoomsOnProperty,
   readSingleRoomOnProperty,
-
+} = require("../controllers/post/roomControllers");
+const {
   createTenantForRoomOnProperty,
   readAllTenantsForAllRoomsOnProperty,
   readAllTenantsInRoomOnProperty,
   readSingleTenantInRoomOnProperty,
+} = require("../controllers/post/tenantControllers");
 
+const {
   createRentPaymentForRoomInPropertyByTenant,
   readAllRentPaymentsForAllRoomsInProperty,
   readAllRentPaymentsForRoomInProperty,
   readAllRentPaymentsForRoomInPropertyByTenant,
   readRentPaymentForRoomInPropertyByTenant,
+} = require("../controllers/post/rentControllers");
 
-  genarateResetPasswordToken,
-  verifyResetPasswordToken,
-
+const {
   verifyPassword,
-  genarateDeleteAccountToken,
-  verifyDeleteAccountToken,
+  genarateDeleteAccountOTP,
+  verifyDeleteAccountOTP,
+} = require("../controllers/post/deleteAccountControllers");
 
+const {
+  genarateResetPasswordOTP,
+  verifyResetPasswordOTP,
+} = require("../controllers/post/resetPasswordControllers");
+
+const {
   verifyUserInfo,
+} = require("../controllers/post/forgotPasswordControllers");
 
-  logout,
-} = require("../controllers/postControllers");
+const { logout } = require("../controllers/post/logoutControllers");
+const { refresh } = require("../controllers/post/refreshTokenControllers");
 
-const {
-  verifyLoginToken,
-} = require("../../../middleware/tokens/verifyLoginToken");
-const {
-  verifySignUpToken,
-} = require("../../../middleware/tokens/verifySignUpToken");
-const {
-  isLoginVerified,
-} = require("../../../middleware/validators/isLoginVerified");
+const { readOwnerDetails } = require("../controllers/post/ownerControllers");
+
+// --- Stricter rate limiter for auth endpoints ---
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 auth requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Too many authentication attempts, please try again later.",
+  },
+});
 
 // ////////////////////////  ROUTES   ///////////////////////////////
 
 // SIGN UP
-router.post("/api/user/owner/signup/generate/otp", isUser, generateSignUpOtp);
+router.post(
+  "/api/user/owner/signup/generate/otp",
+  authLimiter,
+  isUser,
+  generateSignUpOtp,
+);
 router.post(
   "/api/user/owner/signup/verify/otp",
+  authLimiter,
   isUser,
   verifySignUpToken,
-  verifySignUpOtp
+  verifySignUpOtp,
 );
-router.post("/api/user/owner/signup", isUser, verifySignUpToken, signUp);
+router.post(
+  "/api/user/owner/signup",
+  authLimiter,
+  isUser,
+  verifySignUpToken,
+  signUp,
+);
 
 // LOGIN
-router.post("/api/user/owner/login", isUser, loginValidator, login);
+router.post(
+  "/api/user/owner/login",
+  authLimiter,
+  isUser,
+  loginAttemptMiddleware,
+  loginValidator,
+  login,
+);
+
+// TOKEN REFRESH (refresh access token using refresh token cookie)
+router.post("/api/user/owner/refresh", refresh);
+
 router.post(
   "/api/user/owner/get/otp",
+  authLimiter,
   isUser,
   verifyLoginToken,
-  generateLoginOtp
+  generateLoginOtp,
 );
 router.post(
   "/api/user/owner/verify/otp",
+  authLimiter,
   isUser,
   verifyLoginToken,
-  verifyLoginOtp
+  verifyLoginOtp,
 );
 
 // OWNERS DB ROUTES
@@ -103,7 +172,7 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readOwnerDetails
+  readOwnerDetails,
 );
 
 // PROPERTIES DB ROUTES
@@ -113,21 +182,21 @@ router.post(
   verifyUserAccessToken,
   isLoginVerified,
   propertyValidator,
-  createNewProperty
+  createNewProperty,
 );
 router.post(
   "/api/user/owner/read/property",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readSinglePropertyOwned
+  readSinglePropertyOwned,
 );
 router.post(
   "/api/user/owner/read/properties",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllPropertiesOwned
+  readAllPropertiesOwned,
 );
 
 // ROOM DB ROUTES
@@ -137,21 +206,21 @@ router.post(
   verifyUserAccessToken,
   isLoginVerified,
   roomValidator,
-  createSingleRoomOnProperty
+  createSingleRoomOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/rooms",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRoomsOnProperty
+  readAllRoomsOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/room",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readSingleRoomOnProperty
+  readSingleRoomOnProperty,
 );
 
 // TENANTS DB ROUTES
@@ -161,28 +230,28 @@ router.post(
   verifyUserAccessToken,
   isLoginVerified,
   tenantValidator,
-  createTenantForRoomOnProperty
+  createTenantForRoomOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/rooms/tenants",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllTenantsForAllRoomsOnProperty
+  readAllTenantsForAllRoomsOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenants",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllTenantsInRoomOnProperty
+  readAllTenantsInRoomOnProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenant",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readSingleTenantInRoomOnProperty
+  readSingleTenantInRoomOnProperty,
 );
 
 // RENTS DB ROUTES
@@ -191,35 +260,35 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  createRentPaymentForRoomInPropertyByTenant
+  createRentPaymentForRoomInPropertyByTenant,
 );
 router.post(
   "/api/user/owner/read/property/rooms/tenants/payments",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRentPaymentsForAllRoomsInProperty
+  readAllRentPaymentsForAllRoomsInProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenants/payments",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRentPaymentsForRoomInProperty
+  readAllRentPaymentsForRoomInProperty,
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payments",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readAllRentPaymentsForRoomInPropertyByTenant
+  readAllRentPaymentsForRoomInPropertyByTenant,
 );
 router.post(
   "/api/user/owner/read/property/room/tenant/payment",
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  readRentPaymentForRoomInPropertyByTenant
+  readRentPaymentForRoomInPropertyByTenant,
 );
 
 // VERIFY CREDETIALS
@@ -228,57 +297,73 @@ router.post(
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  verifyPassword
+  verifyPassword,
 );
-router.post("/api/user/owner/verify/nationalid", isUser, verifyUserInfo);
+
+router.post(
+  "/api/user/owner/verify/nationalid",
+  authLimiter,
+  isUser,
+  verifyUserInfo,
+);
 
 // PASSWORD RESET ROUTES
 router.post(
   "/api/user/owner/generate/resetToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-
-  genarateResetPasswordToken
+  genarateResetPasswordOTP,
 );
 router.post(
   "/api/user/owner/verify/resetToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  verifyResetPasswordToken
+  verifyResetPasswordOTP,
 );
 
 // DELETE ACCOUNT ROUTES
 router.post(
   "/api/user/owner/generate/deleteToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  genarateDeleteAccountToken
+  genarateDeleteAccountOTP,
 );
 router.post(
   "/api/user/owner/verify/deleteToken",
+  authLimiter,
   isUser,
   verifyUserAccessToken,
   isLoginVerified,
-  verifyDeleteAccountToken
+  verifyDeleteAccountOTP,
 );
 
 // FORGOT PASSWORD ROUTES
 router.post(
   "/api/user/owner/generate/forgotToken",
+  authLimiter,
   isUser,
   verifyForgotPasswordToken,
-  genarateResetPasswordToken
+  genarateResetPasswordOTP,
 );
 router.post(
   "/api/user/owner/verify/forgotToken",
+  authLimiter,
   isUser,
   verifyForgotPasswordToken,
-  verifyResetPasswordToken
+  verifyResetPasswordOTP,
 );
 
-router.post("/api/user/owner/logout", verifyUserAccessToken, logout);
+router.post(
+  "/api/user/owner/logout",
+  authLimiter,
+  verifyUserAccessToken,
+  logout,
+);
 
 module.exports = router;

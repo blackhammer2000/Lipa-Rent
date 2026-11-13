@@ -26,8 +26,10 @@ const verifySignUpToken = (req, res, next) => {
       id !== (null || undefined) &&
       otp === (null || undefined) &&
       otpVerified !== (null || undefined)
-    )
+    ){
       req.body.id = id;
+      req.body.otpVerified = otpVerified;
+    }
 
     delete req.headers.token;
 

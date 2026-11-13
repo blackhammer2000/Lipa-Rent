@@ -1,11 +1,13 @@
 const Joi = require("joi");
 
+const { passwordSchema } = require("./password");
+
 const loginValidator = async (req, res, next) => {
   try {
     const loginSchema = Joi.object({
       email: Joi.string().email().lowercase().required(),
       nationalID: Joi.string().lowercase().required(),
-      password: Joi.string().min(6).required(),
+      password: passwordSchema,
     });
 
     const isValidLoginData = await loginSchema.validateAsync(req.body);

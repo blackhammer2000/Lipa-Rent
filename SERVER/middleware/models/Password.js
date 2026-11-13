@@ -6,7 +6,6 @@ const PasswordSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-
   },
   password: {
     type: String,
@@ -23,6 +22,10 @@ const PasswordSchema = new Schema({
   },
   lastReset: {
     type: Number,
+  },
+  tokenVersion: {
+    type: Number,
+    default: 0,
   },
 });
 

@@ -1,4 +1,8 @@
+require("dotenv").config();
+
 const router = require("express").Router();
+
+const apiVersion = process.env.API_VERSION;
 
 const {
   verifyUserAccessToken,
@@ -26,31 +30,31 @@ router.delete(
   "/api/user/owner/delete",
   isUser,
   verifyUserAccessToken,
-  deleteOwnerDetails
+  deleteOwnerDetails,
 );
 router.delete(
   "/api/user/owner/delete/property",
   isUser,
   verifyUserAccessToken,
-  deletePropertyDetails
+  deletePropertyDetails,
 );
 router.delete(
   "/api/user/owner/delete/property/room",
   isUser,
   verifyUserAccessToken,
-  deleteRoomDetails
+  deleteRoomDetails,
 );
 router.delete(
   "/api/user/owner/delete/property/room/tenant",
   isUser,
   verifyUserAccessToken,
-  deleteTenantDetails
+  deleteTenantDetails,
 );
 router.delete(
   "/api/user/owner/delete/property/room/tenant/payment",
   isUser,
   verifyUserAccessToken,
-  deleteRentPaymentDetails
+  deleteRentPaymentDetails,
 );
 
 module.exports = router;

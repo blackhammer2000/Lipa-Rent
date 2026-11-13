@@ -27,6 +27,8 @@ const {
   signForgotPasswordToken,
 } = require("../../../middleware/tokens/forgotPasswordToken");
 
+const { sendEmail } = require("../../helpers/mailtrap");
+
 ///////*************************POST CONTROLLERS************************////////////////
 
 const post_controllers = {
@@ -50,28 +52,21 @@ const post_controllers = {
       if (encrypt(password) !== encrypt(confirmPassword))
         throw new Error("passwords do not match.");
 
+      if (encrypt(password).length < 8)
+        throw new Error("Password must be at least 8 characters long.");
+
+      const emailExists = await Owner?.findOne({
+        email: email,
+      });
+
+      const nationalIDExists = await Owner?.findOne({
+        nationalID: nationalID,
+      });
+
       const accountExists = await Owner?.findOne({
         email: email,
         nationalID: nationalID,
       });
-
-      if (
-        accountExists &&
-        accountExists.emailVerified !== (null || undefined) &&
-        accountExists.emailVerified === true
-      ) {
-        const signUpToken = await signSignUpToken({
-          id: accountExists._id,
-          otpVerified: true,
-        });
-
-        if (!signUpToken) throw new Error(signUpToken);
-
-        res.status(200).json({
-          message: "Email has already been verified.",
-          signUpToken,
-        });
-      }
 
       const otpExists = accountExists
         ? await Otp?.findOne({
@@ -81,11 +76,11 @@ const post_controllers = {
 
       if (
         accountExists &&
-        accountExists?._id &&
+        accountExists._id &&
         otpExists &&
-        otpExists?.isSignUpOtpVerified === false &&
-        otpExists?.signUpOtpExpiry &&
-        otpExists?.signUpOtpExpiry !== null &&
+        otpExists.isSignUpOtpVerified === false &&
+        otpExists.signUpOtpExpiry &&
+        otpExists.signUpOtpExpiry !== null &&
         Date.now() < otpExists.signUpOtpExpiry
       ) {
         const signUpToken = await signSignUpToken({
@@ -98,7 +93,7 @@ const post_controllers = {
 
         res.status(200).json({
           message:
-            "OTP has already been sent, please try again after a few minutes",
+            "OTP has already been sent, check your email or try again after a few minutes",
           signUpToken,
         });
       }
@@ -107,9 +102,9 @@ const post_controllers = {
         accountExists &&
         accountExists?._id &&
         otpExists &&
-        otpExists?.isSignUpOtpVerified === false &&
-        otpExists?.signUpOtpExpiry &&
-        otpExists?.signUpOtpExpiry !== null &&
+        otpExists.isSignUpOtpVerified === false &&
+        otpExists.signUpOtpExpiry &&
+        otpExists.signUpOtpExpiry !== null &&
         Date.now() > otpExists.signUpOtpExpiry
       ) {
         const signUpOtp = generateOTP();
@@ -119,6 +114,14 @@ const post_controllers = {
 
         if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
+        const isEmailSent = await sendEmail(
+          email,
+          "LIPARENT signup OTP",
+          `Your signup OTP is: ${signUpOtp}`,
+        );
+
+        if (!isEmailSent) throw new Error("Failed to send signup OTP email.");
+
         const signUpOtpDetailsToDB = await Otp.updateOne(
           { ownerID: accountExists._id.toString() },
           {
@@ -127,11 +130,11 @@ const post_controllers = {
               isSignUpOtpVerified: false,
               signUpOtpExpiry: signUpOtpExpiry,
             },
-          }
+          },
         );
 
         if (
-          !accountExists?._id &&
+          !accountExists._id &&
           !signUpOtpDetailsToDB.acknowledged &&
           !signUpOtpDetailsToDB.modifiedCount
         )
@@ -150,6 +153,11 @@ const post_controllers = {
           signUpToken,
         });
       }
+
+      if ((emailExists || nationalIDExists) && !accountExists)
+        throw new Error(
+          `Invalid ${emailExists ? "Email" : "NationalID"}, try signing up with a different ${emailExists ? "Email" : "NationalID"}.`,
+        );
 
       if (!accountExists && !otpExists) {
         const owner = {
@@ -176,22 +184,30 @@ const post_controllers = {
 
         if (!hashedSignUpOtp) throw new Error(hashedSignUpOtp);
 
+        const isEmailSent = await sendEmail(
+          [{ email }],
+          "LIPARENT signup OTP",
+          `Your signup OTP is: ${signUpOtp}`,
+        );
+
+        if (!isEmailSent) throw new Error("Failed to send signup OTP email.");
+
         const signUpOtpDetailsToDB = await Otp.create({
-          ownerID: newOwner?._id?.toString(),
+          ownerID: newOwner._id.toString(),
           signUpOtp: hashedSignUpOtp,
           isSignUpOtpVerified: false,
           signUpOtpExpiry: signUpOtpExpiry,
         });
 
         if (
-          !accountExists?._id &&
+          !accountExists._id &&
           !signUpOtpDetailsToDB._id &&
           !signUpOtpDetailsToDB.ownerID
         )
           throw new Error("Error adding sign up otp details to database");
 
         const signUpToken = await signSignUpToken({
-          id: newOwner?._id?.toString(),
+          id: newOwner._id.toString(),
           otp: signUpOtp,
         });
 
@@ -240,7 +256,7 @@ const post_controllers = {
             isSignUpOtpVerified: true,
             signUpOtpExpiry: null,
           },
-        }
+        },
       );
 
       if (
@@ -255,7 +271,7 @@ const post_controllers = {
           $set: {
             emailVerified: true,
           },
-        }
+        },
       );
 
       if (!ownerDetailsToDB.acknowledged && !ownerDetailsToDB.modifiedCount)
@@ -279,7 +295,12 @@ const post_controllers = {
 
   signUp: async (req, res) => {
     try {
-      if (!req.body.id || !req.body.password || !req.body.confirmPassword)
+      if (
+        !req.body.id ||
+        !req.body.password ||
+        !req.body.confirmPassword ||
+        !req.body.otpVerified
+      )
         throw new Error("Unauthorized action.");
 
       const { id, password, confirmPassword } = req.body;
@@ -293,7 +314,7 @@ const post_controllers = {
 
       if (!accountExists)
         throw new Error(
-          "Error occured, please repeat the sign up process from the beginning"
+          "Error occured, please repeat the sign up process from the beginning",
         );
 
       if (accountExists.emailVerified !== true)
@@ -303,7 +324,7 @@ const post_controllers = {
 
       if (!userOtpDoc)
         throw new Error(
-          "Error occured, please repeat the sign up process from the beginning"
+          "Error occured, please repeat the sign up process from the beginning",
         );
 
       if (
@@ -320,7 +341,7 @@ const post_controllers = {
 
       if (!newOwnerPasswordDB)
         throw new Error(
-          "Failed to create a new instance of the password DB document."
+          "Failed to create a new instance of the password DB document.",
         );
 
       const thirtyDaysMilliseconds = 30 * 24 * 60 * 60 * 1000;
@@ -344,18 +365,18 @@ const post_controllers = {
       };
 
       newInstitutionSubscriptionBody.subscription_reports.push(
-        first_subscription_report
+        first_subscription_report,
       );
 
       // console.log(newInstitutionSubscriptionBody);
 
       const newInstitutionSubscription = await Subscription?.create(
-        newInstitutionSubscriptionBody
+        newInstitutionSubscriptionBody,
       );
 
       if (!newInstitutionSubscription)
         throw new Error(
-          "Failed to create a new instance of the subscription document."
+          "Failed to create a new instance of the subscription document.",
         );
 
       const newOwnerPropertyBody = {
@@ -363,13 +384,12 @@ const post_controllers = {
         propertiesOwned: [{}],
       };
 
-      const newOwnerPropertyCollection = await Property?.create(
-        newOwnerPropertyBody
-      );
+      const newOwnerPropertyCollection =
+        await Property?.create(newOwnerPropertyBody);
 
       if (!newOwnerPropertyCollection)
         throw new Error(
-          "Failed to create a new instance of the property document in the database."
+          "Failed to create a new instance of the property document in the database.",
         );
 
       const newOwnerTenantBody = {
@@ -381,7 +401,7 @@ const post_controllers = {
 
       if (!newOwnerTenantCollection)
         throw new Error(
-          "Failed to create a new instance of the tenant document in the database."
+          "Failed to create a new instance of the tenant document in the database.",
         );
 
       const newOwnerRoomsBody = {
@@ -393,7 +413,7 @@ const post_controllers = {
 
       if (!newOwnerRoomsCollection)
         throw new Error(
-          "Failed to create a new instance of the room document in the database."
+          "Failed to create a new instance of the room document in the database.",
         );
 
       const newOwnerRentBody = {
@@ -405,7 +425,7 @@ const post_controllers = {
 
       if (!newOwnerRentCollection)
         throw new Error(
-          "Failed to create a new instance of the property document in the database."
+          "Failed to create a new instance of the property document in the database.",
         );
 
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
@@ -426,10 +446,7 @@ const post_controllers = {
 
   //! SUBSCRIPTIONS.
 
-  createPayment: async (req, res) => {
-    try {
-    } catch (err) {}
-  },
+  createPayment: async (req, res) => {},
 
   verifyPayment: async (req, res) => {},
 
@@ -479,7 +496,7 @@ const post_controllers = {
 
       const passwordMatch = await compare(
         encryptedPassword,
-        dbPassword?.password
+        dbPassword?.password,
       );
 
       if (!passwordMatch)
@@ -497,13 +514,19 @@ const post_controllers = {
       if (isSubscriptionExpired && isSubscriptionExpired.error) {
         const updatePaidStatus = await Owner.findOneAndUpdate(
           { _id: _id },
-          { $set: { paid: false, disabled: true } }
+          { $set: { paid: false, disabled: true } },
         );
 
         if (updatePaidStatus) throw new Error(isSubscriptionExpired?.error);
       }
 
-      const userData = { id: _id, currentSubscription, disabled, otp: false };
+      const userData = {
+        id: _id,
+        email,
+        currentSubscription,
+        disabled,
+        otp: false,
+      };
 
       const loginToken = await signLoginToken(userData);
 
@@ -524,13 +547,14 @@ const post_controllers = {
     try {
       if (
         !req.body.id ||
+        !req.body.email ||
         !req.body.currentSubscription ||
         req.body.disabled !== false ||
         req.body.otp !== false
       )
         throw new Error("Unauthorized action.");
 
-      const { id, currentSubscription, disabled } = req.body;
+      const { id, email, currentSubscription, disabled } = req.body;
 
       const userOtpDoc = (await Otp.findOne({ ownerID: id })) || null;
 
@@ -549,23 +573,11 @@ const post_controllers = {
         loginOtpExpiry &&
         loginOtpExpiry !== null &&
         Date.now() < loginOtpExpiry
-      ) {
-        const loginToken = await signLoginToken({
-          id,
-          currentSubscription,
-          disabled,
-          otp: 1,
-          repeat: 1,
-        });
-
-        if (!loginToken) throw new Error(loginToken);
-
+      )
         res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
-          loginToken,
         });
-      }
 
       if (
         loginOtp !== null &&
@@ -583,6 +595,14 @@ const post_controllers = {
 
         if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
+        const isEmailSent = await sendEmail(
+          email,
+          "LIPARENT Login OTP",
+          `Your login OTP is: ${newLoginOtp}`,
+        );
+
+        if (!isEmailSent) throw new Error("Failed to send login OTP email.");
+
         const resetLoginOtpDetails = await Otp.updateOne(
           { ownerID: id },
           {
@@ -591,7 +611,7 @@ const post_controllers = {
               isLoginOtpVerified: false,
               loginOtpExpiry: newLoginOtpExpiry,
             },
-          }
+          },
         );
 
         if (
@@ -602,6 +622,7 @@ const post_controllers = {
 
         const loginToken = await signLoginToken({
           id,
+          email,
           currentSubscription,
           disabled,
           otp: newLoginOtp,
@@ -624,6 +645,14 @@ const post_controllers = {
 
         if (!hashedLoginOtp) throw new Error(hashedLoginOtp);
 
+        const isEmailSent = await sendEmail(
+          email,
+          "LIPARENT Login OTP",
+          `Your login OTP is: ${newLoginOtp}`,
+        );
+
+        if (!isEmailSent) throw new Error("Failed to send login OTP email.");
+
         const loginOtpDetailsToDB = !userOtpDoc
           ? await Otp.create({
               ownerID: id,
@@ -637,13 +666,14 @@ const post_controllers = {
                 loginOtp: hashedLoginOtp,
                 isLoginOtpVerified: false,
                 loginOtpExpiry: newLoginOtpExpiry,
-              }
+              },
             );
 
         if (!loginOtpDetailsToDB) throw new Error("Error getting login otp");
 
         const loginToken = await signLoginToken({
           id,
+          email,
           currentSubscription,
           disabled,
           otp: newLoginOtp,
@@ -672,9 +702,9 @@ const post_controllers = {
       )
         throw new Error("Unauthorized action");
 
-      const { id, currentSubscription, disabled, otp } = req.body;
+      const { id, email, currentSubscription, disabled, otp } = req.body;
 
-      if (otp !== req.headers.otp) throw new Error("Unauthorized action");
+      if (otp !== req.headers.otp) throw new Error("Invalid OTP");
 
       const userOtpDoc = await Otp.findOne({ ownerID: id });
 
@@ -706,7 +736,7 @@ const post_controllers = {
             isLoginOtpVerified: true,
             loginOtpExpiry: null,
           },
-        }
+        },
       );
 
       if (
@@ -715,7 +745,18 @@ const post_controllers = {
       )
         throw new Error("Error adding login otp details to database");
 
-      const userData = { id, currentSubscription, disabled, user: true };
+      const passwordDoc = await Password.findOne({ ownerID: id });
+
+      const tokenVersion = passwordDoc?.tokenVersion ?? 0;
+
+      const userData = {
+        id,
+        email,
+        currentSubscription,
+        disabled,
+        user: true,
+        tokenVersion,
+      };
 
       const loginToken = await signAccessToken(userData);
 
@@ -800,14 +841,14 @@ const post_controllers = {
 
       if (checkIfPropertyNumberIsRegistered)
         throw new Error(
-          "Property with the given property number has already been registered."
+          "Property with the given property number has already been registered.",
         );
 
       propertiesOwned[0][newProperty.propertyID] = newProperty;
 
       const addNewProperty = await Property.updateOne(
         { ownerID: id },
-        { $set: { propertiesOwned } }
+        { $set: { propertiesOwned } },
       );
 
       if (!addNewProperty) throw new Error("No entry found to update...");
@@ -833,7 +874,7 @@ const post_controllers = {
           $set: {
             rooms,
           },
-        }
+        },
       );
 
       if (!updatePropertiesRooms)
@@ -862,7 +903,7 @@ const post_controllers = {
           },
         },
 
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       if (!updatePropertiesRoomsTenants)
@@ -891,7 +932,7 @@ const post_controllers = {
           $set: {
             rents,
           },
-        }
+        },
       );
 
       if (!updatePropertiesRoomsTenantsRents)
@@ -974,12 +1015,12 @@ const post_controllers = {
 
       if (!selectedProperty)
         throw new Error(
-          "Selected propertyId is not found/not registered in the database."
+          "Selected propertyId is not found/not registered in the database.",
         );
 
       if (selectedProperty.propertyNumber !== propertyNo)
         throw new Error(
-          "Selected propertyNumber does not match the property ID selected."
+          "Selected propertyNumber does not match the property ID selected.",
         );
 
       if (selectedProperty) res.status(200).json({ selectedProperty });
@@ -1031,7 +1072,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered."
+          "Property with the given property Id has not been registered.",
         );
 
       newRoom.isOccupied = false;
@@ -1056,7 +1097,7 @@ const post_controllers = {
 
         if (checkIfRoomNumberIsRegisteredUnderTheSelectedProperty)
           throw new Error(
-            "Room with the given room number has already been registered."
+            "Room with the given room number has already been registered.",
           );
 
         rooms[0][propertyId].rooms[newRoom.roomID] = newRoom;
@@ -1068,7 +1109,7 @@ const post_controllers = {
           $set: {
             rooms,
           },
-        }
+        },
       );
 
       if (updateProperties.acknowledged && updateProperties.modifiedCount) {
@@ -1086,7 +1127,7 @@ const post_controllers = {
             $set: {
               tenants,
             },
-          }
+          },
         );
 
         if (updateTenants.acknowledged && updateTenants.modifiedCount) {
@@ -1104,7 +1145,7 @@ const post_controllers = {
               $set: {
                 rents,
               },
-            }
+            },
           );
 
           if (updateRents.acknowledged && updateRents.modifiedCount)
@@ -1149,7 +1190,7 @@ const post_controllers = {
 
       if (!selectUsingPropertyID)
         throw new Error(
-          "Selected propertyID is not found/not registered in the database."
+          "Selected propertyID is not found/not registered in the database.",
         );
 
       const propertyRooms = selectUsingPropertyID?.rooms;
@@ -1199,11 +1240,11 @@ const post_controllers = {
 
       if (!selectPropertyUsingPropertyID)
         throw new Error(
-          "Selected propertyID Rooms are not found/not registered in the database."
+          "Selected propertyID Rooms are not found/not registered in the database.",
         );
       if (selectPropertyUsingPropertyID.propertyNumber !== propertyNo)
         throw new Error(
-          "Selected propertyNumber Rooms are not found/not registered in the database."
+          "Selected propertyNumber Rooms are not found/not registered in the database.",
         );
 
       const propertyRooms = selectPropertyUsingPropertyID?.rooms;
@@ -1212,11 +1253,11 @@ const post_controllers = {
 
       if (!selectRoomInPropertyUsingRoomID)
         throw new Error(
-          "Selected propertyID Room is not found/not registered in the database."
+          "Selected propertyID Room is not found/not registered in the database.",
         );
       if (selectRoomInPropertyUsingRoomID.roomNumber !== roomNo)
         throw new Error(
-          "Selected propertyId and propertyNumber Room do not match."
+          "Selected propertyId and propertyNumber Room do not match.",
         );
 
       if (!Object.keys(selectRoomInPropertyUsingRoomID))
@@ -1263,7 +1304,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the tenants database."
+          "Property with the given property Id has not been registered in the tenants database.",
         );
 
       const propertyTenants = checkIfPropertyIdIsRegistered?.tenants;
@@ -1275,7 +1316,7 @@ const post_controllers = {
 
       if (!checkIfRoomIdIsRegistered)
         throw new Error(
-          "Room with the given ID has not been registered in the tenants database."
+          "Room with the given ID has not been registered in the tenants database.",
         );
 
       let checkIfTenantIsRegistered = false;
@@ -1292,7 +1333,7 @@ const post_controllers = {
 
       if (checkIfTenantIsRegistered)
         throw new Error(
-          "Tenant with the given National ID has already been registered in this room."
+          "Tenant with the given National ID has already been registered in this room.",
         );
 
       newTenant.tenantID = generateOTP();
@@ -1306,7 +1347,7 @@ const post_controllers = {
           $set: {
             tenants,
           },
-        }
+        },
       );
 
       if (!updateTenants.acknowledged && !updateTenants.modifiedCount)
@@ -1326,7 +1367,7 @@ const post_controllers = {
           $set: {
             rents,
           },
-        }
+        },
       );
 
       if (!updateRents.acknowledged && !updateRents.modifiedCount)
@@ -1351,7 +1392,7 @@ const post_controllers = {
           $set: {
             rooms,
           },
-        }
+        },
       );
 
       if (!updateRooms.acknowledged && !updateRooms.modifiedCount)
@@ -1390,7 +1431,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the tenants database."
+          "Property with the given property Id has not been registered in the tenants database.",
         );
 
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
@@ -1430,7 +1471,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the tenants database."
+          "Property with the given property Id has not been registered in the tenants database.",
         );
 
       const selectedPropertyTenants = checkIfPropertyIdIsRegistered?.tenants;
@@ -1497,12 +1538,12 @@ const post_controllers = {
           checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
         )
           throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
+            "Property with the given property Id and  property number has not been registered in the tenants database.",
           );
 
         if (!checkIfPropertyIdIsRegistered)
           throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
+            "Property with the given property Id has not been registered in the tenants database.",
           );
       }
 
@@ -1521,7 +1562,7 @@ const post_controllers = {
 
       if (!selectedTenantOnRoomOnProperty)
         throw new Error(
-          "No tenant with the given tenantId has been added to this room."
+          "No tenant with the given tenantId has been added to this room.",
         );
 
       res.status(200).json({ selectedTenantOnRoomOnProperty });
@@ -1570,7 +1611,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the tenants database."
+          "Property with the given property Id has not been registered in the tenants database.",
         );
 
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
@@ -1583,7 +1624,7 @@ const post_controllers = {
 
       if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
         throw new Error(
-          "Room with the given ID has not been registered in the tenants database."
+          "Room with the given ID has not been registered in the tenants database.",
         );
 
       const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
@@ -1591,7 +1632,7 @@ const post_controllers = {
 
       if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
         throw new Error(
-          "Tenant with the given ID has not been registered in the tenants database."
+          "Tenant with the given ID has not been registered in the tenants database.",
         );
 
       const roomsDocument = await Room.findOne({ ownerID: id });
@@ -1604,7 +1645,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegisteredInRoomsDocument)
         throw new Error(
-          "Property with the given property Id has not been registered in the rooms database."
+          "Property with the given property Id has not been registered in the rooms database.",
         );
 
       if (
@@ -1616,7 +1657,7 @@ const post_controllers = {
         throw new Error("No room with the room Id found.");
 
       const roomRate = Number(
-        rooms[0][propertyId]?.rooms[roomId]?.roomRatePerMonth
+        rooms[0][propertyId]?.rooms[roomId]?.roomRatePerMonth,
       );
 
       const previousPaymentMonth =
@@ -1632,10 +1673,10 @@ const post_controllers = {
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(-1)
           ? isNewMonth
             ? checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(
-                -1
+                -1,
               )?.newBalance + isNewMonth
             : checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty?.at(
-                -1
+                -1,
               )?.newBalance
           : roomRate;
 
@@ -1654,7 +1695,7 @@ const post_controllers = {
       };
 
       rents[0][propertyId].rentPayments[roomId][tenantId].push(
-        newRentPaymentEntry
+        newRentPaymentEntry,
       );
 
       const yearOfRentPaymentInExpectedMonthlyRevenues =
@@ -1673,7 +1714,7 @@ const post_controllers = {
           $set: {
             rents,
           },
-        }
+        },
       );
 
       if (!updateRents.acknowledged && !updateRents.modifiedCount)
@@ -1714,7 +1755,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegisteredInRooms)
         throw new Error(
-          "No property with the given property Id has been found in the rooms database."
+          "No property with the given property Id has been found in the rooms database.",
         );
 
       if (!Object.keys(checkIfPropertyIdIsRegisteredInRooms.rooms).length)
@@ -1746,7 +1787,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the rents database."
+          "Property with the given property Id has not been registered in the rents database.",
         );
 
       if (!Object.keys(checkIfPropertyIdIsRegistered.rentPayments).length)
@@ -1799,12 +1840,12 @@ const post_controllers = {
           checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
         )
           throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
+            "Property with the given property Id and  property number has not been registered in the tenants database.",
           );
 
         if (!checkIfPropertyIdIsRegistered)
           throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
+            "Property with the given property Id has not been registered in the tenants database.",
           );
       }
 
@@ -1818,7 +1859,7 @@ const post_controllers = {
 
       if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
         throw new Error(
-          "Room with the given ID has not been registered in the tenants database."
+          "Room with the given ID has not been registered in the tenants database.",
         );
 
       if (!Object.keys(checkIfRoomIdIsRegisteredUnderSelectedProperty))
@@ -1861,7 +1902,7 @@ const post_controllers = {
 
       if (!checkIfPropertyIdIsRegistered)
         throw new Error(
-          "Property with the given property Id has not been registered in the tenants database."
+          "Property with the given property Id has not been registered in the tenants database.",
         );
 
       const propertyRents = checkIfPropertyIdIsRegistered?.rentPayments;
@@ -1874,7 +1915,7 @@ const post_controllers = {
 
       if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
         throw new Error(
-          "Room with the given ID has not been registered in the tenants database."
+          "Room with the given ID has not been registered in the tenants database.",
         );
 
       const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
@@ -1885,7 +1926,7 @@ const post_controllers = {
         (null || undefined)
       )
         throw new Error(
-          "Tenant with the given ID has not been registered in the tenants database."
+          "Tenant with the given ID has not been registered in the tenants database.",
         );
 
       if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.length)
@@ -1948,12 +1989,12 @@ const post_controllers = {
           checkIfPropertyIdIsRegistered?.propertyNumber !== propertyNo
         )
           throw new Error(
-            "Property with the given property Id and  property number has not been registered in the tenants database."
+            "Property with the given property Id and  property number has not been registered in the tenants database.",
           );
 
         if (!checkIfPropertyIdIsRegistered)
           throw new Error(
-            "Property with the given property Id has not been registered in the tenants database."
+            "Property with the given property Id has not been registered in the tenants database.",
           );
       }
 
@@ -1967,7 +2008,7 @@ const post_controllers = {
 
       if (!checkIfRoomIdIsRegisteredUnderSelectedProperty)
         throw new Error(
-          "Room with the given ID has not been registered in the tenants database."
+          "Room with the given ID has not been registered in the tenants database.",
         );
 
       const checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty =
@@ -1975,17 +2016,17 @@ const post_controllers = {
 
       if (!checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty)
         throw new Error(
-          "Tenant with the given ID has not been registered in the tenants database."
+          "Tenant with the given ID has not been registered in the tenants database.",
         );
 
       const requestedPaymentReport =
         checkIfTenantIsRegisteredUnderSelectedRoomInSelectedProperty.find(
-          (payment) => payment.paymentID === paymentId
+          (payment) => payment.paymentID === paymentId,
         );
 
       if (!requestedPaymentReport)
         throw new Error(
-          "The requested payment report with the given payment ID was not found."
+          "The requested payment report with the given payment ID was not found.",
         );
 
       res.status(200).json({ requestedPaymentReport });
@@ -1994,13 +2035,14 @@ const post_controllers = {
     }
   },
 
-  //? Reset password tokens
+  //? Reset password otp
 
-  genarateResetPasswordToken: async (req, res) => {
+  genarateResetPasswordOTP: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unauthorized action");
+      if (!req.body.id || !req.body.email)
+        throw new Error("Unauthorized action");
 
-      const { id } = req.body;
+      const { id, email } = req.body;
 
       const passwordDoc = await Password.findOne({ ownerID: id });
 
@@ -2015,7 +2057,7 @@ const post_controllers = {
         Date.now() < lastResetTime + twentyFourHours
       )
         throw new Error(
-          "Password can only be reset 24hrs after the last reset"
+          "Password can only be reset 24hrs after the last reset",
         );
 
       const tokenIsNotVerifiedAndHasNotExpired =
@@ -2025,13 +2067,11 @@ const post_controllers = {
         passwordDoc.resetTokenExpiry !== (null || undefined) &&
         Date.now() < passwordDoc.resetTokenExpiry;
 
-      if (tokenIsNotVerifiedAndHasNotExpired) {
-        res.status(200).json({
+      if (tokenIsNotVerifiedAndHasNotExpired)
+        return res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
-          resetPasswordToken: "null",
         });
-      }
 
       const tokenIsNotVerifiedAndHasExpired =
         passwordDoc.resetToken !== (null || undefined) &&
@@ -2041,21 +2081,32 @@ const post_controllers = {
         Date.now() > passwordDoc.resetTokenExpiry;
 
       const noExistingToken =
-        passwordDoc.resetToken === (null || undefined) &&
-        passwordDoc.resetTokenVerified === (null || undefined) &&
-        passwordDoc.resetTokenExpiry === (null || undefined);
+        passwordDoc.resetToken == null &&
+        passwordDoc.resetTokenVerified == null &&
+        passwordDoc.resetTokenExpiry == null;
 
       if (tokenIsNotVerifiedAndHasExpired || noExistingToken) {
-        const resetPasswordToken = generateOTP();
+        const resetPasswordToken = req.body.otp || generateOTP();
         const resetPasswordTokenExpiry = generateOTPExpiryTime();
 
         const hashedresetPasswordToken = await hash(
           encrypt(resetPasswordToken),
-          10
+          10,
         );
 
         if (!hashedresetPasswordToken)
-          throw new Error(hashedresetPasswordToken);
+          throw new Error(
+            "Could not generate reset password OTP, please try again later.",
+          );
+
+        const isEmailSent = await sendEmail(
+          email,
+          "LIPARENT reset password OTP",
+          `Your reset password OTP is: ${resetPasswordToken}`,
+        );
+
+        if (!isEmailSent)
+          throw new Error("Failed to send reset password OTP email.");
 
         const addResetTokenToDB = await Password.updateOne(
           { ownerID: id },
@@ -2065,7 +2116,7 @@ const post_controllers = {
               resetTokenExpiry: resetPasswordTokenExpiry,
               resetTokenVerified: false,
             },
-          }
+          },
         );
 
         if (!addResetTokenToDB.acknowledged && !addResetTokenToDB.modifiedCount)
@@ -2073,7 +2124,7 @@ const post_controllers = {
 
         res.status(200).json({
           message: "Password reset token sent to your email",
-          resetPasswordToken,
+          resetPasswordOTP: resetPasswordToken,
         });
       }
     } catch (err) {
@@ -2081,15 +2132,18 @@ const post_controllers = {
     }
   },
 
-  verifyResetPasswordToken: async (req, res) => {
+  verifyResetPasswordOTP: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unknown user.");
-      if (!req.headers.resettoken) throw new Error("Unauthorized action.");
+      if (!req.headers.resettoken) throw new Error("Unauthorized action1.");
+
+      if (req.body.otp && req.body.otp !== req.headers.resettoken)
+        throw new Error("Invalid otp.");
 
       const { id } = req.body;
 
       const {
-        headers: { resettoken },
+        headers: { resettoken: resetOTP },
       } = req;
 
       const passwordDoc = await Password.findOne({ ownerID: id });
@@ -2099,8 +2153,8 @@ const post_controllers = {
       if (!resetPasswordToken) throw new Error("Invalid otp.");
 
       const resetPasswordTokenMatch = await compare(
-        encrypt(resettoken),
-        resetPasswordToken
+        encrypt(resetOTP),
+        resetPasswordToken,
       );
 
       if (!resetPasswordTokenMatch) throw new Error("Invalid otp");
@@ -2116,7 +2170,7 @@ const post_controllers = {
           { ownerID: id },
           {
             $unset: ["resetToken", "resetTokenExpiry", "resetTokenVerified"],
-          }
+          },
         );
 
         if (
@@ -2134,7 +2188,7 @@ const post_controllers = {
           $set: {
             resetTokenVerified: true,
           },
-        }
+        },
       );
 
       if (!verifyToken.acknowledged && !verifyToken.modifiedCount)
@@ -2148,13 +2202,14 @@ const post_controllers = {
     }
   },
 
-  //? Delete account tokens
+  //? Delete account otp
 
-  genarateDeleteAccountToken: async (req, res) => {
+  genarateDeleteAccountOTP: async (req, res) => {
     try {
-      if (!req.body.id) throw new Error("Unauthorized action");
+      if (!req.body.id || !req.body.email)
+        throw new Error("Unauthorized action");
 
-      const { id } = req.body;
+      const { id, email } = req.body;
 
       const otpDoc = await Otp.findOne({ ownerID: id });
 
@@ -2167,7 +2222,6 @@ const post_controllers = {
         res.status(200).json({
           message:
             "OTP has already been sent, please try again after a few minutes",
-          deleteAccountToken: "null",
         });
       }
 
@@ -2179,9 +2233,9 @@ const post_controllers = {
         Date.now() > otpDoc?.deleteAccountOtpExpiry;
 
       const noExistingToken =
-        otpDoc?.resetToken === (null || undefined) &&
-        otpDoc?.isDeleteAccountOtpVerified === (null || undefined) &&
-        otpDoc?.deleteAccountOtpExpiry === (null || undefined);
+        otpDoc?.deleteAccountOtp == null &&
+        otpDoc?.isDeleteAccountOtpVerified == null &&
+        otpDoc?.deleteAccountOtpExpiry == null;
 
       if (tokenHasExpired || noExistingToken) {
         const deleteAccountToken = generateOTP();
@@ -2189,11 +2243,20 @@ const post_controllers = {
 
         const hashedDeleteAccountToken = await hash(
           encrypt(deleteAccountToken),
-          10
+          10,
         );
 
         if (!hashedDeleteAccountToken)
           throw new Error(hashedDeleteAccountToken);
+
+        const isEmailSent = await sendEmail(
+          email,
+          "LIPARENT Delete Account OTP",
+          `Your delete account OTP is: ${deleteAccountToken}`,
+        );
+
+        if (!isEmailSent)
+          throw new Error("Failed to send delete account OTP email.");
 
         const addDeleteAccountTokenToDB = await Otp.updateOne(
           { ownerID: id },
@@ -2204,7 +2267,7 @@ const post_controllers = {
               isDeleteAccountOtpVerified: false,
             },
           },
-          { new: true }
+          { new: true },
         );
 
         if (
@@ -2223,7 +2286,7 @@ const post_controllers = {
     }
   },
 
-  verifyDeleteAccountToken: async (req, res) => {
+  verifyDeleteAccountOTP: async (req, res) => {
     try {
       if (!req.body.id) throw new Error("Unauthorized action.");
       if (!req.headers.deletetoken) throw new Error("Unauthorized action.");
@@ -2238,21 +2301,18 @@ const post_controllers = {
 
       const deleteAccountToken = otpDoc.deleteAccountOtp || null;
 
-      if (!deleteAccountToken)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!deleteAccountToken) throw new Error("Invalid Token");
 
       const deleteAccountTokenMatch = await compare(
         encrypt(deletetoken),
-        deleteAccountToken
+        deleteAccountToken,
       );
 
-      if (!deleteAccountTokenMatch)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!deleteAccountTokenMatch) throw new Error("Invalid Token");
 
       const deleteAccountTokenExpiry = otpDoc.deleteAccountOtpExpiry || null;
 
-      if (!deleteAccountTokenExpiry)
-        throw new Error("Invalid Token, generate a new one.");
+      if (!deleteAccountTokenExpiry) throw new Error("Invalid Token.");
 
       const isTokenValid = Date.now() < deleteAccountTokenExpiry ? true : false;
 
@@ -2265,7 +2325,7 @@ const post_controllers = {
               "deleteAccountOtpExpiry",
               "isDeleteAccountOtpVerified",
             ],
-          }
+          },
         );
 
         if (
@@ -2283,7 +2343,7 @@ const post_controllers = {
           $set: {
             isDeleteAccountOtpVerified: true,
           },
-        }
+        },
       );
 
       if (!verifyToken.acknowledged && !verifyToken.modifiedCount)
@@ -2331,6 +2391,8 @@ const post_controllers = {
 
       const ownerDoc = await Owner.findOne({ email, nationalID: nationalId });
 
+      if (!ownerDoc) throw new Error("Invalid credentials");
+
       const id = ownerDoc?._id || null;
 
       const nationalID = ownerDoc?.nationalID || null;
@@ -2339,7 +2401,9 @@ const post_controllers = {
 
       if (nationalID !== nationalId) throw new Error("Invalid credentials");
 
-      const token = await signForgotPasswordToken({ id });
+      const otp = generateOTP();
+
+      const token = await signForgotPasswordToken({ id, email, otp });
 
       res
         .status(200)
@@ -2356,6 +2420,15 @@ const post_controllers = {
       if (!req.body.id) throw new Error("Unauthorized action");
 
       const { id } = req.body;
+
+      // Invalidate all existing access tokens for this user
+      const invalidateTokens = await Password.updateOne(
+        { ownerID: id },
+        { $inc: { tokenVersion: 1 } },
+      );
+
+      if (!invalidateTokens.acknowledged)
+        throw new Error("something went wrong, 'token invalidation'");
 
       const otpDocDeletion = await Otp.deleteOne({ ownerID: id });
 

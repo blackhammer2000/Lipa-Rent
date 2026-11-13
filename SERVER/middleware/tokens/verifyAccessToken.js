@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { verify } = require("jsonwebtoken");
 const { Otp } = require("../models/Otp");
+const { Password } = require("../models/Password");
 
 const {
   checkSubscriptionExpiry,
@@ -8,16 +9,12 @@ const {
 
 const verifyUserAccessToken = async (req, res, next) => {
   try {
-    if (!req.headers.token) throw new Error("Access Denied.");
+    if (!req.cookies.accessToken) throw new Error("Access Denied.");
 
-    const {
-      headers: { token },
-    } = req;
+    const token = req.cookies.accessToken;
 
-    const { id, currentSubscription, user, disabled } = verify(
-      token,
-      process.env.MY_SECRET_KEY
-    );
+    const { id, email, currentSubscription, user, disabled, tokenVersion } =
+      verify(token, process.env.ACCESS_SECRET_KEY);
 
     if (!user) throw new Error("Unauthorized action, unknown role.");
 
@@ -33,19 +30,23 @@ const verifyUserAccessToken = async (req, res, next) => {
     if (user && isSubscriptionExpired)
       throw new Error(isSubscriptionExpired?.error);
 
+    // Token version check: reject tokens issued before the latest logout
+    const passwordDoc = await Password.findOne({ ownerID: id });
+    const currentVersion = passwordDoc?.tokenVersion ?? 0;
+
+    if ((tokenVersion ?? 0) !== currentVersion) {
+      throw new Error("Session has been invalidated, please log in again.");
+    }
+
     req.body.id = id;
+    req.body.email = email;
 
     user ? (req.body.user = user) : null;
 
-    delete req.headers.token;
-
     next();
   } catch (err) {
-    if (err.message === ("jwt expired" || "invalid token" || "jwt malformed")) {
-      res.status(403).json({ error: "session expired" });
-    } else {
-      res.status(500).json({ error: err?.message });
-    }
+    // Pass to global error handler (S12): logs server-side, returns generic in production
+    next(err);
   }
 };
 

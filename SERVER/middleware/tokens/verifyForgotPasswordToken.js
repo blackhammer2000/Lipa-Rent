@@ -8,20 +8,24 @@ const verifyForgotPasswordToken = (req, res, next) => {
 
     const { token } = req.headers;
 
-    const { id } = verify(token, process.env.FORGOT_SECRET_KEY);
+    const { id, email, otp } = verify(token, process.env.FORGOT_SECRET_KEY);
 
-    if (!id) throw new Error("Unauthorized action.");
+    if (!id || !email || !otp) throw new Error("Unauthorized action.");
 
     req.body.id = id;
+    req.body.email = email;
+    req.body.otp = otp;
 
     delete req.headers.token;
 
     next();
   } catch (err) {
     if (
-      err?.message === ("jwt expired" || "invalid token" || "jwt malformed")
+      err?.message === "jwt expired" ||
+      err?.message === "invalid token" ||
+      err?.message === "jwt malformed"
     ) {
-      res.status(403).json({ error: "Unauthorized action." });
+      res.status(403).json({ error: "session expired." });
     } else {
       res.status(500).json({ error: err?.message });
     }
