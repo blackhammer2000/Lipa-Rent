@@ -575,7 +575,7 @@ next proposed task. Please review and approve (or amend) before work begins.
 5. **404 handler**: unmatched routes return `{ error: "Route not found" }` with 404 status instead of Express's default HTML error page
 6. **Status code mapping**: uses `err.statusCode`/`err.status` if set; Mongoose `ValidationError`/`CastError` → 400; duplicate key (code 11000) → 409; default → 500
 
-**Verification:** All server files pass `node --check` ✅; `verifyAccessToken.js` now delegates error responses to the global handler (no raw `err.message` leakage) ✅
+**Verification:** All server files pass `node --check` ✅; `verifyAccessToken.js` now delegates error responses to the global handler (no raw `err.message` leakage) ✅; `AuthProvider.jsx` `handleRefresh()` returns `true`/`false` and properly catches refresh failures so mount-time refresh errors surface gracefully instead of throwing unhandled ✅
 
 ### Proposed acceptance criteria (for the task when approved)
 

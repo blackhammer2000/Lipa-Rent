@@ -24,8 +24,15 @@ export function AuthProvider({ children }) {
   };
 
   const handleRefresh = async () => {
-    await refreshAccessToken();
-    setIsAuthenticated(true);
+    try {
+      await refreshAccessToken();
+      setIsAuthenticated(true);
+      return true;
+    } catch {
+      // Refresh failed (e.g., expired/missing refresh cookie) — surface as unauthenticated
+      setIsAuthenticated(false);
+      return false;
+    }
   };
 
   const handleLogout = async () => {
