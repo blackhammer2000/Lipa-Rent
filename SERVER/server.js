@@ -107,12 +107,20 @@ app.use(mongoSanitizeMiddleware);
 app.use((req, res, next) => {
   const stateChanging = ["POST", "PATCH", "PUT", "DELETE"].includes(req.method);
 
-  // Exempt refresh endpoint — it's used to obtain an access token before
-  // authentication is established, so requiring a CSRF token creates a
-  // chicken-and-egg problem on first load.
-  const isRefreshEndpoint = req.path === "/api/user/owner/refresh";
+  // Exempt auth entry points — new users don't have a CSRF token yet,
+  // so requiring one creates a chicken-and-egg problem on first load.
+  const authEntryPoints = [
+    "/api/user/owner/signup/generate/otp",
+    "/api/user/owner/signup/verify/otp",
+    "/api/user/owner/signup",
+    "/api/user/owner/login",
+    "/api/user/owner/get/otp",
+    "/api/user/owner/verify/otp",
+    "/api/user/owner/refresh",
+  ];
+  const isAuthEntryPoint = authEntryPoints.includes(req.path);
 
-  if (stateChanging && !isRefreshEndpoint) {
+  if (stateChanging && !isAuthEntryPoint) {
     const csrfToken = req.headers["x-csrf-token"];
     if (!csrfToken || !tokens.verify(csrfSecret, csrfToken)) {
       return res.status(403).json({ error: "Invalid or missing CSRF token" });
