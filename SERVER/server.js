@@ -5,7 +5,36 @@ const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const mongoSanitize = require("express-mongo-sanitize");
+
+// Custom MongoDB injection sanitization (Node 24 / Express compatible)
+// Strips keys containing $ or . from req.body and req.query to prevent MongoDB injection.
+// Does NOT reassign req.query (getter-only in newer Node.js) — mutates keys instead.
+const mongoSanitizeMiddleware = (req, res, next) => {
+  const stripDangerousKeys = (obj) => {
+    if (!obj || typeof obj !== "object" || Array.isArray(obj)) return;
+    const keys = Object.keys(obj);
+    for (const key of keys) {
+      if (key.includes("$") || key.includes(".")) {
+        delete obj[key];
+      } else if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+        stripDangerousKeys(obj[key]);
+      }
+    }
+  };
+
+  if (req.body) stripDangerousKeys(req.body);
+
+  if (req.query) {
+    const keys = Object.keys(req.query);
+    for (const key of keys) {
+      if (key.includes("$") || key.includes(".")) {
+        delete req.query[key];
+      }
+    }
+  }
+
+  next();
+};
 const cookieParser = require("cookie-parser");
 const CSRF = require("csrf");
 const PORT = process.env.PORT || 8080;
@@ -72,13 +101,18 @@ app.use(
 );
 
 // --- MongoDB injection sanitization ---
-app.use(mongoSanitize());
+app.use(mongoSanitizeMiddleware);
 
 // --- CSRF protection ---
 app.use((req, res, next) => {
   const stateChanging = ["POST", "PATCH", "PUT", "DELETE"].includes(req.method);
 
-  if (stateChanging) {
+  // Exempt refresh endpoint — it's used to obtain an access token before
+  // authentication is established, so requiring a CSRF token creates a
+  // chicken-and-egg problem on first load.
+  const isRefreshEndpoint = req.path === "/api/user/owner/refresh";
+
+  if (stateChanging && !isRefreshEndpoint) {
     const csrfToken = req.headers["x-csrf-token"];
     if (!csrfToken || !tokens.verify(csrfSecret, csrfToken)) {
       return res.status(403).json({ error: "Invalid or missing CSRF token" });

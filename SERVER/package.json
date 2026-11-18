@@ -6,7 +6,6 @@
     "csrf": "^3.1.0",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
-    "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.0.0",
     "helmet": "^8.3.0",
     "joi": "^18.2.8",
