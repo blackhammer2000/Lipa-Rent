@@ -37,7 +37,7 @@
     "eslint": "^9.39.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
-    "globals": "^17.7.0",
+    "globals": "^17.14.0",
     "jest": "^25.1.0",
     "jest-css-modules": "^2.1.0",
     "jest-environment-jsdom": "^30.5.1",
